@@ -43,10 +43,13 @@ sec tind-enroll; tind-enroll --help 2>&1 | head -8; cat /etc/tind/servr-tunnel.c
 sec "enroll init/apply smoke test"
 tind-enroll init 2>&1 | tail -3
 tind-enroll apply 10.8.0.99/32 2>&1 | tail -2
+tind-enroll status 2>&1 | tail -2
 tind-enroll remove --purge-key 2>&1 | tail -2
 sec "gnome-tour removed?"; dpkg -l gnome-tour 2>&1 | tail -1
 sec calamares branding; grep -n '^branding' /etc/calamares/settings.conf; ls /usr/share/calamares/branding/tind | head
-sec installer launcher; grep -m3 -E '^(Name|Exec)=' /usr/share/applications/calamares*.desktop /usr/share/applications/*calamares*.desktop 2>&1 | head -6
+sec installer launcher
+ls -l /usr/share/applications/tind-install.desktop 2>&1; grep -E '^(Name|Exec|Icon|NoDisplay)=' /usr/share/applications/tind-install.desktop 2>&1
+echo "-- original:"; grep -E '^(Name|NoDisplay)=' /usr/share/applications/calamares-install-debian.desktop 2>&1
 sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/lib/tind/optin-install 2>&1
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo

@@ -24,13 +24,15 @@ load_conf() {
     # shellcheck disable=SC1090
     . "$CONF"
     local v
-    for v in SERVER_ENDPOINT SERVER_PUBLIC_KEY ALLOWED_IPS DNS_SERVER; do
-        [ -n "${!v:-}" ] || die "$v is empty in $CONF. The server admin needs to fill it in first."
-    done
     DNS_DOMAIN="${DNS_DOMAIN:-servr.no}"
     KEEPALIVE="${KEEPALIVE:-25}"
     CONNECTION_NAME="${CONNECTION_NAME:-tind-servr}"
     [ "${#CONNECTION_NAME}" -le 15 ] || die "CONNECTION_NAME must be at most 15 characters"
+    # status and remove only need the connection name, not the server values
+    [ "${1:-}" = "--names-only" ] && return 0
+    for v in SERVER_ENDPOINT SERVER_PUBLIC_KEY ALLOWED_IPS DNS_SERVER; do
+        [ -n "${!v:-}" ] || die "$v is empty in $CONF. The server admin needs to fill it in first."
+    done
     case ",${ALLOWED_IPS// /}," in
         *,0.0.0.0/0,*|*,::/0,*) die "ALLOWED_IPS must not contain a default route; this is a split tunnel." ;;
     esac
@@ -100,7 +102,7 @@ CFG
 }
 
 cmd_status() {
-    load_conf
+    load_conf --names-only
     nmcli -f GENERAL.STATE,IP4.ADDRESS,IP4.DNS connection show "$CONNECTION_NAME" 2>/dev/null \
         || die "tunnel '$CONNECTION_NAME' is not installed"
     command -v wg >/dev/null 2>&1 && wg show "$CONNECTION_NAME" 2>/dev/null || true
@@ -109,7 +111,7 @@ cmd_status() {
 
 cmd_remove() {
     need_root remove "$@"
-    load_conf
+    load_conf --names-only
     nmcli connection delete "$CONNECTION_NAME" 2>/dev/null || echo "Tunnel '$CONNECTION_NAME' was not installed."
     if [ "${1:-}" = "--purge-key" ]; then
         rm -f "$KEY"
