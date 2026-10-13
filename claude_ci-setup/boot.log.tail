@@ -1,0 +1,6 @@
+total 2426916
+-rw-r--r-- 1 runner runner 2485157888 Oct 13 14:58 tind-amd64.hybrid.iso
+KVM: yes
+total 8
+-rw-r--r-- 1 runner runner  96 Oct 13 14:58 boot.log
+-rw-r----- 1 runner runner 304 Oct 13 14:58 serial.log

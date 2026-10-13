@@ -8,7 +8,7 @@ built tind-installer_0.1.0_all.deb
 built tind-mozilla-config_0.1.0_all.deb
 built tind-optins_0.1.0_all.deb
 built tind-wireguard_0.1.0_all.deb
-== package names exist in trixie
+== package names exist in trixie (with contrib, non-free, non-free-firmware)
 == Depends (must exist)
 ok       bluez
 ok       ca-certificates
@@ -45,17 +45,16 @@ ok       evince
 ok       firefox-esr
 ok       firefox-esr-l10n-nb-no
 ok       firefox-esr-l10n-nn-no
-missing  firmware-atheros
-missing  firmware-iwlwifi
-missing  firmware-linux
-missing  firmware-misc-nonfree
-missing  firmware-realtek
+ok       firmware-atheros
+ok       firmware-iwlwifi
+ok       firmware-linux
+ok       firmware-misc-nonfree
+ok       firmware-realtek
 ok       fonts-noto
 ok       fonts-noto-color-emoji
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
-missing  grub-btrfs
 ok       hunspell-en-us
 ok       hunspell-no
 ok       keyboard-configuration
@@ -85,7 +84,7 @@ ok       xdg-desktop-portal-gnome
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   60G   85G  42% /__w
+/dev/root       145G   59G   86G  41% /__w
 
 == KVM
 not available (VM tests will be slow)
@@ -151,17 +150,16 @@ ok       evince
 ok       firefox-esr
 ok       firefox-esr-l10n-nb-no
 ok       firefox-esr-l10n-nn-no
-missing  firmware-atheros
-missing  firmware-iwlwifi
-missing  firmware-linux
-missing  firmware-misc-nonfree
-missing  firmware-realtek
+ok       firmware-atheros
+ok       firmware-iwlwifi
+ok       firmware-linux
+ok       firmware-misc-nonfree
+ok       firmware-realtek
 ok       fonts-noto
 ok       fonts-noto-color-emoji
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
-missing  grub-btrfs
 ok       hunspell-en-us
 ok       hunspell-no
 ok       keyboard-configuration
