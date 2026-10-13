@@ -1,0 +1,10 @@
+PRETTY_NAME="Tind 0.1 (Debian 13 trixie)"
+NAME="Tind"
+VERSION_ID="0.1"
+VERSION="0.1 (development)"
+VERSION_CODENAME=trixie
+ID=tind
+ID_LIKE=debian
+DEBIAN_CODENAME=trixie
+ANSI_COLOR="38;2;246;169;188"
+LOGO=tind-logo

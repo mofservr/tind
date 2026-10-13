@@ -1,0 +1,14 @@
+# Tind image contents. The real content is in the tind-* metapackages built from ../packages.
+tind-desktop
+tind-apps
+tind-installer
+
+# live session and boot
+gdm3
+plymouth
+plymouth-themes
+live-config
+live-config-systemd
+locales
+keyboard-configuration
+sudo

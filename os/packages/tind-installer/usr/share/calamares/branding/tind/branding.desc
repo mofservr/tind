@@ -1,0 +1,38 @@
+---
+componentName:  tind
+
+welcomeStyleCalamares: true
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 900px,600px
+windowPlacement: center
+sidebar: left
+navigation: left
+
+strings:
+    productName:         Tind
+    shortProductName:    Tind
+    version:             0.1
+    shortVersion:        0.1
+    versionedName:       Tind 0.1
+    shortVersionedName:  Tind 0.1
+    bootloaderEntryName: Tind
+    productUrl:          ""
+    supportUrl:          ""
+    knownIssuesUrl:      ""
+    releaseNotesUrl:     ""
+    donateUrl:           ""
+
+images:
+    productLogo:         "logo.png"
+    productIcon:         "icon.png"
+    productWelcome:      "welcome.png"
+
+style:
+    SidebarBackground:        "#0C1523"
+    SidebarText:              "#C4E0EC"
+    SidebarTextCurrent:       "#0C1523"
+    SidebarBackgroundCurrent: "#F6A9BC"
+
+slideshow:      "show.qml"
+slideshowAPI:   2

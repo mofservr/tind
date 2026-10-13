@@ -1,0 +1,6 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ] && [ -f /etc/calamares/settings.conf ]; then
+    sed -i 's/^branding:.*/branding: tind/' /etc/calamares/settings.conf
+fi
+exit 0

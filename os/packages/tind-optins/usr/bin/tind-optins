@@ -1,0 +1,51 @@
+#!/bin/bash
+# tind-optins: choose extra apps to install.
+#   tind-optins                 checklist window
+#   tind-optins --list          print available opt-ins
+#   tind-optins install ID...   install from the command line
+set -euo pipefail
+DIR=/usr/share/tind/optins.d
+HELPER=/usr/lib/tind/optin-install
+
+field() { # field ID NAME
+    ( unset NAME DESC STATUS; # shellcheck disable=SC1090
+      . "$DIR/$1.optin"; printf '%s' "${!2:-}" )
+}
+ids() { local f; for f in "$DIR"/*.optin; do basename "$f" .optin; done; }
+
+as_root() { if [ "$(id -u)" -eq 0 ]; then "$@"; else pkexec "$@"; fi; }
+
+install_ids() {
+    local id
+    for id in "$@"; do
+        echo "Installing $(field "$id" NAME) ..."
+        as_root "$HELPER" "$id"
+    done
+}
+
+case "${1:-}" in
+    --list)
+        for id in $(ids); do printf '%-16s %-14s %s\n' "$id" "[$(field "$id" STATUS)]" "$(field "$id" DESC)"; done ;;
+    install)
+        shift; [ "$#" -gt 0 ] || { echo "usage: tind-optins install ID..." >&2; exit 1; }
+        install_ids "$@" ;;
+    "")
+        command -v zenity >/dev/null 2>&1 || { echo "zenity is not installed; use: tind-optins --list" >&2; exit 1; }
+        rows=()
+        for id in $(ids); do
+            rows+=(FALSE "$id" "$(field "$id" NAME)" "$(field "$id" DESC)")
+        done
+        sel="$(zenity --list --checklist --title="Tind Apps" --width=640 --height=420 \
+            --text="Choose what to add. Nothing is installed until you press OK." \
+            --column="" --column="id" --column="App" --column="About" --hide-column=2 \
+            --separator=" " "${rows[@]}")" || exit 0
+        [ -n "$sel" ] || exit 0
+        # shellcheck disable=SC2086
+        if install_ids $sel; then
+            zenity --info --text="Done."
+        else
+            zenity --error --text="Something failed. Run 'tind-optins install <id>' in a terminal to see why."
+        fi
+        ;;
+    *) echo "usage: tind-optins [--list | install ID...]" >&2; exit 1 ;;
+esac

@@ -1,0 +1,23 @@
+#!/bin/bash
+# Root helper for tind-optins: install one opt-in by id. Called through pkexec or sudo.
+set -euo pipefail
+DIR=/usr/share/tind/optins.d
+id="${1:-}"
+[[ "$id" =~ ^[a-z0-9-]+$ ]] || { echo "invalid opt-in id" >&2; exit 1; }
+file="$DIR/$id.optin"
+[ -r "$file" ] || { echo "unknown opt-in: $id" >&2; exit 1; }
+unset NAME DESC STATUS APT_PACKAGES FLATPAK_REF SCRIPT
+# shellcheck disable=SC1090
+. "$file"
+if [ -n "${APT_PACKAGES:-}" ]; then
+    read -ra pkgs <<< "$APT_PACKAGES"
+    DEBIAN_FRONTEND=noninteractive apt-get install -y "${pkgs[@]}"
+fi
+if [ -n "${FLATPAK_REF:-}" ]; then
+    flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+    read -ra refs <<< "$FLATPAK_REF"
+    flatpak install --system -y --noninteractive flathub "${refs[@]}"
+fi
+if [ -n "${SCRIPT:-}" ]; then
+    bash "$SCRIPT"
+fi

@@ -1,0 +1,4 @@
+#!/bin/sh
+# compile the system-wide GNOME defaults shipped by tind-branding
+set -e
+command -v dconf >/dev/null 2>&1 && dconf update || true

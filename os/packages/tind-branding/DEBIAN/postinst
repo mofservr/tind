@@ -1,0 +1,20 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ]; then
+    # keep Debian's os-release available and use ours, even across base-files upgrades
+    if ! dpkg-divert --list /usr/lib/os-release | grep -q tind-branding; then
+        dpkg-divert --package tind-branding --quiet --rename \
+            --divert /usr/lib/os-release.debian --add /usr/lib/os-release
+    fi
+    cp -f /usr/share/tind/os-release /usr/lib/os-release
+    ln -sf ../usr/lib/os-release /etc/os-release
+    command -v dconf >/dev/null 2>&1 && dconf update || true
+    command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -q -t /usr/share/icons/hicolor || true
+    if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+        plymouth-set-default-theme tind || true
+    fi
+    if [ -d /boot/grub ] && command -v update-grub >/dev/null 2>&1 && [ -z "${TIND_BUILD_CHROOT:-}" ]; then
+        update-grub || true
+    fi
+fi
+exit 0

@@ -1,0 +1,17 @@
+#!/bin/bash
+# Installs Claude Desktop from Anthropic's apt repository.
+# The repository line and key URL come from /etc/tind/thirdparty.conf, which must be filled in
+# from Anthropic's official install instructions. Nothing is guessed here.
+set -euo pipefail
+# shellcheck disable=SC1091
+. /etc/tind/thirdparty.conf
+if [ -z "${CLAUDE_KEY_URL:-}" ] || [ -z "${CLAUDE_APT_LINE:-}" ]; then
+    echo "Claude's repository details are not configured yet." >&2
+    echo "Fill in CLAUDE_KEY_URL and CLAUDE_APT_LINE in /etc/tind/thirdparty.conf." >&2
+    exit 2
+fi
+install -d -m 0755 /etc/apt/keyrings
+curl -fsSL "$CLAUDE_KEY_URL" -o /etc/apt/keyrings/claude.asc
+echo "$CLAUDE_APT_LINE" > /etc/apt/sources.list.d/claude.list
+apt-get update
+DEBIAN_FRONTEND=noninteractive apt-get install -y claude-desktop

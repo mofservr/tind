@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Tind
+Description=Tind boot splash: logo with a thin pink progress line
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/tind
+ScriptFile=/usr/share/plymouth/themes/tind/tind.script

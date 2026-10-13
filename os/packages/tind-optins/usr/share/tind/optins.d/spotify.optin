@@ -1,0 +1,4 @@
+NAME="Spotify"
+DESC="Music streaming (Flatpak)"
+STATUS="ready"
+FLATPAK_REF="com.spotify.Client"

@@ -1,0 +1,19 @@
+tind-wireguard
+==============
+
+What it does
+  Gives every Tind device an always-on, split-tunnel WireGuard connection to the
+  servr.no server. Only the server's own subnet and names under servr.no use the
+  tunnel; everything else (including Proton VPN) is unaffected.
+
+Per-device steps
+  1. sudo tind-enroll init            -> prints this device's PUBLIC key
+  2. send the public key to the server admin, get back a tunnel address
+  3. sudo tind-enroll apply 10.8.0.12/32
+  4. tind-enroll status
+
+Design rules
+  - Each device makes its own key. No private key is ever in the Tind image.
+  - /etc/tind/servr-tunnel.conf is filled in once with the server's public values.
+  - ALLOWED_IPS must never contain 0.0.0.0/0 (tind-enroll refuses).
+  - Server-side setup is in docs/servr-wireguard-server.md of the Tind repository.

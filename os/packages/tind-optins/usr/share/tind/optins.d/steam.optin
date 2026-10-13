@@ -1,0 +1,5 @@
+NAME="Steam"
+DESC="Games, with GameMode and MangoHud (Flatpak)"
+STATUS="ready"
+APT_PACKAGES="gamemode mangohud"
+FLATPAK_REF="com.valvesoftware.Steam"

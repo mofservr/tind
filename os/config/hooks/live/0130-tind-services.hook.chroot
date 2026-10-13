@@ -1,0 +1,5 @@
+#!/bin/sh
+# split DNS for the servr tunnel needs systemd-resolved (resolv.conf link comes from tmpfiles.d)
+set -e
+systemctl enable systemd-resolved || true
+systemctl enable NetworkManager || true

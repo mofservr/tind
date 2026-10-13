@@ -1,0 +1,4 @@
+NAME="Nextcloud"
+DESC="Sync files with your server (preconfigured for lagrr.servr.no)"
+STATUS="ready"
+APT_PACKAGES="nextcloud-desktop"

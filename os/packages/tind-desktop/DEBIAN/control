@@ -1,0 +1,15 @@
+Package: tind-desktop
+Version: 0.1.0
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: metapackages
+Priority: optional
+Depends: tind-branding, gnome-core, gnome-shell-extension-dashtodock, gnome-software, gnome-software-plugin-flatpak, flatpak, cups, system-config-printer, bluez, ufw, unattended-upgrades, network-manager, systemd-resolved
+Recommends: firmware-linux, firmware-misc-nonfree, firmware-realtek, firmware-atheros, firmware-iwlwifi, mesa-vulkan-drivers, vulkan-tools, btrfs-progs, snapper, grub-btrfs, fonts-noto, fonts-noto-color-emoji, xdg-desktop-portal-gnome, gnome-tweaks, apt-listchanges
+Installed-Size: 4
+Description: Tind desktop: GNOME core, Flatpak, printing, firewall, safe updates
+ Metapackage that pulls in everything the Tind base desktop needs: GNOME with
+ the persistent dock, GNOME Software with Flatpak, printing, Bluetooth, a
+ default-deny firewall, unattended security updates, non-free firmware and
+ the Mesa Vulkan stack. Packages in Recommends are installed by default but
+ will not break the build if one is renamed in Debian.

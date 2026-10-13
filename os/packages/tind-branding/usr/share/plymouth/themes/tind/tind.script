@@ -1,0 +1,62 @@
+# Tind Plymouth theme (script module). Logo, thin progress line, passphrase prompt.
+Window.SetBackgroundTopColor(0.047, 0.082, 0.137);
+Window.SetBackgroundBottomColor(0.027, 0.051, 0.094);
+
+screen_w = Window.GetWidth();
+screen_h = Window.GetHeight();
+
+logo.image = Image("logo.png");
+logo.sprite = Sprite(logo.image);
+logo.sprite.SetX(screen_w / 2 - logo.image.GetWidth() / 2);
+logo.sprite.SetY(screen_h / 2 - logo.image.GetHeight() / 2 - 30);
+logo.sprite.SetOpacity(0);
+
+bar_w = 260;
+bar_h = 3;
+bar_x = screen_w / 2 - bar_w / 2;
+bar_y = screen_h / 2 + logo.image.GetHeight() / 2 + 10;
+
+track.image = Image("bar-bg.png").Scale(bar_w, bar_h);
+track.sprite = Sprite(track.image);
+track.sprite.SetPosition(bar_x, bar_y, 10);
+
+fill.src = Image("bar-fill.png");
+fill.sprite = Sprite();
+fill.sprite.SetPosition(bar_x, bar_y, 11);
+
+fade = 0;
+fun refresh_callback () {
+    if (fade < 1) {
+        fade += 0.02;
+        logo.sprite.SetOpacity(Math.Min(fade, 1));
+    }
+}
+Plymouth.SetRefreshFunction(refresh_callback);
+
+fun progress_callback (duration, progress) {
+    w = Math.Int(bar_w * progress);
+    if (w < 1) w = 1;
+    fill.sprite.SetImage(fill.src.Scale(w, bar_h));
+}
+Plymouth.SetBootProgressFunction(progress_callback);
+
+# disk-encryption passphrase prompt
+prompt.sprite = Sprite();
+bullets.sprite = Sprite();
+fun password_callback (prompt_text, bullet_count) {
+    p = Image.Text(prompt_text, 0.77, 0.88, 0.93);
+    prompt.sprite.SetImage(p);
+    prompt.sprite.SetPosition(screen_w / 2 - p.GetWidth() / 2, bar_y + 40, 20);
+    dots = "";
+    for (i = 0; i < bullet_count; i++) dots += "*";
+    b = Image.Text(dots, 0.96, 0.66, 0.74);
+    bullets.sprite.SetImage(b);
+    bullets.sprite.SetPosition(screen_w / 2 - b.GetWidth() / 2, bar_y + 40 + p.GetHeight() + 8, 20);
+}
+Plymouth.SetDisplayPasswordFunction(password_callback);
+
+fun normal_callback () {
+    prompt.sprite.SetOpacity(0);
+    bullets.sprite.SetOpacity(0);
+}
+Plymouth.SetDisplayNormalFunction(normal_callback);

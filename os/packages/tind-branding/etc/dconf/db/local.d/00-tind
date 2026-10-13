@@ -1,0 +1,28 @@
+# Tind GNOME defaults (system-wide, users can still change everything)
+
+[org/gnome/desktop/interface]
+color-scheme='prefer-dark'
+accent-color='pink'
+
+[org/gnome/desktop/background]
+picture-uri='file:///usr/share/backgrounds/tind/tind-light.jpg'
+picture-uri-dark='file:///usr/share/backgrounds/tind/tind-dark.jpg'
+picture-options='zoom'
+primary-color='#0C1523'
+
+[org/gnome/desktop/screensaver]
+picture-uri='file:///usr/share/backgrounds/tind/tind-dark.jpg'
+picture-options='zoom'
+primary-color='#0C1523'
+
+[org/gnome/shell]
+enabled-extensions=['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
+favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'thunderbird.desktop', 'libreoffice-startcenter.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
+
+[org/gnome/shell/extensions/dash-to-dock]
+dock-position='LEFT'
+extend-height=false
+show-trash=false
+show-mounts=false
+running-indicator-style='DOTS'
+dash-max-icon-size=44

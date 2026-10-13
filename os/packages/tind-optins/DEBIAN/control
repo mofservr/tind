@@ -1,0 +1,13 @@
+Package: tind-optins
+Version: 0.1.0
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: admin
+Priority: optional
+Depends: zenity, pkexec, flatpak, curl, ca-certificates
+Installed-Size: 96
+Description: Tind Apps: opt-in application installer
+ A small checklist tool for the apps Tind does not install by default (Nextcloud
+ preconfigured for lagrr.servr.no, Spotify, Steam, Claude, Bitwarden). Apps are
+ described by small files in /usr/share/tind/optins.d, installed from apt or
+ Flathub, and each can also be installed from the command line.
