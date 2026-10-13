@@ -29,6 +29,36 @@ def hmp(cmd):
         pass
     s.close()
 
+def qmp(cmds, sock=None):
+    sock = sock or mon.replace("mon", "qmp")
+    c = socket.socket(socket.AF_UNIX)
+    c.connect(sock)
+    c.settimeout(3)
+    c.recv(4096)
+    c.sendall(b'{"execute":"qmp_capabilities"}\n')
+    time.sleep(0.2)
+    c.recv(4096)
+    for cmd in cmds:
+        c.sendall((json.dumps(cmd) + "\n").encode())
+        time.sleep(0.2)
+        try:
+            c.recv(4096)
+        except OSError:
+            pass
+    c.close()
+
+def click(x, y, button="left", w=1280, h=800):
+    ax = int(x * 32767 / w)
+    ay = int(y * 32767 / h)
+    move = {"execute": "input-send-event", "arguments": {"events": [
+        {"type": "abs", "data": {"axis": "x", "value": ax}},
+        {"type": "abs", "data": {"axis": "y", "value": ay}}]}}
+    down = {"execute": "input-send-event", "arguments": {"events": [
+        {"type": "btn", "data": {"down": True, "button": button}}]}}
+    up = {"execute": "input-send-event", "arguments": {"events": [
+        {"type": "btn", "data": {"down": False, "button": button}}]}}
+    qmp([move]); time.sleep(0.3); qmp([down]); time.sleep(0.15); qmp([up])
+
 def key(k, hold=120):
     hmp("sendkey %s %d" % (k, hold))
     time.sleep(hold / 1000 + 0.2)
@@ -62,6 +92,8 @@ for i, st in enumerate(json.load(open(steps_file))):
         for k in st["keys"]:
             key(k)
             time.sleep(st.get("delay", 0.3))
+    elif "click" in st:
+        click(*st["click"])
     elif "type" in st:
         typ(st["type"])
     elif "shot" in st:
