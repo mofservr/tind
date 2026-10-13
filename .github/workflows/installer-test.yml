@@ -1,0 +1,84 @@
+name: installer-test
+# Runs when a file under os/ci/installer-test/ changes. Reuses the ISO from the build run named in ISO_RUN_ID.
+on:
+  push:
+    branches-ignore: [ci-logs]
+    paths: ['os/ci/installer-test/**', 'os/ci/drive.py', '.github/workflows/installer-test.yml']
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  install:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read ISO run id
+        id: iso
+        run: echo "run=$(tr -d '[:space:]' < os/ci/installer-test/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tind-iso
+          path: iso
+          run-id: ${{ steps.iso.outputs.run }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+      - name: Install QEMU
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils ovmf socat imagemagick
+      - name: Install to a virtual disk, then boot it
+        run: |
+          mkdir -p logs shots1 shots2
+          {
+            [ -e /dev/kvm ] && sudo chmod 666 /dev/kvm
+            if [ -w /dev/kvm ]; then ACCEL="-enable-kvm -cpu host"; echo "KVM: yes"; else ACCEL="-cpu max"; echo "KVM: no"; fi
+            ISO=$(ls $PWD/iso/*.iso | head -1)
+            qemu-img create -f qcow2 $PWD/disk.qcow2 30G
+            cp /usr/share/OVMF/OVMF_VARS_4M.fd $PWD/vars.fd
+            COMMON="$ACCEL -machine q35 -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none \
+              -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+              -drive if=pflash,format=raw,file=$PWD/vars.fd \
+              -drive file=$PWD/disk.qcow2,if=virtio,format=qcow2"
+            echo "== phase 1: live ISO, drive the installer"
+            qemu-system-x86_64 $COMMON -cdrom "$ISO" -boot d -serial file:$PWD/logs/serial-live.log \
+              -monitor unix:$PWD/mon.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
+            sleep 3
+            python3 os/ci/drive.py $PWD/mon.sock $PWD/shots1 os/ci/installer-test/install.json
+            echo quit | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
+            sleep 3
+            echo "== phase 2: boot the installed disk"
+            qemu-system-x86_64 $COMMON -boot c -serial file:$PWD/logs/serial-installed.log \
+              -monitor unix:$PWD/mon2.sock,server,nowait -daemonize -pidfile $PWD/qemu2.pid
+            sleep 3
+            python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 os/ci/installer-test/firstboot.json
+            echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
+            qemu-img info disk.qcow2 | grep 'disk size'
+          } 2>&1 | tee logs/installer.log
+          for d in shots1 shots2; do for f in $d/*.png; do [ -e "$f" ] && cp "$f" "logs/$d-$(basename "$f")"; done; done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: installer-logs
+          path: logs/
+      - name: Push logs to ci-logs branch
+        if: always()
+        env:
+          GH_REF: ${{ github.ref_name }}
+          GH_SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out 2>/dev/null \
+            || { git init -q out; git -C out checkout -q -b ci-logs; git -C out remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
+          d="out/installer_${GH_REF//\//_}"
+          rm -rf "$d"; mkdir -p "$d"
+          for f in logs/*.log; do [ -e "$f" ] || continue; b=$(basename "$f"); tail -n 400 "$f" > "$d/$b.tail"; gzip -9 -c "$f" > "$d/$b.gz"; done
+          cp logs/*.png "$d/" 2>/dev/null || true
+          printf 'ref: %s\nsha: %s\n' "$GH_REF" "$GH_SHA" > "$d/STATUS"
+          cd out && git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "installer logs $GH_REF $GH_SHA" || true
+          git push origin ci-logs
