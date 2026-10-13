@@ -1,0 +1,4 @@
+#!/bin/sh
+# no first-login welcome tour
+apt-get purge -y gnome-tour 2>/dev/null || true
+exit 0

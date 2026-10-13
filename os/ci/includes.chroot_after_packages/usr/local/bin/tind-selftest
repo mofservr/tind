@@ -1,0 +1,49 @@
+#!/bin/bash
+# Runs inside the CI VM only (DMI product name "tind-ci"). Writes a report to the serial port.
+[ "$(cat /sys/class/dmi/id/product_name 2>/dev/null)" = tind-ci ] || exit 0
+exec >/dev/ttyS0 2>&1
+UIDN=$(id -u tind 2>/dev/null || echo 1000)
+asuser() { runuser -u tind -- env XDG_RUNTIME_DIR="/run/user/$UIDN" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UIDN/bus" "$@"; }
+sec() { echo; echo "##### $*"; }
+# wait for the desktop session (up to 4 min), then let it settle
+for _ in $(seq 1 120); do [ -S "/run/user/$UIDN/bus" ] && pgrep -u tind gnome-shell >/dev/null && break; sleep 2; done
+sleep 30
+echo "=====TIND-SELFTEST-BEGIN====="
+sec os-release; cat /etc/os-release
+sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
+sec failed units; systemctl --failed --no-legend
+sec services; for s in NetworkManager systemd-resolved ufw gdm; do echo "$s: $(systemctl is-active $s)"; done
+sec resolv.conf; ls -l /etc/resolv.conf
+sec ufw; ufw status | head -5
+sec flatpak remotes; flatpak remotes 2>&1
+sec gnome settings
+for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface accent-color" \
+         "org.gnome.desktop.background picture-uri-dark" "org.gnome.shell enabled-extensions" \
+         "org.gnome.shell favorite-apps" "org.gnome.shell.extensions.dash-to-dock dock-position"; do
+    echo "$k = $(asuser gsettings get $k 2>&1)"
+done
+sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
+sec firefox policies
+for f in /etc/firefox/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
+jq -e . /etc/firefox/policies/policies.json >/dev/null && echo "firefox policies.json: valid JSON"
+ls -l /usr/lib/firefox-esr/distribution 2>&1 | head -5
+sec ublock origin; dpkg -L webext-ublock-origin-firefox | grep -E 'xpi|\.json|extensions/' | head -8
+find /usr/share/mozilla/extensions /usr/lib/firefox-esr -iname '*ublock*' 2>/dev/null | head
+sec "firefox startup (headless, 40s)"
+tmp=$(mktemp -d); chown tind "$tmp"
+asuser timeout 40 firefox-esr --headless --profile "$tmp" about:policies >/dev/null 2>&1
+grep -E 'uBlock|ublock' "$tmp/extensions.json" 2>/dev/null | head -3 | cut -c1-200 || true
+echo "extensions.json present: $(test -e "$tmp/extensions.json" && echo yes || echo no)"
+if [ -e "$tmp/extensions.json" ]; then jq -r '.addons[]|"\(.id) active=\(.active) location=\(.location)"' "$tmp/extensions.json" 2>&1 | head; fi
+grep -E 'browser.search|isUserDisabled' "$tmp/prefs.js" 2>/dev/null | head -5
+sec thunderbird policies; jq -e . /etc/thunderbird/policies/policies.json >/dev/null && echo "thunderbird policies.json: valid JSON"
+sec tind-enroll; tind-enroll --help 2>&1 | head -8; cat /etc/tind/servr-tunnel.conf | grep -E '^[A-Z_]+=' | head
+sec calamares branding; grep -n '^branding' /etc/calamares/settings.conf; ls /usr/share/calamares/branding/tind | head
+sec installer launcher; grep -m3 -E '^(Name|Exec)=' /usr/share/applications/calamares*.desktop /usr/share/applications/*calamares*.desktop 2>&1 | head -6
+sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/lib/tind/optin-install 2>&1
+sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
+sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
+sec grub defaults; ls /etc/default/grub.d 2>&1
+sec "journal errors (this boot)"; journalctl -p err -b --no-pager 2>&1 | tail -40
+sec gnome-shell journal; journalctl -b --no-pager _COMM=gnome-shell 2>&1 | grep -iE 'error|tind|stylesheet|extension' | tail -25
+echo "=====TIND-SELFTEST-END====="

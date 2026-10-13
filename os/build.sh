@@ -29,6 +29,12 @@ fi
 mkdir -p build
 rm -rf build/config build/auto
 cp -a config auto build/
+if [ "${TIND_CI:-0}" = 1 ]; then
+    # CI only: self-test service that reports over the serial port
+    mkdir -p build/config/includes.chroot_after_packages
+    cp -a ci/includes.chroot_after_packages/. build/config/includes.chroot_after_packages/
+    printf 'jq\n' > build/config/package-lists/ci.list.chroot
+fi
 cd build
 sudo lb clean --purge >/dev/null 2>&1 || true
 sudo lb config
