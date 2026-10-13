@@ -160,3 +160,6 @@ ok       fonts-noto-color-emoji
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
+ok       hunspell-en-us
+ok       hunspell-no
+ok       keyboard-configuration
