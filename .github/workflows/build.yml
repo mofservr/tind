@@ -117,9 +117,10 @@ jobs:
               -drive if=pflash,format=raw,file=$PWD/vars.fd \
               -cdrom "$ISO" -boot d -vga std -display none -serial file:$PWD/logs/serial.log \
               -monitor unix:$PWD/mon.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
-            sleep 5
-            for i in $(seq 1 10); do
-              sleep 60
+            sleep 30
+            echo "sendkey ret" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "sendkey failed"
+            for i in $(seq 1 14); do
+              sleep 45
               echo "screendump $PWD/shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone at $i"
               sleep 1
               if [ -f "shots/t$(printf %02d "$i").ppm" ]; then convert "shots/t$(printf %02d "$i").ppm" "logs/boot-t$(printf %02d "$i").png"; fi
