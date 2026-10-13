@@ -4,7 +4,8 @@
 exec >/dev/ttyS0 2>&1
 # input probe: report every input event the guest receives on the second serial port (ttyS1)
 if [ -c /dev/ttyS1 ] && command -v libinput >/dev/null; then
-    (timeout 900 libinput debug-events --show-keycodes >/dev/ttyS1 2>&1 &)
+    systemd-run --unit=tind-inputprobe --collect -p StandardOutput=file:/dev/ttyS1 -p StandardError=file:/dev/ttyS1 \
+        timeout 1500 libinput debug-events --show-keycodes >/dev/null 2>&1 || true
 fi
 UIDN=$(id -u tind 2>/dev/null || echo 1000)
 asuser() { runuser -u tind -- env XDG_RUNTIME_DIR="/run/user/$UIDN" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UIDN/bus" "$@"; }
