@@ -1,8 +1,2 @@
 [2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
 BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
--event1   DEVICE_ADDED                 Power Button                      seat0 default group1  cap:k
--event4   DEVICE_ADDED                 QEMU QEMU USB Keyboard            seat0 default group2  cap:k
--event5   DEVICE_ADDED                 QEMU QEMU USB Tablet              seat0 default group3  cap:p left scroll-nat calib
--event0   DEVICE_ADDED                 AT Translated Set 2 keyboard      seat0 default group4  cap:k
--event3   DEVICE_ADDED                 VirtualPS/2 VMware VMMouse        seat0 default group5  cap:p left scroll-nat scroll-button
--event2   DEVICE_ADDED                 VirtualPS/2 VMware VMMouse        seat0 default group5  cap:p left scroll-nat calib
