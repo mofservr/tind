@@ -110,21 +110,21 @@ jobs:
             ls -l iso
             [ -e /dev/kvm ] && sudo chmod 666 /dev/kvm
             if [ -w /dev/kvm ]; then ACCEL="-enable-kvm -cpu host"; echo "KVM: yes"; else ACCEL="-cpu max"; echo "KVM: no (TCG, slow)"; fi
-            ISO=$(ls iso/*.iso | head -1)
-            cp /usr/share/OVMF/OVMF_VARS_4M.fd vars.fd
+            ISO=$(ls $PWD/iso/*.iso | head -1)
+            cp /usr/share/OVMF/OVMF_VARS_4M.fd $PWD/vars.fd
             qemu-system-x86_64 $ACCEL -machine q35 -m 4096 -smp 2 \
               -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
-              -drive if=pflash,format=raw,file=vars.fd \
-              -cdrom "$ISO" -boot d -vga std -display none -serial file:logs/serial.log \
-              -monitor unix:mon.sock,server,nowait -daemonize -pidfile qemu.pid
+              -drive if=pflash,format=raw,file=$PWD/vars.fd \
+              -cdrom "$ISO" -boot d -vga std -display none -serial file:$PWD/logs/serial.log \
+              -monitor unix:$PWD/mon.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
             sleep 5
-            for i in $(seq 1 14); do
+            for i in $(seq 1 10); do
               sleep 60
-              echo "screendump shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:mon.sock >/dev/null || echo "monitor gone at $i"
+              echo "screendump $PWD/shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone at $i"
               sleep 1
               if [ -f "shots/t$(printf %02d "$i").ppm" ]; then convert "shots/t$(printf %02d "$i").ppm" "logs/boot-t$(printf %02d "$i").png"; fi
             done
-            echo quit | socat - UNIX-CONNECT:mon.sock >/dev/null || true
+            echo quit | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
             ls -l logs
           } 2>&1 | tee logs/boot.log
       - uses: actions/upload-artifact@v4
