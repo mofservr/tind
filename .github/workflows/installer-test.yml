@@ -59,7 +59,7 @@ jobs:
             echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
             qemu-img info disk.qcow2 | grep 'disk size'
           } 2>&1 | tee logs/installer.log
-          for d in shots1 shots2; do for f in $d/*.png; do [ -e "$f" ] && cp "$f" "logs/$d-$(basename "$f")"; done; done
+          for d in shots1 shots2; do for f in $d/*.png; do if [ -e "$f" ]; then cp "$f" "logs/$d-$(basename "$f")"; fi; done; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
