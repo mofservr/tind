@@ -1,0 +1,6 @@
+#!/bin/sh
+# add the Flathub remote system-wide (needs network during the build)
+command -v flatpak >/dev/null 2>&1 || exit 0
+flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo \
+    || echo "WARNING: could not add Flathub during the build; tind-optins adds it on first use."
+exit 0

@@ -1,0 +1,4 @@
+NAME="Claude"
+DESC="Claude Desktop (beta) from Anthropic's own apt repository"
+STATUS="needs-config"
+SCRIPT="/usr/share/tind/optins.d/claude.install"

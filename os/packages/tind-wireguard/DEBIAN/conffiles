@@ -1,0 +1,2 @@
+/etc/tind/servr-tunnel.conf
+/etc/NetworkManager/conf.d/10-tind-dns.conf

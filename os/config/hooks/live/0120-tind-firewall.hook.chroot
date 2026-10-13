@@ -1,0 +1,7 @@
+#!/bin/sh
+# default-deny incoming firewall, on by default
+set -e
+if [ -f /etc/ufw/ufw.conf ]; then
+    sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+    systemctl enable ufw || true
+fi

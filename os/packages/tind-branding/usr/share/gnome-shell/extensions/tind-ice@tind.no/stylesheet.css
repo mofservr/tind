@@ -1,0 +1,103 @@
+/* Tind Ice: deep-ice glass.
+ *
+ * One stylesheet that works over both the light and dark wallpaper. Panels are a cool,
+ * dark-tinted translucent glass so GNOME's white text always stays readable. The "light
+ * catching ice" effect comes from per-side border colours: a bright ice edge on top and
+ * left, a faint alpenglow-pink edge on the bottom and right.
+ *
+ * GNOME Shell CSS cannot blur what is behind a surface. Real backdrop blur needs an extra
+ * extension, so this theme is deliberately readable without it.
+ *
+ * Palette (placeholder values; the design is being redone):
+ *   ice-200 #C4E0EC   ice-300 #9CC7DB   fjell-900 #0C1523   fjell-800 #162639
+ *   glow-300 #FAD0DA  glow-400 #F6A9BC  glow-500 #EE839F    aurora-400 #2EC4B0
+ */
+
+/* ---- top bar ------------------------------------------------------------ */
+#panel {
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba(20, 40, 66, 0.72);
+  background-gradient-end: rgba(12, 24, 42, 0.60);
+  border-bottom: 1px solid rgba(196, 224, 236, 0.22);
+  box-shadow: 0 1px 14px rgba(5, 12, 24, 0.35);
+}
+
+#panel .panel-button:hover,
+#panel .panel-button:focus,
+#panel .panel-button:active,
+#panel .panel-button:checked {
+  background-color: rgba(196, 224, 236, 0.16);
+  border-radius: 12px;
+}
+
+/* ---- dock / dash -------------------------------------------------------- */
+#dash .dash-background,
+#dashtodockContainer #dash .dash-background {
+  background-gradient-direction: vertical;
+  background-gradient-start: rgba(214, 236, 247, 0.26);
+  background-gradient-end: rgba(116, 168, 204, 0.18);
+  border-radius: 22px;
+  border-width: 1px;
+  border-top-color: rgba(255, 255, 255, 0.55);
+  border-left-color: rgba(214, 236, 247, 0.42);
+  border-right-color: rgba(246, 169, 188, 0.40);
+  border-bottom-color: rgba(246, 169, 188, 0.34);
+  box-shadow: 0 10px 28px rgba(5, 12, 24, 0.40);
+}
+
+/* running-app dot picks up the alpenglow pink */
+.app-well-app-running-dot,
+#dashtodockContainer .app-well-app-running-dot {
+  background-color: #F6A9BC;
+}
+
+#dash .app-well-app:hover .overview-icon,
+#dash .app-well-app:focus .overview-icon {
+  background-color: rgba(196, 224, 236, 0.18);
+  border-radius: 14px;
+}
+
+/* ---- menus and popovers ------------------------------------------------- */
+.popup-menu-content,
+.candidate-popup-content {
+  background-color: rgba(16, 32, 54, 0.92);
+  border: 1px solid rgba(196, 224, 236, 0.24);
+  border-bottom-color: rgba(246, 169, 188, 0.28);
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(5, 12, 24, 0.45);
+}
+
+.popup-menu-item:hover,
+.popup-menu-item:focus,
+.popup-menu-item:active {
+  background-color: rgba(196, 224, 236, 0.16);
+}
+
+/* ---- Quick Settings and the calendar popover ---------------------------- */
+.quick-settings,
+.datemenu-popover {
+  background-color: rgba(14, 28, 48, 0.90);
+  border: 1px solid rgba(196, 224, 236, 0.26);
+  border-bottom-color: rgba(246, 169, 188, 0.30);
+  border-radius: 26px;
+  box-shadow: 0 14px 36px rgba(5, 12, 24, 0.50);
+}
+
+
+.quick-toggle:checked {
+  background-color: #EE839F;
+  color: #0C1523;
+}
+
+.slider {
+  color: #F6A9BC;
+  -barlevel-active-background-color: #F6A9BC;
+}
+
+/* ---- notifications ------------------------------------------------------ */
+.notification-banner,
+.message {
+  background-color: rgba(16, 32, 54, 0.90);
+  border: 1px solid rgba(196, 224, 236, 0.20);
+  border-radius: 16px;
+}

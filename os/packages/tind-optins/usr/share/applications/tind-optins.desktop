@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Tind Apps
+Comment=Add Steam, Spotify, Nextcloud and more
+Exec=tind-optins
+Icon=tind-logo
+Terminal=false
+Categories=System;Settings;

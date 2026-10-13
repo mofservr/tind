@@ -1,0 +1,7 @@
+os/dist/
+os/build/
+os/config/packages.chroot/
+os/config/archives/protonvpn.*
+os/config/package-lists/protonvpn.list.chroot
+*.iso
+*.log

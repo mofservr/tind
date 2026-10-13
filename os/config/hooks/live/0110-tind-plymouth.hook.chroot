@@ -1,0 +1,6 @@
+#!/bin/sh
+# select the Tind boot splash and rebuild the initramfs so it is included
+set -e
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+    plymouth-set-default-theme -R tind || update-initramfs -u || true
+fi

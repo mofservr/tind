@@ -1,0 +1,14 @@
+Package: tind-mozilla-config
+Version: 0.1.0
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: web
+Priority: optional
+Recommends: firefox-esr, thunderbird
+Installed-Size: 64
+Description: Restricted defaults for Firefox ESR and Thunderbird
+ System-wide Mozilla enterprise policies: telemetry and studies off, no
+ sponsored or promotional content, generative AI features blocked by default
+ (but not locked), tracking protection on, DuckDuckGo as the default search
+ engine with Startpage as an alternative. Nothing is locked, so users can turn
+ features back on.

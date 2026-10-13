@@ -1,0 +1,127 @@
+#!/bin/bash
+# tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+#
+#   sudo tind-enroll init              create this device's key pair, print the public key
+#   sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+#   sudo tind-enroll status            show tunnel state
+#   sudo tind-enroll remove [--purge-key]
+#
+# The private key is generated here and never leaves this device.
+set -euo pipefail
+
+CONF=/etc/tind/servr-tunnel.conf
+KEYDIR=/etc/tind/wireguard
+KEY="$KEYDIR/private.key"
+
+die() { echo "tind-enroll: $*" >&2; exit 1; }
+
+usage() { sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+
+need_root() { [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-enroll $*"; }
+
+load_conf() {
+    [ -r "$CONF" ] || die "missing $CONF"
+    # shellcheck disable=SC1090
+    . "$CONF"
+    local v
+    for v in SERVER_ENDPOINT SERVER_PUBLIC_KEY ALLOWED_IPS DNS_SERVER; do
+        [ -n "${!v:-}" ] || die "$v is empty in $CONF. The server admin needs to fill it in first."
+    done
+    DNS_DOMAIN="${DNS_DOMAIN:-servr.no}"
+    KEEPALIVE="${KEEPALIVE:-25}"
+    CONNECTION_NAME="${CONNECTION_NAME:-tind-servr}"
+    [ "${#CONNECTION_NAME}" -le 15 ] || die "CONNECTION_NAME must be at most 15 characters"
+    case ",${ALLOWED_IPS// /}," in
+        *,0.0.0.0/0,*|*,::/0,*) die "ALLOWED_IPS must not contain a default route; this is a split tunnel." ;;
+    esac
+}
+
+cmd_init() {
+    need_root init
+    umask 077
+    mkdir -p "$KEYDIR"
+    if [ ! -s "$KEY" ]; then
+        wg genkey > "$KEY"
+        echo "Created a new key pair for this device."
+    else
+        echo "Using the existing key pair for this device."
+    fi
+    local pub
+    pub="$(wg pubkey < "$KEY")"
+    echo
+    echo "Send this to the server admin:"
+    echo "  device:      $(hostname)"
+    echo "  public key:  $pub"
+    if command -v qrencode >/dev/null 2>&1; then
+        echo
+        qrencode -t ansiutf8 "$pub"
+    fi
+    echo
+    echo "The admin will reply with a tunnel address such as 10.8.0.12/32."
+    echo "Then run:  sudo tind-enroll apply 10.8.0.12/32"
+}
+
+cmd_apply() {
+    need_root apply "$@"
+    local addr="${1:-}"
+    [ -n "$addr" ] || die "usage: tind-enroll apply <ADDRESS/32>"
+    [[ "$addr" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}/32$ ]] || die "ADDRESS must look like 10.8.0.12/32"
+    [ -s "$KEY" ] || die "no key yet; run: sudo tind-enroll init"
+    load_conf
+    command -v nmcli >/dev/null 2>&1 || die "NetworkManager (nmcli) is required"
+
+    local tmp; tmp="$(mktemp -d)"
+    trap 'rm -rf "$tmp"' EXIT
+    local file="$tmp/$CONNECTION_NAME.conf"
+    umask 077
+    cat > "$file" <<CFG
+[Interface]
+PrivateKey = $(cat "$KEY")
+Address = $addr
+
+[Peer]
+PublicKey = $SERVER_PUBLIC_KEY
+Endpoint = $SERVER_ENDPOINT
+AllowedIPs = ${ALLOWED_IPS// /}
+PersistentKeepalive = $KEEPALIVE
+CFG
+    nmcli connection delete "$CONNECTION_NAME" >/dev/null 2>&1 || true
+    nmcli connection import type wireguard file "$file"
+    nmcli connection modify "$CONNECTION_NAME" \
+        connection.autoconnect yes \
+        ipv4.dns "$DNS_SERVER" \
+        ipv4.dns-search "~$DNS_DOMAIN" \
+        ipv4.never-default yes \
+        ipv6.method ignore
+    nmcli connection up "$CONNECTION_NAME"
+    echo
+    echo "Tunnel '$CONNECTION_NAME' is up and will start automatically."
+    echo "Only traffic to ${ALLOWED_IPS// /} and names under $DNS_DOMAIN uses it."
+}
+
+cmd_status() {
+    load_conf
+    nmcli -f GENERAL.STATE,IP4.ADDRESS,IP4.DNS connection show "$CONNECTION_NAME" 2>/dev/null \
+        || die "tunnel '$CONNECTION_NAME' is not installed"
+    command -v wg >/dev/null 2>&1 && wg show "$CONNECTION_NAME" 2>/dev/null || true
+    command -v resolvectl >/dev/null 2>&1 && resolvectl domain "$CONNECTION_NAME" 2>/dev/null || true
+}
+
+cmd_remove() {
+    need_root remove "$@"
+    load_conf
+    nmcli connection delete "$CONNECTION_NAME" 2>/dev/null || echo "Tunnel '$CONNECTION_NAME' was not installed."
+    if [ "${1:-}" = "--purge-key" ]; then
+        rm -f "$KEY"
+        echo "Removed this device's private key."
+    fi
+}
+
+case "${1:-}" in
+    init)   shift; cmd_init "$@" ;;
+    apply)  shift; cmd_apply "$@" ;;
+    status) shift; cmd_status "$@" ;;
+    remove) shift; cmd_remove "$@" ;;
+    -h|--help|help|"") usage 0 ;;
+    *) usage 1 ;;
+esac
