@@ -1,16 +1,20 @@
 total 2426916
--rw-r--r-- 1 runner runner 2485157888 Oct 13 15:34 tind-amd64.hybrid.iso
+-rw-r--r-- 1 runner runner 2485157888 Oct 13 16:02 tind-amd64.hybrid.iso
 KVM: yes
-total 528
--rw-r--r-- 1 runner runner 52772 Oct 13 15:36 boot-t01.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:37 boot-t02.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:38 boot-t03.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:39 boot-t04.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:40 boot-t05.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:41 boot-t06.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:42 boot-t07.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:43 boot-t08.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:44 boot-t09.png
--rw-r--r-- 1 runner runner 52772 Oct 13 15:45 boot-t10.png
--rw-r--r-- 1 runner runner    96 Oct 13 15:35 boot.log
--rw-r----- 1 runner runner   304 Oct 13 15:35 serial.log
+total 7344
+-rw-r--r-- 1 runner runner 535561 Oct 13 16:03 boot-t01.png
+-rw-r--r-- 1 runner runner 535555 Oct 13 16:04 boot-t02.png
+-rw-r--r-- 1 runner runner 535561 Oct 13 16:05 boot-t03.png
+-rw-r--r-- 1 runner runner 535561 Oct 13 16:05 boot-t04.png
+-rw-r--r-- 1 runner runner 535588 Oct 13 16:06 boot-t05.png
+-rw-r--r-- 1 runner runner 535533 Oct 13 16:07 boot-t06.png
+-rw-r--r-- 1 runner runner 535617 Oct 13 16:08 boot-t07.png
+-rw-r--r-- 1 runner runner 535660 Oct 13 16:09 boot-t08.png
+-rw-r--r-- 1 runner runner 535660 Oct 13 16:09 boot-t09.png
+-rw-r--r-- 1 runner runner 535500 Oct 13 16:10 boot-t10.png
+-rw-r--r-- 1 runner runner 535412 Oct 13 16:11 boot-t11.png
+-rw-r--r-- 1 runner runner 535490 Oct 13 16:12 boot-t12.png
+-rw-r--r-- 1 runner runner 535490 Oct 13 16:12 boot-t13.png
+-rw-r--r-- 1 runner runner 535493 Oct 13 16:13 boot-t14.png
+-rw-r--r-- 1 runner runner     96 Oct 13 16:02 boot.log
+-rw-r----- 1 runner runner    304 Oct 13 16:02 serial.log
