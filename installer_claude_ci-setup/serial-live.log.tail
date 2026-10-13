@@ -1,2 +1,234 @@
 [2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
 BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
+=====TIND-SELFTEST-BEGIN=====
+
+##### os-release
+PRETTY_NAME="Tind 0.1 (Debian 13 trixie)"
+NAME="Tind"
+VERSION_ID="0.1"
+VERSION="0.1 (development)"
+VERSION_CODENAME=trixie
+ID=tind
+ID_LIKE=debian
+DEBIAN_CODENAME=trixie
+ANSI_COLOR="38;2;246;169;188"
+LOGO=tind-logo
+
+##### tind packages
+ii tind-apps 0.1.0
+ii tind-branding 0.1.0
+ii tind-desktop 0.1.0
+ii tind-installer 0.1.0
+ii tind-mozilla-config 0.1.0
+ii tind-optins 0.1.0
+ii tind-wireguard 0.1.0
+
+##### input devices
+N: Name="AT Translated Set 2 keyboard"
+H: Handlers=sysrq kbd leds event0 
+N: Name="Power Button"
+H: Handlers=kbd event1 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse0 event2 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse1 event3 
+N: Name="QEMU QEMU USB Keyboard"
+H: Handlers=sysrq kbd leds event4 
+N: Name="QEMU QEMU USB Tablet"
+H: Handlers=mouse2 event5 
+N: Name="PC Speaker"
+H: Handlers=kbd event6 
+by-id	 event0  event2  event4  event6  mouse0  mouse2
+by-path  event1  event3  event5  mice	 mouse1
+
+##### session
+1 1000 tind seat0 1237 user    tty2 no -
+2 1000 tind -     1245 manager -    no -
+Name=tind Seat=seat0 Type=wayland Active=yes State=active 
+Name=tind Seat= Type=unspecified Active=yes State=active 
+
+##### failed units
+
+##### services
+NetworkManager: active
+systemd-resolved: active
+ufw: active
+gdm: active
+
+##### resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  14 01:24 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+
+##### ufw
+Status: active
+
+##### flatpak remotes
+[1mName    Options[22m
+flathub system
+
+##### gnome settings
+org.gnome.desktop.interface color-scheme = 'prefer-dark'
+org.gnome.desktop.interface accent-color = 'pink'
+org.gnome.desktop.background picture-uri-dark = 'file:///usr/share/backgrounds/tind/tind-dark.jpg'
+org.gnome.shell enabled-extensions = ['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
+org.gnome.shell favorite-apps = ['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'thunderbird.desktop', 'libreoffice-startcenter.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
+org.gnome.shell.extensions.dash-to-dock dock-position = 'LEFT'
+
+##### gnome-shell extensions
+dash-to-dock@micxgx.gmail.com
+tind-ice@tind.no
+tind-ice@tind.no
+  Navn: Tind Ice
+  Beskrivelse: Tind's ice-glass styling for the top bar, dock, menus and Quick Settings. Pure CSS overlay on top of the stock GNOME Shell theme.
+  Sti: /usr/share/gnome-shell/extensions/tind-ice@tind.no
+  Versjon: 1
+  Slått på: Ja
+  Tilstand: ACTIVE
+
+##### firefox policies
+/etc/firefox/policies/policies.json: present
+/usr/lib/firefox-esr/distribution/policies.json: present
+firefox policies.json: valid JSON
+lrwxrwxrwx 1 root root 36 sep.  29 20:27 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
+
+##### ublock origin
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/1p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/3p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar/messages.json
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
+grep: skrivefeil: Røret ble brutt
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
+
+##### firefox startup (headless, 40s)
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{5763b6de-a02e-4591-80a2-590b159a0c85}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+extensions.json present: yes
+formautofill@mozilla.org active=true location=app-builtin-addons
+ipp-activator@mozilla.com active=true location=app-builtin-addons
+newtab@mozilla.org active=true location=app-builtin-addons
+pictureinpicture@mozilla.org active=true location=app-builtin-addons
+addons-search-detection@mozilla.com active=true location=app-builtin-addons
+webcompat@mozilla.org active=true location=app-builtin-addons
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+uBlock0@raymondhill.net active=true location=app-system-share
+default-theme@mozilla.org active=true location=app-builtin
+user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
+policy keys:
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
+user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
+user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
+user_pref("toolkit.telemetry.cachedClientID", "f632a560-7d81-42b8-b285-b7f082e4bda0");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "28afde1a-ca0e-4cb8-877a-68066302790c");
+user_pref("toolkit.telemetry.previousBuildID", "20260923073912");
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+
+##### thunderbird policies
+thunderbird policies.json: valid JSON
+
+##### tind-enroll
+tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+
+  sudo tind-enroll init              create this device's key pair, print the public key
+  sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+  sudo tind-enroll status            show tunnel state
+  sudo tind-enroll remove [--purge-key]
+
+The private key is generated here and never leaves this device.
+SERVER_ENDPOINT=""
+SERVER_PUBLIC_KEY=""
+ALLOWED_IPS=""
+DNS_SERVER=""
+DNS_DOMAIN="servr.no"
+KEEPALIVE="25"
+CONNECTION_NAME="tind-servr"
+
+##### enroll init/apply smoke test
+
+The admin will reply with a tunnel address such as 10.8.0.12/32.
+Then run:  sudo tind-enroll apply 10.8.0.12/32
+tind-enroll: SERVER_ENDPOINT is empty in /etc/tind/servr-tunnel.conf. The server admin needs to fill it in first.
+tind-enroll: tunnel 'tind-servr' is not installed
+Tunnel 'tind-servr' was not installed.
+Removed this device's private key.
+
+##### gnome-tour removed?
+un  gnome-tour     <none>       <none>       (ingen beskrivelse tilgjengelig)
+
+##### calamares branding
+105:branding: tind
+branding.desc
+icon.png
+logo.png
+show.qml
+welcome.png
+
+##### installer launcher
+-rw-r--r-- 1 root root 336 okt.  14 01:07 /usr/share/applications/tind-install.desktop
+Name=Install Tind
+Exec=calamares-install-debian
+Icon=tind-logo
+NoDisplay=false
+-- original:
+Name=Install Debian
+NoDisplay=true
+
+##### optins
+bitwarden.optin  claude.optin	      nextcloud.optin  steam.optin
+claude.install	 gaming-extras.optin  spotify.optin
+-rwxr-xr-x 1 root root 1955 okt.  14 01:07 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 okt.  14 01:07 /usr/lib/tind/optin-install
+
+##### nextcloud config
+# Tind: global Nextcloud desktop client defaults.
+# Pre-fills the server address in the account wizard. Users still log in themselves.
+[General]
+overrideServerUrl=https://lagrr.servr.no
+
+##### plymouth
+tind
+bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homeworld joy lines moonlight script softwaves solar spacefun spinfinity spinner text tind tribar 
+
+##### grub defaults
+90-tind.cfg
+
+##### journal errors (this boot)
+okt. 14 01:24:13 tind adduser[902]: The group `powerdev' does not exist.
+okt. 14 01:24:13 tind adduser[918]: The group `debian-tor' does not exist.
+okt. 14 01:24:17 tind gdm-autologin][1237]: gkr-pam: couldn't unlock the login keyring.
+okt. 14 01:24:18 tind systemd[1245]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1400.scope - Application launched by gnome-session-binary.
+okt. 14 01:24:18 tind systemd[1245]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1417.scope - Application launched by gnome-session-binary.
+
+##### gnome-shell journal
+okt. 14 01:24:24 tind gnome-shell[1418]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 01:24:24 tind gnome-shell[1418]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 01:24:24 tind gnome-shell[1418]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 01:24:24 tind gnome-shell[1418]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 01:24:24 tind gnome-shell[1418]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 01:24:25 tind gnome-shell[1418]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 01:24:27 tind gnome-shell[1418]: GNOME Shell started at Wed Oct 14 2026 01:24:22 GMT+0200 (sentraleuropeisk sommertid)
+okt. 14 01:24:27 tind gnome-shell[1418]: Registering session with GDM
+=====TIND-SELFTEST-END=====

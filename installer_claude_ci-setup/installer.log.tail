@@ -4,3 +4,25 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 0 {'wait': 35}
 1 {'key': 'ret'}
 2 {'wait': 150}
+3 {'shot': '01-desktop'}
+4 {'key': 'meta_l', 'hold': 300}
+5 {'wait': 3}
+6 {'shot': '02-after-super'}
+7 {'type': 'Install'}
+8 {'wait': 3}
+9 {'shot': '03-after-typing'}
+10 {'key': 'ret'}
+11 {'wait': 20}
+12 {'shot': '04-after-enter'}
+13 {'wait': 20}
+14 {'shot': '05-wait-00'}
+15 {'wait': 20}
+16 {'shot': '05-wait-01'}
+17 {'wait': 20}
+18 {'shot': '05-wait-02'}
+19 {'wait': 20}
+20 {'shot': '05-wait-03'}
+== phase 2: boot the installed disk
+0 {'wait': 5}
+qemu-img: Could not open 'disk.qcow2': Failed to get shared "write" lock
+Is another process using the image [disk.qcow2]?
