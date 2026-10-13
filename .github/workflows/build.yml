@@ -2,7 +2,7 @@ name: build
 on:
   push:
     branches-ignore: [ci-logs]
-    paths-ignore: ['docs/**', 'README.md']
+    paths-ignore: ['docs/**', 'README.md', 'os/ci/installer-test/**', 'os/ci/drive.py', '.github/workflows/installer-test.yml']
   workflow_dispatch:
 
 defaults:

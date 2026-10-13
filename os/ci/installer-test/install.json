@@ -1,0 +1,80 @@
+[
+ {
+  "wait": 35
+ },
+ {
+  "key": "ret"
+ },
+ {
+  "wait": 150
+ },
+ {
+  "shot": "01-desktop"
+ },
+ {
+  "key": "meta_l"
+ },
+ {
+  "wait": 3
+ },
+ {
+  "type": "Install"
+ },
+ {
+  "wait": 3
+ },
+ {
+  "shot": "02-search"
+ },
+ {
+  "key": "ret"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-00"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-01"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-02"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-03"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-04"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-05"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-06"
+ },
+ {
+  "wait": 15
+ },
+ {
+  "shot": "03-installer-07"
+ }
+]
