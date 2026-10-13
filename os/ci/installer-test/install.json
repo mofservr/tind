@@ -12,10 +12,14 @@
   "shot": "01-desktop"
  },
  {
-  "key": "meta_l"
+  "key": "meta_l",
+  "hold": 300
  },
  {
   "wait": 3
+ },
+ {
+  "shot": "02-after-super"
  },
  {
   "type": "Install"
@@ -24,57 +28,39 @@
   "wait": 3
  },
  {
-  "shot": "02-search"
+  "shot": "03-after-typing"
  },
  {
   "key": "ret"
  },
  {
-  "wait": 15
+  "wait": 20
  },
  {
-  "shot": "03-installer-00"
+  "shot": "04-after-enter"
  },
  {
-  "wait": 15
+  "wait": 20
  },
  {
-  "shot": "03-installer-01"
+  "shot": "05-wait-00"
  },
  {
-  "wait": 15
+  "wait": 20
  },
  {
-  "shot": "03-installer-02"
+  "shot": "05-wait-01"
  },
  {
-  "wait": 15
+  "wait": 20
  },
  {
-  "shot": "03-installer-03"
+  "shot": "05-wait-02"
  },
  {
-  "wait": 15
+  "wait": 20
  },
  {
-  "shot": "03-installer-04"
- },
- {
-  "wait": 15
- },
- {
-  "shot": "03-installer-05"
- },
- {
-  "wait": 15
- },
- {
-  "shot": "03-installer-06"
- },
- {
-  "wait": 15
- },
- {
-  "shot": "03-installer-07"
+  "shot": "05-wait-03"
  }
 ]

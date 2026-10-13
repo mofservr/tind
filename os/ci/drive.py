@@ -7,7 +7,8 @@ import json, os, socket, subprocess, sys, time
 
 mon, out, steps_file = sys.argv[1:4]
 os.makedirs(out, exist_ok=True)
-SHIFT = {c: k for c, k in zip('!@#$%^&*()_+{}|:"<>?~', '1234567890-=[]\;\',./`')}
+SHIFT = dict(zip('!@#$%^&*()_+{}|:"<>?~', ['1','2','3','4','5','6','7','8','9','0','minus','equal',
+    'bracket_left','bracket_right','backslash','semicolon','apostrophe','comma','dot','slash','grave_accent']))
 NAMES = {' ': 'spc', '.': 'dot', ',': 'comma', '-': 'minus', '/': 'slash', '=': 'equal',
          ';': 'semicolon', "'": 'apostrophe', '\\': 'backslash', '[': 'bracket_left',
          ']': 'bracket_right', '`': 'grave_accent', '\t': 'tab', '\n': 'ret'}
@@ -28,16 +29,16 @@ def hmp(cmd):
         pass
     s.close()
 
-def key(k):
-    hmp("sendkey " + k)
-    time.sleep(0.15)
+def key(k, hold=120):
+    hmp("sendkey %s %d" % (k, hold))
+    time.sleep(hold / 1000 + 0.2)
 
 def typ(text):
     for c in text:
         if c.isupper():
             key("shift-" + c.lower())
         elif c in SHIFT:
-            key("shift-" + NAMES.get(SHIFT[c], SHIFT[c]))
+            key("shift-" + SHIFT[c])
         else:
             key(NAMES.get(c, c))
 
@@ -56,7 +57,7 @@ for i, st in enumerate(json.load(open(steps_file))):
     if "wait" in st:
         time.sleep(st["wait"])
     elif "key" in st:
-        key(st["key"])
+        key(st["key"], st.get("hold", 120))
     elif "keys" in st:
         for k in st["keys"]:
             key(k)
