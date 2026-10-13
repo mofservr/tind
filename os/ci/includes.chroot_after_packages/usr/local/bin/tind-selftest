@@ -2,6 +2,10 @@
 # Runs inside the CI VM only (DMI product name "tind-ci"). Writes a report to the serial port.
 [ "$(cat /sys/class/dmi/id/product_name 2>/dev/null)" = tind-ci ] || exit 0
 exec >/dev/ttyS0 2>&1
+# input probe: report every input event the guest receives on the second serial port (ttyS1)
+if [ -c /dev/ttyS1 ] && command -v libinput >/dev/null; then
+    (timeout 900 libinput debug-events --show-keycodes >/dev/ttyS1 2>&1 &)
+fi
 UIDN=$(id -u tind 2>/dev/null || echo 1000)
 asuser() { runuser -u tind -- env XDG_RUNTIME_DIR="/run/user/$UIDN" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UIDN/bus" "$@"; }
 sec() { echo; echo "##### $*"; }
@@ -11,6 +15,8 @@ sleep 30
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
+sec input devices; grep -E '^(N: Name|H: Handlers)' /proc/bus/input/devices; ls /dev/input
+sec session; loginctl list-sessions --no-legend; for s in $(loginctl list-sessions --no-legend | awk '{print $1}'); do loginctl show-session "$s" -p Name -p Type -p Active -p State -p Seat | tr '\n' ' '; echo; done
 sec failed units; systemctl --failed --no-legend
 sec services; for s in NetworkManager systemd-resolved ufw gdm; do echo "$s: $(systemctl is-active $s)"; done
 sec resolv.conf; ls -l /etc/resolv.conf
