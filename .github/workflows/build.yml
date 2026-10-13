@@ -1,7 +1,12 @@
 name: build
 on:
   push:
+    branches-ignore: [ci-logs]
   workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   packages:
@@ -13,31 +18,39 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends git ca-certificates dpkg-dev shellcheck libxml2-utils jq xz-utils sudo
       - uses: actions/checkout@v4
-      - name: bash -n and shellcheck
+      - name: Lint, build packages, check package names
         run: |
-          set -e
-          files=$(grep -rIl '^#!.*\(ba\)\?sh' os --exclude-dir=.git | sort)
-          for f in $files; do bash -n "$f"; done
-          shellcheck -x $files
-      - name: JSON and XML
-        run: |
-          find os -name '*.json' -print0 | xargs -0 -n1 jq empty
-          find os -name '*.xml' -print0 | xargs -0 -r -n1 xmllint --noout
-      - name: Build .deb packages
-        run: os/packages/build-debs.sh
-      - name: Package names exist in trixie
-        run: |
-          apt-get update
-          os/scripts/check-packages.sh 2>&1 | tee check-packages.log
-      - name: verify-on-debian (informational)
-        run: os/scripts/verify-on-debian.sh 2>&1 | tee verify.log || true
+          mkdir -p logs
+          {
+            echo "== bash -n and shellcheck (warnings and errors)"
+            files=$(grep -rIl '^#!.*\(ba\)\?sh' os | sort)
+            rc=0
+            for f in $files; do bash -n "$f" || rc=1; done
+            # shellcheck disable=SC2086
+            shellcheck -x -S warning $files || rc=1
+            echo "== JSON and XML"
+            find os -name '*.json' -print0 | xargs -0 -r -n1 jq empty || rc=1
+            find os -name '*.xml' -print0 | xargs -0 -r -n1 xmllint --noout || rc=1
+            echo "== build .deb packages"
+            os/packages/build-debs.sh || rc=1
+            echo "== package names exist in trixie"
+            apt-get update >/dev/null
+            os/scripts/check-packages.sh || rc=1
+            echo "== verify-on-debian (informational)"
+            os/scripts/verify-on-debian.sh || true
+            echo "== exit status: $rc"
+            exit $rc
+          } 2>&1 | tee logs/packages.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: packages-logs
-          path: |
-            *.log
-            os/dist/*.deb
+          path: logs/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tind-debs
+          path: os/dist/*.deb
+          retention-days: 3
 
   iso:
     needs: packages
@@ -55,13 +68,15 @@ jobs:
       - name: Build ISO (no Proton repo yet)
         env:
           TIND_PROTON: "0"
-        run: os/build.sh 2>&1 | tee iso-build.log
+        run: |
+          mkdir -p logs
+          os/build.sh 2>&1 | tee logs/iso-build.log
       - name: Collect live-build logs
         if: always()
         run: |
           mkdir -p logs
-          cp iso-build.log logs/ 2>/dev/null || true
-          cp os/build/chroot.log os/build/*.log logs/ 2>/dev/null || true
+          cp os/build/chroot.log logs/ 2>/dev/null || true
+          cp os/build/*.log logs/ 2>/dev/null || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -72,3 +87,40 @@ jobs:
           name: tind-iso
           path: os/build/*.iso
           retention-days: 3
+
+  publish-logs:
+    # Actions log downloads are not reachable from Claude's workspace, so push the logs to a branch.
+    needs: [packages, iso]
+    if: always()
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: '*-logs'
+          path: collected
+          merge-multiple: true
+      - name: Push logs to ci-logs branch
+        env:
+          GH_REF: ${{ github.ref_name }}
+          GH_SHA: ${{ github.sha }}
+          GH_RUN: ${{ github.run_id }}
+          RESULTS: "packages=${{ needs.packages.result }} iso=${{ needs.iso.result }}"
+        run: |
+          set -eu
+          git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out 2>/dev/null \
+            || { git init -q out; git -C out checkout -q -b ci-logs; git -C out remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
+          d="out/${GH_REF//\//_}"
+          rm -rf "$d"; mkdir -p "$d"
+          for f in collected/*.log; do
+            [ -e "$f" ] || continue
+            b=$(basename "$f")
+            tail -n 400 "$f" > "$d/$b.tail"
+            gzip -9 -c "$f" > "$d/$b.gz"
+          done
+          printf 'ref: %s\nsha: %s\nrun: %s\nresults: %s\n' "$GH_REF" "$GH_SHA" "$GH_RUN" "$RESULTS" > "$d/STATUS"
+          cd out
+          git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "logs for $GH_REF $GH_SHA ($RESULTS)" || true
+          git push origin ci-logs
