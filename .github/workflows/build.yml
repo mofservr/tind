@@ -33,7 +33,10 @@ jobs:
             find os -name '*.xml' -print0 | xargs -0 -r -n1 xmllint --noout || rc=1
             echo "== build .deb packages"
             os/packages/build-debs.sh || rc=1
-            echo "== package names exist in trixie"
+            echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
+            for f in /etc/apt/sources.list.d/*.sources; do
+              sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
+            done
             apt-get update >/dev/null
             os/scripts/check-packages.sh || rc=1
             echo "== verify-on-debian (informational)"
@@ -87,10 +90,52 @@ jobs:
           name: tind-iso
           path: os/build/*.iso
           retention-days: 3
+          compression-level: 0
+
+  boot:
+    needs: iso
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: tind-iso
+          path: iso
+      - name: Install QEMU
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf socat imagemagick
+      - name: Boot the ISO (UEFI) and take screenshots
+        run: |
+          mkdir -p logs shots
+          {
+            ls -l iso
+            [ -e /dev/kvm ] && sudo chmod 666 /dev/kvm
+            if [ -w /dev/kvm ]; then ACCEL="-enable-kvm -cpu host"; echo "KVM: yes"; else ACCEL="-cpu max"; echo "KVM: no (TCG, slow)"; fi
+            ISO=$(ls iso/*.iso | head -1)
+            cp /usr/share/OVMF/OVMF_VARS_4M.fd vars.fd
+            qemu-system-x86_64 $ACCEL -machine q35 -m 4096 -smp 2 \
+              -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
+              -drive if=pflash,format=raw,file=vars.fd \
+              -cdrom "$ISO" -boot d -vga std -display none -serial file:logs/serial.log \
+              -monitor unix:mon.sock,server,nowait -daemonize -pidfile qemu.pid
+            sleep 5
+            for i in $(seq 1 14); do
+              sleep 60
+              echo "screendump shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:mon.sock >/dev/null || echo "monitor gone at $i"
+              sleep 1
+              if [ -f "shots/t$(printf %02d "$i").ppm" ]; then convert "shots/t$(printf %02d "$i").ppm" "logs/boot-t$(printf %02d "$i").png"; fi
+            done
+            echo quit | socat - UNIX-CONNECT:mon.sock >/dev/null || true
+            ls -l logs
+          } 2>&1 | tee logs/boot.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: boot-logs
+          path: logs/
 
   publish-logs:
     # Actions log downloads are not reachable from Claude's workspace, so push the logs to a branch.
-    needs: [packages, iso]
+    needs: [packages, iso, boot]
     if: always()
     runs-on: ubuntu-24.04
     permissions:
@@ -106,7 +151,7 @@ jobs:
           GH_REF: ${{ github.ref_name }}
           GH_SHA: ${{ github.sha }}
           GH_RUN: ${{ github.run_id }}
-          RESULTS: "packages=${{ needs.packages.result }} iso=${{ needs.iso.result }}"
+          RESULTS: "packages=${{ needs.packages.result }} iso=${{ needs.iso.result }} boot=${{ needs.boot.result }}"
         run: |
           set -eu
           git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out 2>/dev/null \
@@ -119,6 +164,7 @@ jobs:
             tail -n 400 "$f" > "$d/$b.tail"
             gzip -9 -c "$f" > "$d/$b.gz"
           done
+          cp collected/*.png "$d/" 2>/dev/null || true
           printf 'ref: %s\nsha: %s\nrun: %s\nresults: %s\n' "$GH_REF" "$GH_SHA" "$GH_RUN" "$RESULTS" > "$d/STATUS"
           cd out
           git add -A
