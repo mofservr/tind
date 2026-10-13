@@ -84,7 +84,7 @@ ok       xdg-desktop-portal-gnome
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   59G   86G  41% /__w
+/dev/root       145G   60G   85G  42% /__w
 
 == KVM
 not available (VM tests will be slow)
