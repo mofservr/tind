@@ -40,7 +40,7 @@ jobs:
             ISO=$(ls $PWD/iso/*.iso | head -1)
             qemu-img create -f qcow2 $PWD/disk.qcow2 30G
             cp /usr/share/OVMF/OVMF_VARS_4M.fd $PWD/vars.fd
-            COMMON="$ACCEL -machine q35 -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none \
+            COMMON="$ACCEL -machine q35 -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none -device qemu-xhci -device usb-kbd -device usb-tablet \
               -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
               -drive if=pflash,format=raw,file=$PWD/vars.fd \
               -drive file=$PWD/disk.qcow2,if=virtio,format=qcow2"
