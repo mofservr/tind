@@ -57,7 +57,7 @@ jobs:
             sleep 3
             python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 os/ci/installer-test/firstboot.json
             echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
-            qemu-img info disk.qcow2 | grep 'disk size'
+            sleep 5; qemu-img info -U disk.qcow2 | grep 'disk size' || true
           } 2>&1 | tee logs/installer.log
           for d in shots1 shots2; do for f in $d/*.png; do if [ -e "$f" ]; then cp "$f" "logs/$d-$(basename "$f")"; fi; done; done
       - uses: actions/upload-artifact@v4
