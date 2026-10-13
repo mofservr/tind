@@ -36,8 +36,15 @@ grep -E 'uBlock|ublock' "$tmp/extensions.json" 2>/dev/null | head -3 | cut -c1-2
 echo "extensions.json present: $(test -e "$tmp/extensions.json" && echo yes || echo no)"
 if [ -e "$tmp/extensions.json" ]; then jq -r '.addons[]|"\(.id) active=\(.active) location=\(.location)"' "$tmp/extensions.json" 2>&1 | head; fi
 grep -E 'browser.search|isUserDisabled' "$tmp/prefs.js" 2>/dev/null | head -5
+echo "policy keys:"; jq -r '.policies|keys|join(", ")' /etc/firefox/policies/policies.json
+grep -E 'datareporting|toolkit.telemetry|autoDisableScopes|browser.search.region' "$tmp/prefs.js" 2>/dev/null | cut -c1-160 | head -8
 sec thunderbird policies; jq -e . /etc/thunderbird/policies/policies.json >/dev/null && echo "thunderbird policies.json: valid JSON"
 sec tind-enroll; tind-enroll --help 2>&1 | head -8; cat /etc/tind/servr-tunnel.conf | grep -E '^[A-Z_]+=' | head
+sec "enroll init/apply smoke test"
+tind-enroll init 2>&1 | tail -3
+tind-enroll apply 10.8.0.99/32 2>&1 | tail -2
+tind-enroll remove --purge-key 2>&1 | tail -2
+sec "gnome-tour removed?"; dpkg -l gnome-tour 2>&1 | tail -1
 sec calamares branding; grep -n '^branding' /etc/calamares/settings.conf; ls /usr/share/calamares/branding/tind | head
 sec installer launcher; grep -m3 -E '^(Name|Exec)=' /usr/share/applications/calamares*.desktop /usr/share/applications/*calamares*.desktop 2>&1 | head -6
 sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/lib/tind/optin-install 2>&1
