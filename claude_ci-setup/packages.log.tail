@@ -1,0 +1,189 @@
+== bash -n and shellcheck (warnings and errors)
+== JSON and XML
+== build .deb packages
+built tind-apps_0.1.0_all.deb
+built tind-branding_0.1.0_all.deb
+built tind-desktop_0.1.0_all.deb
+built tind-installer_0.1.0_all.deb
+built tind-mozilla-config_0.1.0_all.deb
+built tind-optins_0.1.0_all.deb
+built tind-wireguard_0.1.0_all.deb
+== package names exist in trixie
+== Depends (must exist)
+ok       bluez
+ok       ca-certificates
+ok       calamares
+ok       calamares-settings-debian
+ok       cups
+ok       curl
+ok       dconf-cli
+ok       firefox-esr
+ok       flatpak
+ok       gnome-core
+ok       gnome-shell
+ok       gnome-shell-extension-dashtodock
+ok       gnome-software
+ok       gnome-software-plugin-flatpak
+ok       libreoffice-calc
+ok       libreoffice-gtk3
+ok       libreoffice-impress
+ok       libreoffice-writer
+ok       network-manager
+ok       pkexec
+ok       system-config-printer
+ok       systemd-resolved
+ok       thunderbird
+ok       ufw
+ok       unattended-upgrades
+ok       webext-ublock-origin-firefox
+ok       wireguard-tools
+ok       zenity
+== Recommends / package lists (nice to have)
+ok       apt-listchanges
+ok       btrfs-progs
+ok       evince
+ok       firefox-esr
+ok       firefox-esr-l10n-nb-no
+ok       firefox-esr-l10n-nn-no
+missing  firmware-atheros
+missing  firmware-iwlwifi
+missing  firmware-linux
+missing  firmware-misc-nonfree
+missing  firmware-realtek
+ok       fonts-noto
+ok       fonts-noto-color-emoji
+ok       gdm3
+ok       gnome-shell-extension-dashtodock
+ok       gnome-tweaks
+missing  grub-btrfs
+ok       hunspell-en-us
+ok       hunspell-no
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
+ok       loupe
+ok       mesa-vulkan-drivers
+ok       myspell-nb
+ok       plymouth
+ok       plymouth-themes
+ok       qrencode
+ok       showtime
+ok       snapper
+ok       sudo
+ok       thunderbird
+ok       thunderbird-l10n-nb-no
+ok       thunderbird-l10n-nn-no
+ok       totem
+ok       vulkan-tools
+ok       xdg-desktop-portal-gnome
+== verify-on-debian (informational)
+== release
+Debian GNU/Linux 13 (trixie)
+
+== disk (need ~25 GB free here)
+/dev/root       145G   60G   85G  42% /__w
+
+== KVM
+not available (VM tests will be slow)
+
+== live-build
+not installed
+
+== uBlock Origin package: where does it install?
+Package: webext-ublock-origin-firefox
+Source: ublock-origin
+Version: 1.67.0+dfsg-1~deb13u1
+Installed-Size: 14290
+Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
+
+== Firefox ESR: policy locations it will read (after install)
+ls: cannot access '/etc/firefox/policies': No such file or directory
+ls: cannot access '/usr/lib/firefox-esr/distribution': No such file or directory
+(open about:policies in Firefox ESR: Active should list Tind's policies)
+
+== Calamares branding setting
+grep: /etc/calamares/settings.conf: No such file or directory
+
+== Dash to Dock package / UUID
+gnome-shell-extension-dashtodock:
+  Installed: (none)
+  Candidate: 100-2
+ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
+
+== package names
+== Depends (must exist)
+ok       bluez
+ok       ca-certificates
+ok       calamares
+ok       calamares-settings-debian
+ok       cups
+ok       curl
+ok       dconf-cli
+ok       firefox-esr
+ok       flatpak
+ok       gnome-core
+ok       gnome-shell
+ok       gnome-shell-extension-dashtodock
+ok       gnome-software
+ok       gnome-software-plugin-flatpak
+ok       libreoffice-calc
+ok       libreoffice-gtk3
+ok       libreoffice-impress
+ok       libreoffice-writer
+ok       network-manager
+ok       pkexec
+ok       system-config-printer
+ok       systemd-resolved
+ok       thunderbird
+ok       ufw
+ok       unattended-upgrades
+ok       webext-ublock-origin-firefox
+ok       wireguard-tools
+ok       zenity
+== Recommends / package lists (nice to have)
+ok       apt-listchanges
+ok       btrfs-progs
+ok       evince
+ok       firefox-esr
+ok       firefox-esr-l10n-nb-no
+ok       firefox-esr-l10n-nn-no
+missing  firmware-atheros
+missing  firmware-iwlwifi
+missing  firmware-linux
+missing  firmware-misc-nonfree
+missing  firmware-realtek
+ok       fonts-noto
+ok       fonts-noto-color-emoji
+ok       gdm3
+ok       gnome-shell-extension-dashtodock
+ok       gnome-tweaks
+missing  grub-btrfs
+ok       hunspell-en-us
+ok       hunspell-no
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
+ok       loupe
+ok       mesa-vulkan-drivers
+ok       myspell-nb
+ok       plymouth
+ok       plymouth-themes
+ok       qrencode
+ok       showtime
+ok       snapper
+ok       sudo
+ok       thunderbird
+ok       thunderbird-l10n-nb-no
+ok       thunderbird-l10n-nn-no
+ok       totem
+ok       vulkan-tools
+ok       xdg-desktop-portal-gnome
+== exit status: 0
