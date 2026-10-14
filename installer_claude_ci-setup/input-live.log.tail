@@ -1,173 +1,400 @@
-[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
-BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
--event1   DEVICE_ADDED                 Power Button                      seat0 default group1  cap:k
--event4   DEVICE_ADDED                 QEMU QEMU USB Keyboard            seat0 default group2  cap:k
--event5   DEVICE_ADDED                 QEMU QEMU USB Tablet              seat0 default group3  cap:p left scroll-nat calib
--event0   DEVICE_ADDED                 AT Translated Set 2 keyboard      seat0 default group4  cap:k
--event3   DEVICE_ADDED                 VirtualPS/2 VMware VMMouse        seat0 default group5  cap:p left scroll-nat scroll-button
--event2   DEVICE_ADDED                 VirtualPS/2 VMware VMMouse        seat0 default group5  cap:p left scroll-nat calib
--event5   POINTER_MOTION_ABSOLUTE      +0.000s	 31.25/ 37.50
- event5   POINTER_BUTTON               +0.625s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +1.175s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +3.576s	  3.28/ 74.37
- event5   POINTER_BUTTON               +4.277s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +4.827s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +9.107s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +9.147s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +9.267s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +9.387s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +9.748s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +9.867s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +10.468s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +10.588s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +11.189s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +11.308s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +11.909s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +12.029s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +12.630s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +12.749s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +13.350s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +13.470s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +17.147s	KEY_ENTER (28) pressed
- event4   KEYBOARD_KEY                 +17.190s	KEY_ENTER (28) released
--event5   POINTER_MOTION_ABSOLUTE      +48.068s	 78.67/ 91.87
- event5   POINTER_BUTTON               +48.692s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +49.243s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +55.344s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +55.895s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +61.997s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +62.547s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +73.023s	 26.09/ 28.12
- event5   POINTER_BUTTON               +73.649s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +74.199s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +77.676s	 78.67/ 91.87
- event5   POINTER_BUTTON               +78.301s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +78.852s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +85.328s	 33.28/ 25.50
- event5   POINTER_BUTTON               +85.953s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +86.504s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +86.786s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +86.823s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +86.944s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +87.064s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +87.424s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +87.544s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +88.144s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +88.265s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +88.865s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +88.984s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +89.585s	KEY_SPACE (57) pressed
- event4   KEYBOARD_KEY                 +89.705s	KEY_SPACE (57) released
- event4   KEYBOARD_KEY                 +90.306s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +90.426s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +90.546s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +90.666s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +91.026s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +91.146s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +91.747s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +91.866s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +92.467s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +92.587s	KEY_T (20) released
--event5   POINTER_MOTION_ABSOLUTE      +93.463s	 33.28/ 33.00
- event5   POINTER_BUTTON               +94.089s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +94.640s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +94.921s	KEY_LEFTCTRL (29) pressed
- event4   KEYBOARD_KEY                 +94.959s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +95.080s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +95.199s	KEY_LEFTCTRL (29) released
- event4   KEYBOARD_KEY                 +95.560s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +95.680s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +96.281s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +96.400s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +97.001s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +97.121s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +97.722s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +97.841s	KEY_D (32) released
--event5   POINTER_MOTION_ABSOLUTE      +98.719s	 33.28/ 40.50
- event5   POINTER_BUTTON               +99.344s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +99.894s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +100.094s	KEY_LEFTCTRL (29) pressed
- event4   KEYBOARD_KEY                 +100.213s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +100.333s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +100.453s	KEY_LEFTCTRL (29) released
- event4   KEYBOARD_KEY                 +100.814s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +100.934s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +101.535s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +101.654s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +102.255s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +102.375s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +102.976s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +103.095s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +103.696s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +103.816s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +104.417s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +104.536s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +105.137s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +105.257s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +105.858s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +105.977s	KEY_T (20) released
--event5   POINTER_MOTION_ABSOLUTE      +106.855s	 33.28/ 48.00
- event5   POINTER_BUTTON               +107.480s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +108.030s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +108.230s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +108.350s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +108.951s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +109.070s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +109.671s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +109.791s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +110.391s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +110.511s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +111.112s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +111.232s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +111.833s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +111.952s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +112.553s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +112.673s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +113.273s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +113.393s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +113.994s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +114.114s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +114.714s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +114.834s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +115.435s	KEY_P (25) pressed
- event4   KEYBOARD_KEY                 +115.555s	KEY_P (25) released
- event4   KEYBOARD_KEY                 +116.155s	KEY_W (17) pressed
- event4   KEYBOARD_KEY                 +116.275s	KEY_W (17) released
--event5   POINTER_MOTION_ABSOLUTE      +117.151s	 49.37/ 48.00
- event5   POINTER_BUTTON               +117.777s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +118.328s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +118.528s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +118.648s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +119.248s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +119.368s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +119.968s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +120.088s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +120.689s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +120.809s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +121.410s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +121.529s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +122.130s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +122.250s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +122.851s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +122.970s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +123.571s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +123.691s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +124.292s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +124.412s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +125.012s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +125.132s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +125.733s	KEY_P (25) pressed
- event4   KEYBOARD_KEY                 +125.853s	KEY_P (25) released
- event4   KEYBOARD_KEY                 +126.453s	KEY_W (17) pressed
- event4   KEYBOARD_KEY                 +126.573s	KEY_W (17) released
--event5   POINTER_MOTION_ABSOLUTE      +127.448s	 26.09/ 52.50
- event5   POINTER_BUTTON               +128.075s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +128.626s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +132.832s	 78.67/ 91.87
- event5   POINTER_BUTTON               +133.459s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +134.010s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +142.580s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +143.130s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +143.532s	 78.67/ 97.62
- event5   POINTER_BUTTON               +144.232s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +144.783s	BTN_LEFT (272) released, seat count: 0
+2026-10-14 - 10:26:04 [6]:     Summary widget is larger than viewport, enlarge by 50 to QSize(834, 619) 
+ event5   POINTER_BUTTON               +142.426s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +142.977s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +143.377s	 78.67/ 97.62
+ event5   POINTER_BUTTON               +144.078s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +144.629s	BTN_LEFT (272) released, seat count: 0
+2026-10-14 - 10:26:15 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
+2026-10-14 - 10:26:15 [6]:     QML "onActivate()" is missing. 
+2026-10-14 - 10:26:15 [6]: QStringList findEssentialLVs(const QList<PartitionCoreModule::DeviceInfo*>&)
+2026-10-14 - 10:26:15 [6]:     Checking LVM use on 1 devices 
+2026-10-14 - 10:26:15 [6]: void Calamares::JobThread::finalize()
+2026-10-14 - 10:26:15 [6]:     There are 41 jobs, total weight 38 
+2026-10-14 - 10:26:15 [6]:     .. Job 1 "Managing auto-mount settings…" +wt 0.1 tot.wt 0.1 
+2026-10-14 - 10:26:15 [6]:     .. Job 2 "Clearing all temporary mounts…" +wt 0.1 tot.wt 0.2 
+2026-10-14 - 10:26:15 [6]:     .. Job 3 "Clear mounts for partitioning operations on /dev/vda" +wt 0.1 tot.wt 0.3 
+2026-10-14 - 10:26:15 [6]:     .. Job 4 "Creating new gpt partition table on /dev/vda…" +wt 0.1 tot.wt 0.4 
+2026-10-14 - 10:26:15 [6]:     .. Job 5 "Create new 300MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.5 
+2026-10-14 - 10:26:15 [6]:     .. Job 6 "Set flags on 300MiB fat32 partition" +wt 0.1 tot.wt 0.6 
+2026-10-14 - 10:26:15 [6]:     .. Job 7 "Create new 21803MiB partition on /dev/vda (vda) with entries root" +wt 0.1 tot.wt 0.7 
+2026-10-14 - 10:26:15 [6]:     .. Job 8 "Create new 8614MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.8 
+2026-10-14 - 10:26:15 [6]:     .. Job 9 "Set partition information" +wt 0.1 tot.wt 0.9 
+2026-10-14 - 10:26:15 [6]:     .. Job 10 "Managing auto-mount settings…" +wt 0.1 tot.wt 1 
+2026-10-14 - 10:26:15 [6]:     .. Job 11 "mount" +wt 1 tot.wt 2 
+2026-10-14 - 10:26:15 [6]:     .. Job 12 "unpackfs" +wt 12 tot.wt 14 
+2026-10-14 - 10:26:15 [6]:     .. Job 13 "Configuring LUKS key file." +wt 1 tot.wt 15 
+2026-10-14 - 10:26:15 [6]:     .. Job 14 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" +wt 1 tot.wt 16 
+2026-10-14 - 10:26:15 [6]:     .. Job 15 "Run command '/usr/share/calamares/helpers/calamares-sources-media'" +wt 1 tot.wt 17 
+2026-10-14 - 10:26:15 [6]:     .. Job 16 "Generer maskin-ID." +wt 1 tot.wt 18 
+2026-10-14 - 10:26:15 [6]:     .. Job 17 "fstab" +wt 1 tot.wt 19 
+2026-10-14 - 10:26:15 [6]:     .. Job 18 "Setting timezone to Europe/Oslo…" +wt 1 tot.wt 20 
+2026-10-14 - 10:26:15 [6]:     .. Job 19 "Setting keyboard model to pc105, layout as no-…" +wt 1 tot.wt 21 
+2026-10-14 - 10:26:15 [6]:     .. Job 20 "localecfg" +wt 1 tot.wt 22 
+2026-10-14 - 10:26:15 [6]:     .. Job 21 "Configuring <pre>sudo</pre> users…" +wt 0.166667 tot.wt 22.1667 
+2026-10-14 - 10:26:15 [6]:     .. Job 22 "Preparing groups…" +wt 0.166667 tot.wt 22.3333 
+2026-10-14 - 10:26:15 [6]:     .. Job 23 "Opprett bruker tind" +wt 0.166667 tot.wt 22.5 
+2026-10-14 - 10:26:15 [6]:     .. Job 24 "Set password for user tind" +wt 0.166667 tot.wt 22.6667 
+2026-10-14 - 10:26:15 [6]:     .. Job 25 "Set password for user root" +wt 0.166667 tot.wt 22.8333 
+2026-10-14 - 10:26:15 [6]:     .. Job 26 "Set hostname tindtest" +wt 0.166667 tot.wt 23 
+2026-10-14 - 10:26:15 [6]:     .. Job 27 "displaymanager" +wt 1 tot.wt 24 
+2026-10-14 - 10:26:15 [6]:     .. Job 28 "networkcfg" +wt 1 tot.wt 25 
+2026-10-14 - 10:26:15 [6]:     .. Job 29 "hwclock" +wt 1 tot.wt 26 
+2026-10-14 - 10:26:15 [6]:     .. Job 30 "services-systemd" +wt 1 tot.wt 27 
+2026-10-14 - 10:26:15 [6]:     .. Job 31 "Run command '/usr/share/calamares/helpers/calamares-bootloader-config'" +wt 1 tot.wt 28 
+2026-10-14 - 10:26:15 [6]:     .. Job 32 "grubcfg" +wt 1 tot.wt 29 
+2026-10-14 - 10:26:15 [6]:     .. Job 33 "bootloader" +wt 1 tot.wt 30 
+2026-10-14 - 10:26:15 [6]:     .. Job 34 "packages" +wt 1 tot.wt 31 
+2026-10-14 - 10:26:15 [6]:     .. Job 35 "plymouthcfg" +wt 1 tot.wt 32 
+2026-10-14 - 10:26:15 [6]:     .. Job 36 "initramfscfg" +wt 1 tot.wt 33 
+2026-10-14 - 10:26:15 [6]:     .. Job 37 "Creating initramfs…" +wt 1 tot.wt 34 
+2026-10-14 - 10:26:15 [6]:     .. Job 38 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" +wt 1 tot.wt 35 
+2026-10-14 - 10:26:15 [6]:     .. Job 39 "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" +wt 1 tot.wt 36 
+2026-10-14 - 10:26:15 [6]:     .. Job 40 "Run command '/usr/share/calamares/helpers/calamares-sources-final'" +wt 1 tot.wt 37 
+2026-10-14 - 10:26:15 [6]:     .. Job 41 "Unmounting file systems…" +wt 1 tot.wt 38 
+2026-10-14 - 10:26:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:15 [6]:     Starting job "Managing auto-mount settings…" ( 1 / 41 ) 
+2026-10-14 - 10:26:15 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
+2026-10-14 - 10:26:15 [6]:     Set automount to disable 
+2026-10-14 - 10:26:15 [6]: void Calamares::Partition::querySolidAutoMount(QDBusConnection&, AutoMountInfo&)
+2026-10-14 - 10:26:15 [6]:     Solid not available: "Not connected to D-Bus server" 
+2026-10-14 - 10:26:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:15 [6]:     Starting job "Clearing all temporary mounts…" ( 2 / 41 ) 
+2026-10-14 - 10:26:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:15 [6]:     Starting job "Clear mounts for partitioning operations on /dev/vda" ( 3 / 41 ) 
+2026-10-14 - 10:26:15 [2]: QStringList getLVMVolumes()
+2026-10-14 - 10:26:15 [2]:     WARNING: this system does not seem to have LVM2 tools. 
+2026-10-14 - 10:26:15 [2]: QStringList getPVGroups(const QString&)
+2026-10-14 - 10:26:15 [2]:     WARNING: this system does not seem to have LVM2 tools. 
+2026-10-14 - 10:26:15 [6]: QStringList getPartitionsForDevice(const QString&)
+2026-10-14 - 10:26:15 [6]:     Reading from "/proc/partitions" looking for "vda" 
+2026-10-14 - 10:26:15 [6]: virtual Calamares::JobResult ClearMountsJob::exec()
+2026-10-14 - 10:26:15 [6]:     ClearMountsJob finished. Here's what was done: 
+2026-10-14 - 10:26:15 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:15 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:15 [6]:     Starting job "Creating new gpt partition table on /dev/vda…" ( 4 / 41 ) 
+2026-10-14 - 10:26:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:15 [6]:     Starting job "Create new 300MiB partition on /dev/vda (vda)" ( 5 / 41 ) 
+2026-10-14 - 10:26:17 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:17 [6]:     Starting job "Set flags on partition /dev/vda1" ( 6 / 41 ) 
+2026-10-14 - 10:26:17 [6]: virtual Calamares::JobResult SetPartFlagsJob::exec()
+2026-10-14 - 10:26:17 [6]:     Setting flags on "/dev/vda" partition "/dev/vda1" 
+     "boot" 
+2026-10-14 - 10:26:18 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:18 [6]:     Starting job "Create new 21803MiB partition on /dev/vda (vda) with entries root" ( 7 / 41 ) 
+2026-10-14 - 10:26:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:20 [6]:     Starting job "Create new 8614MiB partition on /dev/vda (vda)" ( 8 / 41 ) 
+2026-10-14 - 10:26:22 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:22 [6]:     Starting job "Set partition information" ( 9 / 41 ) 
+2026-10-14 - 10:26:22 [6]: QVariantList FillGlobalStorageJob::createPartitionList() const
+2026-10-14 - 10:26:22 [6]:     Building partition information map 
+2026-10-14 - 10:26:22 [6]:     .. partitions on "/dev/vda" 
+2026-10-14 - 10:26:22 [6]:     ..  mapping for "" "ikke tilordnet" 
+     partlabel :   "" 
+     partition-uuid (partuuid) :   "PartUUID$ab99e831" 
+     parttype :   "" 
+     partattrs :   "0" 
+     mountPoint: :   "" 
+     fs: :   "unknown" 
+     fsName :   "unknown" 
+     filesystem-uuid (uuid) :   "FSUUID$f5b7b267" 
+     claimed :   "false" 
+2026-10-14 - 10:26:22 [6]:     ..  mapping for "/dev/vda1" "/dev/vda1" 
+     partlabel :   "" 
+     partition-uuid (partuuid) :   "PartUUID$4f02a2aa" 
+     parttype :   "" 
+     partattrs :   "0" 
+     mountPoint: :   "/boot/efi" 
+     fs: :   "fat32" 
+     fsName :   "fat32" 
+     filesystem-uuid (uuid) :   "FSUUID$8dc00440" 
+     claimed :   "true" 
+2026-10-14 - 10:26:22 [6]:     ..  mapping for "/dev/vda2" "/dev/vda2" 
+     partlabel :   "root" 
+     partition-uuid (partuuid) :   "PartUUID$fb6adb54" 
+     parttype :   "" 
+     partattrs :   "0" 
+     mountPoint: :   "/" 
+     fs: :   "ext4" 
+     fsName :   "ext4" 
+     filesystem-uuid (uuid) :   "FSUUID$2dbb90f5" 
+     claimed :   "true" 
+2026-10-14 - 10:26:22 [6]:     ..  mapping for "/dev/vda3" "/dev/vda3" 
+     partlabel :   "" 
+     partition-uuid (partuuid) :   "PartUUID$3bb21393" 
+     parttype :   "" 
+     partattrs :   "0" 
+     mountPoint: :   "" 
+     fs: :   "linuxswap" 
+     fsName :   "linuxswap" 
+     filesystem-uuid (uuid) :   "FSUUID$48028138" 
+     claimed :   "true" 
+2026-10-14 - 10:26:22 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
+2026-10-14 - 10:26:22 [6]:     Saving partition information map to GlobalStorage["partitions"] 
+2026-10-14 - 10:26:22 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
+2026-10-14 - 10:26:22 [6]:     FillGlobalStorageJob writing empty bootLoader value 
+2026-10-14 - 10:26:22 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:22 [6]:     Starting job "Managing auto-mount settings…" ( 10 / 41 ) 
+2026-10-14 - 10:26:22 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
+2026-10-14 - 10:26:22 [6]:     Restore automount settings 
+2026-10-14 - 10:26:22 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:22 [6]:     Starting job "mount" ( 11 / 41 ) 
+2026-10-14 - 10:26:22 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("swapon", "/dev/vda3") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-t", "ext4", "-o", "defaults", "/dev/vda2", "/tmp/calamares-root-i9ibix51/") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-t", "vfat", "-o", "defaults", "/dev/vda1", "/tmp/calamares-root-i9ibix51/boot/efi") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-o", "bind", "/dev", "/tmp/calamares-root-i9ibix51/dev") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-o", "bind", "/dev/pts", "/tmp/calamares-root-i9ibix51/dev/pts") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-t", "proc", "-o", "defaults", "proc", "/tmp/calamares-root-i9ibix51/proc") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-t", "tmpfs", "-o", "defaults", "tmpfs", "/tmp/calamares-root-i9ibix51/run") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-o", "bind", "/run/udev", "/tmp/calamares-root-i9ibix51/run/udev") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("mount", "-t", "sysfs", "-o", "defaults", "sys", "/tmp/calamares-root-i9ibix51/sys") 
+2026-10-14 - 10:26:22 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("mount", "-t", "efivarfs", "-o", "defaults", "efivarfs", "/tmp/calamares-root-i9ibix51/sys/firmware/efi/efivars") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:23 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:26:23 [6]:     Starting job "unpackfs" ( 12 / 41 ) 
+2026-10-14 - 10:26:23 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("mount", "-t", "squashfs", "-o", "loop", "/run/live/medium/live/filesystem.squashfs", "/tmp/tmpucov__dr/filesystem") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("unsquashfs", "-l", "/run/live/medium/live/filesystem.squashfs") 
+2026-10-14 - 10:26:23 [6]:     .. Running QList("rsync", "-aHAXSr", "--filter=-x trusted.overlay.*", "--exclude", "/proc/", "--exclude", "/sys/", "--exclude", "/dev/", "--exclude", "/run/", "--exclude", "/run/udev/", "--exclude", "/sys/firmware/efi/efivars/", "--exclude", "/dev/pts/", "--progress", "/tmp/tmpucov__dr/filesystem/", "/tmp/calamares-root-i9ibix51") 
+2026-10-14 - 10:28:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:44 [6]:     Starting job "Configuring LUKS key file." ( 13 / 41 ) 
+2026-10-14 - 10:28:44 [6]: virtual Calamares::JobResult LuksBootKeyFileJob::exec()
+2026-10-14 - 10:28:44 [6]:     There are 0 LUKS partitions 
+2026-10-14 - 10:28:44 [6]:     .. Nothing to do for LUKS. 
+2026-10-14 - 10:28:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:44 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" ( 14 / 41 ) 
+2026-10-14 - 10:28:44 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io") 
+2026-10-14 - 10:28:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:44 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media'" ( 15 / 41 ) 
+2026-10-14 - 10:28:44 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media") 
+2026-10-14 - 10:28:51 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:51 [6]:     Starting job "Generer maskin-ID." ( 16 / 41 ) 
+2026-10-14 - 10:28:51 [2]: Calamares::JobResult createEntropy(EntropyGeneration, const QString&, const QString&)
+2026-10-14 - 10:28:51 [2]:     WARNING: Host system entropy does not exist at "/var/lib/urandom/random-seed" 
+2026-10-14 - 10:28:51 [6]:     .. Running QList("systemd-machine-id-setup", "--root=/tmp/calamares-root-i9ibix51") 
+2026-10-14 - 10:28:51 [6]:     .. Running QList("ln", "-sf", "/etc/machine-id", "/var/lib/dbus/machine-id") 
+2026-10-14 - 10:28:51 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:51 [6]:     Starting job "fstab" ( 17 / 41 ) 
+2026-10-14 - 10:28:51 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:51 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:51 [6]:     Starting job "Setting timezone to Europe/Oslo…" ( 18 / 41 ) 
+2026-10-14 - 10:28:51 [6]:     .. Running QList("rm", "-f", "/etc/localtime") 
+2026-10-14 - 10:28:51 [6]:     .. Running QList("ln", "-s", "/usr/share/zoneinfo/Europe/Oslo", "/etc/localtime") 
+2026-10-14 - 10:28:51 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:51 [6]:     Starting job "Setting keyboard model to pc105, layout as no-…" ( 19 / 41 ) 
+2026-10-14 - 10:28:51 [6]: virtual Calamares::JobResult SetKeyboardLayoutJob::exec()
+2026-10-14 - 10:28:51 [6]:     Executing SetKeyboardLayoutJob 
+2026-10-14 - 10:28:51 [6]: bool SetKeyboardLayoutJob::writeVConsoleData(const QString&, const QString&) const
+2026-10-14 - 10:28:51 [6]:     Writing vconsole data to "/tmp/calamares-root-i9ibix51/etc/vconsole.conf" 
+2026-10-14 - 10:28:51 [6]: QString SetKeyboardLayoutJob::findConvertedKeymap(const QString&) const
+2026-10-14 - 10:28:51 [6]:     Looking for converted keymap in "" 
+2026-10-14 - 10:28:51 [6]: QString findLegacyKeymap(const QString&, const QString&, const QString&)
+2026-10-14 - 10:28:51 [6]:     Looking for legacy keymap "no" "pc105" "" in QRC 
+2026-10-14 - 10:28:51 [6]:     .. Found legacy keymap "no" with score 12 
+2026-10-14 - 10:28:51 [6]:     .. Written KEYMAP= "no" to vconsole.conf 0 
+2026-10-14 - 10:28:51 [6]: bool SetKeyboardLayoutJob::writeX11Data(const QString&) const
+2026-10-14 - 10:28:51 [6]:     Writing X11 configuration to "/tmp/calamares-root-i9ibix51/etc/X11/xorg.conf.d/00-keyboard.conf" 
+2026-10-14 - 10:28:51 [6]:     .. Written XkbLayout "no" ; XkbModel "pc105" ; XkbVariant "" to X.org file "/tmp/calamares-root-i9ibix51/etc/X11/xorg.conf.d/00-keyboard.conf" 0 
+2026-10-14 - 10:28:51 [6]: bool SetKeyboardLayoutJob::writeDefaultKeyboardData(const QString&) const
+2026-10-14 - 10:28:51 [6]:     Writing default keyboard data to "/tmp/calamares-root-i9ibix51/etc/default/keyboard" 
+2026-10-14 - 10:28:51 [6]:     .. Written XKBMODEL "pc105" ; XKBLAYOUT "no" ; XKBVARIANT "" to /etc/default/keyboard file "/tmp/calamares-root-i9ibix51/etc/default/keyboard" 0 
+2026-10-14 - 10:28:51 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:51 [6]:     Starting job "localecfg" ( 20 / 41 ) 
+2026-10-14 - 10:28:51 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:51 [6]:     .. Running QList("locale-gen") 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "/tmp/calamares-root-i9ibix51/etc/locale.gen done" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "/tmp/calamares-root-i9ibix51/etc/locale.conf done" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "/tmp/calamares-root-i9ibix51/etc/default done" 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Configuring <pre>sudo</pre> users…" ( 21 / 41 ) 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Preparing groups…" ( 22 / 41 ) 
+2026-10-14 - 10:28:54 [6]:     .. Running QList("groupadd", "autologin") 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Opprett bruker tind" ( 23 / 41 ) 
+2026-10-14 - 10:28:54 [6]: virtual Calamares::JobResult CreateUserJob::exec()
+2026-10-14 - 10:28:54 [6]:     [CREATEUSER]: creating user 
+2026-10-14 - 10:28:54 [6]:     .. Running QList("useradd", "-m", "-U", "-s", "/bin/bash", "-c", "Tind Test", "tind") 
+2026-10-14 - 10:28:54 [6]:     .. Running "usermod" "-aG" "cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lpadmin,scanner,bluetooth,autologin" "tind" 
+2026-10-14 - 10:28:54 [6]:     .. Running QList("chown", "-R", "tind:tind", "/home/tind") 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Set password for user tind" ( 24 / 41 ) 
+2026-10-14 - 10:28:54 [6]:     .. Running "usermod" "-p" "$y$j9T$I.RdMwvQ.2X5VRktCrTir/$hXTjbWwwZ1xRUt24/MK3Ha3I.InsSkpBTPkpvNU1IY2" "tind" 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Set password for user root" ( 25 / 41 ) 
+2026-10-14 - 10:28:54 [6]:     .. Running "usermod" "-p" "!" "root" 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "Set hostname tindtest" ( 26 / 41 ) 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "displaymanager" ( 27 / 41 ) 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "slim selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "sddm selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "lightdm selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "mdm selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "lxdm selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "kdm has 0 implementation classes." 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "kdm selected but not installed" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "Using rootMountPoint '/tmp/calamares-root-i9ibix51'" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: ".. selected DE gnome" 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: "Setting up autologin for user tind." 
+2026-10-14 - 10:28:54 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:54 [6]:     Starting job "networkcfg" ( 28 / 41 ) 
+2026-10-14 - 10:28:54 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:55 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:55 [6]:     Starting job "hwclock" ( 29 / 41 ) 
+2026-10-14 - 10:28:55 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:55 [6]:     .. Running QList("hwclock", "--systohc", "--utc") 
+2026-10-14 - 10:28:55 [6]: [PYTHON JOB]: "Hwclock set using RTC method." 
+2026-10-14 - 10:28:55 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:55 [6]:     Starting job "services-systemd" ( 30 / 41 ) 
+2026-10-14 - 10:28:55 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:55 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:55 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-bootloader-config'" ( 31 / 41 ) 
+2026-10-14 - 10:28:55 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-bootloader-config") 
+2026-10-14 - 10:28:56 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:56 [6]:     Starting job "grubcfg" ( 32 / 41 ) 
+2026-10-14 - 10:28:56 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:56 [6]:     .. Running QList("sh", "-c", "which dracut") 
+2026-10-14 - 10:28:56 [6]:     .. Target cmd: QList("sh", "-c", "which dracut") Exit code: 1 (no output) 
+2026-10-14 - 10:28:56 [6]:     .. Running QList("sh", "-c", "which plymouth") 
+2026-10-14 - 10:28:56 [6]:     .. Running QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") 
+2026-10-14 - 10:28:56 [6]:     .. Target cmd: QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") Exit code: 2 output:
+grep: /etc/mkinitcpio.conf: No such file or directory
+2026-10-14 - 10:28:56 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:56 [6]:     Starting job "bootloader" ( 33 / 41 ) 
+2026-10-14 - 10:28:56 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:56 [6]: [PYTHON JOB]: "Bootloader: grub (efi)" 
+2026-10-14 - 10:28:56 [6]:     .. Running QList("grub-install", "--target=x86_64-efi", "--efi-directory=/boot/efi", "--bootloader-id=Tind", "--force") 
+2026-10-14 - 10:28:57 [6]: [PYTHON JOB]: "UEFI Fallback: True" 
+2026-10-14 - 10:28:57 [6]: [PYTHON JOB]: "  .. installing 'bootx64.efi' fallback firmware" 
+2026-10-14 - 10:28:57 [6]:     .. Running QList("grub-mkconfig", "-o", "/boot/grub/grub.cfg") 
+2026-10-14 - 10:28:58 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:28:58 [6]:     Starting job "packages" ( 34 / 41 ) 
+2026-10-14 - 10:28:58 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:28:58 [6]: [PYTHON JOB]: "Installer pakker." 
+2026-10-14 - 10:28:58 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot") 
+2026-10-14 - 10:28:59 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-14 - 10:29:01 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") 
+2026-10-14 - 10:29:01 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") Exit code: 100 output:
+Reading package lists...
+Building dependency tree...
+Reading state information...
+E: Unable to locate package live-boot-doc
+2026-10-14 - 10:29:01 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-boot-doc" 
+2026-10-14 - 10:29:01 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config") 
+2026-10-14 - 10:29:02 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-14 - 10:29:03 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") 
+2026-10-14 - 10:29:04 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") Exit code: 100 output:
+Reading package lists...
+Building dependency tree...
+Reading state information...
+E: Unable to locate package live-config-doc
+2026-10-14 - 10:29:04 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-config-doc" 
+2026-10-14 - 10:29:04 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-systemd") 
+2026-10-14 - 10:29:04 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-14 - 10:29:04 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") 
+2026-10-14 - 10:29:04 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") Exit code: 100 output:
+Reading package lists...
+Building dependency tree...
+Reading state information...
+E: Unable to locate package live-tools
+2026-10-14 - 10:29:04 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-tools" 
+2026-10-14 - 10:29:04 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "tind-installer") 
+2026-10-14 - 10:29:05 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-14 - 10:29:14 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") 
+2026-10-14 - 10:29:14 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") Exit code: 100 output:
+Reading package lists...
+Building dependency tree...
+Reading state information...
+E: Unable to locate package calamares-settings-debian
+2026-10-14 - 10:29:14 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares-settings-debian" 
+2026-10-14 - 10:29:14 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") 
+2026-10-14 - 10:29:14 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") Exit code: 100 output:
+Reading package lists...
+Building dependency tree...
+Reading state information...
+E: Unable to locate package calamares
+2026-10-14 - 10:29:14 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares" 
+2026-10-14 - 10:29:14 [6]: [PYTHON JOB]: "Pretty name: Installer pakker., setting progress.." 
+2026-10-14 - 10:29:14 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:14 [6]:     Starting job "plymouthcfg" ( 35 / 41 ) 
+2026-10-14 - 10:29:14 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:29:14 [6]:     .. Running QList("sh", "-c", "which plymouth") 
+2026-10-14 - 10:29:14 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:14 [6]:     Starting job "initramfscfg" ( 36 / 41 ) 
+2026-10-14 - 10:29:14 [6]: [PYTHON JOB]: Found gettext "nb_NO" in "/usr/share/locale/nb_NO" 
+2026-10-14 - 10:29:14 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:14 [6]:     Starting job "Creating initramfs…" ( 37 / 41 ) 
+2026-10-14 - 10:29:14 [6]: virtual Calamares::JobResult InitramfsJob::exec()
+2026-10-14 - 10:29:14 [6]:     Updating initramfs with kernel "all" 
+2026-10-14 - 10:29:14 [6]:     .. Running QList("update-initramfs", "-k", "all", "-c", "-t") 
+2026-10-14 - 10:29:31 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:31 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" ( 38 / 41 ) 
+2026-10-14 - 10:29:31 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u") 
+2026-10-14 - 10:29:31 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:31 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" ( 39 / 41 ) 
+2026-10-14 - 10:29:31 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media -u") 
+2026-10-14 - 10:29:38 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:38 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-final'" ( 40 / 41 ) 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-final") 
+2026-10-14 - 10:29:38 [6]: virtual void Calamares::JobThread::run()
+2026-10-14 - 10:29:38 [6]:     Starting job "Unmounting file systems…" ( 41 / 41 ) 
+2026-10-14 - 10:29:38 [6]: Calamares::JobResult unmountTargetMounts(const QString&)
+2026-10-14 - 10:29:38 [6]:     Read 9 entries from "/tmp/calamares-root-i9ibix51/" 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/sys/firmware/efi/efivars") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/sys") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/run/udev") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/run/live/medium") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/run") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/proc") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/dev/pts") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/dev") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51/boot/efi") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:38 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-i9ibix51") 
+2026-10-14 - 10:29:39 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-14 - 10:29:39 [6]:     .. Running QList("sync") 
+2026-10-14 - 10:29:39 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
+2026-10-14 - 10:29:39 [6]:     QML "onLeave()" is missing. 
+2026-10-14 - 10:29:39 [6]: void Config::doNotify(bool, bool)
+2026-10-14 - 10:29:39 [6]:     Notification not sent; completion: succeeded 
+2026-10-14 - 10:29:39 [6]: void {anonymous}::PowerManagementInterface::uninhibitSleep()
+2026-10-14 - 10:29:39 [6]:     Sleep was never inhibited. 

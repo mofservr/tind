@@ -6,7 +6,7 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 2 {'wait': 150}
 3 {'click': [400, 300]}
 4 {'wait': 2}
-5 {'click': [42, 595]}
+5 {'click': [42, 625]}
 6 {'wait': 4}
 7 {'type': 'Install'}
 8 {'wait': 3}
@@ -85,5 +85,5 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 3 {'shot': '61-installed-b'}
 4 {'wait': 150}
 5 {'shot': '62-installed-c'}
-disk size: 196 KiB
-    disk size: 196 KiB
+disk size: 6.89 GiB
+    disk size: 6.89 GiB
