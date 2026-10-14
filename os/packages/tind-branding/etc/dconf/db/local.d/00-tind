@@ -17,7 +17,7 @@ primary-color='#0C1523'
 
 [org/gnome/shell]
 enabled-extensions=['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
-favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'thunderbird.desktop', 'libreoffice-startcenter.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
+favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'thunderbird.desktop', 'libreoffice-startcenter.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
 
 [org/gnome/shell/extensions/dash-to-dock]
 dock-position='LEFT'

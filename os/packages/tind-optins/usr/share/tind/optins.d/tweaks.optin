@@ -1,0 +1,4 @@
+NAME="GNOME Tweaks"
+DESC="Extra desktop settings (apt)"
+STATUS="ready"
+APT_PACKAGES="gnome-tweaks"
