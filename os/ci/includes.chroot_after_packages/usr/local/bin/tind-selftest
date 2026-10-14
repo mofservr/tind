@@ -65,6 +65,13 @@ sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/li
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
 sec grub defaults; ls /etc/default/grub.d 2>&1
+sec "boot mode and bootloader"
+[ -d /sys/firmware/efi ] && echo "booted via: UEFI" || echo "booted via: BIOS"
+dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' os-prober grub-pc-bin grub-efi-amd64-bin ntfs-3g 2>&1
+grep -rh OS_PROBER /etc/default/grub /etc/default/grub.d 2>&1
+ls /boot/grub 2>&1 | tr '\n' ' '; echo
+grep -c menuentry /boot/grub/grub.cfg 2>&1
+lsblk -o NAME,SIZE,FSTYPE,MOUNTPOINT 2>&1 | head -12
 sec "extras chosen in the installer"
 cat /var/lib/tind/pending-extras 2>&1; cat /var/lib/tind/extras-status 2>&1
 tail -40 /var/log/tind-extras.log 2>&1 | cut -c1-160

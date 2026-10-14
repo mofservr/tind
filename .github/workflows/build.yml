@@ -54,6 +54,9 @@ jobs:
             cat /tmp/cal/x/etc/calamares/modules/bootloader.conf 2>&1 | grep -v '^#' | grep -v '^$' | head -40 || true
             for f in $(grep -rl 'grub' /tmp/cal/x/usr/sbin /tmp/cal/x/usr/bin /tmp/cal/x/usr/lib/calamares 2>/dev/null | head -4); do echo "-- $f"; cat "$f" | head -80; done || true
             grep -v '^#' /tmp/cal/x/etc/calamares/modules/packages.conf 2>&1 | grep -v '^$' | head -30 || true
+            echo "== calamares bootloader helper"
+            cat /tmp/cal/x/usr/share/calamares/helpers/calamares-bootloader-config 2>&1 | head -80 || true
+            cat /tmp/cal/x/usr/lib/calamares/modules/bootloader-config/module.desc 2>&1 | head -20 || true
             echo "== backports kernel and nvidia"
             echo "deb http://deb.debian.org/debian trixie-backports main contrib non-free non-free-firmware" > /etc/apt/sources.list.d/bp.list
             apt-get update >/dev/null 2>&1 || true
