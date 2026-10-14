@@ -165,9 +165,15 @@
   ]
  },
  {
+  "click": [
+   1007,
+   781
+  ]
+ },
+ {
   "wait": 4
  },
  {
-  "shot": "32-confirm"
+  "shot": "40-confirm"
  }
 ]
