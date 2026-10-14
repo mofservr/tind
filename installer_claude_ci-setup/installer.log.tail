@@ -41,9 +41,10 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 37 {'wait': 6}
 38 {'shot': '31-summary'}
 39 {'click': [1007, 735]}
-40 {'wait': 4}
-41 {'shot': '32-confirm'}
+40 {'click': [1007, 781]}
+41 {'wait': 4}
+42 {'shot': '40-confirm'}
 == phase 2: boot the installed disk
 0 {'wait': 5}
-disk size: 196 KiB
-    disk size: 196 KiB
+disk size: 9.76 MiB
+    disk size: 9.76 MiB
