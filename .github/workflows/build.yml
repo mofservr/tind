@@ -17,7 +17,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev shellcheck libxml2-utils jq xz-utils sudo
+          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev shellcheck libxml2-utils jq xz-utils sudo curl
       - uses: actions/checkout@v4
       - name: Lint, build packages, check package names
         run: |
