@@ -1,0 +1,33 @@
+#!/bin/bash
+# Developer base set: git, compilers, Python tooling, GitHub CLI and VS Code (Microsoft apt repository).
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: developer tools setup"
+# Fingerprint of Microsoft's package signing key; the key is refused if it does not match.
+MS_FPR="BC528686B50D79E339D3721CEB3E94ADBE1229CF"
+apt-get update
+apt_install git build-essential python3-pip python3-venv pipx curl jq tmux openssh-client gh
+tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+curl -fsSL https://packages.microsoft.com/keys/microsoft.asc -o "$tmp/ms.asc"
+got="$(gpg --show-keys --with-colons "$tmp/ms.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+if [ "$got" != "$MS_FPR" ]; then
+    echo "Microsoft signing key fingerprint mismatch: got $got" >&2; exit 1
+fi
+install -d -m 0755 /usr/share/keyrings
+gpg --dearmor < "$tmp/ms.asc" > /usr/share/keyrings/microsoft.gpg
+chmod 0644 /usr/share/keyrings/microsoft.gpg
+cat > /etc/apt/sources.list.d/vscode.sources <<'SRC'
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/microsoft.gpg
+SRC
+# the code package would otherwise add its own duplicate repository entry
+echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
+apt-get update
+apt_install code
+echo "== Tind: developer tools setup done"

@@ -2,7 +2,8 @@
 tind-desktop
 tind-apps
 tind-installer
-tind-gaming
+tind-graphics
+tind-extras
 
 # live session and boot
 gdm3

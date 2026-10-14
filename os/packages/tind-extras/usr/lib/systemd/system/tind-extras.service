@@ -1,0 +1,13 @@
+[Unit]
+Description=Tind: install the extras chosen in the installer
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=/var/lib/tind/pending-extras
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/extras-firstboot
+TimeoutStartSec=3h
+
+[Install]
+WantedBy=multi-user.target

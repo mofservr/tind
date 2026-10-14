@@ -1,0 +1,24 @@
+#!/bin/bash
+# At login: tell the user how the installer's extras are getting on. Final states are shown once.
+status=/var/lib/tind/extras-status
+[ -r "$status" ] || exit 0
+ack="${XDG_CACHE_HOME:-$HOME/.cache}/tind-extras-ack"
+mkdir -p "$(dirname "$ack")"
+final() { : > "$ack"; exit 0; }
+last=""
+for _ in $(seq 1 480); do
+    cur="$(cat "$status" 2>/dev/null)"
+    case "$cur" in
+        done|offline|failed*) if [ -e "$ack" ] && [ "$ack" -nt "$status" ]; then exit 0; fi ;;
+    esac
+    if [ "$cur" != "$last" ]; then
+        case "$cur" in
+            running) notify-send -i system-software-install "Tind" "Installing your extras in the background. This can take a while." ;;
+            done)    notify-send -i emblem-ok "Tind" "Your extras are ready. Look in the app grid."; final ;;
+            offline) notify-send -i network-error "Tind" "No internet yet. Your extras will install when you are online. You can also pick them in Tind Apps."; final ;;
+            failed*) notify-send -i dialog-warning "Tind" "Some extras did not install. Open Tind Apps to try again."; final ;;
+        esac
+        last="$cur"
+    fi
+    sleep 15
+done

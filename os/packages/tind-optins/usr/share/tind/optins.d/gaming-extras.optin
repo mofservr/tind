@@ -1,4 +1,0 @@
-NAME="Gaming tools"
-DESC="Lutris, Heroic (Epic/GOG), ProtonUp-Qt, GOverlay, Protontricks (Flatpak)"
-STATUS="ready"
-FLATPAK_REF="net.lutris.Lutris com.heroicgameslauncher.hgl net.davidotek.pupgui2 io.github.benjamimgois.goverlay com.github.Matoking.protontricks"
