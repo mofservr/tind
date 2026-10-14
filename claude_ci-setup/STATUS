@@ -1,4 +1,4 @@
 ref: claude/ci-setup
-sha: cdc051ee50426e89424273446633426461797f8b
-run: 38558023280
-results: packages=failure iso=skipped boot=skipped
+sha: d98b24a9a29286a1c32d947359c827cbb3036cfa
+run: 38558841948
+results: packages=success iso=success boot=success
