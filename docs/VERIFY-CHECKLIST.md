@@ -54,3 +54,10 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - btrfs and snapshots are not set up: Calamares partitioning is Debian's default (ext4).
 - Thunderbird policy is minimal.
 - Proton VPN and the Claude opt-in repo are not configured (URLs not verified).
+
+## Lean desktop (2026-10-14)
+- Proven in CI: tind-desktop names GNOME pieces explicitly (no gnome-core); app grid is Calculator, Camera, Disks, Extensions, Files, Firefox, Image Viewer, LibreOffice, Papers, Print Settings, Settings, Showtime, Software, System Monitor, Terminal, Text Editor, Thunderbird, Tind Apps, Install Tind.
+- Proven: Calamares install of the lean ISO boots to desktop, autologin, no failed units.
+- Removed apps are opt-ins in tind-optins: gnome-extras, gnome-utilities, tweaks.
+- fwupd added for firmware updates through GNOME Software (unproven on real hardware).
+- Unproven: Flathub refs of the new opt-ins; hook 0170 purge result on the next full ISO (launchers verified hidden in build run 38531716185).
