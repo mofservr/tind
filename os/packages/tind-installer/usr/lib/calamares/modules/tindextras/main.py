@@ -1,7 +1,9 @@
-# Calamares job: remember which extras the user ticked so the installed system
-# can set them up on first boot (tind-extras.service).
+# Calamares job: remember which extras the user ticked in the installer launcher
+# (/tmp/tind-extras-choice) so the installed system sets them up on first boot.
 import os
 import libcalamares
+
+CHOICE = "/tmp/tind-extras-choice"
 
 
 def pretty_name():
@@ -9,22 +11,15 @@ def pretty_name():
 
 
 def run():
-    gs = libcalamares.globalstorage
-    root = gs.value("rootMountPoint")
-    chosen = set()
-    keys = list(gs.keys())
-    for key in keys:
-        if key.startswith("packagechooser"):
-            val = gs.value(key)
-            if isinstance(val, str):
-                items = val.split(",")
-            elif isinstance(val, (list, tuple)):
-                items = list(val)
-            else:
-                items = []
-            chosen.update(str(i).strip() for i in items if str(i).strip())
+    root = libcalamares.globalstorage.value("rootMountPoint")
+    chosen = []
+    try:
+        with open(CHOICE) as f:
+            chosen = f.read().split()
+    except OSError:
+        pass
     wanted = [x for x in ("gaming", "dev") if x in chosen]
-    libcalamares.utils.debug("tindextras: chosen=%s wanted=%s keys=%s" % (sorted(chosen), wanted, keys))
+    libcalamares.utils.debug("tindextras: file=%s chosen=%s wanted=%s" % (CHOICE, chosen, wanted))
     if not wanted or not root:
         return None
     d = os.path.join(root, "var/lib/tind")

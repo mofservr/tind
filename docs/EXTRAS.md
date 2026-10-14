@@ -3,8 +3,8 @@
 Nothing from these stacks is on the ISO. Everything is downloaded from Debian (or Microsoft for VS Code), so it needs internet.
 
 ## How the user chooses
-- Installer: the "Extras" page has two items, Games and Developer tools (Calamares `packagechooser@extras`, config `/etc/calamares/modules/packagechooser_extras.conf`).
-- The `tindextras` Calamares job writes the choice to `/var/lib/tind/pending-extras` on the installed system.
+- Installer: clicking "Install Tind" first shows a small checklist (`/usr/lib/tind/install-launcher`, zenity) with two tick boxes, Games and Developer tools, then starts Calamares. (Calamares' own packagechooser page only does single selection and shows a placeholder icon, so it was not used. A native Calamares page can replace this when the design is done.)
+- The choice is written to `/tmp/tind-extras-choice`; the `tindextras` Calamares job copies it to `/var/lib/tind/pending-extras` on the installed system.
 - First boot: `tind-extras.service` waits for internet, runs the chosen setup scripts, writes `/var/lib/tind/extras-status` (running, done, offline, failed:...) and logs to `/var/log/tind-extras.log`. An autostart notification tells the user how it went. If offline, the marker stays and it retries at next boot.
 - Later: the same two entries exist in Tind Apps (`tind-optins`) and call the same scripts.
 
