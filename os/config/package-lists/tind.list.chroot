@@ -12,3 +12,11 @@ live-config-systemd
 locales
 keyboard-configuration
 sudo
+
+# installed-system essentials (Calamares installs from this image; the live image has no apt indices)
+grub-efi
+grub-efi-amd64
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
+util-linux-extra
