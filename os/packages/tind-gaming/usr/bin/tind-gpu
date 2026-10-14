@@ -19,6 +19,9 @@ case "${1:-status}" in
         [ "$(id -u)" -eq 0 ] || exec pkexec "$0" secureboot
         update-secureboot-policy --new-key 2>&1 || true
         update-secureboot-policy --enroll-key
+        # rebuild the NVIDIA modules so they are signed with this machine's own key
+        mod="$(dkms status 2>/dev/null | sed -n 's#^\(nvidia-current/[^,:]*\)[,:].*#\1#p' | head -1)"
+        if [ -n "$mod" ]; then dkms remove "$mod" --all >/dev/null 2>&1 || true; dkms autoinstall; fi
         echo "Reboot, and in the blue MOK screen choose Enroll MOK with the password you set." ;;
     *) echo "usage: tind-gpu [status|secureboot]" >&2; exit 1 ;;
 esac

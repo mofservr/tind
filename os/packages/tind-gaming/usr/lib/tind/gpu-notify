@@ -1,0 +1,13 @@
+#!/bin/bash
+# At login: if Secure Boot blocks the NVIDIA driver, offer to enroll a key (asks once per boot).
+command -v mokutil >/dev/null 2>&1 || exit 0
+lspci -nn | grep -qiE '(vga|3d|display).*\[10de:' || exit 0
+mokutil --sb-state 2>/dev/null | grep -qi 'SecureBoot enabled' || exit 0
+lsmod | grep -q '^nvidia ' && exit 0
+stamp="/run/user/$(id -u)/tind-gpu-notify"
+[ -e "$stamp" ] && exit 0
+: > "$stamp"
+if zenity --question --title="NVIDIA graphics" --width=420 \
+    --text="Secure Boot is on, so the NVIDIA driver is not loaded yet.\n\nEnroll a signing key now? You will set a one-time password and restart once."; then
+    exec gnome-terminal -- tind-gpu secureboot
+fi

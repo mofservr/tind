@@ -1,4 +1,4 @@
-NAME="Gaming extras (proposed)"
-DESC="ProtonUp-Qt, Heroic Games Launcher and Lutris (Flatpak)"
-STATUS="proposed"
-FLATPAK_REF="net.davidotek.pupgui2 com.heroicgameslauncher.hgl net.lutris.Lutris"
+NAME="Gaming tools"
+DESC="Lutris, Heroic (Epic/GOG), ProtonUp-Qt, GOverlay, Protontricks (Flatpak)"
+STATUS="ready"
+FLATPAK_REF="net.lutris.Lutris com.heroicgameslauncher.hgl net.davidotek.pupgui2 io.github.benjamimgois.goverlay com.github.Matoking.protontricks"

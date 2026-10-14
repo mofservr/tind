@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Tind GPU check
+Exec=/usr/lib/tind/gpu-notify
+NoDisplay=true
+X-GNOME-Autostart-enabled=true
