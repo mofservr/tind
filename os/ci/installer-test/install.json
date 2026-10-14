@@ -60,7 +60,10 @@
   "shot": "20-extras-ticked"
  },
  {
-  "key": "ret"
+  "click": [
+   844,
+   519
+  ]
  },
  {
   "wait": 30
