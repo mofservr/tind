@@ -1,10 +1,18 @@
 == bash -n and shellcheck (warnings and errors)
+
+In os/packages/tind-extras/usr/lib/tind/extras-firstboot line 13:
+for i in $(seq 1 60); do
+^-^ SC2034 (warning): i appears unused. Verify use (or export if used externally).
+
+For more information:
+  https://www.shellcheck.net/wiki/SC2034 -- i appears unused. Verify use (or ...
 == JSON and XML
 == build .deb packages
 built tind-apps_0.1.0_all.deb
 built tind-branding_0.1.0_all.deb
 built tind-desktop_0.1.0_all.deb
-built tind-gaming_0.1.0_all.deb
+built tind-extras_0.1.0_all.deb
+built tind-graphics_0.1.0_all.deb
 built tind-installer_0.1.0_all.deb
 built tind-mozilla-config_0.1.0_all.deb
 built tind-optins_0.1.0_all.deb
@@ -12,6 +20,7 @@ built tind-wireguard_0.1.0_all.deb
 == package names exist in trixie (with contrib, non-free, non-free-firmware)
 == Depends (must exist)
 ok       adwaita-icon-theme
+ok       apt
 ok       bluez
 ok       ca-certificates
 ok       calamares
@@ -19,13 +28,13 @@ ok       calamares-settings-debian
 ok       cups
 ok       curl
 ok       dconf-cli
+ok       debconf
 ok       dkms
 ok       evolution-data-server
 ok       firefox-esr
 ok       firmware-amd-graphics
 ok       flatpak
 ok       fonts-cantarell
-ok       gamemode
 ok       gdm3
 ok       glib-networking
 ok       gnome-backgrounds
@@ -46,6 +55,7 @@ ok       gnome-sushi
 ok       gnome-system-monitor
 ok       gnome-terminal
 ok       gnome-text-editor
+ok       gnupg
 ok       gsettings-desktop-schemas
 ok       gstreamer1.0-packagekit
 ok       gstreamer1.0-plugins-base
@@ -56,6 +66,7 @@ ok       libatk-adaptor
 ok       libcanberra-pulse
 ok       libgl1-mesa-dri
 ok       libglib2.0-bin
+ok       libnotify-bin
 ok       libpam-gnome-keyring
 ok       libreoffice-calc
 ok       libreoffice-gtk3
@@ -63,7 +74,6 @@ ok       libreoffice-impress
 ok       libreoffice-writer
 ok       linux-headers-amd64
 ok       loupe
-ok       mangohud
 ok       mesa-utils
 ok       mesa-va-drivers
 ok       mesa-vdpau-drivers
@@ -80,7 +90,6 @@ ok       pciutils
 ok       pipewire-audio
 ok       pkexec
 ok       showtime
-ok       steam-devices
 ok       system-config-printer
 ok       system-config-printer-common
 ok       system-config-printer-udev
