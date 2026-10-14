@@ -10,7 +10,7 @@ exec >>"$log" 2>&1
 echo "=== $(date -Is) extras first boot: $(cat "$marker")"
 echo running > "$status"
 ok=0
-for i in $(seq 1 60); do
+for _ in $(seq 1 60); do
     if curl -fsS -m 5 -o /dev/null https://deb.debian.org/debian/dists/trixie/Release; then ok=1; break; fi
     sleep 5
 done
