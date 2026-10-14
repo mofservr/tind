@@ -37,8 +37,8 @@ H: Handlers=kbd event4
 by-path  event0  event1  event2  event3  event4  mice  mouse0  mouse1
 
 ##### session
-1 1000 tind seat0 1214 user    tty2 no -
-2 1000 tind -     1223 manager -    no -
+1 1000 tind seat0 1215 user    tty2 no -
+2 1000 tind -     1224 manager -    no -
 Name=tind Seat=seat0 Type=wayland Active=yes State=active 
 Name=tind Seat= Type=unspecified Active=yes State=active 
 
@@ -51,7 +51,7 @@ ufw: active
 gdm: active
 
 ##### resolv.conf
-lrwxrwxrwx 1 root root 39 okt.  14 09:44 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  14 10:22 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
 
 ##### ufw
 Status: active
@@ -102,7 +102,7 @@ grep: skrivefeil: Røret ble brutt
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{d021e954-ff00-4509-ad63-c9501484b28a}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{4a64118d-c15c-40e4-adc0-7f68bb3e5586}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -119,8 +119,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "9f7cad4d-bcc9-41d9-96d9-38cddf2698ca");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "607bfdab-124b-4a67-95ce-6d52867ff861");
+user_pref("toolkit.telemetry.cachedClientID", "670c57eb-6bad-4197-84b7-3dd6bf6d3c82");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "717d573e-e4be-4a14-a0ab-6d405a56d00e");
 user_pref("toolkit.telemetry.previousBuildID", "20260923073912");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -165,7 +165,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 221 okt.  14 09:31 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 221 okt.  14 10:00 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=calamares-install-debian
 Icon=tind-logo
@@ -177,8 +177,8 @@ NoDisplay=true
 bitwarden.optin  gaming-extras.optin	nextcloud.optin  tweaks.optin
 claude.install	 gnome-extras.optin	spotify.optin
 claude.optin	 gnome-utilities.optin	steam.optin
--rwxr-xr-x 1 root root 1955 okt.  14 09:31 /usr/bin/tind-optins
--rwxr-xr-x 1 root root  854 okt.  14 09:31 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 1955 okt.  14 10:00 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 okt.  14 10:00 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -194,40 +194,28 @@ bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homew
 90-tind.cfg
 
 ##### desktop entries shown in the app grid (name, package)
-Name=Advanced Network Configuration | nm-connection-editor | nm-connection-editor.desktop
 Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
 Name=Camera | gnome-snapshot | org.gnome.Snapshot.desktop
 Name=Disks | gnome-disk-utility | org.gnome.DiskUtility.desktop
 Name=Extensions | gnome-shell-extension-prefs | org.gnome.Extensions.desktop
 Name=Files | nautilus | org.gnome.Nautilus.desktop
 Name=Firefox ESR | firefox-esr | firefox-esr.desktop
-Name=GNOME System Monitor | gnome-system-monitor | gnome-system-monitor-kde.desktop
-Name=Help | yelp | yelp.desktop
-Name=IBus Preferences | ibus | org.freedesktop.IBus.Setup.desktop
 Name=Image Viewer | loupe | org.gnome.Loupe.desktop
-Name=Input Method | im-config | im-config.desktop
 Name=Install Tind | tind-installer | tind-install.desktop
-Name=KDE System Settings | systemsettings | kdesystemsettings.desktop
 Name=LibreOffice Calc | libreoffice-calc | libreoffice-calc.desktop
-Name=LibreOffice Draw | libreoffice-draw | libreoffice-draw.desktop
 Name=LibreOffice Impress | libreoffice-impress | libreoffice-impress.desktop
 Name=LibreOffice | libreoffice-common | libreoffice-startcenter.desktop
-Name=LibreOffice Math | libreoffice-math | libreoffice-math.desktop
 Name=LibreOffice Writer | libreoffice-writer | libreoffice-writer.desktop
 Name=Papers | papers | org.gnome.Papers.desktop
-Name=Parental Controls | malcontent-gui | org.freedesktop.MalcontentControl.desktop
 Name=Print Settings | system-config-printer | system-config-printer.desktop
 Name=Settings | gnome-control-center | org.gnome.Settings.desktop
 Name=Showtime | showtime | org.gnome.Showtime.desktop
 Name=Software | gnome-software | org.gnome.Software.desktop
 Name=System Monitor | gnome-system-monitor | org.gnome.SystemMonitor.desktop
-Name=System Settings | systemsettings | systemsettings.desktop
 Name=Terminal | gnome-terminal | org.gnome.Terminal.desktop
 Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
 Name=Thunderbird | thunderbird | thunderbird.desktop
 Name=Tind Apps | tind-optins | tind-optins.desktop
-Name=Vim | vim-common | vim.desktop
-Name=Zutty | zutty | zutty.desktop
 
 ##### largest installed packages
 301269	firefox-esr
@@ -243,7 +231,6 @@ Name=Zutty | zutty | zutty.desktop
 91908	firmware-amd-graphics
 91217	fonts-noto-cjk
 81104	mesa-vulkan-drivers
-72820	gnome-user-docs
 64591	firmware-nvidia-graphics
 60869	firmware-nvidia-tesla-535-gsp
 60463	firmware-marvell-prestera
@@ -255,38 +242,41 @@ Name=Zutty | zutty | zutty.desktop
 37371	libicu76
 36991	pocketsphinx-en-us
 36937	gnome-backgrounds
-installed packages: 1687
+35540	libmozjs-128-0
+installed packages: 1682
 
 ##### journal errors (this boot)
-okt. 14 09:44:32 tind adduser[872]: The group `powerdev' does not exist.
-okt. 14 09:44:32 tind adduser[888]: The group `debian-tor' does not exist.
-okt. 14 09:44:38 tind gdm-autologin][1214]: gkr-pam: couldn't unlock the login keyring.
-okt. 14 09:44:39 tind systemd[1223]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1376.scope - Application launched by gnome-session-binary.
+okt. 14 10:22:41 tind adduser[872]: The group `powerdev' does not exist.
+okt. 14 10:22:41 tind adduser[888]: The group `debian-tor' does not exist.
+okt. 14 10:22:47 tind gdm-autologin][1215]: gkr-pam: couldn't unlock the login keyring.
+okt. 14 10:22:48 tind systemd[1224]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1374.scope - Application launched by gnome-session-binary.
+okt. 14 10:22:48 tind systemd[1224]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1378.scope - Application launched by gnome-session-binary.
+okt. 14 10:22:48 tind systemd[1224]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1393.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-okt. 14 09:44:46 tind gnome-shell[1389]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 09:44:46 tind gnome-shell[1389]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 09:44:46 tind gnome-shell[1389]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 09:44:46 tind gnome-shell[1389]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 09:44:46 tind gnome-shell[1389]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 09:44:47 tind gnome-shell[1389]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 09:44:49 tind gnome-shell[1389]: GNOME Shell started at Wed Oct 14 2026 09:44:43 GMT+0200 (sentraleuropeisk sommertid)
-okt. 14 09:44:49 tind gnome-shell[1389]: Registering session with GDM
+okt. 14 10:22:54 tind gnome-shell[1391]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 10:22:54 tind gnome-shell[1391]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 10:22:54 tind gnome-shell[1391]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 10:22:54 tind gnome-shell[1391]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 10:22:56 tind gnome-shell[1391]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 10:22:56 tind gnome-shell[1391]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+okt. 14 10:22:58 tind gnome-shell[1391]: GNOME Shell started at Wed Oct 14 2026 10:22:52 GMT+0200 (sentraleuropeisk sommertid)
+okt. 14 10:22:58 tind gnome-shell[1391]: Registering session with GDM
 =====TIND-SELFTEST-END=====
