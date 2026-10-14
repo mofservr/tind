@@ -5,23 +5,23 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 1 {'key': 'ret'}
 2 {'wait': 150}
 3 {'shot': '01-desktop'}
-4 {'key': 'meta_l', 'hold': 300}
-5 {'wait': 3}
-6 {'shot': '02-after-super'}
-7 {'type': 'Install'}
-8 {'wait': 3}
-9 {'shot': '03-after-typing'}
-10 {'key': 'ret'}
-11 {'wait': 20}
-12 {'shot': '04-after-enter'}
+4 {'click': [400, 300]}
+5 {'wait': 2}
+6 {'click': [42, 595]}
+7 {'wait': 4}
+8 {'shot': '02-after-click-apps'}
+9 {'type': 'Install'}
+10 {'wait': 3}
+11 {'shot': '03-after-typing'}
+12 {'key': 'ret'}
 13 {'wait': 20}
-14 {'shot': '05-wait-00'}
+14 {'shot': '04-after-enter'}
 15 {'wait': 20}
-16 {'shot': '05-wait-01'}
+16 {'shot': '05-wait-00'}
 17 {'wait': 20}
-18 {'shot': '05-wait-02'}
+18 {'shot': '05-wait-01'}
 19 {'wait': 20}
-20 {'shot': '05-wait-03'}
+20 {'shot': '05-wait-02'}
 == phase 2: boot the installed disk
 0 {'wait': 5}
 disk size: 196 KiB
