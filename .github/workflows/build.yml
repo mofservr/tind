@@ -49,6 +49,18 @@ jobs:
             cat x/usr/share/calamares/modules/packagechooser.conf 2>/dev/null | head -80 || true
             ls x/usr/lib/*/calamares/modules 2>/dev/null | tr '\n' ' ' || true; echo
             cd "$GITHUB_WORKSPACE"
+            echo "== calamares-settings-debian files and bootloader config"
+            dpkg-deb -c /tmp/cal/calamares-settings-debian_*.deb | awk '{print $6}' | grep -v '/$' | head -60 || true
+            cat /tmp/cal/x/etc/calamares/modules/bootloader.conf 2>&1 | grep -v '^#' | grep -v '^$' | head -40 || true
+            for f in $(grep -rl 'grub' /tmp/cal/x/usr/sbin /tmp/cal/x/usr/bin /tmp/cal/x/usr/lib/calamares 2>/dev/null | head -4); do echo "-- $f"; cat "$f" | head -80; done || true
+            grep -v '^#' /tmp/cal/x/etc/calamares/modules/packages.conf 2>&1 | grep -v '^$' | head -30 || true
+            echo "== backports kernel and nvidia"
+            echo "deb http://deb.debian.org/debian trixie-backports main contrib non-free non-free-firmware" > /etc/apt/sources.list.d/bp.list
+            apt-get update >/dev/null 2>&1 || true
+            for p in linux-image-amd64 linux-headers-amd64 nvidia-kernel-dkms nvidia-driver os-prober grub-pc-bin; do
+              echo "-- $p: stable=$(apt-cache policy $p | sed -n 's/^  Candidate: //p') backports=$(apt-cache policy $p | grep -B1 'trixie-backports' | head -1 | awk '{print $1}')"
+            done
+            apt-cache policy linux-image-amd64 | head -12 || true
             echo "== calamares QML module examples"
             for m in packagechooserq welcomeq; do echo "-- $m/module.desc"; cat /tmp/cal/x/usr/lib/x86_64-linux-gnu/calamares/modules/$m/module.desc 2>&1 | head -20; done || true
             find /tmp/cal/x -name '*.qml' | head -30 || true
