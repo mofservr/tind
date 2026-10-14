@@ -75,7 +75,76 @@
   "wait": 3
  },
  {
-  "shot": "20-erase-selected"
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
+  "click": [
+   426,
+   204
+  ]
+ },
+ {
+  "type": "Tind Test"
+ },
+ {
+  "click": [
+   426,
+   264
+  ]
+ },
+ {
+  "key": "ctrl-a"
+ },
+ {
+  "type": "tind"
+ },
+ {
+  "click": [
+   426,
+   324
+  ]
+ },
+ {
+  "key": "ctrl-a"
+ },
+ {
+  "type": "tindtest"
+ },
+ {
+  "click": [
+   426,
+   384
+  ]
+ },
+ {
+  "type": "tind-test-pw"
+ },
+ {
+  "click": [
+   632,
+   384
+  ]
+ },
+ {
+  "type": "tind-test-pw"
+ },
+ {
+  "click": [
+   334,
+   420
+  ]
+ },
+ {
+  "wait": 2
+ },
+ {
+  "shot": "30-users-filled"
  },
  {
   "click": [
@@ -87,6 +156,18 @@
   "wait": 6
  },
  {
-  "shot": "21-users"
+  "shot": "31-summary"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 4
+ },
+ {
+  "shot": "32-confirm"
  }
 ]
