@@ -1,28 +1,3 @@
-ok       firmware-iwlwifi
-ok       firmware-linux
-ok       firmware-misc-nonfree
-ok       firmware-realtek
-ok       fonts-noto-cjk
-ok       fonts-noto-color-emoji
-ok       fonts-noto-core
-ok       fonts-noto-mono
-ok       fonts-noto-ui-core
-ok       fwupd
-ok       gdm3
-ok       gnome-shell-extension-dashtodock
-ok       gnome-software
-ok       gnome-software-plugin-fwupd
-ok       grub-efi
-ok       grub-efi-amd64
-ok       grub-efi-amd64-signed
-ok       hunspell-en-us
-ok       hunspell-no
-ok       intel-media-va-driver-non-free
-ok       keyboard-configuration
-ok       libreoffice-help-en-us
-ok       libreoffice-l10n-nb
-ok       libreoffice-l10n-nn
-ok       live-config
 ok       live-config-systemd
 ok       locales
 ok       low-memory-monitor
@@ -42,142 +17,6 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== calamares stock config
-# Configuration file for Calamares
-# Syntax is YAML 1.2
----
-
-# "local" is LIBDIR/calamares/modules with settings in SHARE/calamares/modules
-modules-search: [ local, /usr/lib/calamares/modules ]
-
-# If this is set to true, Calamares refers to itself as a "setup program"
-# rather than an "installer". Defaults to the value of dont-chroot, but
-# Calamares will complain if this is not explicitly set.
-oem-setup: false
-
-# If this is set to true, the "Cancel" button will be disabled entirely.
-# The button is also hidden from view.
-#
-# This can be useful if when e.g. Calamares is used as a post-install
-# configuration tool and you require the user to go through all the
-# configuration steps.
-#
-# Default is false, but Calamares will complain if this is not explicitly set.
-#
-# YAML: boolean.
-disable-cancel: false
-
-# If this is set to true, the "Cancel" button will be disabled once
-# you start the 'Installation', meaning there won't be a way to cancel
-# the Installation until it has finished or installation has failed.
-#
-# Default is false, but Calamares will complain if this is not explicitly set.
-#
-# YAML: boolean.
-disable-cancel-during-exec: false
-
-# If this is set to true, then once the end of the sequence has
-# been reached, the quit (done) button is clicked automatically
-# and Calamares will close. Default is false: the user will see
-# that the end of installation has been reached, and that things are ok.
-#
-#
-quit-at-end: false
-
-sequence:
-# Phase 1 - prepare.
-# View modules are shown as UI pages, jobs from job modules
-# are executed immediately in the background.
-# Jobs should be executed sparingly (if at all) in this phase.
-- show:
-  - welcome
-  - locale
-  - keyboard
-  - partition
-  - users
-  - summary
-
-# Phase 2 - install.
-# View modules are not shown. Only the view modules shown
-# in the previous phase are allowed, their names should be
-# added here as placeholders to specify the order in which
-# view module jobs should be enqueued. Job modules are
-# also allowed.
-- exec:
-  - partition
-  - mount
-  - unpackfs
-  - luksbootkeyfile
-  - dpkg-unsafe-io
-  - sources-media
-  - machineid
-  - fstab
-  - locale
-  - keyboard
-  - localecfg
-  - users
-  - displaymanager
-  - networkcfg
-  - hwclock
-  - services-systemd
-  - bootloader-config
-  - grubcfg
-  - bootloader
-  - packages
-  - plymouthcfg
-  - initramfscfg
-  - initramfs
-  - dpkg-unsafe-io-undo
-  - sources-media-unmount
-  - sources-final
-  - umount
-
-# Phase 3 - postinstall.
-# View modules are shown as UI pages, jobs from job modules are
-# executed immediately in the background.
-# Jobs should be executed sparingly (if at all) in this phase.
-- show:
-  - finished
-
-# A branding component is a directory, either in
-# SHARE/calamares/branding or in /etc/calamares/branding
-# (the latter takes precedence). The directory must contain a
-# YAML file branding.desc which may reference additional resources
-# (such as images) as paths relative to the current directory.
-# Only the name of the branding component (directory) should be
-# specified here, Calamares then takes care of finding it and
-# loading the contents.
-branding: debian
-
-# If this is set to true, Calamares will show an "Are you sure?" prompt right
-# before each execution phase, i.e. at points of no return. If this is set to
-# false, no prompt is shown. Default is false.
-#
-# YAML: boolean.
-prompt-install: false
-
-# If this is set to true, Calamares will execute all target environment
-# commands in the current environment, without chroot. This setting should
-# only be used when setting up Calamares as a post-install configuration tool,
-# as opposed to a full operating system installer.
-#
-# Some official Calamares modules are not expected to function with this
-# setting. (e.g. partitioning seems like a bad idea, since that is expected to
-# have been done already)
-#
-# Default is false (for a normal installer).
-#
-# YAML: boolean.
-dont-chroot: false
-
--- calamares version: 3.3.14-1
-x/usr/lib/x86_64-linux-gnu/calamares/modules/packagechooserq
-x/usr/lib/x86_64-linux-gnu/calamares/modules/packagechooser
-x/usr/lib/x86_64-linux-gnu/calamares/modules/shellprocess
-bootloader contextualprocess displaymanager dracut dracutlukscfg dummycpp dummyprocess dummypython finished finishedq fsresizer fstab grubcfg hostinfo hwclock initcpio initcpiocfg initramfs initramfscfg interactiveterminal keyboard keyboardq license locale localecfg localeq luksbootkeyfile luksopenswaphookcfg machineid mkinitfs mount netinstall networkcfg notesqml oemid openrcdmcryptcfg packagechooser packagechooserq packages partition plymouthcfg preservefiles rawfs removeuser services-openrc services-systemd shellprocess summary summaryq tracking umount unpackfs unpackfsc users usersq welcome welcomeq zfs zfshostid 
-== microsoft repo reachable
-/__w/_temp/fa74a5d9-d87b-4827-9652-352714f9bb58.sh: line 30: curl: command not found
-/__w/_temp/fa74a5d9-d87b-4827-9652-352714f9bb58.sh: line 31: curl: command not found
 == gaming and graphics candidates
 -- nvidia-driver: 550.163.01-2
 -- nvidia-detect: 550.163.01-2
@@ -322,6 +161,11 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 -- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/25.08 
 == every opt-in Flatpak ref exists on Flathub
 ok       com.bitwarden.desktop
+ok       net.lutris.Lutris
+ok       com.heroicgameslauncher.hgl
+ok       net.davidotek.pupgui2
+ok       io.github.benjamimgois.goverlay
+ok       com.github.Matoking.protontricks
 ok       org.gnome.Calendar
 ok       org.gnome.Contacts
 ok       org.gnome.Weather
@@ -334,6 +178,7 @@ ok       org.gnome.Characters
 ok       org.gnome.SimpleScan
 ok       org.gnome.Connections
 ok       com.spotify.Client
+ok       com.valvesoftware.Steam
 == lutris depends/recommends
 lutris
   Depends: <python3:any>
@@ -383,18 +228,173 @@ lutris
     xdg-desktop-portal-kde:i386
   Recommends: gamemode
   Recommends: <gamescope>
-== tind-extras: real run of the setup scripts
-setup-dev: OK
-setup-gaming: OK
-code 1.141.1-1791833136 ii 
-gamemode 1.8.2-2 ii 
-gh 2.46.0-3 ii 
-git 1:2.47.3-0+deb13u1 ii 
-lutris 0.5.19-2 ii 
-mangohud 0.7.2-2 ii 
-steam-devices 1:1.0.0.83~ds-3 ii 
-steam-installer 1:1.0.0.83~ds-3 ii 
-wine 10.0~repack-6 ii 
-wine32 10.0~repack-6 ii 
-winetricks 20250102-1 ii 
-You are trying to start Visual Studio Code as a super user which isn't recommended. If this was intended, please add the argument `--no-sandbox` and specify an alternate user data directory using the `--user-data-dir` argument.
+== verify-on-debian (informational)
+== release
+Debian GNU/Linux 13 (trixie)
+
+== disk (need ~25 GB free here)
+/dev/root       145G   60G   85G  42% /__w
+
+== KVM
+not available (VM tests will be slow)
+
+== live-build
+not installed
+
+== uBlock Origin package: where does it install?
+Package: webext-ublock-origin-firefox
+Source: ublock-origin
+Version: 1.67.0+dfsg-1~deb13u1
+Installed-Size: 14290
+Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
+
+== Firefox ESR: policy locations it will read (after install)
+ls: cannot access '/etc/firefox/policies': No such file or directory
+ls: cannot access '/usr/lib/firefox-esr/distribution': No such file or directory
+(open about:policies in Firefox ESR: Active should list Tind's policies)
+
+== Calamares branding setting
+grep: /etc/calamares/settings.conf: No such file or directory
+
+== Dash to Dock package / UUID
+gnome-shell-extension-dashtodock:
+  Installed: (none)
+  Candidate: 100-2
+ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
+
+== package names
+== Depends (must exist)
+ok       adwaita-icon-theme
+ok       bluez
+ok       ca-certificates
+ok       calamares
+ok       calamares-settings-debian
+ok       cups
+ok       curl
+ok       dconf-cli
+ok       dkms
+ok       evolution-data-server
+ok       firefox-esr
+ok       firmware-amd-graphics
+ok       flatpak
+ok       fonts-cantarell
+ok       gamemode
+ok       gdm3
+ok       glib-networking
+ok       gnome-backgrounds
+ok       gnome-calculator
+ok       gnome-control-center
+ok       gnome-disk-utility
+ok       gnome-keyring
+ok       gnome-menus
+ok       gnome-session
+ok       gnome-settings-daemon
+ok       gnome-shell
+ok       gnome-shell-extension-dashtodock
+ok       gnome-shell-extension-prefs
+ok       gnome-snapshot
+ok       gnome-software
+ok       gnome-software-plugin-flatpak
+ok       gnome-sushi
+ok       gnome-system-monitor
+ok       gnome-terminal
+ok       gnome-text-editor
+ok       gsettings-desktop-schemas
+ok       gstreamer1.0-packagekit
+ok       gstreamer1.0-plugins-base
+ok       gstreamer1.0-plugins-good
+ok       gvfs-backends
+ok       gvfs-fuse
+ok       libatk-adaptor
+ok       libcanberra-pulse
+ok       libgl1-mesa-dri
+ok       libglib2.0-bin
+ok       libpam-gnome-keyring
+ok       libreoffice-calc
+ok       libreoffice-gtk3
+ok       libreoffice-impress
+ok       libreoffice-writer
+ok       linux-headers-amd64
+ok       loupe
+ok       mangohud
+ok       mesa-utils
+ok       mesa-va-drivers
+ok       mesa-vdpau-drivers
+ok       mesa-vulkan-drivers
+ok       nautilus
+ok       network-manager
+ok       nvidia-detect
+ok       nvidia-driver
+ok       nvidia-kernel-dkms
+ok       nvidia-vulkan-icd
+ok       orca
+ok       papers
+ok       pciutils
+ok       pipewire-audio
+ok       pkexec
+ok       showtime
+ok       steam-devices
+ok       system-config-printer
+ok       system-config-printer-common
+ok       system-config-printer-udev
+ok       systemd-resolved
+ok       thunderbird
+ok       ufw
+ok       unattended-upgrades
+ok       vulkan-tools
+ok       webext-ublock-origin-firefox
+ok       wireguard-tools
+ok       zenity
+== Recommends / package lists (nice to have)
+ok       apt-listchanges
+ok       btrfs-progs
+ok       efibootmgr
+ok       firefox-esr
+ok       firefox-esr-l10n-nb-no
+ok       firefox-esr-l10n-nn-no
+ok       firmware-atheros
+ok       firmware-iwlwifi
+ok       firmware-linux
+ok       firmware-misc-nonfree
+ok       firmware-realtek
+ok       fonts-noto-cjk
+ok       fonts-noto-color-emoji
+ok       fonts-noto-core
+ok       fonts-noto-mono
+ok       fonts-noto-ui-core
+ok       fwupd
+ok       gdm3
+ok       gnome-shell-extension-dashtodock
+ok       gnome-software
+ok       gnome-software-plugin-fwupd
+ok       grub-efi
+ok       grub-efi-amd64
+ok       grub-efi-amd64-signed
+ok       hunspell-en-us
+ok       hunspell-no
+ok       intel-media-va-driver-non-free
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
+ok       low-memory-monitor
+ok       mesa-vulkan-drivers
+ok       mokutil
+ok       myspell-nb
+ok       nvidia-settings
+ok       plymouth
+ok       plymouth-themes
+ok       qrencode
+ok       shim-signed
+ok       snapper
+ok       sudo
+ok       thunderbird
+ok       thunderbird-l10n-nb-no
+ok       thunderbird-l10n-nn-no
+ok       util-linux-extra
+ok       vulkan-tools
+ok       xdg-desktop-portal-gnome
+== exit status: 0
