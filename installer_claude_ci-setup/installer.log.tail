@@ -4,24 +4,30 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 0 {'wait': 35}
 1 {'key': 'ret'}
 2 {'wait': 150}
-3 {'shot': '01-desktop'}
-4 {'click': [400, 300]}
-5 {'wait': 2}
-6 {'click': [42, 595]}
-7 {'wait': 4}
-8 {'shot': '02-after-click-apps'}
-9 {'type': 'Install'}
-10 {'wait': 3}
-11 {'shot': '03-after-typing'}
-12 {'key': 'ret'}
-13 {'wait': 20}
-14 {'shot': '04-after-enter'}
-15 {'wait': 20}
-16 {'shot': '05-wait-00'}
-17 {'wait': 20}
-18 {'shot': '05-wait-01'}
-19 {'wait': 20}
-20 {'shot': '05-wait-02'}
+3 {'click': [400, 300]}
+4 {'wait': 2}
+5 {'click': [42, 595]}
+6 {'wait': 4}
+7 {'type': 'Install'}
+8 {'wait': 3}
+9 {'key': 'ret'}
+10 {'wait': 30}
+11 {'shot': '10-welcome'}
+12 {'click': [1007, 735]}
+13 {'wait': 6}
+14 {'shot': '11-location'}
+15 {'click': [1007, 735]}
+16 {'wait': 6}
+17 {'shot': '12-keyboard'}
+18 {'click': [1007, 735]}
+19 {'wait': 10}
+20 {'shot': '13-partitions'}
+21 {'click': [1007, 735]}
+22 {'wait': 6}
+23 {'shot': '14-after-partitions'}
+24 {'click': [1007, 735]}
+25 {'wait': 6}
+26 {'shot': '15-users'}
 == phase 2: boot the installed disk
 0 {'wait': 5}
 disk size: 196 KiB

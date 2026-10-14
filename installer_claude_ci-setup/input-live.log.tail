@@ -9,24 +9,35 @@ BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1
 -event5   POINTER_MOTION_ABSOLUTE      +0.000s	 31.25/ 37.50
  event5   POINTER_BUTTON               +0.626s	BTN_LEFT (272) pressed, seat count: 1
  event5   POINTER_BUTTON               +1.177s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +3.578s	  3.28/ 74.37
+ event5   POINTER_MOTION_ABSOLUTE      +3.653s	  3.28/ 74.37
  event5   POINTER_BUTTON               +4.278s	BTN_LEFT (272) pressed, seat count: 1
  event5   POINTER_BUTTON               +4.829s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +10.580s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +10.625s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +10.745s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +10.865s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +11.226s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +11.346s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +11.946s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +12.066s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +12.667s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +12.787s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +13.387s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +13.507s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +14.108s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +14.228s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +14.828s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +14.948s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +20.084s	KEY_ENTER (28) pressed
- event4   KEYBOARD_KEY                 +20.129s	KEY_ENTER (28) released
+-event4   KEYBOARD_KEY                 +9.111s	KEY_LEFTSHIFT (42) pressed
+ event4   KEYBOARD_KEY                 +9.149s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +9.268s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +9.389s	KEY_LEFTSHIFT (42) released
+ event4   KEYBOARD_KEY                 +9.750s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +9.870s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +10.471s	KEY_S (31) pressed
+ event4   KEYBOARD_KEY                 +10.590s	KEY_S (31) released
+ event4   KEYBOARD_KEY                 +11.191s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +11.311s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +11.912s	KEY_A (30) pressed
+ event4   KEYBOARD_KEY                 +12.031s	KEY_A (30) released
+ event4   KEYBOARD_KEY                 +12.632s	KEY_L (38) pressed
+ event4   KEYBOARD_KEY                 +12.752s	KEY_L (38) released
+ event4   KEYBOARD_KEY                 +13.352s	KEY_L (38) pressed
+ event4   KEYBOARD_KEY                 +13.472s	KEY_L (38) released
+ event4   KEYBOARD_KEY                 +17.151s	KEY_ENTER (28) pressed
+ event4   KEYBOARD_KEY                 +17.193s	KEY_ENTER (28) released
+-event5   POINTER_MOTION_ABSOLUTE      +49.588s	 78.67/ 91.87
+ event5   POINTER_BUTTON               +50.214s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +50.765s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +59.347s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +59.897s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +68.460s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +69.010s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +81.570s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +82.120s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +90.678s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +91.229s	BTN_LEFT (272) released, seat count: 0
