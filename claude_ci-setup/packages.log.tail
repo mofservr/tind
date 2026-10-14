@@ -88,6 +88,109 @@ ok       totem
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
+== gnome-core depends and recommends
+gnome-core
+  Depends: gdm3
+  Depends: gnome-backgrounds
+  Depends: gnome-bluetooth-sendto
+  Depends: gnome-control-center
+  Depends: gnome-keyring
+  Depends: gnome-menus
+  Depends: gnome-session
+  Depends: gnome-settings-daemon
+  Depends: gnome-shell
+  Depends: gnome-user-docs
+  Depends: orca
+  Depends: gnome-sushi
+  Depends: tecla
+  Depends: adwaita-icon-theme
+  Depends: glib-networking
+  Depends: gsettings-desktop-schemas
+  Depends: baobab
+ |Depends: evince
+  Depends: papers
+  Depends: gnome-calculator
+  Depends: gnome-calendar
+  Depends: gnome-characters
+  Depends: gnome-clocks
+  Depends: gnome-connections
+ |Depends: gnome-terminal
+ |Depends: gnome-console
+  Depends: ptyxis
+  Depends: gnome-contacts
+  Depends: gnome-disk-utility
+  Depends: gnome-font-viewer
+  Depends: gnome-logs
+  Depends: gnome-maps
+  Depends: gnome-software
+  Depends: gnome-system-monitor
+  Depends: gnome-text-editor
+  Depends: gnome-weather
+  Depends: loupe
+  Depends: nautilus
+  Depends: simple-scan
+  Depends: gnome-snapshot
+ |Depends: totem
+  Depends: showtime
+  Depends: yelp
+  Depends: cups
+  Depends: evolution-data-server
+  Depends: fonts-cantarell
+  Depends: gstreamer1.0-packagekit
+  Depends: gstreamer1.0-plugins-base
+  Depends: gstreamer1.0-plugins-good
+  Depends: gvfs-backends
+  Depends: gvfs-fuse
+  Depends: libatk-adaptor
+  Depends: libcanberra-pulse
+  Depends: libglib2.0-bin
+  Depends: libpam-gnome-keyring
+  Depends: pipewire-audio
+  Depends: system-config-printer-common
+  Depends: system-config-printer-udev
+  Depends: zenity
+ |Recommends: firefox-esr
+ |Recommends: <firefox>
+ |Recommends: chromium
+ |Recommends: <chromium-browser>
+ |Recommends: epiphany-browser
+  Recommends: <gnome-www-browser>
+    chromium
+    epiphany-browser
+    firefox-esr
+  Recommends: gnome-remote-desktop
+  Recommends: gnome-tour
+  Recommends: gnome-user-share
+  Recommends: locales-all
+  Recommends: network-manager
+  Recommends: rygel-playbin
+  Recommends: rygel-tracker
+  Recommends: low-memory-monitor
+  Suggests: gnome
+  Suggests: gnome-color-manager
+  Suggests: gnome-initial-setup
+== reverse: who recommends/depends on a few candidates
+-- gnome-maps: gnome-maps   gnome-core 
+-- gnome-weather: gnome-weather   gnome-core 
+-- gnome-clocks: gnome-clocks   gnome-core 
+-- gnome-contacts: gnome-contacts   gnome-core   gnome-calls 
+-- gnome-calendar: gnome-calendar   gnome-core 
+-- gnome-characters: gnome-characters   gnome-core 
+-- gnome-font-viewer: gnome-font-viewer   gnome-core 
+-- gnome-logs: gnome-logs   gnome-core 
+-- gnome-connections: gnome-connections   gnome-core   gnome-boxes 
+-- baobab:   gnome-core 
+-- simple-scan:   gnome-core 
+-- yelp:   gnome-core   task-gnome-flashback-desktop   gnome-user-docs   gnome-tetravex   gnome-terminal   gnome-system-tools   gnome-sudoku   gnome-robots   gnome-recipes-data   gnome-panel   gnome-nibbles   
+-- gnome-tweaks: gnome-tweaks   gnome   task-gnome-flashback-desktop   gnome-shell-extensions-extra 
+-- malcontent-gui:   gnome-control-center 
+-- zutty: 
+-- vim:   live-task-extra 
+-- systemsettings:   kde-config-tablet   kde-config-sddm   kde-config-plymouth   kde-config-updates   colord-kde   live-task-gnome   kde-config-cddb   kde-config-screenlocker   kdeconnect   kde-cli-tools   kde-config-cr
+-- kdesystemsettings: 
+-- im-config: im-config   task-telugu-desktop   task-malayalam-desktop   task-chinese-t-desktop   task-chinese-s-desktop 
+-- gnome-console: gnome-console  |gnome-core 
+-- gnome-system-monitor: gnome-system-monitor   gnome-core   gnome-applets 
 == verify-on-debian (informational)
 == release
 Debian GNU/Linux 13 (trixie)
