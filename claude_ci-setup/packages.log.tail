@@ -232,7 +232,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   62G   83G  43% /__w
+/dev/root       145G   63G   82G  44% /__w
 
 == KVM
 not available (VM tests will be slow)
