@@ -232,7 +232,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   63G   82G  44% /__w
+/dev/root       145G   63G   83G  44% /__w
 
 == KVM
 not available (VM tests will be slow)
@@ -322,6 +322,7 @@ ok       mesa-utils
 ok       mesa-va-drivers
 ok       mesa-vdpau-drivers
 ok       mesa-vulkan-drivers
+ok       mokutil
 ok       nautilus
 ok       network-manager
 ok       nvidia-detect
@@ -382,7 +383,6 @@ ok       live-config-systemd
 ok       locales
 ok       low-memory-monitor
 ok       mesa-vulkan-drivers
-ok       mokutil
 ok       myspell-nb
 ok       nvidia-settings
 ok       plymouth
