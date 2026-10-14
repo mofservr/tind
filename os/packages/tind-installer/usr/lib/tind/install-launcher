@@ -1,0 +1,13 @@
+#!/bin/bash
+# "Install Tind": ask which extras to add, then start the installer.
+# The choice goes to /tmp/tind-extras-choice, which the installer's tindextras job reads.
+choice=/tmp/tind-extras-choice
+rm -f "$choice"
+sel="$(zenity --list --checklist --title="Tind extras" --width=620 --height=300 \
+    --text="Choose what to add. Both need internet and are set up the first time you start Tind. You can also add them later in Tind Apps." \
+    --column="" --column="id" --column="Extra" --hide-column=2 --separator=" " \
+    FALSE gaming "Games: Steam, Lutris and Wine (about 2 GB)" \
+    FALSE dev "Developer tools: git, compilers, Python tools, GitHub CLI, VS Code")" || exit 0
+printf '%s\n' "$sel" > "$choice"
+chmod 644 "$choice"
+exec calamares-install-debian

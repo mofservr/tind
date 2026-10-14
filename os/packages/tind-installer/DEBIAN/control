@@ -4,7 +4,7 @@ Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
 Priority: optional
-Depends: calamares, calamares-settings-debian, tind-branding
+Depends: calamares, calamares-settings-debian, tind-branding, zenity
 Installed-Size: 80
 Description: Tind branding for the Calamares installer
  Branding component for Calamares (logo, welcome image, sidebar colours and a

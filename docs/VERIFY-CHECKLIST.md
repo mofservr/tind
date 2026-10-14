@@ -65,7 +65,6 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 ## Extras and graphics (2026-10-14)
 - Proven in CI (packages job, real trixie): setup-dev and setup-gaming complete; VS Code from the Microsoft repo, Steam installer licence unattended, Lutris, Wine, wine32:i386, winetricks, gamemode, mangohud install; Microsoft key fingerprint matches the pin.
 - Proven: ISO carries NVIDIA 550 DKMS module (built for the image kernel), no DKMS signing key shipped, nvidia-persistenced masked, no gaming or dev software on the ISO.
-- Proven: Extras page appears in Calamares and the tindextras job runs.
-- Unproven until the next installer run: ticked choice reaches /var/lib/tind/pending-extras; first-boot service installs both stacks; notification.
+- Proven (installer run 38569659053): the choice reaches /var/lib/tind/pending-extras, first boot waits for internet, installs the developer stack, status becomes done, marker removed. Calamares' own chooser page was single-select with a placeholder icon, replaced by a zenity checklist in the install launcher.
+- Unproven until the next installer run: the zenity checklist with both boxes, the games stack through the first-boot path, the login notification.
 - Unproven on real hardware: NVIDIA load, nouveau fallback for old cards, Secure Boot key flow, fwupd, Steam/Lutris actually running games.
-- Extras page looks plain (list, placeholder icon, English helper text); design is pinned.
