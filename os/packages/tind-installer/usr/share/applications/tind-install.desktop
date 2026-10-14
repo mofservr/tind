@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Install Tind
+GenericName=Installer
+Comment=Install Tind on this computer
+Exec=calamares-install-debian
+Icon=tind-logo
+Terminal=false
+StartupNotify=true
+Categories=System;
