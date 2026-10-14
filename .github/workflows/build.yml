@@ -49,6 +49,12 @@ jobs:
             cat x/usr/share/calamares/modules/packagechooser.conf 2>/dev/null | head -80 || true
             ls x/usr/lib/*/calamares/modules 2>/dev/null | tr '\n' ' ' || true; echo
             cd "$GITHUB_WORKSPACE"
+            echo "== calamares QML module examples"
+            for m in packagechooserq welcomeq; do echo "-- $m/module.desc"; cat /tmp/cal/x/usr/lib/x86_64-linux-gnu/calamares/modules/$m/module.desc 2>&1 | head -20; done || true
+            find /tmp/cal/x -name '*.qml' | head -30 || true
+            find /tmp/cal/x -path '*calamares/modules/*' -name '*.conf' | head -40 || true
+            echo "-- packagechooserq.conf"; cat /tmp/cal/x/usr/share/calamares/modules/packagechooserq.conf 2>&1 | head -60 || true
+            echo "-- an example qml (packagechooserq)"; cat $(find /tmp/cal/x -name 'packagechooserq.qml' | head -1) 2>&1 | head -120 || true
             echo "== microsoft repo reachable"
             curl -sI https://packages.microsoft.com/keys/microsoft.asc | head -3 || true
             curl -sI https://packages.microsoft.com/repos/code/dists/stable/InRelease | head -3 || true
