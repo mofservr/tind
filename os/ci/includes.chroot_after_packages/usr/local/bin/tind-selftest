@@ -65,6 +65,13 @@ sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/li
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
 sec grub defaults; ls /etc/default/grub.d 2>&1
+sec "extras chosen in the installer"
+cat /var/lib/tind/pending-extras 2>&1; cat /var/lib/tind/extras-status 2>&1
+tail -40 /var/log/tind-extras.log 2>&1 | cut -c1-160
+dpkg --print-foreign-architectures
+dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' steam-installer lutris wine wine32:i386 winetricks gamemode mangohud code git gh build-essential pipx 2>&1 | head -14
+ls /etc/apt/sources.list.d/ /etc/sysctl.d/ 2>&1; sysctl vm.max_map_count
+systemctl is-active tind-extras.service 2>&1
 sec "gaming and graphics"
 tind-gpu status 2>&1 | head -30
 echo "vm.max_map_count=$(sysctl -n vm.max_map_count)"

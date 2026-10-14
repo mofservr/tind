@@ -1,12 +1,12 @@
 [Unit]
 Description=Tind CI self-test (runs only inside the CI VM)
-After=graphical.target
+After=graphical.target tind-extras.service
 ConditionPathExists=/sys/class/dmi/id/product_name
 
 [Service]
 Type=oneshot
 ExecStart=/usr/local/bin/tind-selftest
-TimeoutStartSec=900
+TimeoutStartSec=4000
 
 [Install]
 WantedBy=graphical.target

@@ -4,8 +4,8 @@ Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: metapackages
 Priority: optional
-Depends: dkms, linux-headers-amd64, nvidia-driver, nvidia-kernel-dkms, nvidia-vulkan-icd, nvidia-detect, mesa-vulkan-drivers, libgl1-mesa-dri, mesa-va-drivers, mesa-vdpau-drivers, firmware-amd-graphics, vulkan-tools, mesa-utils, pciutils
-Recommends: nvidia-settings, intel-media-va-driver-non-free, mokutil
+Depends: dkms, mokutil, linux-headers-amd64, nvidia-driver, nvidia-kernel-dkms, nvidia-vulkan-icd, nvidia-detect, mesa-vulkan-drivers, libgl1-mesa-dri, mesa-va-drivers, mesa-vdpau-drivers, firmware-amd-graphics, vulkan-tools, mesa-utils, pciutils
+Recommends: nvidia-settings, intel-media-va-driver-non-free
 Installed-Size: 4
 Description: Tind graphics: NVIDIA, Mesa, Vulkan and video drivers
  NVIDIA proprietary driver (DKMS, rebuilt automatically for new kernels),

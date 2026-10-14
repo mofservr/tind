@@ -3,18 +3,87 @@
   "wait": 120
  },
  {
-  "shot": "60-installed-a"
+  "shot": "600-installed-00"
  },
  {
-  "wait": 150
+  "wait": 120
  },
  {
-  "shot": "61-installed-b"
+  "shot": "601-installed-01"
  },
  {
-  "wait": 150
+  "wait": 120
  },
  {
-  "shot": "62-installed-c"
+  "shot": "602-installed-02"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "603-installed-03"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "604-installed-04"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "605-installed-05"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "606-installed-06"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "607-installed-07"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "608-installed-08"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "609-installed-09"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "610-installed-10"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "611-installed-11"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "612-installed-12"
+ },
+ {
+  "wait": 120
+ },
+ {
+  "shot": "613-installed-13"
+ },
+ {
+  "wait": 120
  }
 ]
