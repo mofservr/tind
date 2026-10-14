@@ -1,0 +1,92 @@
+KVM: yes
+Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=32212254720 lazy_refcounts=off refcount_bits=16
+== phase 1: live ISO, drive the installer
+0 {'wait': 35}
+1 {'key': 'ret'}
+2 {'wait': 150}
+3 {'click': [400, 300]}
+4 {'wait': 2}
+5 {'click': [42, 625]}
+6 {'wait': 4}
+7 {'type': 'Install'}
+8 {'wait': 3}
+9 {'key': 'ret'}
+10 {'wait': 30}
+11 {'click': [1007, 735]}
+12 {'wait': 5}
+13 {'click': [1007, 735]}
+14 {'wait': 5}
+15 {'click': [1007, 735]}
+16 {'wait': 10}
+17 {'click': [334, 225]}
+18 {'wait': 3}
+19 {'click': [1007, 735]}
+20 {'wait': 6}
+21 {'click': [426, 204]}
+22 {'type': 'Tind Test'}
+23 {'click': [426, 264]}
+24 {'key': 'ctrl-a'}
+25 {'type': 'tind'}
+26 {'click': [426, 324]}
+27 {'key': 'ctrl-a'}
+28 {'type': 'tindtest'}
+29 {'click': [426, 384]}
+30 {'type': 'tind-test-pw'}
+31 {'click': [632, 384]}
+32 {'type': 'tind-test-pw'}
+33 {'click': [334, 420]}
+34 {'wait': 2}
+35 {'shot': '30-users-filled'}
+36 {'click': [1007, 735]}
+37 {'wait': 6}
+38 {'shot': '29-extras-page'}
+39 {'click': [1007, 735]}
+40 {'wait': 6}
+41 {'shot': '31-summary'}
+42 {'click': [1007, 735]}
+43 {'click': [1007, 781]}
+44 {'wait': 60}
+45 {'shot': '50-install-00'}
+46 {'wait': 60}
+47 {'shot': '50-install-01'}
+48 {'wait': 60}
+49 {'shot': '50-install-02'}
+50 {'wait': 60}
+51 {'shot': '50-install-03'}
+52 {'wait': 60}
+53 {'shot': '50-install-04'}
+54 {'wait': 60}
+55 {'shot': '50-install-05'}
+56 {'wait': 60}
+57 {'shot': '50-install-06'}
+58 {'wait': 60}
+59 {'shot': '50-install-07'}
+60 {'wait': 60}
+61 {'shot': '50-install-08'}
+62 {'wait': 60}
+63 {'shot': '50-install-09'}
+64 {'wait': 60}
+65 {'shot': '50-install-10'}
+66 {'wait': 60}
+67 {'shot': '50-install-11'}
+68 {'wait': 60}
+69 {'shot': '50-install-12'}
+70 {'wait': 60}
+71 {'shot': '50-install-13'}
+72 {'wait': 60}
+73 {'shot': '50-install-14'}
+74 {'wait': 60}
+75 {'shot': '50-install-15'}
+76 {'wait': 60}
+77 {'shot': '50-install-16'}
+78 {'wait': 60}
+79 {'shot': '50-install-17'}
+== phase 2: boot the installed disk
+0 {'wait': 120}
+1 {'shot': '60-installed-a'}
+2 {'wait': 150}
+3 {'shot': '61-installed-b'}
+4 {'wait': 150}
+5 {'shot': '62-installed-c'}
+disk size: 7.75 GiB
+    disk size: 7.75 GiB
