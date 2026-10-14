@@ -156,6 +156,18 @@
   "wait": 6
  },
  {
+  "shot": "29-extras-page"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
   "shot": "31-summary"
  },
  {
