@@ -1,0 +1,20 @@
+#!/bin/bash
+# Tind replacement for Debian's calamares-bootloader-config. Both GRUB flavours (UEFI and
+# BIOS binaries) are already on the image, so nothing is installed from the network here.
+CHROOT=$(mount | grep proc | grep calamares | awk '{print $3}' | sed -e "s#/proc##g")
+
+# Full-disk encryption support (same as Debian's helper)
+if [ "$(mount | grep "$CHROOT " | cut -c -16)" = "/dev/mapper/luks" ]; then
+    echo "UMASK=0077" > "$CHROOT/etc/initramfs-tools/conf.d/initramfs-permissions"
+    chroot "$CHROOT" apt-get -y install cryptsetup-initramfs cryptsetup keyutils
+fi
+
+echo "Running Tind bootloader-config..."
+if [ -d /sys/firmware/efi/efivars ]; then
+    echo " * uefi: grub-efi is already installed"
+    chroot "$CHROOT" dpkg -s grub-efi-amd64 >/dev/null 2>&1 || { echo "grub-efi-amd64 missing"; exit 1; }
+else
+    echo " * bios: using grub-pc-bin"
+    chroot "$CHROOT" test -d /usr/lib/grub/i386-pc || { echo "grub-pc-bin missing"; exit 1; }
+fi
+chroot "$CHROOT" /usr/sbin/update-grub

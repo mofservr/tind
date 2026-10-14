@@ -1,0 +1,299 @@
+[
+ {
+  "wait": 35
+ },
+ {
+  "key": "ret"
+ },
+ {
+  "wait": 150
+ },
+ {
+  "click": [
+   400,
+   300
+  ]
+ },
+ {
+  "wait": 2
+ },
+ {
+  "click": [
+   42,
+   625
+  ]
+ },
+ {
+  "wait": 4
+ },
+ {
+  "type": "Install"
+ },
+ {
+  "wait": 3
+ },
+ {
+  "key": "ret"
+ },
+ {
+  "wait": 6
+ },
+ {
+  "wait": 1
+ },
+ {
+  "wait": 1
+ },
+ {
+  "shot": "20-extras-ticked"
+ },
+ {
+  "click": [
+   844,
+   519
+  ]
+ },
+ {
+  "wait": 30
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 5
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 5
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 10
+ },
+ {
+  "click": [
+   334,
+   225
+  ]
+ },
+ {
+  "wait": 3
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
+  "click": [
+   426,
+   204
+  ]
+ },
+ {
+  "type": "Tind Test"
+ },
+ {
+  "click": [
+   426,
+   264
+  ]
+ },
+ {
+  "key": "ctrl-a"
+ },
+ {
+  "type": "tind"
+ },
+ {
+  "click": [
+   426,
+   324
+  ]
+ },
+ {
+  "key": "ctrl-a"
+ },
+ {
+  "type": "tindtest"
+ },
+ {
+  "click": [
+   426,
+   384
+  ]
+ },
+ {
+  "type": "tind-test-pw"
+ },
+ {
+  "click": [
+   632,
+   384
+  ]
+ },
+ {
+  "type": "tind-test-pw"
+ },
+ {
+  "click": [
+   334,
+   420
+  ]
+ },
+ {
+  "wait": 2
+ },
+ {
+  "shot": "30-users-filled"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
+  "shot": "31-summary"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "click": [
+   1007,
+   781
+  ]
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-00"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-01"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-02"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-03"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-04"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-05"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-06"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-07"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-08"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-09"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-10"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-11"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-12"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-13"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-14"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-15"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-16"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-17"
+ }
+]

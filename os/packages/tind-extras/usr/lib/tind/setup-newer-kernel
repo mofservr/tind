@@ -1,0 +1,25 @@
+#!/bin/bash
+# Newer Linux kernel from Debian backports, for recent hardware. Keeps the current kernel installed as a fallback.
+# The NVIDIA driver module is taken from backports too when it is installed, so it keeps building.
+# TIND_DRYRUN=1 only simulates (used by CI).
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+[ -n "${TIND_DRYRUN:-}" ] || need_root
+echo "== Tind: newer kernel setup"
+if ! grep -rqs 'trixie-backports' /etc/apt/sources.list /etc/apt/sources.list.d/; then
+    cat > /etc/apt/sources.list.d/tind-backports.sources <<'SRC'
+Types: deb
+URIs: http://deb.debian.org/debian
+Suites: trixie-backports
+Components: main contrib non-free non-free-firmware
+Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg
+SRC
+fi
+apt-get update
+pkgs=(linux-image-amd64 linux-headers-amd64)
+if dpkg -s nvidia-kernel-dkms >/dev/null 2>&1; then pkgs+=(nvidia-kernel-dkms nvidia-kernel-support); fi
+flags=(-y -t trixie-backports)
+[ -z "${TIND_DRYRUN:-}" ] || flags+=(-s)
+apt-get install "${flags[@]}" "${pkgs[@]}"
+echo "== Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu."

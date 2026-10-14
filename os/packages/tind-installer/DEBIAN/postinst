@@ -10,6 +10,10 @@ if [ "$1" = "configure" ]; then
             /etc/calamares/settings.conf > /etc/calamares/settings.conf.tind
         mv /etc/calamares/settings.conf.tind /etc/calamares/settings.conf
     fi
+    # use our bootloader helper (works offline, UEFI and BIOS)
+    if [ -f /etc/calamares/settings.conf ]; then
+        sed -i 's/^  - bootloader-config$/  - tindbootloader/' /etc/calamares/settings.conf
+    fi
     # Norwegian defaults: start the timezone at Europe/Oslo
     mkdir -p /etc/calamares/modules
     cat > /etc/calamares/modules/locale.conf <<'CONF'

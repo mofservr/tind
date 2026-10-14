@@ -40,15 +40,21 @@ jobs:
             ISO=$(ls $PWD/iso/*.iso | head -1)
             qemu-img create -f qcow2 $PWD/disk.qcow2 30G
             cp /usr/share/OVMF/OVMF_VARS_4M.fd $PWD/vars.fd
+            FW="$(tr -d '[:space:]' < os/ci/installer-test/FIRMWARE 2>/dev/null || echo uefi)"
+            EX="$(tr -d '[:space:]' < os/ci/installer-test/EXTRAS 2>/dev/null || echo yes)"
+            echo "firmware: $FW  extras: $EX"
+            FWARGS="-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd -drive if=pflash,format=raw,file=$PWD/vars.fd"
+            [ "$FW" = bios ] && FWARGS=""
+            INSTALL_JSON=os/ci/installer-test/install.json; FIRST_JSON=os/ci/installer-test/firstboot.json
+            if [ "$EX" = no ]; then INSTALL_JSON=os/ci/installer-test/install-noextras.json; FIRST_JSON=os/ci/installer-test/firstboot-short.json; fi
             COMMON="$ACCEL -machine q35 -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none -device qemu-xhci -device usb-kbd -device usb-tablet \
-              -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd \
-              -drive if=pflash,format=raw,file=$PWD/vars.fd \
+              $FWARGS \
               -drive file=$PWD/disk.qcow2,if=virtio,format=qcow2"
             echo "== phase 1: live ISO, drive the installer"
             qemu-system-x86_64 $COMMON -cdrom "$ISO" -boot d -serial file:$PWD/logs/serial-live.log -serial file:$PWD/logs/input-live.log \
               -monitor unix:$PWD/mon.sock,server,nowait -qmp unix:$PWD/qmp.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
             sleep 3
-            python3 os/ci/drive.py $PWD/mon.sock $PWD/shots1 os/ci/installer-test/install.json
+            python3 os/ci/drive.py $PWD/mon.sock $PWD/shots1 $INSTALL_JSON
             echo quit | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
             sleep 3
             used="$(qemu-img info -U --output=json disk.qcow2 | jq '."actual-size"')"
@@ -58,7 +64,7 @@ jobs:
             qemu-system-x86_64 $COMMON -boot c -serial file:$PWD/logs/serial-installed.log \
               -monitor unix:$PWD/mon2.sock,server,nowait -qmp unix:$PWD/qmp2.sock,server,nowait -daemonize -pidfile $PWD/qemu2.pid
             sleep 3
-            python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 os/ci/installer-test/firstboot.json
+            python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 $FIRST_JSON
             echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
             sleep 5; qemu-img info -U disk.qcow2 | grep 'disk size' || true
           } 2>&1 | tee logs/installer.log
