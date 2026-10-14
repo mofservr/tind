@@ -1,0 +1,6 @@
+---
+type:       "job"
+name:       "tindbootloader"
+interface:  "process"
+command:    "/usr/lib/tind/bootloader-config"
+timeout:    600
