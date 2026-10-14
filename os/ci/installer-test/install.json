@@ -39,7 +39,13 @@
   "wait": 30
  },
  {
-  "shot": "10-welcome"
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 5
  },
  {
   "click": [
@@ -48,22 +54,7 @@
   ]
  },
  {
-  "wait": 6
- },
- {
-  "shot": "11-location"
- },
- {
-  "click": [
-   1007,
-   735
-  ]
- },
- {
-  "wait": 6
- },
- {
-  "shot": "12-keyboard"
+  "wait": 5
  },
  {
   "click": [
@@ -75,7 +66,16 @@
   "wait": 10
  },
  {
-  "shot": "13-partitions"
+  "click": [
+   334,
+   225
+  ]
+ },
+ {
+  "wait": 3
+ },
+ {
+  "shot": "20-erase-selected"
  },
  {
   "click": [
@@ -87,18 +87,6 @@
   "wait": 6
  },
  {
-  "shot": "14-after-partitions"
- },
- {
-  "click": [
-   1007,
-   735
-  ]
- },
- {
-  "wait": 6
- },
- {
-  "shot": "15-users"
+  "shot": "21-users"
  }
 ]
