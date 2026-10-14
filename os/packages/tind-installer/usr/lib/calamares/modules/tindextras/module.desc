@@ -1,0 +1,5 @@
+---
+type: "job"
+name: "tindextras"
+interface: "python"
+script: "main.py"

@@ -4,6 +4,17 @@ if [ "$1" = "configure" ]; then
     if [ -f /etc/calamares/settings.conf ]; then
         sed -i 's/^branding:.*/branding: tind/' /etc/calamares/settings.conf
     fi
+    # tick-box page for extras (games, developer tools) and the job that records the choice
+    cp /usr/share/tind/installer/packagechooser_extras.conf /etc/calamares/modules/packagechooser_extras.conf
+    if [ -f /etc/calamares/settings.conf ] && ! grep -q 'packagechooser@extras' /etc/calamares/settings.conf; then
+        awk '
+            /^  - users$/ && !shown { print; print "  - packagechooser@extras"; shown=1; next }
+            /^  - packages$/ && !execd { print; print "  - tindextras"; execd=1; next }
+            { print }
+        ' /etc/calamares/settings.conf > /etc/calamares/settings.conf.tind
+        mv /etc/calamares/settings.conf.tind /etc/calamares/settings.conf
+        printf '\ninstances:\n- id: extras\n  module: packagechooser\n  config: packagechooser_extras.conf\n' >> /etc/calamares/settings.conf
+    fi
     # Norwegian defaults: start the timezone at Europe/Oslo
     mkdir -p /etc/calamares/modules
     cat > /etc/calamares/modules/locale.conf <<'CONF'
