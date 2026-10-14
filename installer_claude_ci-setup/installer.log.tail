@@ -42,9 +42,48 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 38 {'shot': '31-summary'}
 39 {'click': [1007, 735]}
 40 {'click': [1007, 781]}
-41 {'wait': 4}
-42 {'shot': '40-confirm'}
+41 {'wait': 60}
+42 {'shot': '50-install-00'}
+43 {'wait': 60}
+44 {'shot': '50-install-01'}
+45 {'wait': 60}
+46 {'shot': '50-install-02'}
+47 {'wait': 60}
+48 {'shot': '50-install-03'}
+49 {'wait': 60}
+50 {'shot': '50-install-04'}
+51 {'wait': 60}
+52 {'shot': '50-install-05'}
+53 {'wait': 60}
+54 {'shot': '50-install-06'}
+55 {'wait': 60}
+56 {'shot': '50-install-07'}
+57 {'wait': 60}
+58 {'shot': '50-install-08'}
+59 {'wait': 60}
+60 {'shot': '50-install-09'}
+61 {'wait': 60}
+62 {'shot': '50-install-10'}
+63 {'wait': 60}
+64 {'shot': '50-install-11'}
+65 {'wait': 60}
+66 {'shot': '50-install-12'}
+67 {'wait': 60}
+68 {'shot': '50-install-13'}
+69 {'wait': 60}
+70 {'shot': '50-install-14'}
+71 {'wait': 60}
+72 {'shot': '50-install-15'}
+73 {'wait': 60}
+74 {'shot': '50-install-16'}
+75 {'wait': 60}
+76 {'shot': '50-install-17'}
 == phase 2: boot the installed disk
-0 {'wait': 5}
-disk size: 9.76 MiB
-    disk size: 9.76 MiB
+0 {'wait': 120}
+1 {'shot': '60-installed-a'}
+2 {'wait': 150}
+3 {'shot': '61-installed-b'}
+4 {'wait': 150}
+5 {'shot': '62-installed-c'}
+disk size: 6.9 GiB
+    disk size: 6.9 GiB

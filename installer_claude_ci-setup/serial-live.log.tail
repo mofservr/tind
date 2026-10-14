@@ -42,8 +42,8 @@ by-id	 event0  event2  event4  event6  mouse0  mouse2
 by-path  event1  event3  event5  mice	 mouse1
 
 ##### session
-1 1000 tind seat0 1247 user    tty2 no -
-2 1000 tind -     1255 manager -    no -
+1 1000 tind seat0 1235 user    tty2 no -
+2 1000 tind -     1243 manager -    no -
 Name=tind Seat=seat0 Type=wayland Active=yes State=active 
 Name=tind Seat= Type=unspecified Active=yes State=active 
 
@@ -56,7 +56,7 @@ ufw: active
 gdm: active
 
 ##### resolv.conf
-lrwxrwxrwx 1 root root 39 okt.  14 02:29 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  14 02:37 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
 
 ##### ufw
 Status: active
@@ -107,7 +107,7 @@ grep: skrivefeil: Røret ble brutt
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{af2cb4fd-b1a8-4948-b993-8a7cbdecabeb}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{41b8a779-29d5-437e-8157-12dd0690dad3}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -124,8 +124,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "80f8d00b-41f6-4154-99b3-25b9d3f09425");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "b56f13a1-0ea8-4cfd-812b-ecfe74712d85");
+user_pref("toolkit.telemetry.cachedClientID", "9b3d5ea6-7900-432d-9d89-62a3358143ec");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "bfe13afa-beb0-428c-a205-5919bbf169da");
 user_pref("toolkit.telemetry.previousBuildID", "20260923073912");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -199,34 +199,36 @@ bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homew
 90-tind.cfg
 
 ##### journal errors (this boot)
-okt. 14 02:29:26 tind adduser[912]: The group `powerdev' does not exist.
-okt. 14 02:29:26 tind adduser[928]: The group `debian-tor' does not exist.
-okt. 14 02:29:30 tind gdm-autologin][1247]: gkr-pam: couldn't unlock the login keyring.
+okt. 14 02:37:23 tind adduser[900]: The group `powerdev' does not exist.
+okt. 14 02:37:23 tind adduser[916]: The group `debian-tor' does not exist.
+okt. 14 02:37:28 tind gdm-autologin][1235]: gkr-pam: couldn't unlock the login keyring.
+okt. 14 02:37:28 tind systemd[1243]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1413.scope - Application launched by gnome-session-binary.
+okt. 14 02:37:32 tind systemd[1243]: Failed to start app-gnome-im\x2dlaunch-1575.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-okt. 14 02:29:36 tind gnome-shell[1427]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 02:29:36 tind gnome-shell[1427]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 02:29:36 tind gnome-shell[1427]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 02:29:36 tind gnome-shell[1427]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 02:29:36 tind gnome-shell[1427]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 02:29:37 tind gnome-shell[1427]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 02:29:39 tind gnome-shell[1427]: GNOME Shell started at Wed Oct 14 2026 02:29:34 GMT+0200 (sentraleuropeisk sommertid)
-okt. 14 02:29:39 tind gnome-shell[1427]: Registering session with GDM
+okt. 14 02:37:34 tind gnome-shell[1414]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 02:37:34 tind gnome-shell[1414]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 02:37:34 tind gnome-shell[1414]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 02:37:34 tind gnome-shell[1414]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 02:37:34 tind gnome-shell[1414]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 02:37:36 tind gnome-shell[1414]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 02:37:36 tind gnome-shell[1414]: GNOME Shell started at Wed Oct 14 2026 02:37:32 GMT+0200 (sentraleuropeisk sommertid)
+okt. 14 02:37:36 tind gnome-shell[1414]: Registering session with GDM
 =====TIND-SELFTEST-END=====
