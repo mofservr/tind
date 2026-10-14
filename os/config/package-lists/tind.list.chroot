@@ -22,3 +22,5 @@ grub-efi-amd64-signed
 shim-signed
 efibootmgr
 util-linux-extra
+os-prober
+ntfs-3g
