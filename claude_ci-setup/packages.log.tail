@@ -51,8 +51,11 @@ ok       firmware-iwlwifi
 ok       firmware-linux
 ok       firmware-misc-nonfree
 ok       firmware-realtek
-ok       fonts-noto
+ok       fonts-noto-cjk
 ok       fonts-noto-color-emoji
+ok       fonts-noto-core
+ok       fonts-noto-mono
+ok       fonts-noto-ui-core
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
@@ -162,8 +165,11 @@ ok       firmware-iwlwifi
 ok       firmware-linux
 ok       firmware-misc-nonfree
 ok       firmware-realtek
-ok       fonts-noto
+ok       fonts-noto-cjk
 ok       fonts-noto-color-emoji
+ok       fonts-noto-core
+ok       fonts-noto-mono
+ok       fonts-noto-ui-core
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
