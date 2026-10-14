@@ -1,1 +1,20 @@
-[{"wait": 5}]
+[
+ {
+  "wait": 120
+ },
+ {
+  "shot": "60-installed-a"
+ },
+ {
+  "wait": 150
+ },
+ {
+  "shot": "61-installed-b"
+ },
+ {
+  "wait": 150
+ },
+ {
+  "shot": "62-installed-c"
+ }
+]

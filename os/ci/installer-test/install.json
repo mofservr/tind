@@ -171,9 +171,111 @@
   ]
  },
  {
-  "wait": 4
+  "wait": 60
  },
  {
-  "shot": "40-confirm"
+  "shot": "50-install-00"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-01"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-02"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-03"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-04"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-05"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-06"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-07"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-08"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-09"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-10"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-11"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-12"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-13"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-14"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-15"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-16"
+ },
+ {
+  "wait": 60
+ },
+ {
+  "shot": "50-install-17"
  }
 ]
