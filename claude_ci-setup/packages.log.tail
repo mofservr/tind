@@ -123,256 +123,66 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== gnome-core depends and recommends
-gnome-core
-  Depends: gdm3
-  Depends: gnome-backgrounds
-  Depends: gnome-bluetooth-sendto
-  Depends: gnome-control-center
-  Depends: gnome-keyring
-  Depends: gnome-menus
-  Depends: gnome-session
-  Depends: gnome-settings-daemon
-  Depends: gnome-shell
-  Depends: gnome-user-docs
-  Depends: orca
-  Depends: gnome-sushi
-  Depends: tecla
-  Depends: adwaita-icon-theme
-  Depends: glib-networking
-  Depends: gsettings-desktop-schemas
-  Depends: baobab
- |Depends: evince
-  Depends: papers
-  Depends: gnome-calculator
-  Depends: gnome-calendar
-  Depends: gnome-characters
-  Depends: gnome-clocks
-  Depends: gnome-connections
- |Depends: gnome-terminal
- |Depends: gnome-console
-  Depends: ptyxis
-  Depends: gnome-contacts
-  Depends: gnome-disk-utility
-  Depends: gnome-font-viewer
-  Depends: gnome-logs
-  Depends: gnome-maps
-  Depends: gnome-software
-  Depends: gnome-system-monitor
-  Depends: gnome-text-editor
-  Depends: gnome-weather
-  Depends: loupe
-  Depends: nautilus
-  Depends: simple-scan
-  Depends: gnome-snapshot
- |Depends: totem
-  Depends: showtime
-  Depends: yelp
-  Depends: cups
-  Depends: evolution-data-server
-  Depends: fonts-cantarell
-  Depends: gstreamer1.0-packagekit
-  Depends: gstreamer1.0-plugins-base
-  Depends: gstreamer1.0-plugins-good
-  Depends: gvfs-backends
-  Depends: gvfs-fuse
-  Depends: libatk-adaptor
-  Depends: libcanberra-pulse
-  Depends: libglib2.0-bin
-  Depends: libpam-gnome-keyring
-  Depends: pipewire-audio
-  Depends: system-config-printer-common
-  Depends: system-config-printer-udev
-  Depends: zenity
- |Recommends: firefox-esr
- |Recommends: <firefox>
- |Recommends: chromium
- |Recommends: <chromium-browser>
- |Recommends: epiphany-browser
-  Recommends: <gnome-www-browser>
-    chromium
-    epiphany-browser
-    firefox-esr
-  Recommends: gnome-remote-desktop
-  Recommends: gnome-tour
-  Recommends: gnome-user-share
-  Recommends: locales-all
-  Recommends: network-manager
-  Recommends: rygel-playbin
-  Recommends: rygel-tracker
-  Recommends: low-memory-monitor
-  Suggests: gnome
-  Suggests: gnome-color-manager
-  Suggests: gnome-initial-setup
-== reverse: who recommends/depends on a few candidates
--- gnome-maps: gnome-maps   gnome-core 
--- gnome-weather: gnome-weather   gnome-core 
--- gnome-clocks: gnome-clocks   gnome-core 
--- gnome-contacts: gnome-contacts   gnome-core   gnome-calls 
--- gnome-calendar: gnome-calendar   gnome-core 
--- gnome-characters: gnome-characters   gnome-core 
--- gnome-font-viewer: gnome-font-viewer   gnome-core 
--- gnome-logs: gnome-logs   gnome-core 
--- gnome-connections: gnome-connections   gnome-core   gnome-boxes 
--- baobab:   gnome-core 
--- simple-scan:   gnome-core 
--- yelp:   gnome-core   task-gnome-flashback-desktop   gnome-user-docs   gnome-tetravex   gnome-terminal   gnome-system-tools   gnome-sudoku   gnome-robots   gnome-recipes-data   gnome-panel   gnome-nibbles   
--- gnome-tweaks: gnome-tweaks   gnome   task-gnome-flashback-desktop   gnome-shell-extensions-extra 
--- malcontent-gui:   gnome-control-center 
--- zutty: 
--- vim:   live-task-extra 
--- systemsettings:   kde-config-tablet   kde-config-sddm   kde-config-plymouth   kde-config-updates   colord-kde   live-task-gnome   kde-config-cddb   kde-config-screenlocker   kdeconnect   kde-cli-tools   kde-config-cr
--- kdesystemsettings: 
--- im-config: im-config   task-telugu-desktop   task-malayalam-desktop   task-chinese-t-desktop   task-chinese-s-desktop 
--- gnome-console: gnome-console  |gnome-core 
--- gnome-system-monitor: gnome-system-monitor   gnome-core   gnome-applets 
-== verify-on-debian (informational)
-== release
-Debian GNU/Linux 13 (trixie)
-
-== disk (need ~25 GB free here)
-/dev/root       145G   60G   85G  42% /__w
-
-== KVM
-not available (VM tests will be slow)
-
-== live-build
-not installed
-
-== uBlock Origin package: where does it install?
-Package: webext-ublock-origin-firefox
-Source: ublock-origin
-Version: 1.67.0+dfsg-1~deb13u1
-Installed-Size: 14290
-Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
-
-== Firefox ESR: policy locations it will read (after install)
-ls: cannot access '/etc/firefox/policies': No such file or directory
-ls: cannot access '/usr/lib/firefox-esr/distribution': No such file or directory
-(open about:policies in Firefox ESR: Active should list Tind's policies)
-
-== Calamares branding setting
-grep: /etc/calamares/settings.conf: No such file or directory
-
-== Dash to Dock package / UUID
-gnome-shell-extension-dashtodock:
-  Installed: (none)
-  Candidate: 100-2
-ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
-
-== package names
-== Depends (must exist)
-ok       adwaita-icon-theme
-ok       bluez
-ok       ca-certificates
-ok       calamares
-ok       calamares-settings-debian
-ok       cups
-ok       curl
-ok       dconf-cli
-ok       evolution-data-server
-ok       firefox-esr
-ok       flatpak
-ok       fonts-cantarell
-ok       gdm3
-ok       glib-networking
-ok       gnome-backgrounds
-ok       gnome-calculator
-ok       gnome-control-center
-ok       gnome-disk-utility
-ok       gnome-keyring
-ok       gnome-menus
-ok       gnome-session
-ok       gnome-settings-daemon
-ok       gnome-shell
-ok       gnome-shell-extension-dashtodock
-ok       gnome-shell-extension-prefs
-ok       gnome-snapshot
-ok       gnome-software
-ok       gnome-software-plugin-flatpak
-ok       gnome-sushi
-ok       gnome-system-monitor
-ok       gnome-terminal
-ok       gnome-text-editor
-ok       gsettings-desktop-schemas
-ok       gstreamer1.0-packagekit
-ok       gstreamer1.0-plugins-base
-ok       gstreamer1.0-plugins-good
-ok       gvfs-backends
-ok       gvfs-fuse
-ok       libatk-adaptor
-ok       libcanberra-pulse
-ok       libglib2.0-bin
-ok       libpam-gnome-keyring
-ok       libreoffice-calc
-ok       libreoffice-gtk3
-ok       libreoffice-impress
-ok       libreoffice-writer
-ok       loupe
-ok       nautilus
-ok       network-manager
-ok       orca
-ok       papers
-ok       pipewire-audio
-ok       pkexec
-ok       showtime
-ok       system-config-printer
-ok       system-config-printer-common
-ok       system-config-printer-udev
-ok       systemd-resolved
-ok       thunderbird
-ok       ufw
-ok       unattended-upgrades
-ok       webext-ublock-origin-firefox
-ok       wireguard-tools
-ok       zenity
-== Recommends / package lists (nice to have)
-ok       apt-listchanges
-ok       btrfs-progs
-ok       efibootmgr
-ok       firefox-esr
-ok       firefox-esr-l10n-nb-no
-ok       firefox-esr-l10n-nn-no
-ok       firmware-atheros
-ok       firmware-iwlwifi
-ok       firmware-linux
-ok       firmware-misc-nonfree
-ok       firmware-realtek
-ok       fonts-noto-cjk
-ok       fonts-noto-color-emoji
-ok       fonts-noto-core
-ok       fonts-noto-mono
-ok       fonts-noto-ui-core
-ok       fwupd
-ok       gdm3
-ok       gnome-shell-extension-dashtodock
-ok       gnome-software
-ok       gnome-software-plugin-fwupd
-ok       grub-efi
-ok       grub-efi-amd64
-ok       grub-efi-amd64-signed
-ok       hunspell-en-us
-ok       hunspell-no
-ok       keyboard-configuration
-ok       libreoffice-help-en-us
-ok       libreoffice-l10n-nb
-ok       libreoffice-l10n-nn
-ok       live-config
-ok       live-config-systemd
-ok       locales
-ok       low-memory-monitor
-ok       mesa-vulkan-drivers
-ok       myspell-nb
-ok       plymouth
-ok       plymouth-themes
-ok       qrencode
-ok       shim-signed
-ok       snapper
-ok       sudo
-ok       thunderbird
-ok       thunderbird-l10n-nb-no
-ok       thunderbird-l10n-nn-no
-ok       util-linux-extra
-ok       vulkan-tools
-ok       xdg-desktop-portal-gnome
-== exit status: 0
+== gaming and graphics candidates
+-- nvidia-driver: 550.163.01-2
+-- nvidia-detect: 550.163.01-2
+-- nvidia-driver-libs: 550.163.01-2
+-- nvidia-driver-libs-i386: 
+-- nvidia-vulkan-icd: 550.163.01-2
+-- nvidia-kernel-dkms: 550.163.01-2
+-- nvidia-open-kernel-dkms: 550.163.01-2
+-- nvidia-settings: 550.163.01-1
+-- nvidia-tesla-470-driver: 
+-- nvidia-legacy-390xx-driver: 
+-- linux-headers-amd64: 6.12.111-1
+-- dkms: 3.2.2-1~deb13u1
+-- game-devices-udev: 
+-- steam-devices: 1:1.0.0.83~ds-3
+-- steam-installer: 1:1.0.0.83~ds-3
+-- lutris: 0.5.19-2
+-- gamemode: 1.8.2-2
+-- mangohud: 0.7.2-2
+-- wine: 10.0~repack-6
+-- wine32: 10.0~repack-6
+-- libgl1-mesa-dri:i386: 25.0.7-2+deb13u1
+-- mesa-vulkan-drivers:i386: 25.0.7-2+deb13u1
+-- libvulkan1:i386: 1.4.309.0-1
+-- vulkan-tools: 1.4.304.0+dfsg1-1
+-- mesa-utils: 9.0.0-2+b2
+-- libva-drm2: 2.22.0-3
+-- intel-media-va-driver-non-free: 25.2.3+ds1-1
+-- mesa-va-drivers: 25.0.7-2+deb13u1
+-- mesa-vdpau-drivers: 25.0.7-2+deb13u1
+-- firmware-amd-graphics: 20250410-2
+-- goverlay: 1.0-1
+-- gamescope: (none)
+-- vkbasalt: 0.3.2.10-1+b2
+-- protontricks: 
+-- winetricks: 20250102-1
+-- zenity: 4.1.90-1
+== nvidia-driver depends/recommends
+nvidia-driver
+  PreDepends: nvidia-installer-cleanup
+    nvidia-installer-cleanup:i386
+  PreDepends: nvidia-legacy-check
+  Depends: nvidia-driver-libs
+  Depends: nvidia-driver-bin
+  Depends: xserver-xorg-video-nvidia
+  Depends: nvidia-vdpau-driver
+  Depends: nvidia-alternative
+    nvidia-alternative:i386
+ |Depends: nvidia-kernel-dkms
+ |Depends: <nvidia-kernel-550.163.01>
+    nvidia-kernel-dkms
+  Depends: <nvidia-open-kernel-550.163.01>
+    nvidia-open-kernel-dkms
+  Depends: nvidia-support
+    nvidia-support:i386
+  Recommends: nvidia-settings
+  Recommends: libnvidia-cfg1
+  Recommends: nvidia-persistenced
+ |Suggests: nvidia-kernel-dkms
+ |Suggests: nvidia-kernel-source
+  Suggests: nvidia-open-kernel-source
+== nvidia-driver-libs-i386 depends
+E: No packages found
