@@ -1,23 +1,3 @@
-ok       live-config-systemd
-ok       locales
-ok       low-memory-monitor
-ok       mesa-vulkan-drivers
-ok       mokutil
-ok       myspell-nb
-ok       nvidia-settings
-ok       plymouth
-ok       plymouth-themes
-ok       qrencode
-ok       shim-signed
-ok       snapper
-ok       sudo
-ok       thunderbird
-ok       thunderbird-l10n-nb-no
-ok       thunderbird-l10n-nn-no
-ok       util-linux-extra
-ok       vulkan-tools
-ok       xdg-desktop-portal-gnome
-== gaming and graphics candidates
 -- nvidia-driver: 550.163.01-2
 -- nvidia-detect: 550.163.01-2
 -- nvidia-driver-libs: 550.163.01-2
@@ -161,11 +141,6 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 -- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/25.08 
 == every opt-in Flatpak ref exists on Flathub
 ok       com.bitwarden.desktop
-ok       net.lutris.Lutris
-ok       com.heroicgameslauncher.hgl
-ok       net.davidotek.pupgui2
-ok       io.github.benjamimgois.goverlay
-ok       com.github.Matoking.protontricks
 ok       org.gnome.Calendar
 ok       org.gnome.Contacts
 ok       org.gnome.Weather
@@ -178,7 +153,6 @@ ok       org.gnome.Characters
 ok       org.gnome.SimpleScan
 ok       org.gnome.Connections
 ok       com.spotify.Client
-ok       com.valvesoftware.Steam
 == lutris depends/recommends
 lutris
   Depends: <python3:any>
@@ -228,12 +202,37 @@ lutris
     xdg-desktop-portal-kde:i386
   Recommends: gamemode
   Recommends: <gamescope>
+== tind-extras: real run of the setup scripts
+setup-dev: OK
+setup-gaming: OK
+code 1.141.1-1791833136 ii 
+gamemode 1.8.2-2 ii 
+gh 2.46.0-3 ii 
+git 1:2.47.3-0+deb13u1 ii 
+lutris 0.5.19-2 ii 
+mangohud 0.7.2-2 ii 
+steam-devices 1:1.0.0.83~ds-3 ii 
+steam-installer 1:1.0.0.83~ds-3 ii 
+wine 10.0~repack-6 ii 
+wine32 10.0~repack-6 ii 
+winetricks 20250102-1 ii 
+1.141.1
+7baac39ec3ca969dab74ac12c097f6a486e46593
+debian.sources
+vscode.sources
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/microsoft.gpg
+vm.max_map_count = 2147483642
 == verify-on-debian (informational)
 == release
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   60G   85G  42% /__w
+/dev/root       145G   63G   83G  44% /__w
 
 == KVM
 not available (VM tests will be slow)
@@ -265,6 +264,7 @@ ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
 == package names
 == Depends (must exist)
 ok       adwaita-icon-theme
+ok       apt
 ok       bluez
 ok       ca-certificates
 ok       calamares
@@ -272,13 +272,13 @@ ok       calamares-settings-debian
 ok       cups
 ok       curl
 ok       dconf-cli
+ok       debconf
 ok       dkms
 ok       evolution-data-server
 ok       firefox-esr
 ok       firmware-amd-graphics
 ok       flatpak
 ok       fonts-cantarell
-ok       gamemode
 ok       gdm3
 ok       glib-networking
 ok       gnome-backgrounds
@@ -299,6 +299,7 @@ ok       gnome-sushi
 ok       gnome-system-monitor
 ok       gnome-terminal
 ok       gnome-text-editor
+ok       gnupg
 ok       gsettings-desktop-schemas
 ok       gstreamer1.0-packagekit
 ok       gstreamer1.0-plugins-base
@@ -309,6 +310,7 @@ ok       libatk-adaptor
 ok       libcanberra-pulse
 ok       libgl1-mesa-dri
 ok       libglib2.0-bin
+ok       libnotify-bin
 ok       libpam-gnome-keyring
 ok       libreoffice-calc
 ok       libreoffice-gtk3
@@ -316,7 +318,6 @@ ok       libreoffice-impress
 ok       libreoffice-writer
 ok       linux-headers-amd64
 ok       loupe
-ok       mangohud
 ok       mesa-utils
 ok       mesa-va-drivers
 ok       mesa-vdpau-drivers
@@ -333,7 +334,6 @@ ok       pciutils
 ok       pipewire-audio
 ok       pkexec
 ok       showtime
-ok       steam-devices
 ok       system-config-printer
 ok       system-config-printer-common
 ok       system-config-printer-udev
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 0
+== exit status: 1
