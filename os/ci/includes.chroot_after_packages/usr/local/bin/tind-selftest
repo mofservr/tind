@@ -7,6 +7,10 @@ if [ -c /dev/ttyS1 ] && command -v libinput >/dev/null; then
     systemd-run --unit=tind-inputprobe --collect -p StandardOutput=file:/dev/ttyS1 -p StandardError=file:/dev/ttyS1 \
         timeout 1500 libinput debug-events --show-keycodes >/dev/null 2>&1 || true
 fi
+# ship the Calamares session log (once it exists) to ttyS1
+systemd-run --unit=tind-calamares-log --collect -p StandardOutput=file:/dev/ttyS1 -p StandardError=file:/dev/ttyS1 \
+    sh -c 'while :; do f=$(find /root/.cache /home -name session.log -path "*alamares*" 2>/dev/null | head -1); [ -n "$f" ] && break; sleep 5; done; echo "== calamares log: $f"; tail -n +1 -F "$f"' \
+    >/dev/null 2>&1 || true
 UIDN=$(id -u tind 2>/dev/null || echo 1000)
 asuser() { runuser -u tind -- env XDG_RUNTIME_DIR="/run/user/$UIDN" DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$UIDN/bus" "$@"; }
 sec() { echo; echo "##### $*"; }
@@ -61,6 +65,14 @@ sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/li
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
 sec grub defaults; ls /etc/default/grub.d 2>&1
+sec "desktop entries shown in the app grid (name, package)"
+for f in /usr/share/applications/*.desktop; do
+    grep -qE '^(NoDisplay|Hidden)=true' "$f" && continue
+    grep -q '^Type=Application' "$f" || continue
+    echo "$(grep -m1 '^Name=' "$f" | cut -c1-40) | $(dpkg -S "$f" 2>/dev/null | cut -d: -f1 | head -1) | $(basename "$f")"
+done | sort | head -80
+sec "largest installed packages"; dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -rn | head -25
+echo "installed packages: $(dpkg-query -f '.\n' -W | wc -l)"
 sec "journal errors (this boot)"; journalctl -p err -b --no-pager 2>&1 | tail -40
 sec gnome-shell journal; journalctl -b --no-pager _COMM=gnome-shell 2>&1 | grep -iE 'error|tind|stylesheet|extension' | tail -25
 echo "=====TIND-SELFTEST-END====="
