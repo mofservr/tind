@@ -20,10 +20,29 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 16 {'wait': 10}
 17 {'click': [334, 225]}
 18 {'wait': 3}
-19 {'shot': '20-erase-selected'}
-20 {'click': [1007, 735]}
-21 {'wait': 6}
-22 {'shot': '21-users'}
+19 {'click': [1007, 735]}
+20 {'wait': 6}
+21 {'click': [426, 204]}
+22 {'type': 'Tind Test'}
+23 {'click': [426, 264]}
+24 {'key': 'ctrl-a'}
+25 {'type': 'tind'}
+26 {'click': [426, 324]}
+27 {'key': 'ctrl-a'}
+28 {'type': 'tindtest'}
+29 {'click': [426, 384]}
+30 {'type': 'tind-test-pw'}
+31 {'click': [632, 384]}
+32 {'type': 'tind-test-pw'}
+33 {'click': [334, 420]}
+34 {'wait': 2}
+35 {'shot': '30-users-filled'}
+36 {'click': [1007, 735]}
+37 {'wait': 6}
+38 {'shot': '31-summary'}
+39 {'click': [1007, 735]}
+40 {'wait': 4}
+41 {'shot': '32-confirm'}
 == phase 2: boot the installed disk
 0 {'wait': 5}
 disk size: 196 KiB
