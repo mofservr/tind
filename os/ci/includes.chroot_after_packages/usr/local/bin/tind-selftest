@@ -65,6 +65,16 @@ sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/li
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
 sec grub defaults; ls /etc/default/grub.d 2>&1
+sec "gaming and graphics"
+tind-gpu status 2>&1 | head -30
+echo "vm.max_map_count=$(sysctl -n vm.max_map_count)"
+dkms status 2>&1 | head -5
+modinfo -F version nvidia-current 2>&1 | head -1; ls /lib/modules/*/updates/dkms 2>&1 | head -6
+ls /etc/modprobe.d | tr '\n' ' '; echo
+ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
+systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
+ls /var/lib/dkms/mok.key 2>&1
+vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
 sec "desktop entries shown in the app grid (name, package)"
 for f in /usr/share/applications/*.desktop; do
     grep -qE '^(NoDisplay|Hidden)=true' "$f" && continue

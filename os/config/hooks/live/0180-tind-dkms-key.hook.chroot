@@ -1,0 +1,5 @@
+#!/bin/sh
+# The NVIDIA modules were signed with a key generated during the image build.
+# Do not ship that private key: each installed machine generates its own when needed.
+rm -f /var/lib/dkms/mok.key /var/lib/dkms/mok.pub
+exit 0
