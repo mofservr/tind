@@ -41,6 +41,7 @@ ok       zenity
 == Recommends / package lists (nice to have)
 ok       apt-listchanges
 ok       btrfs-progs
+ok       efibootmgr
 ok       evince
 ok       firefox-esr
 ok       firefox-esr-l10n-nb-no
@@ -55,6 +56,9 @@ ok       fonts-noto-color-emoji
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
+ok       grub-efi
+ok       grub-efi-amd64
+ok       grub-efi-amd64-signed
 ok       hunspell-en-us
 ok       hunspell-no
 ok       keyboard-configuration
@@ -70,6 +74,7 @@ ok       myspell-nb
 ok       plymouth
 ok       plymouth-themes
 ok       qrencode
+ok       shim-signed
 ok       showtime
 ok       snapper
 ok       sudo
@@ -77,6 +82,7 @@ ok       thunderbird
 ok       thunderbird-l10n-nb-no
 ok       thunderbird-l10n-nn-no
 ok       totem
+ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
 == verify-on-debian (informational)
@@ -146,6 +152,7 @@ ok       zenity
 == Recommends / package lists (nice to have)
 ok       apt-listchanges
 ok       btrfs-progs
+ok       efibootmgr
 ok       evince
 ok       firefox-esr
 ok       firefox-esr-l10n-nb-no
@@ -160,6 +167,9 @@ ok       fonts-noto-color-emoji
 ok       gdm3
 ok       gnome-shell-extension-dashtodock
 ok       gnome-tweaks
+ok       grub-efi
+ok       grub-efi-amd64
+ok       grub-efi-amd64-signed
 ok       hunspell-en-us
 ok       hunspell-no
 ok       keyboard-configuration
@@ -175,6 +185,7 @@ ok       myspell-nb
 ok       plymouth
 ok       plymouth-themes
 ok       qrencode
+ok       shim-signed
 ok       showtime
 ok       snapper
 ok       sudo
@@ -182,6 +193,7 @@ ok       thunderbird
 ok       thunderbird-l10n-nb-no
 ok       thunderbird-l10n-nn-no
 ok       totem
+ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
 == exit status: 0
