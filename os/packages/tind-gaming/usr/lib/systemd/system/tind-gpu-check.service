@@ -1,0 +1,12 @@
+[Unit]
+Description=Tind GPU driver sanity check (NVIDIA legacy fallback)
+Before=display-manager.service
+After=systemd-udev-settle.service
+ConditionPathExists=/usr/lib/tind/gpu-check
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/gpu-check
+
+[Install]
+WantedBy=graphical.target

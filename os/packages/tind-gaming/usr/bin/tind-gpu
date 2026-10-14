@@ -1,0 +1,24 @@
+#!/bin/bash
+# tind-gpu: show graphics hardware and driver state.
+#   tind-gpu            status
+#   tind-gpu secureboot enroll the key that signs NVIDIA modules (Secure Boot)
+case "${1:-status}" in
+    status)
+        echo "== GPUs"; lspci -nnk | grep -A3 -iE 'vga|3d controller|display controller' || true
+        echo; echo "== Secure Boot"; mokutil --sb-state 2>&1 || echo "mokutil not installed"
+        echo; echo "== NVIDIA"
+        if lspci -nn | grep -qi '\[10de:'; then
+            nvidia-detect 2>&1 | tail -4
+            lsmod | grep -E '^nvidia|^nouveau' || echo "no NVIDIA or nouveau module loaded"
+            dkms status 2>/dev/null | grep -i nvidia || true
+        else
+            echo "no NVIDIA GPU"
+        fi
+        echo; echo "== Vulkan"; vulkaninfo --summary 2>/dev/null | grep -E 'deviceName|driverName' || echo "vulkaninfo found no device" ;;
+    secureboot)
+        [ "$(id -u)" -eq 0 ] || exec pkexec "$0" secureboot
+        update-secureboot-policy --new-key 2>&1 || true
+        update-secureboot-policy --enroll-key
+        echo "Reboot, and in the blue MOK screen choose Enroll MOK with the password you set." ;;
+    *) echo "usage: tind-gpu [status|secureboot]" >&2; exit 1 ;;
+esac

@@ -49,6 +49,10 @@ jobs:
             apt-cache depends nvidia-driver
             echo "== nvidia-driver-libs-i386 depends"
             apt-cache depends nvidia-driver-libs-i386
+            echo "== flathub refs"
+            apt-get install -y flatpak >/dev/null 2>&1
+            flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+            flatpak remote-ls --system flathub --columns=ref 2>&1 | grep -E 'com.valvesoftware.Steam|net.lutris.Lutris|com.heroicgameslauncher.hgl|net.davidotek.pupgui2|VulkanLayer|GL32?.nvidia-550|com.github.Matoking.protontricks|io.github.benjamimgois.goverlay|com.spotify.Client|com.bitwarden.desktop|org.gnome.(Calendar|Contacts|Weather|Maps|clocks|baobab|Logs|font-viewer|Characters|SimpleScan|Connections)$' | sort | head -80
             echo "== lutris depends/recommends"
             apt-cache depends lutris
             echo "== verify-on-debian (informational)"
