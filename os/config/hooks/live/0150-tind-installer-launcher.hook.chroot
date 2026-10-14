@@ -1,13 +1,7 @@
 #!/bin/sh
-# rebrand the live-session installer launcher shipped by calamares-settings-debian
-set -e
+# hide the stock "Install Debian" launcher; tind-installer ships "Install Tind"
 for f in /usr/share/applications/calamares-install-debian.desktop /usr/share/applications/install-debian.desktop /usr/share/applications/calamares.desktop; do
     [ -f "$f" ] || continue
-    out=/usr/share/applications/tind-install.desktop
-    sed -e 's/^Name\(\[[^]]*\]\)\?=.*/Name=Install Tind/' \
-        -e 's/^Icon=.*/Icon=tind-logo/' "$f" > "$out"
-    echo "NoDisplay=false" >> "$out"
     echo "NoDisplay=true" >> "$f"
-    break
 done
 exit 0
