@@ -4,14 +4,12 @@ if [ "$1" = "configure" ]; then
     if [ -f /etc/calamares/settings.conf ]; then
         sed -i 's/^branding:.*/branding: tind/' /etc/calamares/settings.conf
     fi
-    # Norwegian defaults: start the timezone at Europe/Oslo and do not look up the location online
+    # Norwegian defaults: start the timezone at Europe/Oslo
     mkdir -p /etc/calamares/modules
     cat > /etc/calamares/modules/locale.conf <<'CONF'
 ---
 region: "Europe"
 zone: "Oslo"
-geoip:
-    style: "none"
 CONF
 fi
 exit 0
