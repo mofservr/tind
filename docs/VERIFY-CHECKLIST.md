@@ -61,3 +61,11 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Removed apps are opt-ins in tind-optins: gnome-extras, gnome-utilities, tweaks.
 - fwupd added for firmware updates through GNOME Software (unproven on real hardware).
 - Unproven: Flathub refs of the new opt-ins; hook 0170 purge result on the next full ISO (launchers verified hidden in build run 38531716185).
+
+## Extras and graphics (2026-10-14)
+- Proven in CI (packages job, real trixie): setup-dev and setup-gaming complete; VS Code from the Microsoft repo, Steam installer licence unattended, Lutris, Wine, wine32:i386, winetricks, gamemode, mangohud install; Microsoft key fingerprint matches the pin.
+- Proven: ISO carries NVIDIA 550 DKMS module (built for the image kernel), no DKMS signing key shipped, nvidia-persistenced masked, no gaming or dev software on the ISO.
+- Proven: Extras page appears in Calamares and the tindextras job runs.
+- Unproven until the next installer run: ticked choice reaches /var/lib/tind/pending-extras; first-boot service installs both stacks; notification.
+- Unproven on real hardware: NVIDIA load, nouveau fallback for old cards, Secure Boot key flow, fwupd, Steam/Lutris actually running games.
+- Extras page looks plain (list, placeholder icon, English helper text); design is pinned.
