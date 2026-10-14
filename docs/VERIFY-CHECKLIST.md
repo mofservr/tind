@@ -69,3 +69,10 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Proven (installer run 38598804949): zenity checklist with both boxes ticked by mouse; first boot installed games (steam-installer, lutris, wine, wine32:i386, winetricks, gamemode, mangohud, i386 enabled, vm.max_map_count=2147483642) and developer tools (git, gh, build-essential, pipx, code); status done; no failed units.
 - Unproven: the login notification, Enter key in the dialog (OK must be clicked), Steam/Lutris actually launching games, Tind Apps entries for Games and Developer tools on an installed system.
 - Unproven on real hardware: NVIDIA load, nouveau fallback for old cards, Secure Boot key flow, fwupd, Steam/Lutris actually running games.
+
+## Boot modes, dual boot, newer kernel (2026-10-14)
+- Proven (installer run 38614079926, BIOS/SeaBIOS): install completes, installed system boots via BIOS, GRUB in /boot/grub/i386-pc, ext4 root, no failed units. The image carries both grub-efi-amd64-bin and grub-pc-bin; Tind's own bootloader step (`/usr/lib/tind/bootloader-config`, module `tindbootloader`) replaces Debian's helper because that one runs apt (needs network, and grub-pc conflicts with grub-efi-amd64).
+- Image has os-prober and ntfs-3g; `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub.d/90-tind.cfg`. Unproven: an actual second OS being detected and offered by Calamares ("install alongside") and by the GRUB menu.
+- BIOS note: the BIOS install has grub-pc-bin but not the grub-pc package, so grub upgrades do not re-run grub-install on the disk. Acceptable for now.
+- Newer kernel opt-in ("Newer kernel" in Tind Apps, `/usr/lib/tind/setup-newer-kernel`): adds trixie-backports, installs linux-image-amd64 and headers (7.2.6 at test time) and, if present, nvidia-kernel-dkms from backports. Dry run resolves in CI. Unproven: a real install, NVIDIA module building on 7.x, boot into the new kernel.
+- Installer test is now selectable: `os/ci/installer-test/FIRMWARE` (uefi|bios) and `EXTRAS` (yes|no).

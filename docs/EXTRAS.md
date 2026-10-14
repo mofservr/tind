@@ -17,3 +17,6 @@ Nothing from these stacks is on the ISO. Everything is downloaded from Debian (o
 
 ## Flatpak
 Used for small apps only (opt-ins: Spotify, Bitwarden, GNOME everyday apps and utilities).
+
+## Newer kernel (opt-in)
+Tind Apps entry "Newer kernel" runs `/usr/lib/tind/setup-newer-kernel`: adds Debian trixie-backports, installs the backports kernel and headers, and the NVIDIA DKMS module from backports when the NVIDIA driver is installed. The current kernel stays installed and in the boot menu as a fallback. Needs internet and a restart.
