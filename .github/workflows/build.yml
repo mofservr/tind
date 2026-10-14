@@ -92,6 +92,7 @@ jobs:
           { echo '== live-build bootloader templates'; find /usr/share/live/build/bootloaders -maxdepth 3 | sort; \
             echo '== grub-pc theme.txt'; cat /usr/share/live/build/bootloaders/grub-pc/live-theme/theme.txt; \
             echo '== grub-pc grub.cfg'; cat /usr/share/live/build/bootloaders/grub-pc/grub.cfg; } > logs/bootloader-templates.log 2>&1 || true
+          ( while sleep 20; do echo "RES $(date +%T) $(df -h / | tail -1 | awk '{print "disk-used="$3" avail="$4}') $(free -m | awk 'NR==2{print "mem-used="$3"M avail="$7"M"}') $(free -m | awk 'NR==3{print "swap-used="$3"M"}')"; done ) &
           os/build.sh 2>&1 | tee logs/iso-build.log
       - name: Collect live-build logs
         if: always()
