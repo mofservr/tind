@@ -85,5 +85,5 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 3 {'shot': '61-installed-b'}
 4 {'wait': 150}
 5 {'shot': '62-installed-c'}
-disk size: 7.61 GiB
-    disk size: 7.61 GiB
+disk size: 7.36 GiB
+    disk size: 7.36 GiB
