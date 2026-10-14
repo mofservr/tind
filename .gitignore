@@ -5,3 +5,5 @@ os/config/archives/protonvpn.*
 os/config/package-lists/protonvpn.list.chroot
 *.iso
 *.log
+__pycache__/
+*.pyc

@@ -9,9 +9,6 @@
   "wait": 150
  },
  {
-  "shot": "01-desktop"
- },
- {
   "click": [
    400,
    300
@@ -30,42 +27,78 @@
   "wait": 4
  },
  {
-  "shot": "02-after-click-apps"
- },
- {
   "type": "Install"
  },
  {
   "wait": 3
  },
  {
-  "shot": "03-after-typing"
- },
- {
   "key": "ret"
  },
  {
-  "wait": 20
+  "wait": 30
  },
  {
-  "shot": "04-after-enter"
+  "shot": "10-welcome"
  },
  {
-  "wait": 20
+  "click": [
+   1007,
+   735
+  ]
  },
  {
-  "shot": "05-wait-00"
+  "wait": 6
  },
  {
-  "wait": 20
+  "shot": "11-location"
  },
  {
-  "shot": "05-wait-01"
+  "click": [
+   1007,
+   735
+  ]
  },
  {
-  "wait": 20
+  "wait": 6
  },
  {
-  "shot": "05-wait-02"
+  "shot": "12-keyboard"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 10
+ },
+ {
+  "shot": "13-partitions"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
+  "shot": "14-after-partitions"
+ },
+ {
+  "click": [
+   1007,
+   735
+  ]
+ },
+ {
+  "wait": 6
+ },
+ {
+  "shot": "15-users"
  }
 ]
