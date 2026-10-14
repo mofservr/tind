@@ -1,39 +1,306 @@
-[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: failed to load Boot0002 "UEFI Misc Device" from PciRoot(0x0)/Pci(0x4,0x0): Not Found
+[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0008 "Tind" from HD(1,GPT,40508739-A31F-4557-8CE4-49D747448C35,0x1000,0x96000)/\EFI\Tind\shimx64.efi
+BdsDxe: starting Boot0008 "Tind" from HD(1,GPT,40508739-A31F-4557-8CE4-49D747448C35,0x1000,0x96000)/\EFI\Tind\shimx64.efi
+=====TIND-SELFTEST-BEGIN=====
 
->>Start PXE over IPv4.
-  PXE-E16: No valid offer received.
-BdsDxe: failed to load Boot0003 "UEFI PXEv4 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv4(0.0.0.0,0x0,DHCP,0.0.0.0,0.0.0.0,0.0.0.0): Not Found
+##### os-release
+PRETTY_NAME="Tind 0.1 (Debian 13 trixie)"
+NAME="Tind"
+VERSION_ID="0.1"
+VERSION="0.1 (development)"
+VERSION_CODENAME=trixie
+ID=tind
+ID_LIKE=debian
+DEBIAN_CODENAME=trixie
+ANSI_COLOR="38;2;246;169;188"
+LOGO=tind-logo
 
->>Start PXE over IPv6.
-  PXE-E16: No valid offer received.
-BdsDxe: failed to load Boot0004 "UEFI PXEv6 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000,0x0,Static,0000:0000:0000:0000:0000:0000:0000:0000,0x40,0000:0000:0000:0000:0000:0000:0000:0000): Not Found
+##### tind packages
+ii tind-apps 0.1.0
+ii tind-branding 0.1.0
+ii tind-desktop 0.1.0
+ii tind-installer 0.1.0
+ii tind-mozilla-config 0.1.0
+ii tind-optins 0.1.0
+ii tind-wireguard 0.1.0
 
->>Start HTTP Boot over IPv4.....
-  Error: Could not retrieve NBP file size from HTTP server.
+##### input devices
+N: Name="AT Translated Set 2 keyboard"
+H: Handlers=sysrq kbd leds event0 
+N: Name="Power Button"
+H: Handlers=kbd event1 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse0 event2 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse1 event3 
+N: Name="QEMU QEMU USB Keyboard"
+H: Handlers=sysrq kbd leds event4 
+N: Name="QEMU QEMU USB Tablet"
+H: Handlers=mouse2 event5 
+N: Name="PC Speaker"
+H: Handlers=kbd event6 
+by-id	 event0  event2  event4  event6  mouse0  mouse2
+by-path  event1  event3  event5  mice	 mouse1
 
-  Error: Server response timeout.
-BdsDxe: failed to load Boot0005 "UEFI HTTPv4 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv4(0.0.0.0,0x0,DHCP,0.0.0.0,0.0.0.0,0.0.0.0)/Uri(): Not Found
+##### session
+1 1000 tind seat0 870 user    tty2 no -
+2 1000 tind -     879 manager -    no -
+Name=tind Seat=seat0 Type=wayland Active=yes State=active 
+Name=tind Seat= Type=unspecified Active=yes State=active 
 
->>Start HTTP Boot over IPv6.
-  Error: Could not retrieve NBP file size from HTTP server.
+##### failed units
 
-  Error: Unexpected network error.
-BdsDxe: failed to load Boot0006 "UEFI HTTPv6 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000,0x0,Static,0000:0000:0000:0000:0000:0000:0000:0000,0x40,0000:0000:0000:0000:0000:0000:0000:0000)/Uri(): Not Found
-BdsDxe: loading Boot0007 "EFI Internal Shell" from Fv(7CB8BDC9-F8EB-4F34-AAEA-3EE4AF6516A1)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1)
-BdsDxe: starting Boot0007 "EFI Internal Shell" from Fv(7CB8BDC9-F8EB-4F34-AAEA-3EE4AF6516A1)/FvFile(7C04A583-9E3E-4F1C-AD65-E05268D0B4D1)
-[2J[01;01H[01;01HUEFI Interactive Shell v2.2
-EDK II
-UEFI v2.70 (Ubuntu distribution of EDK II, 0x00010000)
-[1m[33m[40mMapping table[0m[37m[40m
-[1m[33m[40m      FS0:[0m[37m[40m [1m[37m[40mAlias(s):[0m[37m[40mHD1b:;BLK2:
-          PciRoot(0x0)/Pci(0x4,0x0)/HD(1,GPT,89DBA831-3511-4A62-A8A3-D8903800EE21,0x1000,0x96000)
-[1m[33m[40m     BLK1:[0m[37m[40m [1m[37m[40mAlias(s):[0m[37m[40m
-          PciRoot(0x0)/Pci(0x4,0x0)
-[1m[33m[40m     BLK3:[0m[37m[40m [1m[37m[40mAlias(s):[0m[37m[40m
-          PciRoot(0x0)/Pci(0x4,0x0)/HD(2,GPT,8225B9CB-F687-4ADD-9F71-6C88935DC193,0x97000,0x2A95994)
-[1m[33m[40m     BLK4:[0m[37m[40m [1m[37m[40mAlias(s):[0m[37m[40m
-          PciRoot(0x0)/Pci(0x4,0x0)/HD(3,GPT,68F7B4E7-7A78-4436-942B-16F55A8CF8FD,0x2B2C994,0x10D362A)
-[1m[33m[40m     BLK0:[0m[37m[40m [1m[37m[40mAlias(s):[0m[37m[40m
-          PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
-[17;01HPress [1m[37m[40mESC[0m[37m[40m in 5 seconds to skip [1m[33m[40mstartup.nsh[0m[37m[40m or any other key to continue.[17;01HPress [1m[37m[40mESC[0m[37m[40m in 4 seconds to skip [1m[33m[40mstartup.nsh[0m[37m[40m or any other key to continue.[17;01HPress [1m[37m[40mESC[0m[37m[40m in 3 seconds to skip [1m[33m[40mstartup.nsh[0m[37m[40m or any other key to continue.[17;01HPress [1m[37m[40mESC[0m[37m[40m in 2 seconds to skip [1m[33m[40mstartup.nsh[0m[37m[40m or any other key to continue.[17;01HPress [1m[37m[40mESC[0m[37m[40m in 1 seconds to skip [1m[33m[40mstartup.nsh[0m[37m[40m or any other key to continue.
-[18;01H[1m[33m[40mShell> [0m[37m[40m
+##### services
+NetworkManager: active
+systemd-resolved: active
+ufw: active
+gdm: active
+
+##### resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  14 04:24 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+
+##### ufw
+Status: active
+
+##### flatpak remotes
+[1mName    Options[22m
+flathub system
+
+##### gnome settings
+org.gnome.desktop.interface color-scheme = 'prefer-dark'
+org.gnome.desktop.interface accent-color = 'pink'
+org.gnome.desktop.background picture-uri-dark = 'file:///usr/share/backgrounds/tind/tind-dark.jpg'
+org.gnome.shell enabled-extensions = ['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
+org.gnome.shell favorite-apps = ['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Console.desktop', 'thunderbird.desktop', 'libreoffice-startcenter.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
+org.gnome.shell.extensions.dash-to-dock dock-position = 'LEFT'
+
+##### gnome-shell extensions
+dash-to-dock@micxgx.gmail.com
+tind-ice@tind.no
+tind-ice@tind.no
+  Navn: Tind Ice
+  Beskrivelse: Tind's ice-glass styling for the top bar, dock, menus and Quick Settings. Pure CSS overlay on top of the stock GNOME Shell theme.
+  Sti: /usr/share/gnome-shell/extensions/tind-ice@tind.no
+  Versjon: 1
+  Slått på: Ja
+  Tilstand: ACTIVE
+
+##### firefox policies
+/etc/firefox/policies/policies.json: present
+/usr/lib/firefox-esr/distribution/policies.json: present
+firefox policies.json: valid JSON
+lrwxrwxrwx 1 root root 36 sep.  29 20:27 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
+
+##### ublock origin
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/1p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/3p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar/messages.json
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
+grep: skrivefeil: Røret ble brutt
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
+
+##### firefox startup (headless, 40s)
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{7808592d-8424-4714-a20f-8675b6e03cf7}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+extensions.json present: yes
+formautofill@mozilla.org active=true location=app-builtin-addons
+ipp-activator@mozilla.com active=true location=app-builtin-addons
+newtab@mozilla.org active=true location=app-builtin-addons
+pictureinpicture@mozilla.org active=true location=app-builtin-addons
+addons-search-detection@mozilla.com active=true location=app-builtin-addons
+webcompat@mozilla.org active=true location=app-builtin-addons
+langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
+uBlock0@raymondhill.net active=true location=app-system-share
+default-theme@mozilla.org active=true location=app-builtin
+user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
+policy keys:
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
+user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
+user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
+user_pref("toolkit.telemetry.cachedClientID", "36f15ec3-ea78-44be-8c51-12259c1bb8d2");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "60a703cc-b2d9-45ce-8103-7ad361dbbf8a");
+user_pref("toolkit.telemetry.previousBuildID", "20260923073912");
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+
+##### thunderbird policies
+thunderbird policies.json: valid JSON
+
+##### tind-enroll
+tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+
+  sudo tind-enroll init              create this device's key pair, print the public key
+  sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+  sudo tind-enroll status            show tunnel state
+  sudo tind-enroll remove [--purge-key]
+
+The private key is generated here and never leaves this device.
+SERVER_ENDPOINT=""
+SERVER_PUBLIC_KEY=""
+ALLOWED_IPS=""
+DNS_SERVER=""
+DNS_DOMAIN="servr.no"
+KEEPALIVE="25"
+CONNECTION_NAME="tind-servr"
+
+##### enroll init/apply smoke test
+
+The admin will reply with a tunnel address such as 10.8.0.12/32.
+Then run:  sudo tind-enroll apply 10.8.0.12/32
+tind-enroll: SERVER_ENDPOINT is empty in /etc/tind/servr-tunnel.conf. The server admin needs to fill it in first.
+tind-enroll: tunnel 'tind-servr' is not installed
+Tunnel 'tind-servr' was not installed.
+Removed this device's private key.
+
+##### gnome-tour removed?
+un  gnome-tour     <none>       <none>       (ingen beskrivelse tilgjengelig)
+
+##### calamares branding
+105:branding: tind
+branding.desc
+icon.png
+logo.png
+show.qml
+welcome.png
+
+##### installer launcher
+-rw-r--r-- 1 root root 336 okt.  14 03:59 /usr/share/applications/tind-install.desktop
+Name=Install Tind
+Exec=calamares-install-debian
+Icon=tind-logo
+NoDisplay=false
+-- original:
+Name=Install Debian
+NoDisplay=true
+
+##### optins
+bitwarden.optin  claude.optin	      nextcloud.optin  steam.optin
+claude.install	 gaming-extras.optin  spotify.optin
+-rwxr-xr-x 1 root root 1955 okt.  14 03:59 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 okt.  14 03:59 /usr/lib/tind/optin-install
+
+##### nextcloud config
+# Tind: global Nextcloud desktop client defaults.
+# Pre-fills the server address in the account wizard. Users still log in themselves.
+[General]
+overrideServerUrl=https://lagrr.servr.no
+
+##### plymouth
+tind
+bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homeworld joy lines moonlight script softwaves solar spacefun spinfinity spinner text tind tribar 
+
+##### grub defaults
+90-tind.cfg
+
+##### desktop entries shown in the app grid (name, package)
+Name=Advanced Network Configuration | nm-connection-editor | nm-connection-editor.desktop
+Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
+Name=Calendar | gnome-calendar | org.gnome.Calendar.desktop
+Name=Camera | gnome-snapshot | org.gnome.Snapshot.desktop
+Name=Characters | gnome-characters | org.gnome.Characters.desktop
+Name=Clocks | gnome-clocks | org.gnome.clocks.desktop
+Name=Connections | gnome-connections | org.gnome.Connections.desktop
+Name=Contacts | gnome-contacts | org.gnome.Contacts.desktop
+Name=Disks | gnome-disk-utility | org.gnome.DiskUtility.desktop
+Name=Disk Usage Analyzer | baobab | org.gnome.baobab.desktop
+Name=Document Scanner | simple-scan | simple-scan.desktop
+Name=Document Viewer | evince | org.gnome.Evince.desktop
+Name=Extensions | gnome-shell-extension-prefs | org.gnome.Extensions.desktop
+Name=Files | nautilus | org.gnome.Nautilus.desktop
+Name=Firefox ESR | firefox-esr | firefox-esr.desktop
+Name=Fonts | gnome-font-viewer | org.gnome.font-viewer.desktop
+Name=GNOME System Monitor | gnome-system-monitor | gnome-system-monitor-kde.desktop
+Name=Help | yelp | yelp.desktop
+Name=IBus Preferences | ibus | org.freedesktop.IBus.Setup.desktop
+Name=Image Viewer | loupe | org.gnome.Loupe.desktop
+Name=Input Method | im-config | im-config.desktop
+Name=Install Tind |  | tind-install.desktop
+Name=KDE System Settings | systemsettings | kdesystemsettings.desktop
+Name=LibreOffice Calc | libreoffice-calc | libreoffice-calc.desktop
+Name=LibreOffice Draw | libreoffice-draw | libreoffice-draw.desktop
+Name=LibreOffice Impress | libreoffice-impress | libreoffice-impress.desktop
+Name=LibreOffice | libreoffice-common | libreoffice-startcenter.desktop
+Name=LibreOffice Math | libreoffice-math | libreoffice-math.desktop
+Name=LibreOffice Writer | libreoffice-writer | libreoffice-writer.desktop
+Name=Logs | gnome-logs | org.gnome.Logs.desktop
+Name=Maps | gnome-maps | org.gnome.Maps.desktop
+Name=Parental Controls | malcontent-gui | org.freedesktop.MalcontentControl.desktop
+Name=Print Settings | system-config-printer | system-config-printer.desktop
+Name=Settings | gnome-control-center | org.gnome.Settings.desktop
+Name=Software | gnome-software | org.gnome.Software.desktop
+Name=System Monitor | gnome-system-monitor | org.gnome.SystemMonitor.desktop
+Name=System Settings | systemsettings | systemsettings.desktop
+Name=Terminal | gnome-terminal | org.gnome.Terminal.desktop
+Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
+Name=Thunderbird | thunderbird | thunderbird.desktop
+Name=Tind Apps | tind-optins | tind-optins.desktop
+Name=Tweaks | gnome-tweaks | org.gnome.tweaks.desktop
+Name=Videos | totem | org.gnome.Totem.desktop
+Name=Vim | vim-common | vim.desktop
+Name=Weather | gnome-weather | org.gnome.Weather.desktop
+Name=Zutty | zutty | zutty.desktop
+
+##### largest installed packages
+334234	fonts-noto-extra
+301269	firefox-esr
+274488	thunderbird
+236466	locales-all
+214826	fonts-noto-cjk-extra
+143940	firmware-netronome
+134337	ibus-data
+126696	libllvm19
+119815	libreoffice-core
+114123	firmware-iwlwifi
+108496	linux-image-6.12.111+deb13-amd64
+100568	libwebkit2gtk-4.1-0
+99540	libwebkitgtk-6.0-4
+97239	firmware-atheros
+91908	firmware-amd-graphics
+91217	fonts-noto-cjk
+81104	mesa-vulkan-drivers
+72820	gnome-user-docs
+72046	fonts-noto-ui-extra
+64591	firmware-nvidia-graphics
+60869	firmware-nvidia-tesla-535-gsp
+60463	firmware-marvell-prestera
+48558	libreoffice-common
+46319	firmware-mediatek
+43166	libdnnl3.6
+installed packages: 1739
+
+##### journal errors (this boot)
+okt. 14 04:40:32 tindtest gdm-autologin][870]: gkr-pam: couldn't unlock the login keyring.
+
+##### gnome-shell journal
+okt. 14 04:40:34 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 04:40:34 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 04:40:34 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 04:40:34 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 04:40:34 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 04:40:35 tindtest gnome-shell[1048]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 04:40:36 tindtest gnome-shell[1048]: GNOME Shell started at Wed Oct 14 2026 04:40:33 GMT+0200 (sentraleuropeisk sommertid)
+okt. 14 04:40:36 tindtest gnome-shell[1048]: Registering session with GDM
+=====TIND-SELFTEST-END=====
