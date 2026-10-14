@@ -40,6 +40,18 @@ jobs:
             done
             apt-get update >/dev/null
             os/scripts/check-packages.sh || rc=1
+            echo "== calamares stock config"
+            mkdir -p /tmp/cal && cd /tmp/cal && apt-get download calamares-settings-debian calamares >/dev/null 2>&1
+            for d in *.deb; do dpkg -x "$d" x; done
+            cat x/etc/calamares/settings.conf
+            echo "-- calamares version: $(dpkg-deb -f calamares_*.deb Version)"
+            find x -name 'packagechooser*' -o -name 'shellprocess*' -o -name 'module.desc' | grep -E 'packagechooser|shellprocess' | head
+            cat x/usr/share/calamares/modules/packagechooser.conf 2>/dev/null | head -80
+            ls x/usr/lib/*/calamares/modules 2>/dev/null | tr '\n' ' '; echo
+            cd "$GITHUB_WORKSPACE"
+            echo "== microsoft repo reachable"
+            curl -sI https://packages.microsoft.com/keys/microsoft.asc | head -3
+            curl -sI https://packages.microsoft.com/repos/code/dists/stable/InRelease | head -3
             echo "== gaming and graphics candidates"
             dpkg --add-architecture i386; apt-get update >/dev/null
             for p in nvidia-driver nvidia-detect nvidia-driver-libs nvidia-driver-libs-i386 nvidia-vulkan-icd nvidia-kernel-dkms nvidia-open-kernel-dkms nvidia-settings nvidia-tesla-470-driver nvidia-legacy-390xx-driver linux-headers-amd64 dkms game-devices-udev steam-devices steam-installer lutris gamemode mangohud wine wine32 libgl1-mesa-dri:i386 mesa-vulkan-drivers:i386 libvulkan1:i386 vulkan-tools mesa-utils libva-drm2 intel-media-va-driver-non-free mesa-va-drivers mesa-vdpau-drivers firmware-amd-graphics goverlay gamescope vkbasalt protontricks winetricks zenity; do
