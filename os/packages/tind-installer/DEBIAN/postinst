@@ -11,5 +11,24 @@ if [ "$1" = "configure" ]; then
 region: "Europe"
 zone: "Oslo"
 CONF
+    # after install: drop the live-session and installer packages from the installed system.
+    # try_remove ignores packages that are not present (the stock list names some we do not ship).
+    cat > /etc/calamares/modules/packages.conf <<'CONF'
+---
+backend: apt
+update_db: false
+update_system: false
+operations:
+  - try_remove:
+      - live-boot
+      - live-boot-doc
+      - live-config
+      - live-config-doc
+      - live-config-systemd
+      - live-tools
+      - tind-installer
+      - calamares-settings-debian
+      - calamares
+CONF
 fi
 exit 0
