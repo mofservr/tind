@@ -1,11 +1,3 @@
--- nvidia-driver-libs: 550.163.01-2
--- nvidia-driver-libs-i386: 
--- nvidia-vulkan-icd: 550.163.01-2
--- nvidia-kernel-dkms: 550.163.01-2
--- nvidia-open-kernel-dkms: 550.163.01-2
--- nvidia-settings: 550.163.01-1
--- nvidia-tesla-470-driver: 
--- nvidia-legacy-390xx-driver: 
 -- linux-headers-amd64: 6.12.111-1
 -- dkms: 3.2.2-1~deb13u1
 -- game-devices-udev: 
@@ -199,6 +191,13 @@ lutris
     xdg-desktop-portal-kde:i386
   Recommends: gamemode
   Recommends: gamescope
+== newer kernel: dry run
+Inst linux-image-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-7.2.6+deb13-common (7.2.6-1~bpo13+1 Debian Backports:stable-backports [all])
+Inst linux-headers-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+== Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu.
 == tind-extras: real run of the setup scripts
 setup-dev: OK
 setup-gaming: OK
@@ -369,6 +368,7 @@ ok       gnome-software-plugin-fwupd
 ok       grub-efi
 ok       grub-efi-amd64
 ok       grub-efi-amd64-signed
+ok       grub-pc-bin
 ok       hunspell-en-us
 ok       hunspell-no
 ok       intel-media-va-driver-non-free
