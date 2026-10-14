@@ -44,8 +44,8 @@ by-id	 event0  event2  event4  event6  mouse0  mouse2
 by-path  event1  event3  event5  mice	 mouse1
 
 ##### session
-1 1000 tind seat0 1484 user    tty2 no -
-2 1000 tind -     1492 manager -    no -
+1 1000 tind seat0 1502 user    tty2 no -
+2 1000 tind -     1511 manager -    no -
 Name=tind Seat=seat0 Type=wayland Active=yes State=active 
 Name=tind Seat= Type=unspecified Active=yes State=active 
 
@@ -58,7 +58,7 @@ ufw: active
 gdm: active
 
 ##### resolv.conf
-lrwxrwxrwx 1 root root 39 okt.  14 17:34 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  14 18:33 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
 
 ##### ufw
 Status: active
@@ -109,7 +109,7 @@ grep: skrivefeil: Røret ble brutt
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{c2e70320-e62e-4919-ba50-9235b720be99}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{7fcb0d5f-c1dd-4a7c-9f6c-dc863ae73e96}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -126,8 +126,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "f18d4eac-7337-4ec2-9828-b8388e76acbb");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "c35ad078-14da-47a2-940a-e76387bc19ef");
+user_pref("toolkit.telemetry.cachedClientID", "afdef47a-3c8d-4cea-9180-928dcf0017c6");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "36c583de-dcc4-4e1f-912f-3905d6f15187");
 user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -309,36 +309,38 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 installed packages: 1773
 
 ##### journal errors (this boot)
-okt. 14 17:34:52 tind adduser[1117]: The group `powerdev' does not exist.
-okt. 14 17:34:52 tind adduser[1133]: The group `debian-tor' does not exist.
-okt. 14 17:34:57 tind gdm-autologin][1484]: gkr-pam: couldn't unlock the login keyring.
-okt. 14 17:34:57 tind systemd[1492]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1642.scope - Application launched by gnome-session-binary.
-okt. 14 17:34:57 tind systemd[1492]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1643.scope - Application launched by gnome-session-binary.
+okt. 14 18:33:26 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+okt. 14 18:33:29 tind adduser[1125]: The group `powerdev' does not exist.
+okt. 14 18:33:29 tind adduser[1141]: The group `debian-tor' does not exist.
+okt. 14 18:33:35 tind gdm-autologin][1502]: gkr-pam: couldn't unlock the login keyring.
+okt. 14 18:33:36 tind systemd[1511]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1661.scope - Application launched by gnome-session-binary.
+okt. 14 18:33:42 tind systemd[1511]: Failed to start app-gnome-tind\x2dgpu\x2dnotify-1829.scope - Application launched by gnome-session-binary.
+okt. 14 18:33:42 tind systemd[1511]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1838.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-okt. 14 17:35:03 tind gnome-shell[1659]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 17:35:03 tind gnome-shell[1659]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 17:35:03 tind gnome-shell[1659]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 17:35:03 tind gnome-shell[1659]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 17:35:04 tind gnome-shell[1659]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 17:35:05 tind gnome-shell[1659]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 17:35:06 tind gnome-shell[1659]: GNOME Shell started at Wed Oct 14 2026 17:35:02 GMT+0200 (sentraleuropeisk sommertid)
-okt. 14 17:35:06 tind gnome-shell[1659]: Registering session with GDM
+okt. 14 18:33:44 tind gnome-shell[1680]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 18:33:44 tind gnome-shell[1680]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 18:33:44 tind gnome-shell[1680]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 18:33:44 tind gnome-shell[1680]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 18:33:44 tind gnome-shell[1680]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 14 18:33:46 tind gnome-shell[1680]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 14 18:33:46 tind gnome-shell[1680]: GNOME Shell started at Wed Oct 14 2026 18:33:41 GMT+0200 (sentraleuropeisk sommertid)
+okt. 14 18:33:46 tind gnome-shell[1680]: Registering session with GDM
 =====TIND-SELFTEST-END=====

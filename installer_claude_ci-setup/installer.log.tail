@@ -17,7 +17,7 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 13 {'click': [253, 450]}
 14 {'wait': 1}
 15 {'shot': '20-extras-ticked'}
-16 {'key': 'ret'}
+16 {'click': [844, 519]}
 17 {'wait': 30}
 18 {'click': [1007, 735]}
 19 {'wait': 5}
@@ -85,6 +85,7 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 81 {'shot': '50-install-16'}
 82 {'wait': 60}
 83 {'shot': '50-install-17'}
+disk used after install: 7744831488 bytes
 == phase 2: boot the installed disk
 0 {'wait': 120}
 1 {'shot': '600-installed-00'}
@@ -115,5 +116,5 @@ Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=6553
 26 {'wait': 120}
 27 {'shot': '613-installed-13'}
 28 {'wait': 120}
-disk size: 196 KiB
-    disk size: 196 KiB
+disk size: 11.9 GiB
+    disk size: 11.9 GiB
