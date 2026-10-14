@@ -1,0 +1,24 @@
+#!/bin/bash
+# If an NVIDIA GPU is present but nvidia-detect does not recommend the packaged
+# driver (card too old), stop blacklisting nouveau so the open driver can run.
+# Does nothing on AMD/Intel-only machines or when the packaged driver fits.
+set -u
+command -v lspci >/dev/null 2>&1 || exit 0
+lspci -nn | grep -qiE '(vga|3d|display).*\[10de:' || exit 0
+command -v nvidia-detect >/dev/null 2>&1 || exit 0
+rec="$(nvidia-detect 2>/dev/null || true)"
+if echo "$rec" | grep -qE '^\s+nvidia-driver\s*$'; then
+    exit 0
+fi
+changed=0
+for f in /etc/modprobe.d/*.conf; do
+    [ -f "$f" ] || continue
+    if grep -q '^blacklist nouveau' "$f" || grep -q '^alias nouveau off' "$f"; then
+        mv "$f" "$f.tind-disabled"; changed=1
+    fi
+done
+if [ "$changed" = 1 ]; then
+    logger -t tind-gpu-check "NVIDIA card not supported by packaged driver; re-enabled nouveau"
+    modprobe nouveau 2>/dev/null || true
+fi
+exit 0
