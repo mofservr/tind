@@ -21,6 +21,13 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - gnome-tour is removed (no first-login tour).
 - Nextcloud `overrideServerUrl` file is in place (the client itself has not been run).
 
+## Installer findings (CI drives Calamares by keyboard and mouse in QEMU)
+
+- Calamares opens as "Install Tind" with the Tind branding and walks through location, keyboard, partitioning (erase disk), users, summary and install.
+- Fixed: default timezone was America/New_York; now Europe/Oslo (`/etc/calamares/modules/locale.conf`).
+- Fixed: install failed at the bootloader step (`grub-efi` has no candidate because the image carries no apt indices, and `hwclock` was missing in the target). GRUB EFI packages and `util-linux-extra` are now in the image.
+- Known: UEFI only for now (no `grub-pc`), no `ckbcomp` (no keyboard preview), welcome page text from the branding is English only.
+
 ## Still unproven
 
 | # | Item | How to check | If wrong |
