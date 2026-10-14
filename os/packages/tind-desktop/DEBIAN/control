@@ -4,11 +4,12 @@ Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: metapackages
 Priority: optional
-Depends: tind-branding, gnome-core, gnome-shell-extension-dashtodock, gnome-software, gnome-software-plugin-flatpak, flatpak, cups, system-config-printer, bluez, ufw, unattended-upgrades, network-manager, systemd-resolved
-Recommends: firmware-linux, firmware-misc-nonfree, firmware-realtek, firmware-atheros, firmware-iwlwifi, mesa-vulkan-drivers, vulkan-tools, btrfs-progs, snapper, fonts-noto-core, fonts-noto-ui-core, fonts-noto-mono, fonts-noto-cjk, fonts-noto-color-emoji, xdg-desktop-portal-gnome, gnome-tweaks, apt-listchanges
+Depends: tind-branding, gdm3, gnome-session, gnome-shell, gnome-shell-extension-prefs, gnome-settings-daemon, gnome-control-center, gnome-keyring, libpam-gnome-keyring, gnome-menus, gnome-backgrounds, adwaita-icon-theme, gsettings-desktop-schemas, glib-networking, libglib2.0-bin, fonts-cantarell, orca, gnome-sushi, nautilus, gvfs-backends, gvfs-fuse, gnome-terminal, gnome-text-editor, gnome-calculator, gnome-system-monitor, gnome-disk-utility, gnome-snapshot, papers, loupe, showtime, evolution-data-server, gstreamer1.0-plugins-base, gstreamer1.0-plugins-good, gstreamer1.0-packagekit, pipewire-audio, libcanberra-pulse, libatk-adaptor, system-config-printer-common, system-config-printer-udev, zenity, gnome-shell-extension-dashtodock, gnome-software, gnome-software-plugin-flatpak, flatpak, cups, system-config-printer, bluez, ufw, unattended-upgrades, network-manager, systemd-resolved
+Recommends: firmware-linux, firmware-misc-nonfree, firmware-realtek, firmware-atheros, firmware-iwlwifi, mesa-vulkan-drivers, vulkan-tools, btrfs-progs, snapper, fonts-noto-core, fonts-noto-ui-core, fonts-noto-mono, fonts-noto-cjk, fonts-noto-color-emoji, xdg-desktop-portal-gnome, apt-listchanges, fwupd, gnome-software-plugin-fwupd | gnome-software, low-memory-monitor
 Installed-Size: 4
-Description: Tind desktop: GNOME core, Flatpak, printing, firewall, safe updates
- Metapackage that pulls in everything the Tind base desktop needs: GNOME with
+Description: Tind desktop: lean GNOME, Flatpak, printing, firewall, safe updates
+ Metapackage that names the GNOME pieces explicitly (instead of gnome-core) so
+ unwanted apps stay off the system. GNOME with
  the persistent dock, GNOME Software with Flatpak, printing, Bluetooth, a
  default-deny firewall, unattended security updates, non-free firmware and
  the Mesa Vulkan stack. Packages in Recommends are installed by default but
