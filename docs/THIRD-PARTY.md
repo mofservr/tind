@@ -6,20 +6,18 @@
 | Firefox ESR, Thunderbird | pre-installed | Debian | ready, restricted by `tind-mozilla-config` |
 | uBlock Origin | pre-installed | Debian package `webext-ublock-origin-firefox` (1.67.0 in trixie) | auto-enable behaviour to verify |
 | WireGuard | pre-installed | Debian | ready, tooling in `tind-wireguard` |
-| Proton VPN | pre-installed | Proton's own apt repository, added at build time | **repository URL and key from memory, verify** (`os/third-party.env`) |
+| Proton VPN | pre-installed | Proton's apt repository; the build fetches Proton's release package, checks its SHA-256 against Proton's install page (`os/third-party.env`), and the image keeps the repo via that package | verified against Proton's page; installs in CI (`proton-vpn-gnome-desktop` 0.11.0) |
 | Nextcloud client | opt-in | Debian `nextcloud-desktop`, global config pre-fills `https://lagrr.servr.no` | ready, `overrideServerUrl` to verify |
 | Spotify | opt-in | Flathub `com.spotify.Client` | ready |
-| Steam | opt-in | Flathub `com.valvesoftware.Steam` plus Debian `gamemode`, `mangohud` | ready |
+| Steam, Lutris, Wine, gamemode, mangohud | opt-in (Games box at install, or Tind Apps) | Debian apt, native | proven in CI |
 | Bitwarden | opt-in | Flathub `com.bitwarden.desktop` | ready |
-| Claude Desktop | opt-in | Anthropic's own signed apt repository (official beta for Debian 12+, package `claude-desktop`) | **repository line and key URL left blank on purpose**, fill in `/etc/tind/thirdparty.conf` from Anthropic's install page |
-| Gaming extras | opt-in (proposed) | Flathub: ProtonUp-Qt, Heroic, Lutris | proposed, not decided |
+| Claude Desktop | part of Developer tools | Anthropic's apt repository (`downloads.claude.ai`), key fingerprint `31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE` pinned in `setup-dev` | installs in CI |
 
 ## Rules used
 
-- Nothing is installed from a repository whose URL and key fingerprint have not been checked by a human against the vendor's own page.
-- No URL is guessed. Where I did not know it, the value is empty and the tool says so.
+- Every third-party repository is checked against the vendor's own install page: a pinned key fingerprint (Microsoft, Anthropic) or a pinned package checksum (Proton).
 - Flatpak apps install system-wide from Flathub; Debian apps come from Debian.
 
 ## Principles check (homelab principles vs. this list)
 
-Steam, Spotify and Proton VPN are closed-source or DRM'd services. They are opt-in (Proton is pre-installed at your request) and nothing else in Tind depends on them.
+Steam, Spotify, Proton VPN and Claude Desktop are closed-source or DRM'd. They are opt-in (Proton is pre-installed at your request) and nothing else in Tind depends on them.

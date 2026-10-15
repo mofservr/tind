@@ -42,7 +42,6 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 | 12 | Calamares installer runs through and the installed system boots | install in a VM | partitioning, branding keys |
 | 14 | `tind-enroll apply` with NetworkManager and a real peer | needs the server values | `nmcli connection import` property names |
 | 15 | Split DNS: `*.servr.no` via the tunnel only | `resolvectl query` on both | `/etc/resolv.conf`, NM `dns=systemd-resolved` |
-| 16 | Proton VPN repo URL and key | `prepare-thirdparty.sh` fingerprint vs Proton's page | `os/third-party.env` |
 | 17 | Nextcloud client honours the preset URL | run the wizard | file location |
 | 18 | Flathub refs exist (`com.spotify.Client` etc.) | `tind-optins install spotify` | `.optin` files |
 | 20 | BIOS (syslinux) boot | QEMU without OVMF | `--bootloaders` in `auto/config` |
@@ -51,9 +50,8 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 
 - The live ISO boot menu is stock live-build (Debian title, hard-hat splash); branding it needs artwork, which is waiting on the design work.
 - All visuals in `tind-branding` (wallpapers, icons, Plymouth, GRUB art, Ice colours) are placeholders pending the redesign.
-- btrfs and snapshots are not set up: Calamares partitioning is Debian's default (ext4).
+- ext4 for now (decided): no btrfs, no snapshots.
 - Thunderbird policy is minimal.
-- Proton VPN and the Claude opt-in repo are not configured (URLs not verified).
 
 ## Lean desktop (2026-10-14)
 - Proven in CI: tind-desktop names GNOME pieces explicitly (no gnome-core); app grid is Calculator, Camera, Disks, Extensions, Files, Firefox, Image Viewer, LibreOffice, Papers, Print Settings, Settings, Showtime, Software, System Monitor, Terminal, Text Editor, Thunderbird, Tind Apps, Install Tind.
@@ -76,3 +74,12 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - BIOS note: the BIOS install has grub-pc-bin but not the grub-pc package, so grub upgrades do not re-run grub-install on the disk. Acceptable for now.
 - Newer kernel opt-in ("Newer kernel" in Tind Apps, `/usr/lib/tind/setup-newer-kernel`): adds trixie-backports, installs linux-image-amd64 and headers (7.2.6 at test time) and, if present, nvidia-kernel-dkms from backports. Dry run resolves in CI. Unproven: a real install, NVIDIA module building on 7.x, boot into the new kernel.
 - Installer test is now selectable: `os/ci/installer-test/FIRMWARE` (uefi|bios) and `EXTRAS` (yes|no).
+
+## Secure Boot, updates, hardware basics (2026-10-15)
+- Proven (secureboot-test run 38688887984): the live ISO has shim signed by Microsoft (UEFI CA 2011 and 2023) and GRUB signed by Debian; it boots to the desktop under OVMF with Secure Boot on ("SecureBoot enabled" in the self-test).
+- Proven (installer run 38689713608, UEFI, Secure Boot on): install completes (7.6 GB used), the installed system boots with Secure Boot enabled, no failed units. The NVIDIA module and the MOK key step cannot be tested in a VM without a GPU.
+- Proven (build run 38690632554): ISO with Proton VPN (`proton-vpn-gnome-desktop` 0.11.0 installed), first-boot apt refresh (`tind-apt-refresh`, lists present, marker written), PackageKit and GNOME Software 48.3 answer (`pkcon get-updates` works), unattended-upgrades timers enabled, `power-profiles-daemon` active, microcode and Broadcom/MediaTek firmware installed, `tind-report` writes a 12-section report.
+- Findings fixed after that run: LLMNR (tcp/udp 5355) was listening, now disabled via `/etc/systemd/resolved.conf.d/90-tind.conf`; the build-time Proton repo is stripped from the image by live-build, so the release package is installed by hook 0190 to keep Proton updating and its key rotating (Proton's current key expires 2027-03-03); AppArmor was inactive in the live session (diagnostics added to the self-test).
+- Claude Desktop is part of `setup-dev` (Anthropic apt repo, fingerprint pinned); the separate Claude opt-in is gone. Proven: installs in the packages job.
+- ISO download: `tind-iso` artifact now has `SHA256SUMS`, kept 30 days (see `WRITE-TO-USB.md`). GitHub release assets cap at 2 GB, the ISO is larger.
+- Still unproven: Plymouth and GRUB menu frames (early frames added to the boot job), a real second OS, Wi-Fi chips (Broadcom STA driver deliberately not shipped), suspend and battery behaviour, `fwupd` on real hardware.
