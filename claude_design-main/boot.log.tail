@@ -1,0 +1,45 @@
+total 2389736
+-rw-r--r-- 1 runner runner         88 Oct 15 11:17 SHA256SUMS
+-rw-r--r-- 1 runner runner 2447081472 Oct 15 11:19 tind-amd64.hybrid.iso
+KVM: yes
+total 7904
+-rw-r--r-- 1 runner runner 477708 Oct 15 11:21 boot-t01.png
+-rw-r--r-- 1 runner runner 477682 Oct 15 11:22 boot-t02.png
+-rw-r--r-- 1 runner runner 477670 Oct 15 11:23 boot-t03.png
+-rw-r--r-- 1 runner runner 477670 Oct 15 11:23 boot-t04.png
+-rw-r--r-- 1 runner runner 477817 Oct 15 11:24 boot-t05.png
+-rw-r--r-- 1 runner runner 477761 Oct 15 11:25 boot-t06.png
+-rw-r--r-- 1 runner runner 478025 Oct 15 11:26 boot-t07.png
+-rw-r--r-- 1 runner runner 478025 Oct 15 11:27 boot-t08.png
+-rw-r--r-- 1 runner runner 477847 Oct 15 11:27 boot-t09.png
+-rw-r--r-- 1 runner runner 478018 Oct 15 11:28 boot-t10.png
+-rw-r--r-- 1 runner runner 477984 Oct 15 11:29 boot-t11.png
+-rw-r--r-- 1 runner runner 477736 Oct 15 11:30 boot-t12.png
+-rw-r--r-- 1 runner runner 477736 Oct 15 11:30 boot-t13.png
+-rw-r--r-- 1 runner runner 477488 Oct 15 11:31 boot-t14.png
+-rw-r--r-- 1 runner runner    158 Oct 15 11:19 boot.log
+-rw-r--r-- 1 runner runner  23092 Oct 15 11:19 early-01.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:19 early-02.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:19 early-03.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-04.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-05.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-06.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-07.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-08.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-09.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-10.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-11.png
+-rw-r--r-- 1 runner runner  52474 Oct 15 11:20 early-12.png
+-rw-r--r-- 1 runner runner  25245 Oct 15 11:20 early-13.png
+-rw-r--r-- 1 runner runner  22588 Oct 15 11:20 early-14.png
+-rw-r--r-- 1 runner runner  23713 Oct 15 11:20 early-15.png
+-rw-r--r-- 1 runner runner  23728 Oct 15 11:20 early-16.png
+-rw-r--r-- 1 runner runner  23731 Oct 15 11:20 early-17.png
+-rw-r--r-- 1 runner runner  23730 Oct 15 11:20 early-18.png
+-rw-r--r-- 1 runner runner  23730 Oct 15 11:20 early-19.png
+-rw-r--r-- 1 runner runner  23730 Oct 15 11:20 early-20.png
+-rw-r--r-- 1 runner runner  23730 Oct 15 11:20 early-21.png
+-rw-r--r-- 1 runner runner   7680 Oct 15 11:20 early-22.png
+-rw-r--r-- 1 runner runner 256658 Oct 15 11:20 early-23.png
+-rw-r--r-- 1 runner runner 256658 Oct 15 11:20 early-24.png
+-rw-r----- 1 runner runner  18889 Oct 15 11:22 serial.log

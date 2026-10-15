@@ -1,4 +1,4 @@
 ref: claude/design-main
-sha: 606cd0e5a2a121c7db429cc8c0e5e726b2341453
-run: 38726302372
-results: packages=success iso=skipped boot=skipped
+sha: 9df841e0b10875271a27a65bdb804c63f883a8be
+run: 38723849819
+results: packages=success iso=success boot=success
