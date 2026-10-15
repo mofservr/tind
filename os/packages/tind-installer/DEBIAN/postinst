@@ -21,6 +21,15 @@ if [ "$1" = "configure" ]; then
 region: "Europe"
 zone: "Oslo"
 CONF
+    # keyboard: start from the live session's layout (Norwegian, set in tind-branding) instead of
+    # guessing from the installer language, which is English and would give English (US)
+    kb=/etc/calamares/modules/keyboard.conf
+    if [ -f "$kb" ]; then
+        sed -i '/^#\?guessLayout:/d' "$kb"
+        printf '\nguessLayout: false\n' >> "$kb"
+    else
+        printf -- '---\nguessLayout: false\n' > "$kb"
+    fi
     # after install: drop the live-session and installer packages from the installed system.
     # try_remove ignores packages that are not present (the stock list names some we do not ship).
     cat > /etc/calamares/modules/packages.conf <<'CONF'
