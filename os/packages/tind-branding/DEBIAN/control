@@ -1,15 +1,15 @@
 Package: tind-branding
-Version: 0.1.1
+Version: 0.1.2
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: misc
 Priority: optional
-Depends: gnome-shell, dconf-cli
+Depends: gnome-shell, dconf-cli, papirus-icon-theme, fontconfig
 Recommends: plymouth, plymouth-themes, gnome-shell-extension-dashtodock
-Installed-Size: 1676
+Installed-Size: 2644
 Description: Tind visual identity: logo, wallpapers, ice shell styling, boot splash
  Tind's identity as installable files: os-release, logo icons, light and dark
  wallpapers, the Tind Ice GNOME Shell styling (night and midday), GNOME defaults (dark by default,
- teal accent), the Plymouth boot splash and the GRUB theme.
+ teal accent, Papirus icons, Nunito Sans font), the Plymouth boot splash and the GRUB theme.
  .
  os-release is replaced via dpkg-divert so it survives base-files upgrades.
