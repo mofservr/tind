@@ -1,4 +1,4 @@
 ref: review/design-and-logo
-sha: 2ae1bbe33cd1095fed1afd3752bf4a4758baee4c
-run: 38766229272
+sha: 4a96a5e53ab15055ed6c1028f4f0a4004b8bd779
+run: 38765937650
 results: packages=success iso=success boot=success
