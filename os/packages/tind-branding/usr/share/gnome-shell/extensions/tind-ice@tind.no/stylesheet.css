@@ -4,8 +4,8 @@
  * bar, the dock and the menus. No outlines, no drop shadows, almost no glow: the edges are
  * defined by the tint alone. Accent: deep aurora teal.
  *
- * Light mode (March midday) lives in stylesheet-light.css, which extension.js loads on top
- * of this file when the colour scheme is not "prefer-dark".
+ * Light mode (March midday) is the .tind-light section at the end of this file; extension.js
+ * puts that class on Main.uiGroup when the colour scheme is not "prefer-dark".
  *
  * Limits of GNOME Shell CSS: no backdrop blur, no feathered (blurred) edges, only two-stop
  * gradients. The mockups feather the edges; here they are simply soft-tinted and borderless.
@@ -135,3 +135,85 @@
   color: #138677;
   -st-icon-style: symbolic;
 }
+
+/* ======== Light mode (March midday) ===================================================
+ * Active while extension.js has put the style class .tind-light on Main.uiGroup (colour scheme is
+ * not "prefer-dark"). Accent: rosy alpenglow salmon.  tint #f4f9ff -> #f8eef8 at 26 %
+ * ====================================================================================== */
+
+.tind-light #panel {
+  background-gradient-start: rgba(244, 249, 255, 0.26);
+  background-gradient-end: rgba(248, 238, 248, 0.26);
+}
+
+.tind-light #panel .panel-button,
+.tind-light #panel .panel-button .system-status-icon,
+.tind-light #panel .clock-display { color: #1a2a3a; }
+
+/* the overview keeps a dark backdrop in both schemes: keep the panel text light there */
+
+.tind-light #panel:overview .panel-button,
+.tind-light #panel:overview .panel-button .system-status-icon,
+.tind-light #panel:overview .clock-display { color: #eaf6fb; }
+
+.tind-light #panel .panel-button:hover,
+.tind-light #panel .panel-button:focus,
+.tind-light #panel .panel-button:active,
+.tind-light #panel .panel-button:checked { background-color: rgba(255, 255, 255, 0.40); }
+
+.tind-light #dash .dash-background,
+.tind-light #dashtodockContainer #dash .dash-background,
+.tind-light #dashtodockContainer.left #dash .dash-background {
+  background-gradient-start: rgba(244, 249, 255, 0.26);
+  background-gradient-end: rgba(248, 238, 248, 0.26);
+}
+
+.tind-light .app-well-app-running-dot,
+.tind-light #dashtodockContainer .app-well-app-running-dot { background-color: #d96a62; }
+
+.tind-light #dash .app-well-app:hover .overview-icon,
+.tind-light #dash .app-well-app:focus .overview-icon { background-color: rgba(255, 255, 255, 0.35); }
+
+.tind-light .popup-menu-content,
+.tind-light .candidate-popup-content,
+.tind-light .notification-banner,
+.tind-light .message { background-color: rgba(244, 246, 252, 0.55); color: #1a2a3a; }
+
+.tind-light .popup-menu-item:hover,
+.tind-light .popup-menu-item:focus,
+.tind-light .popup-menu-item:active { background-color: rgba(255, 255, 255, 0.40); }
+
+.tind-light .quick-settings,
+.tind-light .datemenu-popover {
+  background-gradient-start: rgba(244, 249, 255, 0.42);
+  background-gradient-end: rgba(248, 238, 248, 0.42);
+  color: #1a2a3a;
+}
+
+.tind-light .quick-toggle,
+.tind-light .quick-menu-toggle .quick-toggle,
+.tind-light .quick-toggle-arrow {
+  background-color: rgba(255, 255, 255, 0.32);
+  color: #1a2a3a;
+}
+
+.tind-light .quick-toggle:checked,
+.tind-light .quick-menu-toggle:checked .quick-toggle,
+.tind-light .quick-menu-toggle:checked .quick-toggle-arrow {
+  background-color: rgba(224, 112, 112, 0.50);
+  color: #6b2430;
+}
+
+.tind-light .quick-settings .icon-button,
+.tind-light .quick-settings .button.icon-button { background-color: rgba(255, 255, 255, 0.32); }
+
+.tind-light .slider {
+  color: #ffffff;
+  -barlevel-background-color: rgba(255, 255, 255, 0.42);
+  -barlevel-active-background-color: #e07a78;
+}
+
+/* Show Apps button = plain Tind peak, alpenglow pink on light */
+
+.tind-light #dash .show-apps .overview-icon,
+.tind-light #dashtodockContainer #dash .show-apps .overview-icon { color: #EC5179; }
