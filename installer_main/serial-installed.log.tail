@@ -1,7 +1,3 @@
-N: Name="Power Button"
-H: Handlers=kbd event1 
-N: Name="VirtualPS/2 VMware VMMouse"
-H: Handlers=mouse0 event2 
 N: Name="VirtualPS/2 VMware VMMouse"
 H: Handlers=mouse1 event3 
 N: Name="QEMU QEMU USB Keyboard"
@@ -14,8 +10,8 @@ by-id	 event0  event2  event4  event6  mouse0  mouse2
 by-path  event1  event3  event5  mice	 mouse1
 
 ##### session
-1 1000 tind seat0 1080 user    tty2 no -
-2 1000 tind -     1088 manager -    no -
+1 1000 tind seat0 1071 user    tty2 no -
+2 1000 tind -     1079 manager -    no -
 Name=tind Seat=seat0 Type=wayland Active=yes State=active 
 Name=tind Seat= Type=unspecified Active=yes State=active 
 
@@ -28,7 +24,7 @@ ufw: active
 gdm: active
 
 ##### resolv.conf
-lrwxrwxrwx 1 root root 39 Oct 15 21:43 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+lrwxrwxrwx 1 root root 39 Oct 16 01:15 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
 
 ##### ufw
 Status: active
@@ -44,6 +40,12 @@ org.gnome.desktop.background picture-uri-dark = 'file:///usr/share/backgrounds/t
 org.gnome.shell enabled-extensions = ['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
 org.gnome.shell favorite-apps = ['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'thunderbird.desktop', 'libreoffice-writer.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
 org.gnome.shell.extensions.dash-to-dock dock-position = 'LEFT'
+
+##### keyboard (what Calamares preselects)
+input-sources = [('xkb', 'no')]
+setxkbmap: 
+XKBMODEL="pc105"
+XKBLAYOUT="us"
 
 ##### gnome-shell extensions
 dash-to-dock@micxgx.gmail.com
@@ -73,13 +75,13 @@ lrwxrwxrwx 1 root root 36 Oct 13 23:14 /usr/lib/firefox-esr/distribution -> ../.
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
 grep: write error: Broken pipe
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
-/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
-/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
-/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{8ce6d7d6-1fd3-422c-9e98-24641978ca82}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{469c7af9-e5fd-4d85-b41d-eee2a730349e}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -87,8 +89,8 @@ newtab@mozilla.org active=true location=app-builtin-addons
 pictureinpicture@mozilla.org active=true location=app-builtin-addons
 addons-search-detection@mozilla.com active=true location=app-builtin-addons
 webcompat@mozilla.org active=true location=app-builtin-addons
-langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
 langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
 uBlock0@raymondhill.net active=true location=app-system-share
 default-theme@mozilla.org active=true location=app-builtin
 user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
@@ -96,8 +98,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "5eede130-30d0-4ebc-93d0-b01a6e447ad2");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "f2f28cea-5f33-40a7-8fa7-ac9971f99f72");
+user_pref("toolkit.telemetry.cachedClientID", "56a8233b-a361-413c-bd3b-385e21f92acd");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "a68bc5f4-1ef2-467d-b873-ed05b6cab6a9");
 user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -147,8 +149,8 @@ grep: /usr/share/applications/calamares-install-debian.desktop: No such file or 
 bitwarden.optin  gnome-extras.optin	nextcloud.optin
 developer.optin  gnome-utilities.optin	spotify.optin
 gaming.optin	 newer-kernel.optin	tweaks.optin
--rwxr-xr-x 1 root root 1955 Oct 15 20:53 /usr/bin/tind-optins
--rwxr-xr-x 1 root root  854 Oct 15 20:53 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 1955 Oct 16 00:34 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 Oct 16 00:34 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -240,16 +242,16 @@ ls: cannot access '/var/lib/dkms/mok.key': No such file or directory
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Oct 15 21:59 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Oct 16 01:31 /var/lib/tind/apt-refreshed
 37
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 APT::Periodic::AutocleanInterval "7";
 enabled
 enabled
+Percentage:	100
 Status: 	Querying
 Status: 	Loading cache
-Percentage:	0
 Percentage:	10
 Percentage:	100
 Status: 	Finished
@@ -262,12 +264,12 @@ lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
 Y
 ● apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
-     Active: active (exited) since Thu 2026-10-15 21:59:02 CEST; 1min 38s ago
- Invocation: 64756e2e75ce4aeb9f0df4544bfdb9c8
+     Active: active (exited) since Fri 2026-10-16 01:30:52 CEST; 1min 39s ago
+ Invocation: e1a8a3df96c74d78abdafe9414d08a29
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
-    Process: 527 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
-   Main PID: 527 (code=exited, status=0/SUCCESS)
+    Process: 518 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
+   Main PID: 518 (code=exited, status=0/SUCCESS)
 apparmor module is loaded.
 141 profiles are loaded.
 19 profiles are in enforce mode.
@@ -284,11 +286,11 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:47446
 udp 0.0.0.0:5353
+udp 0.0.0.0:59698
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:47440
+udp [::]:33370
 udp [::]:5353
 
 ##### hardware basics
@@ -306,7 +308,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-229 /tmp/tind-report-test.txt
+227 /tmp/tind-report-test.txt
 12
 protonvpn-stable.sources
 URIs: https://repo.protonvpn.com/debian
@@ -367,34 +369,32 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 installed packages: 1660
 
 ##### journal errors (this boot)
-Oct 15 21:59:03 tindtest gdm-autologin][1080]: gkr-pam: couldn't unlock the login keyring.
-Oct 15 21:59:07 tindtest systemd[1088]: Failed to start app-gnome-im\x2dlaunch-1447.scope - Application launched by gnome-session-binary.
-Oct 15 21:59:07 tindtest systemd[1088]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1443.scope - Application launched by gnome-session-binary.
+Oct 16 01:30:53 tindtest gdm-autologin][1071]: gkr-pam: couldn't unlock the login keyring.
 
 ##### gnome-shell journal
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 15 21:59:08 tindtest gnome-shell[1294]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 15 21:59:08 tindtest gnome-shell[1294]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 15 21:59:12 tindtest gnome-shell[1294]: GNOME Shell started at Thu Oct 15 2026 21:59:06 GMT+0200 (Central European Summer Time)
-Oct 15 21:59:12 tindtest gnome-shell[1294]: Registering session with GDM
+Oct 16 01:30:57 tindtest gnome-shell[1268]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 01:30:58 tindtest gnome-shell[1268]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 01:30:58 tindtest gnome-shell[1268]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 01:31:01 tindtest gnome-shell[1268]: GNOME Shell started at Fri Oct 16 2026 01:30:56 GMT+0200 (Central European Summer Time)
+Oct 16 01:31:01 tindtest gnome-shell[1268]: Registering session with GDM
 =====TIND-SELFTEST-END=====
