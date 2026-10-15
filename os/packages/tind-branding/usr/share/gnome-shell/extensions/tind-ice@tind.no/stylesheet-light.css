@@ -12,6 +12,11 @@
 #panel .panel-button .system-status-icon,
 #panel .clock-display { color: #1a2a3a; }
 
+/* the overview keeps a dark backdrop in both schemes: keep the panel text light there */
+#panel:overview .panel-button,
+#panel:overview .panel-button .system-status-icon,
+#panel:overview .clock-display { color: #eaf6fb; }
+
 #panel .panel-button:hover,
 #panel .panel-button:focus,
 #panel .panel-button:active,

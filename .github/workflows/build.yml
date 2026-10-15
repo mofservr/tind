@@ -212,6 +212,8 @@ jobs:
             done
             for i in $(seq 1 14); do
               sleep 45
+              # leave the overview once so the later screenshots show the plain desktop
+              [ "$i" = 5 ] && echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
               echo "screendump $PWD/shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone at $i"
               sleep 1
               if [ -f "shots/t$(printf %02d "$i").ppm" ]; then convert "shots/t$(printf %02d "$i").ppm" "logs/boot-t$(printf %02d "$i").png"; fi
