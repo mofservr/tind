@@ -23,4 +23,5 @@ lb config noauto \
     --win32-loader false \
     --checksums sha256 \
     --chroot-squashfs-compression-type xz \
+    --debootstrap-options "--include=ca-certificates,gnupg" \
     "${@}"
