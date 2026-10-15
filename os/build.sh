@@ -23,7 +23,7 @@ command -v lb >/dev/null 2>&1 || {
 if [ "${TIND_PROTON:-1}" = 1 ]; then
     ./scripts/prepare-thirdparty.sh
 else
-    rm -f config/archives/protonvpn.* config/package-lists/protonvpn.list.chroot config/includes.chroot_after_packages/var/tmp/protonvpn-stable-release.deb
+    rm -f config/archives/protonvpn.* config/package-lists/protonvpn.list.chroot config/hooks/live/0190-tind-proton-repo.hook.chroot
 fi
 
 mkdir -p build
