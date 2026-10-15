@@ -137,9 +137,9 @@ jobs:
           apt-get install -y --no-install-recommends live-build debootstrap squashfs-tools xorriso \
             grub-pc-bin grub-efi-amd64-bin mtools dosfstools git ca-certificates dpkg-dev sudo gnupg curl
       - uses: actions/checkout@v4
-      - name: Build ISO (no Proton repo yet)
+      - name: Build ISO
         env:
-          TIND_PROTON: "0"
+          TIND_PROTON: "1"
           TIND_CI: "1"
         run: |
           mkdir -p logs
