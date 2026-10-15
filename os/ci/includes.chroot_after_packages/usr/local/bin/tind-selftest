@@ -17,6 +17,8 @@ sec() { echo; echo "##### $*"; }
 # wait for the desktop session (up to 4 min), then let it settle
 for _ in $(seq 1 120); do [ -S "/run/user/$UIDN/bus" ] && pgrep -u tind gnome-shell >/dev/null && break; sleep 2; done
 sleep 30
+# CI only: flip the session to the light scheme after 4 minutes so the boot screenshots show midday too
+( sleep 240; asuser gsettings set org.gnome.desktop.interface color-scheme default ) &
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
@@ -33,6 +35,10 @@ for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface
          "org.gnome.shell favorite-apps" "org.gnome.shell.extensions.dash-to-dock dock-position"; do
     echo "$k = $(asuser gsettings get $k 2>&1)"
 done
+sec "keyboard (what Calamares preselects)"
+echo "input-sources = $(asuser gsettings get org.gnome.desktop.input-sources sources 2>&1)"
+echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbols' | head -1)"
+cat /etc/default/keyboard 2>&1 | grep -E '^XKB(LAYOUT|MODEL)'
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
 sec firefox policies
 for f in /etc/firefox/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
