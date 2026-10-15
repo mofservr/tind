@@ -6,7 +6,7 @@ Section: misc
 Priority: optional
 Depends: gnome-shell, dconf-cli, papirus-icon-theme, fontconfig
 Recommends: plymouth, plymouth-themes, gnome-shell-extension-dashtodock
-Installed-Size: 2644
+Installed-Size: 5264
 Description: Tind visual identity: logo, wallpapers, ice shell styling, boot splash
  Tind's identity as installable files: os-release, logo icons, light and dark
  wallpapers, the Tind Ice GNOME Shell styling (night and midday), GNOME defaults (dark by default,

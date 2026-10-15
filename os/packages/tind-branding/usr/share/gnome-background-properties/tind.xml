@@ -10,4 +10,31 @@
     <pcolor>#9DBBDB</pcolor>
     <scolor>#0C1523</scolor>
   </wallpaper>
+  <wallpaper deleted="false">
+    <name>Abstract Fjord</name>
+    <filename>/usr/share/backgrounds/tind/abstract-fjord-light.jpg</filename>
+    <filename-dark>/usr/share/backgrounds/tind/abstract-fjord-dark.jpg</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#9DBBDB</pcolor>
+    <scolor>#0C1523</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Extreme Peak</name>
+    <filename>/usr/share/backgrounds/tind/extreme-peak-light.jpg</filename>
+    <filename-dark>/usr/share/backgrounds/tind/extreme-peak-dark.jpg</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#9DBBDB</pcolor>
+    <scolor>#0C1523</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
+    <name>Coastal Peak</name>
+    <filename>/usr/share/backgrounds/tind/coastal-peak-light.jpg</filename>
+    <filename-dark>/usr/share/backgrounds/tind/coastal-peak-dark.jpg</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#9DBBDB</pcolor>
+    <scolor>#0C1523</scolor>
+  </wallpaper>
 </wallpapers>
