@@ -1,400 +1,400 @@
- 37300K .......... ...                                        100% 24.8T=1.1s
-
-2026-10-15 06:06:35 (33.4 MB/s) - 'cache/contents.chroot/trixie/main/contents-all.gz' saved [38208826/38208826]
-
---2026-10-15 06:06:37--  http://deb.debian.org/debian//dists/trixie/main/Contents-amd64.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 12698511 (12M) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/main/contents-amd64.gz'
-
-     0K .......... .......... .......... .......... ..........  0% 58.1M 0s
-    50K .......... .......... .......... .......... ..........  0% 56.9M 0s
-   100K .......... .......... .......... .......... ..........  1% 56.8M 0s
-   150K .......... .......... .......... .......... ..........  1% 81.3M 0s
-   200K .......... .......... .......... .......... ..........  2% 12.6M 0s
-   250K .......... .......... .......... .......... ..........  2% 61.3M 0s
-   300K .......... .......... .......... .......... ..........  2%  160M 0s
-   350K .......... .......... .......... .......... ..........  3% 91.5M 0s
-   400K .......... .......... .......... .......... ..........  3% 93.7M 0s
-   450K .......... .......... .......... .......... ..........  4% 79.2M 0s
-   500K .......... .......... .......... .......... ..........  4% 80.1M 0s
-   550K .......... .......... .......... .......... ..........  4%  399M 0s
-   600K .......... .......... .......... .......... ..........  5%  109M 0s
-   650K .......... .......... .......... .......... ..........  5%  324M 0s
-   700K .......... .......... .......... .......... ..........  6%  239M 0s
-   750K .......... .......... .......... .......... ..........  6%  175M 0s
-   800K .......... .......... .......... .......... ..........  6%  143M 0s
-   850K .......... .......... .......... .......... ..........  7%  219M 0s
-   900K .......... .......... .......... .......... ..........  7% 99.4M 0s
-   950K .......... .......... .......... .......... ..........  8% 93.1T 0s
-  1000K .......... .......... .......... .......... ..........  8%  291M 0s
-  1050K .......... .......... .......... .......... ..........  8%  101M 0s
-  1100K .......... .......... .......... .......... ..........  9%  177M 0s
-  1150K .......... .......... .......... .......... ..........  9% 93.1T 0s
-  1200K .......... .......... .......... .......... .......... 10%  157M 0s
-  1250K .......... .......... .......... .......... .......... 10%  391M 0s
-  1300K .......... .......... .......... .......... .......... 10% 89.7M 0s
-  1350K .......... .......... .......... .......... .......... 11% 93.1T 0s
-  1400K .......... .......... .......... .......... .......... 11%  147M 0s
-  1450K .......... .......... .......... .......... .......... 12%  248M 0s
-  1500K .......... .......... .......... .......... .......... 12%  165M 0s
-  1550K .......... .......... .......... .......... .......... 12%  236M 0s
-  1600K .......... .......... .......... .......... .......... 13%  218M 0s
-  1650K .......... .......... .......... .......... .......... 13%  205M 0s
-  1700K .......... .......... .......... .......... .......... 14%  210M 0s
-  1750K .......... .......... .......... .......... .......... 14%  194M 0s
-  1800K .......... .......... .......... .......... .......... 14%  303M 0s
-  1850K .......... .......... .......... .......... .......... 15%  349M 0s
-  1900K .......... .......... .......... .......... .......... 15%  279M 0s
-  1950K .......... .......... .......... .......... .......... 16%  468M 0s
-  2000K .......... .......... .......... .......... .......... 16%  166M 0s
-  2050K .......... .......... .......... .......... .......... 16%  188M 0s
-  2100K .......... .......... .......... .......... .......... 17%  293M 0s
-  2150K .......... .......... .......... .......... .......... 17%  109M 0s
-  2200K .......... .......... .......... .......... .......... 18%  328M 0s
-  2250K .......... .......... .......... .......... .......... 18%  214M 0s
-  2300K .......... .......... .......... .......... .......... 18%  217M 0s
-  2350K .......... .......... .......... .......... .......... 19%  326M 0s
-  2400K .......... .......... .......... .......... .......... 19%  236M 0s
-  2450K .......... .......... .......... .......... .......... 20%  160M 0s
-  2500K .......... .......... .......... .......... .......... 20% 93.1T 0s
-  2550K .......... .......... .......... .......... .......... 20%  206M 0s
-  2600K .......... .......... .......... .......... .......... 21%  196M 0s
-  2650K .......... .......... .......... .......... .......... 21%  113M 0s
-  2700K .......... .......... .......... .......... .......... 22%  202M 0s
-  2750K .......... .......... .......... .......... .......... 22% 93.1T 0s
-  2800K .......... .......... .......... .......... .......... 22%  380M 0s
-  2850K .......... .......... .......... .......... .......... 23%  579M 0s
-  2900K .......... .......... .......... .......... .......... 23%  201M 0s
-  2950K .......... .......... .......... .......... .......... 24% 68.4M 0s
-  3000K .......... .......... .......... .......... .......... 24% 93.1T 0s
-  3050K .......... .......... .......... .......... .......... 24%  291M 0s
-  3100K .......... .......... .......... .......... .......... 25%  335M 0s
-  3150K .......... .......... .......... .......... .......... 25%  280M 0s
-  3200K .......... .......... .......... .......... .......... 26%  361M 0s
-  3250K .......... .......... .......... .......... .......... 26% 93.1T 0s
-  3300K .......... .......... .......... .......... .......... 27%  248M 0s
-  3350K .......... .......... .......... .......... .......... 27%  126M 0s
-  3400K .......... .......... .......... .......... .......... 27%  339M 0s
-  3450K .......... .......... .......... .......... .......... 28%  365M 0s
-  3500K .......... .......... .......... .......... .......... 28%  333M 0s
-  3550K .......... .......... .......... .......... .......... 29% 93.1T 0s
-  3600K .......... .......... .......... .......... .......... 29%  278M 0s
-  3650K .......... .......... .......... .......... .......... 29%  103M 0s
-  3700K .......... .......... .......... .......... .......... 30%  320M 0s
-  3750K .......... .......... .......... .......... .......... 30%  426M 0s
-  3800K .......... .......... .......... .......... .......... 31%  449M 0s
-  3850K .......... .......... .......... .......... .......... 31% 93.1T 0s
-  3900K .......... .......... .......... .......... .......... 31%  534M 0s
-  3950K .......... .......... .......... .......... .......... 32%  734M 0s
-  4000K .......... .......... .......... .......... .......... 32%  104M 0s
-  4050K .......... .......... .......... .......... .......... 33%  126M 0s
-  4100K .......... .......... .......... .......... .......... 33% 93.1T 0s
-  4150K .......... .......... .......... .......... .......... 33%  369M 0s
-  4200K .......... .......... .......... .......... .......... 34%  366M 0s
-  4250K .......... .......... .......... .......... .......... 34%  359M 0s
-  4300K .......... .......... .......... .......... .......... 35%  419M 0s
-  4350K .......... .......... .......... .......... .......... 35% 93.1T 0s
-  4400K .......... .......... .......... .......... .......... 35% 81.5M 0s
-  4450K .......... .......... .......... .......... .......... 36%  181M 0s
-  4500K .......... .......... .......... .......... .......... 36%  256M 0s
-  4550K .......... .......... .......... .......... .......... 37% 93.1T 0s
-  4600K .......... .......... .......... .......... .......... 37%  174M 0s
-  4650K .......... .......... .......... .......... .......... 37%  240M 0s
-  4700K .......... .......... .......... .......... .......... 38%  232M 0s
-  4750K .......... .......... .......... .......... .......... 38% 93.1T 0s
-  4800K .......... .......... .......... .......... .......... 39%  192M 0s
-  4850K .......... .......... .......... .......... .......... 39%  232M 0s
-  4900K .......... .......... .......... .......... .......... 39%  204M 0s
-  4950K .......... .......... .......... .......... .......... 40%  241M 0s
-  5000K .......... .......... .......... .......... .......... 40% 93.1T 0s
-  5050K .......... .......... .......... .......... .......... 41%  241M 0s
-  5100K .......... .......... .......... .......... .......... 41%  195M 0s
-  5150K .......... .......... .......... .......... .......... 41%  253M 0s
-  5200K .......... .......... .......... .......... .......... 42%  368M 0s
-  5250K .......... .......... .......... .......... .......... 42% 93.1T 0s
-  5300K .......... .......... .......... .......... .......... 43%  534M 0s
-  5350K .......... .......... .......... .......... .......... 43% 1.13M 0s
-  5400K .......... .......... .......... .......... .......... 43% 93.1T 0s
-  5450K .......... .......... .......... .......... .......... 44% 92.1M 0s
-  5500K .......... .......... .......... .......... .......... 44%  311M 0s
-  5550K .......... .......... .......... .......... .......... 45%  119M 0s
-  5600K .......... .......... .......... .......... .......... 45%  313M 0s
-  5650K .......... .......... .......... .......... .......... 45%  150M 0s
-  5700K .......... .......... .......... .......... .......... 46%  103M 0s
-  5750K .......... .......... .......... .......... .......... 46%  101M 0s
-  5800K .......... .......... .......... .......... .......... 47%  436M 0s
-  5850K .......... .......... .......... .......... .......... 47% 97.0M 0s
-  5900K .......... .......... .......... .......... .......... 47%  240M 0s
-  5950K .......... .......... .......... .......... .......... 48%  168M 0s
-  6000K .......... .......... .......... .......... .......... 48%  173M 0s
-  6050K .......... .......... .......... .......... .......... 49% 76.3M 0s
-  6100K .......... .......... .......... .......... .......... 49% 95.0M 0s
-  6150K .......... .......... .......... .......... .......... 49%  373M 0s
-  6200K .......... .......... .......... .......... .......... 50%  378M 0s
-  6250K .......... .......... .......... .......... .......... 50%  270M 0s
-  6300K .......... .......... .......... .......... .......... 51%  153M 0s
-  6350K .......... .......... .......... .......... .......... 51% 63.5M 0s
-  6400K .......... .......... .......... .......... .......... 52% 93.1T 0s
-  6450K .......... .......... .......... .......... .......... 52%  158M 0s
-  6500K .......... .......... .......... .......... .......... 52%  275M 0s
-  6550K .......... .......... .......... .......... .......... 53%  433M 0s
-  6600K .......... .......... .......... .......... .......... 53%  115M 0s
-  6650K .......... .......... .......... .......... .......... 54%  141M 0s
-  6700K .......... .......... .......... .......... .......... 54%  139M 0s
-  6750K .......... .......... .......... .......... .......... 54%  191M 0s
-  6800K .......... .......... .......... .......... .......... 55%  678M 0s
-  6850K .......... .......... .......... .......... .......... 55%  191M 0s
-  6900K .......... .......... .......... .......... .......... 56%  137M 0s
-  6950K .......... .......... .......... .......... .......... 56%  161M 0s
-  7000K .......... .......... .......... .......... .......... 56% 72.2M 0s
-  7050K .......... .......... .......... .......... .......... 57% 93.1T 0s
-  7100K .......... .......... .......... .......... .......... 57%  312M 0s
-  7150K .......... .......... .......... .......... .......... 58%  132M 0s
-  7200K .......... .......... .......... .......... .......... 58% 41.4M 0s
-  7250K .......... .......... .......... .......... .......... 58% 84.0M 0s
-  7300K .......... .......... .......... .......... .......... 59%  156M 0s
-  7350K .......... .......... .......... .......... .......... 59% 93.1T 0s
-  7400K .......... .......... .......... .......... .......... 60%  279M 0s
-  7450K .......... .......... .......... .......... .......... 60%  378M 0s
-  7500K .......... .......... .......... .......... .......... 60%  511M 0s
-  7550K .......... .......... .......... .......... .......... 61%  561M 0s
-  7600K .......... .......... .......... .......... .......... 61% 93.1T 0s
-  7650K .......... .......... .......... .......... .......... 62% 67.8M 0s
-  7700K .......... .......... .......... .......... .......... 62% 93.1T 0s
-  7750K .......... .......... .......... .......... .......... 62%  343M 0s
-  7800K .......... .......... .......... .......... .......... 63%  490M 0s
-  7850K .......... .......... .......... .......... .......... 63%  128M 0s
-  7900K .......... .......... .......... .......... .......... 64% 18.2M 0s
-  7950K .......... .......... .......... .......... .......... 64% 21.8M 0s
-  8000K .......... .......... .......... .......... .......... 64%  462M 0s
-  8050K .......... .......... .......... .......... .......... 65%  369M 0s
-  8100K .......... .......... .......... .......... .......... 65%  210M 0s
-  8150K .......... .......... .......... .......... .......... 66% 98.0M 0s
-  8200K .......... .......... .......... .......... .......... 66%  274M 0s
-  8250K .......... .......... .......... .......... .......... 66%  322M 0s
-  8300K .......... .......... .......... .......... .......... 67%  338M 0s
-  8350K .......... .......... .......... .......... .......... 67%  495M 0s
-  8400K .......... .......... .......... .......... .......... 68% 73.8M 0s
-  8450K .......... .......... .......... .......... .......... 68%  495M 0s
-  8500K .......... .......... .......... .......... .......... 68%  389M 0s
-  8550K .......... .......... .......... .......... .......... 69%  310M 0s
-  8600K .......... .......... .......... .......... .......... 69% 93.1T 0s
-  8650K .......... .......... .......... .......... .......... 70% 82.8M 0s
-  8700K .......... .......... .......... .......... .......... 70%  300M 0s
-  8750K .......... .......... .......... .......... .......... 70% 93.1T 0s
-  8800K .......... .......... .......... .......... .......... 71%  142M 0s
-  8850K .......... .......... .......... .......... .......... 71%  407M 0s
-  8900K .......... .......... .......... .......... .......... 72%  188M 0s
-  8950K .......... .......... .......... .......... .......... 72%  259M 0s
-  9000K .......... .......... .......... .......... .......... 72%  235M 0s
-  9050K .......... .......... .......... .......... .......... 73%  144M 0s
-  9100K .......... .......... .......... .......... .......... 73%  247M 0s
-  9150K .......... .......... .......... .......... .......... 74%  262M 0s
-  9200K .......... .......... .......... .......... .......... 74% 64.4M 0s
-  9250K .......... .......... .......... .......... .......... 74%  148M 0s
-  9300K .......... .......... .......... .......... .......... 75%  209M 0s
-  9350K .......... .......... .......... .......... .......... 75%  319M 0s
-  9400K .......... .......... .......... .......... .......... 76%  236M 0s
-  9450K .......... .......... .......... .......... .......... 76%  127M 0s
-  9500K .......... .......... .......... .......... .......... 77% 93.1T 0s
-  9550K .......... .......... .......... .......... .......... 77%  294M 0s
-  9600K .......... .......... .......... .......... .......... 77%  174M 0s
-  9650K .......... .......... .......... .......... .......... 78%  107M 0s
-  9700K .......... .......... .......... .......... .......... 78% 93.1T 0s
-  9750K .......... .......... .......... .......... .......... 79%  294M 0s
-  9800K .......... .......... .......... .......... .......... 79%  215M 0s
-  9850K .......... .......... .......... .......... .......... 79% 72.8M 0s
-  9900K .......... .......... .......... .......... .......... 80%  132M 0s
-  9950K .......... .......... .......... .......... .......... 80%  143M 0s
- 10000K .......... .......... .......... .......... .......... 81%  166M 0s
- 10050K .......... .......... .......... .......... .......... 81%  257M 0s
- 10100K .......... .......... .......... .......... .......... 81% 93.6M 0s
- 10150K .......... .......... .......... .......... .......... 82% 77.9M 0s
- 10200K .......... .......... .......... .......... .......... 82% 69.0M 0s
- 10250K .......... .......... .......... .......... .......... 83%  332M 0s
- 10300K .......... .......... .......... .......... .......... 83% 93.1T 0s
- 10350K .......... .......... .......... .......... .......... 83%  136M 0s
- 10400K .......... .......... .......... .......... .......... 84%  101M 0s
- 10450K .......... .......... .......... .......... .......... 84%  110M 0s
- 10500K .......... .......... .......... .......... .......... 85% 63.8M 0s
- 10550K .......... .......... .......... .......... .......... 85% 94.3M 0s
- 10600K .......... .......... .......... .......... .......... 85% 93.1T 0s
- 10650K .......... .......... .......... .......... .......... 86%  389M 0s
- 10700K .......... .......... .......... .......... .......... 86% 1017K 0s
- 10750K .......... .......... .......... .......... .......... 87%  136M 0s
- 10800K .......... .......... .......... .......... .......... 87%  416M 0s
- 10850K .......... .......... .......... .......... .......... 87%  173M 0s
- 10900K .......... .......... .......... .......... .......... 88% 93.1T 0s
- 10950K .......... .......... .......... .......... .......... 88%  226M 0s
- 11000K .......... .......... .......... .......... .......... 89%  419M 0s
- 11050K .......... .......... .......... .......... .......... 89%  550M 0s
- 11100K .......... .......... .......... .......... .......... 89% 47.7M 0s
- 11150K .......... .......... .......... .......... .......... 90%  296M 0s
- 11200K .......... .......... .......... .......... .......... 90% 93.1T 0s
- 11250K .......... .......... .......... .......... .......... 91%  344M 0s
- 11300K .......... .......... .......... .......... .......... 91%  320M 0s
- 11350K .......... .......... .......... .......... .......... 91% 99.9M 0s
- 11400K .......... .......... .......... .......... .......... 92%  114M 0s
- 11450K .......... .......... .......... .......... .......... 92%  212M 0s
- 11500K .......... .......... .......... .......... .......... 93% 93.1T 0s
- 11550K .......... .......... .......... .......... .......... 93% 55.9M 0s
- 11600K .......... .......... .......... .......... .......... 93%  314M 0s
- 11650K .......... .......... .......... .......... .......... 94%  189M 0s
- 11700K .......... .......... .......... .......... .......... 94%  335M 0s
- 11750K .......... .......... .......... .......... .......... 95%  163M 0s
- 11800K .......... .......... .......... .......... .......... 95% 93.1T 0s
- 11850K .......... .......... .......... .......... .......... 95% 72.5M 0s
- 11900K .......... .......... .......... .......... .......... 96% 93.1T 0s
- 11950K .......... .......... .......... .......... .......... 96%  115M 0s
- 12000K .......... .......... .......... .......... .......... 97%  174M 0s
- 12050K .......... .......... .......... .......... .......... 97%  118M 0s
- 12100K .......... .......... .......... .......... .......... 97%  250M 0s
- 12150K .......... .......... .......... .......... .......... 98%  338M 0s
- 12200K .......... .......... .......... .......... .......... 98% 87.5M 0s
- 12250K .......... .......... .......... .......... .......... 99% 93.1T 0s
- 12300K .......... .......... .......... .......... .......... 99% 37.8M 0s
- 12350K .......... .......... .......... .......... .......... 99%  120M 0s
- 12400K                                                       100% 1.66T=0.2s
-
-2026-10-15 06:06:37 (72.7 MB/s) - 'cache/contents.chroot/trixie/main/contents-amd64.gz' saved [12698511/12698511]
-
---2026-10-15 06:06:38--  http://deb.debian.org/debian//dists/trixie/contrib/Contents-all.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 133992 (131K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/contrib/contents-all.gz'
-
-     0K .......... .......... .......... .......... .......... 38% 1.77M 0s
-    50K .......... .......... .......... .......... .......... 76%  975K 0s
-   100K .......... .......... ..........                      100% 1.32M=0.1s
-
-2026-10-15 06:06:38 (1.26 MB/s) - 'cache/contents.chroot/trixie/contrib/contents-all.gz' saved [133992/133992]
-
---2026-10-15 06:06:38--  http://deb.debian.org/debian//dists/trixie/contrib/Contents-amd64.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 188102 (184K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/contrib/contents-amd64.gz'
-
-     0K .......... .......... .......... .......... .......... 27% 43.6M 0s
-    50K .......... .......... .......... .......... .......... 54% 66.5M 0s
-   100K .......... .......... .......... .......... .......... 81% 25.3M 0s
-   150K .......... .......... .......... ...                  100% 10.6M=0.007s
-
-2026-10-15 06:06:38 (26.0 MB/s) - 'cache/contents.chroot/trixie/contrib/contents-amd64.gz' saved [188102/188102]
-
---2026-10-15 06:06:39--  http://deb.debian.org/debian//dists/trixie/non-free/Contents-all.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 830848 (811K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/non-free/contents-all.gz'
-
-     0K .......... .......... .......... .......... ..........  6% 46.6M 0s
-    50K .......... .......... .......... .......... .......... 12%  119M 0s
-   100K .......... .......... .......... .......... .......... 18% 64.0M 0s
-   150K .......... .......... .......... .......... .......... 24% 51.6M 0s
-   200K .......... .......... .......... .......... .......... 30%  152M 0s
-   250K .......... .......... .......... .......... .......... 36%  260M 0s
-   300K .......... .......... .......... .......... .......... 43% 68.0M 0s
-   350K .......... .......... .......... .......... .......... 49%  145M 0s
-   400K .......... .......... .......... .......... .......... 55%  100M 0s
-   450K .......... .......... .......... .......... .......... 61%  408M 0s
-   500K .......... .......... .......... .......... .......... 67% 76.1M 0s
-   550K .......... .......... .......... .......... .......... 73%  262M 0s
-   600K .......... .......... .......... .......... .......... 80%  352M 0s
-   650K .......... .......... .......... .......... .......... 86% 93.1T 0s
-   700K .......... .......... .......... .......... .......... 92%  318M 0s
-   750K .......... .......... .......... .......... .......... 98% 83.9M 0s
-   800K .......... .                                          100%  142M=0.007s
-
-2026-10-15 06:06:39 (111 MB/s) - 'cache/contents.chroot/trixie/non-free/contents-all.gz' saved [830848/830848]
-
---2026-10-15 06:06:39--  http://deb.debian.org/debian//dists/trixie/non-free/Contents-amd64.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 78247 (76K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/non-free/contents-amd64.gz'
-
-     0K .......... .......... .......... .......... .......... 65% 31.8M 0s
-    50K .......... .......... ......                          100% 81.7M=0.002s
-
-2026-10-15 06:06:39 (40.3 MB/s) - 'cache/contents.chroot/trixie/non-free/contents-amd64.gz' saved [78247/78247]
-
---2026-10-15 06:06:39--  http://deb.debian.org/debian//dists/trixie/non-free-firmware/Contents-all.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 27018 (26K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/non-free-firmware/contents-all.gz'
-
-     0K .......... .......... ......                          100%  129M=0s
-
-2026-10-15 06:06:39 (129 MB/s) - 'cache/contents.chroot/trixie/non-free-firmware/contents-all.gz' saved [27018/27018]
-
---2026-10-15 06:06:39--  http://deb.debian.org/debian//dists/trixie/non-free-firmware/Contents-amd64.gz
-Resolving deb.debian.org (deb.debian.org)... 146.75.30.132, 2a04:4e42:79::644
-Connecting to deb.debian.org (deb.debian.org)|146.75.30.132|:80... connected.
-HTTP request sent, awaiting response... 200 OK
-Length: 1149 (1.1K) [application/x-gzip]
-Saving to: 'cache/contents.chroot/trixie/non-free-firmware/contents-amd64.gz'
-
-     0K .                                                     100%  241M=0s
-
-2026-10-15 06:06:39 (241 MB/s) - 'cache/contents.chroot/trixie/non-free-firmware/contents-amd64.gz' saved [1149/1149]
-
-[2026-10-15 06:06:39] lb chroot_preseed 
-P: Begin executing local preseeds...
-[2026-10-15 06:06:39] lb chroot_includes_before_packages 
-P: Begin copying chroot includes before packages have been installed...
-[2026-10-15 06:06:39] lb chroot_package-lists install
-P: Begin queueing installation of package lists (install pass)...
+Calculating upgrade...
+The following packages were automatically installed and are no longer required:
+  docbook-xml fonts-dejavu fonts-dejavu-extra kactivitymanagerd libkf6i18nqml6
+  libkf6itemmodels6 libkf6jobwidgets-data libkf6jobwidgets6 libkf6kcmutils-bin
+  libkf6kcmutils-data libkf6kcmutils6 libkf6kcmutilscore6 libkf6kcmutilsquick6
+  libkf6runner6 libkirigami-data libkirigami6 libkirigamidelegates6
+  libkirigamidialogs6 libkirigamilayouts6 libkirigamiplatform6
+  libkirigamiprimitives6 libkirigamiprivate6 libmalcontent-ui-1-1
+  libplasmaactivities6 libqt6quickcontrols2-6 libqt6quickshapes6
+  libqt6quicktemplates2-6 libqt6sql6 libqt6sql6-sqlite libyelp0 malcontent
+  plasma-activities-bin qml6-module-org-kde-kirigami qml6-module-qtqml
+  qml6-module-qtqml-models qml6-module-qtqml-workerscript qml6-module-qtquick
+  qml6-module-qtquick-controls qml6-module-qtquick-layouts
+  qml6-module-qtquick-shapes qml6-module-qtquick-templates
+  qml6-module-qtquick-window sgml-data yelp-xsl
+Use 'apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
 Reading package lists...
 Building dependency tree...
 Reading state information...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+[2026-10-15 06:27:08] lb binary_dm-verity 
+[2026-10-15 06:27:08] lb binary_manifest 
+P: Begin creating manifest...
+[2026-10-15 06:27:08] lb binary_package-lists 
+P: Begin installing local package lists...
+[2026-10-15 06:27:08] lb binary_linux-image 
+P: Begin install linux-image...
+[2026-10-15 06:27:09] lb binary_memtest 
+[2026-10-15 06:27:09] lb binary_grub-legacy 
+[2026-10-15 06:27:09] lb binary_grub-pc 
+[2026-10-15 06:27:09] lb binary_grub_cfg 
+P: Begin installing config for grub-pc and/or grub-efi, and loopback support...
+[2026-10-15 06:27:09] lb binary_syslinux 
+P: Begin installing syslinux...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages were automatically installed and are no longer required:
+  docbook-xml fonts-dejavu fonts-dejavu-extra kactivitymanagerd libkf6i18nqml6
+  libkf6itemmodels6 libkf6jobwidgets-data libkf6jobwidgets6 libkf6kcmutils-bin
+  libkf6kcmutils-data libkf6kcmutils6 libkf6kcmutilscore6 libkf6kcmutilsquick6
+  libkf6runner6 libkirigami-data libkirigami6 libkirigamidelegates6
+  libkirigamidialogs6 libkirigamilayouts6 libkirigamiplatform6
+  libkirigamiprimitives6 libkirigamiprivate6 libmalcontent-ui-1-1
+  libplasmaactivities6 libqt6quickcontrols2-6 libqt6quickshapes6
+  libqt6quicktemplates2-6 libqt6sql6 libqt6sql6-sqlite libyelp0 malcontent
+  plasma-activities-bin qml6-module-org-kde-kirigami qml6-module-qtqml
+  qml6-module-qtqml-models qml6-module-qtqml-workerscript qml6-module-qtquick
+  qml6-module-qtquick-controls qml6-module-qtquick-layouts
+  qml6-module-qtquick-shapes qml6-module-qtquick-templates
+  qml6-module-qtquick-window sgml-data yelp-xsl
+Use 'apt autoremove' to remove them.
 Suggested packages:
-  debtags
+  xorriso
 The following NEW packages will be installed:
-  dctrl-tools
-0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
-Need to get 104 kB of archives.
-After this operation, 432 kB of additional disk space will be used.
-Get:1 http://deb.debian.org/debian trixie/main amd64 dctrl-tools amd64 2.24-3+b1 [104 kB]
-Fetched 104 kB in 0s (4666 kB/s)
-Selecting previously unselected package dctrl-tools.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7822 files and directories currently installed.)
-Preparing to unpack .../dctrl-tools_2.24-3+b1_amd64.deb ...
-Unpacking dctrl-tools (2.24-3+b1) ...
-Setting up dctrl-tools (2.24-3+b1) ...
+  isolinux syslinux-common
+0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+Need to get 1299 kB of archives.
+After this operation, 3741 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main amd64 isolinux all 3:6.04~git20190206.bf6db5b4+dfsg1-3.1 [86.5 kB]
+Get:2 http://deb.debian.org/debian trixie/main amd64 syslinux-common all 3:6.04~git20190206.bf6db5b4+dfsg1-3.1 [1212 kB]
+Fetched 1299 kB in 0s (10.6 MB/s)
+Selecting previously unselected package isolinux.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 126755 files and directories currently installed.)
+Preparing to unpack .../isolinux_3%3a6.04~git20190206.bf6db5b4+dfsg1-3.1_all.deb ...
+Unpacking isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Selecting previously unselected package syslinux-common.
+Preparing to unpack .../syslinux-common_3%3a6.04~git20190206.bf6db5b4+dfsg1-3.1_all.deb ...
+Unpacking syslinux-common (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Setting up isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Setting up syslinux-common (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
 Reading package lists...
 Building dependency tree...
 Reading state information...
 The following packages will be REMOVED:
-  dctrl-tools*
+  docbook-xml* fonts-dejavu* fonts-dejavu-extra* isolinux* kactivitymanagerd*
+  libkf6i18nqml6* libkf6itemmodels6* libkf6jobwidgets-data* libkf6jobwidgets6*
+  libkf6kcmutils-bin* libkf6kcmutils-data* libkf6kcmutils6*
+  libkf6kcmutilscore6* libkf6kcmutilsquick6* libkf6runner6* libkirigami-data*
+  libkirigami6* libkirigamidelegates6* libkirigamidialogs6*
+  libkirigamilayouts6* libkirigamiplatform6* libkirigamiprimitives6*
+  libkirigamiprivate6* libmalcontent-ui-1-1* libplasmaactivities6*
+  libqt6quickcontrols2-6* libqt6quickshapes6* libqt6quicktemplates2-6*
+  libqt6sql6* libqt6sql6-sqlite* libyelp0* malcontent* plasma-activities-bin*
+  qml6-module-org-kde-kirigami* qml6-module-qtqml* qml6-module-qtqml-models*
+  qml6-module-qtqml-workerscript* qml6-module-qtquick*
+  qml6-module-qtquick-controls* qml6-module-qtquick-layouts*
+  qml6-module-qtquick-shapes* qml6-module-qtquick-templates*
+  qml6-module-qtquick-window* sgml-data* syslinux-common* yelp-xsl*
+0 upgraded, 0 newly installed, 46 to remove and 0 not upgraded.
+After this operation, 41.3 MB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 126987 files and directories currently installed.)
+Removing docbook-xml (4.5-13) ...
+Removing fonts-dejavu (2.37-8) ...
+Removing fonts-dejavu-extra (2.37-8) ...
+Removing isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Removing kactivitymanagerd (6.3.4-1) ...
+Removing libkf6kcmutils-bin (6.13.0-2) ...
+Removing libkf6kcmutils6:amd64 (6.13.0-2) ...
+Removing libkf6kcmutilsquick6:amd64 (6.13.0-2) ...
+Removing libkf6i18nqml6:amd64 (6.13.0-1) ...
+Removing libkf6runner6:amd64 (6.13.0-1) ...
+Removing libkf6itemmodels6:amd64 (6.13.0-1) ...
+Removing libkf6jobwidgets6:amd64 (6.13.0-1) ...
+Removing libkf6jobwidgets-data (6.13.0-1) ...
+Removing libkf6kcmutilscore6:amd64 (6.13.0-2) ...
+Removing libkf6kcmutils-data (6.13.0-2) ...
+Removing qml6-module-org-kde-kirigami:amd64 (6.13.0-2) ...
+Removing libkirigami6:amd64 (6.13.0-2) ...
+Removing libkirigamiprivate6:amd64 (6.13.0-2) ...
+Removing libkirigamidelegates6:amd64 (6.13.0-2) ...
+Removing libkirigamidialogs6:amd64 (6.13.0-2) ...
+Removing libkirigamilayouts6:amd64 (6.13.0-2) ...
+Removing libkirigamiprimitives6:amd64 (6.13.0-2) ...
+Removing libkirigamiplatform6:amd64 (6.13.0-2) ...
+Removing libmalcontent-ui-1-1:amd64 (0.13.0-2+deb13u1) ...
+Removing plasma-activities-bin (6.3.4-1) ...
+Removing libplasmaactivities6:amd64 (6.3.4-1) ...
+Removing qml6-module-qtquick-controls:amd64 (6.8.2+dfsg-7) ...
+Removing libqt6quickcontrols2-6:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtquick-shapes:amd64 (6.8.2+dfsg-7) ...
+Removing libqt6quickshapes6:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtquick-templates:amd64 (6.8.2+dfsg-7) ...
+Removing libqt6quicktemplates2-6:amd64 (6.8.2+dfsg-7) ...
+Removing libqt6sql6-sqlite:amd64 (6.8.2+dfsg-9+deb13u2) ...
+Removing libqt6sql6:amd64 (6.8.2+dfsg-9+deb13u2) ...
+Removing libyelp0:amd64 (42.2-4+deb13u1) ...
+Removing malcontent (0.13.0-2+deb13u1) ...
+Removing qml6-module-qtquick-window:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtquick-layouts:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtquick:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtqml:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtqml-models:amd64 (6.8.2+dfsg-7) ...
+Removing qml6-module-qtqml-workerscript:amd64 (6.8.2+dfsg-7) ...
+Removing sgml-data (2.0.11+nmu1) ...
+Removing syslinux-common (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Removing yelp-xsl (42.1-4) ...
+Removing libkirigami-data (6.13.0-2) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for sgml-base (1.31+nmu1) ...
+Processing triggers for fontconfig (2.15.0-2.3) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 125014 files and directories currently installed.)
+Purging configuration files for docbook-xml (4.5-13) ...
+Purging configuration files for malcontent (0.13.0-2+deb13u1) ...
+Purging configuration files for sgml-data (2.0.11+nmu1) ...
+Processing triggers for sgml-base (1.31+nmu1) ...
+[2026-10-15 06:27:15] lb binary_disk 
+P: Begin installing disk information...
+[2026-10-15 06:27:15] lb binary_loadlin 
+[2026-10-15 06:27:15] lb binary_win32-loader 
+[2026-10-15 06:27:15] lb binary_includes 
+P: Begin copying binary includes...
+0 blocks
+[2026-10-15 06:27:15] lb binary_grub-efi 
+P: Begin preparing Grub based EFI support...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  grub-efi-ia32-unsigned
+Suggested packages:
+  floppyd
+The following NEW packages will be installed:
+  grub-efi-ia32-bin grub-efi-ia32-unsigned mtools
+0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
+Need to get 2213 kB of archives.
+After this operation, 10.5 MB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main amd64 grub-efi-ia32-unsigned amd64 2.12-9+deb13u2 [1324 kB]
+Get:2 http://deb.debian.org/debian trixie/main amd64 grub-efi-ia32-bin amd64 2.12-9+deb13u2 [691 kB]
+Get:3 http://deb.debian.org/debian trixie/main amd64 mtools amd64 4.0.48-1 [198 kB]
+Fetched 2213 kB in 0s (18.1 MB/s)
+Selecting previously unselected package grub-efi-ia32-unsigned.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 124999 files and directories currently installed.)
+Preparing to unpack .../grub-efi-ia32-unsigned_2.12-9+deb13u2_amd64.deb ...
+Unpacking grub-efi-ia32-unsigned (2.12-9+deb13u2) ...
+Selecting previously unselected package grub-efi-ia32-bin.
+Preparing to unpack .../grub-efi-ia32-bin_2.12-9+deb13u2_amd64.deb ...
+Unpacking grub-efi-ia32-bin (2.12-9+deb13u2) ...
+Selecting previously unselected package mtools.
+Preparing to unpack .../mtools_4.0.48-1_amd64.deb ...
+Unpacking mtools (4.0.48-1) ...
+Setting up grub-efi-ia32-unsigned (2.12-9+deb13u2) ...
+Setting up grub-efi-ia32-bin (2.12-9+deb13u2) ...
+Setting up mtools (4.0.48-1) ...
+Processing triggers for man-db (2.13.1-1) ...
+!!! The following error/warning messages can be ignored !!!
+Reading package lists...
+Building dependency tree...
+Reading state information...
+shim-signed is already the newest version (1.51~1+deb13u1+16.1-2~deb13u1).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+Reading package lists...
+Building dependency tree...
+Reading state information...
+grub-efi-amd64-signed is already the newest version (1+2.12+9+deb13u2).
+0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.
+!!! The above error/warning messages can be ignored !!!
+P: UEFI Secure Boot support enabled.
+mkfs.fat 4.2 (2021-01-31)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages will be REMOVED:
+  grub-efi-amd64-signed* grub-efi-ia32-bin* grub-efi-ia32-unsigned* mtools*
+  shim-helpers-amd64-signed* shim-signed* shim-signed-common* shim-unsigned*
+WARNING: The following essential packages will be removed.
+This should NOT be done unless you know exactly what you are doing!
+  grub-efi-amd64-signed
+0 upgraded, 0 newly installed, 8 to remove and 0 not upgraded.
+After this operation, 24.4 MB disk space will be freed.
+dpkg: warning: overriding problem because --force enabled:
+dpkg: warning: this is a protected package; it should not be removed
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 125373 files and directories currently installed.)
+Removing grub-efi-amd64-signed (1+2.12+9+deb13u2) ...
+Removing grub-efi-ia32-bin (2.12-9+deb13u2) ...
+Removing grub-efi-ia32-unsigned (2.12-9+deb13u2) ...
+Removing mtools (4.0.48-1) ...
+Removing shim-signed:amd64 (1.51~1+deb13u1+16.1-2~deb13u1) ...
+Secure Boot not enabled on this system.
+Removing shim-helpers-amd64-signed (1+16.1+2~deb13u1) ...
+Removing shim-signed-common (1.51~1+deb13u1+16.1-2~deb13u1) ...
+Removing shim-unsigned:amd64 (16.1-2~deb13u1) ...
+Processing triggers for man-db (2.13.1-1) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 124966 files and directories currently installed.)
+Purging configuration files for mtools (4.0.48-1) ...
+Purging configuration files for shim-signed:amd64 (1.51~1+deb13u1+16.1-2~deb13u1) ...
+Purging configuration files for shim-signed-common (1.51~1+deb13u1+16.1-2~deb13u1) ...
+Purging configuration files for shim-helpers-amd64-signed (1+16.1+2~deb13u1) ...
+[2026-10-15 06:27:19] lb binary_bootloader_splash 
+P: Begin preparing the bootloader splash image...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following NEW packages will be installed:
+  librsvg2-bin
+0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+Need to get 1955 kB of archives.
+After this operation, 7040 kB of additional disk space will be used.
+Get:1 http://security.debian.org trixie-security/main amd64 librsvg2-bin amd64 2.60.0+dfsg-1+deb13u1 [1955 kB]
+Fetched 1955 kB in 0s (14.8 MB/s)
+Selecting previously unselected package librsvg2-bin.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 124965 files and directories currently installed.)
+Preparing to unpack .../librsvg2-bin_2.60.0+dfsg-1+deb13u1_amd64.deb ...
+Unpacking librsvg2-bin (2.60.0+dfsg-1+deb13u1) ...
+Setting up librsvg2-bin (2.60.0+dfsg-1+deb13u1) ...
+Processing triggers for man-db (2.13.1-1) ...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages will be REMOVED:
+  librsvg2-bin*
 0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.
-After this operation, 432 kB disk space will be freed.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7863 files and directories currently installed.)
-Removing dctrl-tools (2.24-3+b1) ...
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 7822 files and directories currently installed.)
-Purging configuration files for dctrl-tools (2.24-3+b1) ...
+After this operation, 7040 kB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 124971 files and directories currently installed.)
+Removing librsvg2-bin (2.60.0+dfsg-1+deb13u1) ...
+Processing triggers for man-db (2.13.1-1) ...
+[2026-10-15 06:27:22] lb binary_hooks 
+P: Begin executing hooks...
+[2026-10-15 06:27:22] lb binary_checksums 
+P: Begin creating binary sha256sum.txt...
+[2026-10-15 06:27:24] lb binary_iso 
+P: Begin building binary iso image...
 Reading package lists...
 Building dependency tree...
 Reading state information...
-[2026-10-15 06:06:41] lb chroot_install-packages install
-P: Begin installing packages (install pass)...
+The following additional packages will be installed:
+  libburn4t64 libisoburn1t64 libisofs6t64 libjte2
+Suggested packages:
+  xorriso-tcltk jigit cdck
+Recommended packages:
+  syslinux-common
+The following NEW packages will be installed:
+  isolinux libburn4t64 libisoburn1t64 libisofs6t64 libjte2 xorriso
+0 upgraded, 6 newly installed, 0 to remove and 0 not upgraded.
+Need to get 1146 kB/1233 kB of archives.
+After this operation, 2693 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian trixie/main amd64 libburn4t64 amd64 1.5.6-1.1+b1 [164 kB]
+Get:2 http://deb.debian.org/debian trixie/main amd64 libjte2 amd64 1.22-4+b2 [29.6 kB]
+Get:3 http://deb.debian.org/debian trixie/main amd64 libisofs6t64 amd64 1.5.6.pl01-1.1+b1 [219 kB]
+Get:4 http://deb.debian.org/debian trixie/main amd64 libisoburn1t64 amd64 1.5.6-1.2+b1 [410 kB]
+Get:5 http://deb.debian.org/debian trixie/main amd64 xorriso amd64 1.5.6-1.2+b1 [323 kB]
+Fetched 1146 kB in 0s (9258 kB/s)
+Selecting previously unselected package isolinux.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 124965 files and directories currently installed.)
+Preparing to unpack .../0-isolinux_3%3a6.04~git20190206.bf6db5b4+dfsg1-3.1_all.deb ...
+Unpacking isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Selecting previously unselected package libburn4t64:amd64.
+Preparing to unpack .../1-libburn4t64_1.5.6-1.1+b1_amd64.deb ...
+Unpacking libburn4t64:amd64 (1.5.6-1.1+b1) ...
+Selecting previously unselected package libjte2:amd64.
+Preparing to unpack .../2-libjte2_1.22-4+b2_amd64.deb ...
+Unpacking libjte2:amd64 (1.22-4+b2) ...
+Selecting previously unselected package libisofs6t64:amd64.
+Preparing to unpack .../3-libisofs6t64_1.5.6.pl01-1.1+b1_amd64.deb ...
+Unpacking libisofs6t64:amd64 (1.5.6.pl01-1.1+b1) ...
+Selecting previously unselected package libisoburn1t64:amd64.
+Preparing to unpack .../4-libisoburn1t64_1.5.6-1.2+b1_amd64.deb ...
+Unpacking libisoburn1t64:amd64 (1.5.6-1.2+b1) ...
+Selecting previously unselected package xorriso.
+Preparing to unpack .../5-xorriso_1.5.6-1.2+b1_amd64.deb ...
+Unpacking xorriso (1.5.6-1.2+b1) ...
+Setting up isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Setting up libjte2:amd64 (1.22-4+b2) ...
+Setting up libisofs6t64:amd64 (1.5.6.pl01-1.1+b1) ...
+Setting up libburn4t64:amd64 (1.5.6-1.1+b1) ...
+Setting up libisoburn1t64:amd64 (1.5.6-1.2+b1) ...
+Setting up xorriso (1.5.6-1.2+b1) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+xorriso 1.5.6 : RockRidge filesystem manipulator, libburnia project.
+
+xorriso : NOTE : Environment variable SOURCE_DATE_EPOCH encountered with value 1792044916
+Drive current: -outdev 'stdio:tind-amd64.hybrid.iso'
+Media current: stdio file, overwriteable
+Media status : is blank
+Media summary: 0 sessions, 0 data blocks, 0 data, 74.0g free
+xorriso : NOTE : -as mkisofs: Ignored option '-cache-inodes'
+Added to ISO image: directory '/'='/binary'
+xorriso : UPDATE :     305 files added in 1 seconds
+xorriso : UPDATE :     305 files added in 1 seconds
+xorriso : NOTE : Copying to System Area: 432 bytes from file '/usr/lib/ISOLINUX/isohdpfx.bin'
+libisofs: NOTE : Automatically adjusted MBR geometry to 1022/146/32
+libisofs: NOTE : Aligned image size to cylinder size by 107 blocks
+xorriso : UPDATE :  0.00% done
+xorriso : UPDATE :  65.81% done
+xorriso : UPDATE :  88.55% done
+xorriso : UPDATE :  98.42% done
+ISO image produced: 1193696 sectors
+Written to medium : 1193696 sectors at LBA 0
+Writing to 'stdio:tind-amd64.hybrid.iso' completed successfully.
+
 Reading package lists...
 Building dependency tree...
 Reading state information...
-E: Unable to locate package proton-vpn-gnome-desktop
-E: An unexpected failure occurred, exiting...
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following packages will be REMOVED:
+  isolinux* libburn4t64* libisoburn1t64* libisofs6t64* libjte2* xorriso*
+0 upgraded, 0 newly installed, 6 to remove and 0 not upgraded.
+After this operation, 2693 kB disk space will be freed.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 125044 files and directories currently installed.)
+Removing isolinux (3:6.04~git20190206.bf6db5b4+dfsg1-3.1) ...
+Removing xorriso (1.5.6-1.2+b1) ...
+Removing libisoburn1t64:amd64 (1.5.6-1.2+b1) ...
+Removing libburn4t64:amd64 (1.5.6-1.1+b1) ...
+Removing libisofs6t64:amd64 (1.5.6.pl01-1.1+b1) ...
+Removing libjte2:amd64 (1.22-4+b2) ...
+Processing triggers for man-db (2.13.1-1) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+[2026-10-15 06:27:34] lb binary_onie 
+[2026-10-15 06:27:34] lb binary_netboot 
+[2026-10-15 06:27:34] lb binary_tar 
+[2026-10-15 06:27:34] lb binary_hdd 
+[2026-10-15 06:27:34] lb binary_zsync 
+[2026-10-15 06:27:34] lb chroot_prep remove dpkg tmpfs sysv-rc hosts resolv hostname apt
+[2026-10-15 06:27:34] lb chroot_apt remove
+P: Deconfiguring file /etc/apt/apt.conf
+[2026-10-15 06:27:35] lb chroot_hostname remove
+P: Deconfiguring file /etc/hostname
+P: Deconfiguring file /bin/hostname
+[2026-10-15 06:27:35] lb chroot_resolv remove
+P: Deconfiguring file /etc/resolv.conf
+[2026-10-15 06:27:35] lb chroot_hosts remove
+P: Deconfiguring file /etc/hosts
+[2026-10-15 06:27:35] lb chroot_sysv-rc remove
+P: Deconfiguring file /usr/sbin/policy-rc.d
+[2026-10-15 06:27:35] lb chroot_tmpfs remove
+[2026-10-15 06:27:35] lb chroot_dpkg remove
+P: Deconfiguring file /sbin/start-stop-daemon
+[2026-10-15 06:27:35] lb chroot_prep remove devpts proc selinuxfs sysfs
+[2026-10-15 06:27:35] lb chroot_sysfs remove
+P: Begin unmounting /sys...
+[2026-10-15 06:27:35] lb chroot_selinuxfs remove
+[2026-10-15 06:27:35] lb chroot_proc remove
+P: Begin unmounting /proc...
+[2026-10-15 06:27:35] lb chroot_devpts remove
+P: Begin unmounting /dev/pts...
+P: Binary stage completed
 P: Begin unmounting filesystems...
 P: Saving caches...
 Reading package lists...
 Building dependency tree...
 Reading state information...
+[2026-10-15 06:27:35] lb source 
+P: Source stage disabled, skipping
+P: Build completed successfully
