@@ -1,0 +1,4 @@
+ref: claude/design-v2
+sha: a0e888f3f4eff8ccbaf3debc1bb3160294d8a6f1
+run: 38719495638
+results: packages=success iso=success boot=success
