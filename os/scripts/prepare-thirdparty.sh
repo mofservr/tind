@@ -37,4 +37,8 @@ else
 fi
 cat config/archives/protonvpn.list.chroot
 echo "$PROTON_PACKAGE" > config/package-lists/protonvpn.list.chroot
+# The build-time repository entry is removed from the finished image by live-build. Ship the verified
+# release package too; a hook installs it so the image keeps Proton's repo and its key updates.
+mkdir -p config/includes.chroot_after_packages/var/tmp
+cp "$tmp/proton-release.deb" config/includes.chroot_after_packages/var/tmp/protonvpn-stable-release.deb
 echo "Proton VPN repository configured for the build."

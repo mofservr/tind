@@ -192,8 +192,20 @@ jobs:
               -drive if=pflash,format=raw,file=$PWD/vars.fd \
               -smbios type=1,product=tind-ci -cdrom "$ISO" -boot d -vga std -display none -serial file:$PWD/logs/serial.log \
               -monitor unix:$PWD/mon.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
-            sleep 30
+            # early frames: firmware, boot menu, then Plymouth after Enter (function only, no design check)
+            for j in $(seq 1 12); do
+              sleep 2
+              echo "screendump $PWD/shots/e$(printf %02d "$j").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
+              sleep 0.5
+              [ -f "shots/e$(printf %02d "$j").ppm" ] && convert "shots/e$(printf %02d "$j").ppm" -resize 800x "logs/early-$(printf %02d "$j").png"
+            done
             echo "sendkey ret" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "sendkey failed"
+            for j in $(seq 13 24); do
+              sleep 2
+              echo "screendump $PWD/shots/e$(printf %02d "$j").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
+              sleep 0.5
+              [ -f "shots/e$(printf %02d "$j").ppm" ] && convert "shots/e$(printf %02d "$j").ppm" -resize 800x "logs/early-$(printf %02d "$j").png"
+            done
             for i in $(seq 1 14); do
               sleep 45
               echo "screendump $PWD/shots/t$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone at $i"
