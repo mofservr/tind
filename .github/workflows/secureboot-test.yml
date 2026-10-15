@@ -1,0 +1,96 @@
+name: secureboot-test
+# Inspects the ISO's EFI files and boots the live ISO under OVMF with Secure Boot enabled (Microsoft keys).
+# Reuses the ISO from the build run named in os/ci/secureboot/ISO_RUN_ID.
+on:
+  push:
+    branches-ignore: [ci-logs]
+    paths: ['os/ci/secureboot/**', '.github/workflows/secureboot-test.yml']
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  secureboot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Read ISO run id
+        id: iso
+        run: echo "run=$(tr -d '[:space:]' < os/ci/secureboot/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+      - uses: actions/download-artifact@v4
+        with:
+          name: tind-iso
+          path: iso
+          run-id: ${{ steps.iso.outputs.run }}
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf socat imagemagick xorriso mtools sbsigntool
+      - name: Inspect EFI boot files
+        run: |
+          mkdir -p logs efi
+          ISO=$(ls $PWD/iso/*.iso | head -1)
+          {
+            echo "== OVMF files"; ls -l /usr/share/OVMF/
+            echo "== EFI tree on the ISO"; xorriso -indev "$ISO" -find /EFI /boot -maxdepth 4 2>/dev/null || true
+            echo "== extract efi.img"
+            xorriso -osirrox on -indev "$ISO" -extract /boot/grub/efi.img efi/efi.img 2>&1 | tail -2 || true
+            [ -e efi/efi.img ] || xorriso -osirrox on -indev "$ISO" -extract /efi.img efi/efi.img 2>&1 | tail -2 || true
+            ls -l efi
+            echo "== files in efi.img"; mdir -/ -i efi/efi.img :: 2>&1 | head -40 || true
+            mcopy -s -n -i efi/efi.img ::EFI efi/EFI 2>&1 | tail -2 || true
+            find efi/EFI -type f -print -exec sh -c 'echo "-- $1"; sbverify --list "$1" 2>&1 | head -12; file "$1"' _ {} \; || true
+          } 2>&1 | tee logs/secureboot-inspect.log
+      - name: Boot live ISO with Secure Boot on
+        run: |
+          {
+            ls /usr/share/OVMF/*secboot* /usr/share/OVMF/*.ms.fd 2>&1 || true
+            [ -e /dev/kvm ] && sudo chmod 666 /dev/kvm
+            if [ -w /dev/kvm ]; then ACCEL="-enable-kvm -cpu host"; echo "KVM: yes"; else ACCEL="-cpu max"; echo "KVM: no"; fi
+            ISO=$(ls $PWD/iso/*.iso | head -1)
+            cp /usr/share/OVMF/OVMF_VARS_4M.ms.fd $PWD/vars.fd
+            qemu-system-x86_64 $ACCEL -machine q35,smm=on -global driver=cfi.pflash01,property=secure,value=on -m 4096 -smp 2 \
+              -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd \
+              -drive if=pflash,format=raw,file=$PWD/vars.fd \
+              -smbios type=1,product=tind-ci -cdrom "$ISO" -boot d -vga std -display none -serial file:$PWD/logs/serial-secboot.log \
+              -monitor unix:$PWD/mon.sock,server,nowait -daemonize -pidfile $PWD/qemu.pid
+            mkdir -p shots
+            sleep 20
+            for i in $(seq 1 10); do
+              echo "screendump $PWD/shots/s$(printf %02d "$i").ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone at $i"
+              sleep 1
+              [ -f "shots/s$(printf %02d "$i").ppm" ] && convert "shots/s$(printf %02d "$i").ppm" "logs/secboot-s$(printf %02d "$i").png"
+              sleep 29
+              [ "$i" = 1 ] && echo "sendkey ret" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
+            done
+            echo quit | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true
+            ls -l logs; tail -n 30 logs/serial-secboot.log || true
+            grep -a -i "secure boot\|SELFTEST" logs/serial-secboot.log | head -20 || true
+          } 2>&1 | tee logs/secureboot-boot.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: secureboot-logs
+          path: logs/
+      - name: Push logs to ci-logs branch
+        if: always()
+        env:
+          GH_REF: ${{ github.ref_name }}
+          GH_RUN: ${{ github.run_id }}
+        run: |
+          set -eu
+          git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out
+          d="out/secureboot_${GH_REF//\//_}"
+          rm -rf "$d"; mkdir -p "$d"
+          for f in logs/*.log; do [ -e "$f" ] && tail -n 400 "$f" > "$d/$(basename "$f").tail"; done
+          for f in logs/*.png; do [ -e "$f" ] && convert "$f" -resize 800x -quality 60 "$d/$(basename "$f" .png).jpg"; done
+          cd out
+          git config user.name "tind-ci"; git config user.email "ci@users.noreply.github.com"
+          git add -A; git commit -qm "secureboot logs run $GH_RUN" || exit 0
+          for n in 1 2 3; do git pull -q --rebase origin ci-logs && git push -q origin ci-logs && break; sleep 3; done
