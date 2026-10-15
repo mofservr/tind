@@ -1,0 +1,10 @@
+#!/bin/sh
+# Fetch the package lists once the machine is online, so GNOME Software shows apps and updates
+# right after the first boot (the installer image carries no package lists). Quiet when offline.
+mkdir -p /var/lib/tind
+if apt-get update -q; then
+    touch /var/lib/tind/apt-refreshed
+else
+    echo "tind-apt-refresh: no network or mirror unreachable, will retry at next boot"
+fi
+exit 0

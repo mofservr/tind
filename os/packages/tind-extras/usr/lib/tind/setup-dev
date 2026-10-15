@@ -1,5 +1,6 @@
 #!/bin/bash
-# Developer base set: git, compilers, Python tooling, GitHub CLI and VS Code (Microsoft apt repository).
+# Developer base set: git, compilers, Python tooling, GitHub CLI, VS Code (Microsoft apt repository)
+# and Claude Desktop (Anthropic apt repository).
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -30,4 +31,24 @@ SRC
 echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
 apt-get update
 apt_install code
+
+# Claude Desktop (beta) from Anthropic's own apt repository. The key is refused if it does not match.
+CLAUDE_FPR="31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE"
+curl -fsSL https://downloads.claude.ai/claude-desktop/key.asc -o "$tmp/claude.asc"
+got="$(gpg --show-keys --with-colons "$tmp/claude.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+if [ "$got" != "$CLAUDE_FPR" ]; then
+    echo "Anthropic signing key fingerprint mismatch: got $got" >&2; exit 1
+fi
+install -m 0644 "$tmp/claude.asc" /usr/share/keyrings/claude-desktop-archive-keyring.asc
+cat > /etc/apt/sources.list.d/claude-desktop.sources <<'SRC'
+Types: deb
+URIs: https://downloads.claude.ai/claude-desktop/apt/stable
+Suites: stable
+Components: main
+Architectures: amd64 arm64
+Signed-By: /usr/share/keyrings/claude-desktop-archive-keyring.asc
+SRC
+apt-get update
+# with recommends: the keyring, and QEMU/OVMF that the Cowork tab needs
+apt-get install -y claude-desktop
 echo "== Tind: developer tools setup done"

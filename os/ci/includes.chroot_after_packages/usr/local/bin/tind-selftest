@@ -89,6 +89,27 @@ ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
 systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
 ls /var/lib/dkms/mok.key 2>&1
 vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
+sec "updates"
+systemctl is-enabled tind-apt-refresh.service packagekit.service 2>&1; systemctl is-active tind-apt-refresh.service 2>&1
+ls -l /var/lib/tind/apt-refreshed 2>&1; ls /var/lib/apt/lists | wc -l
+cat /etc/apt/apt.conf.d/20tind-auto-upgrades 2>&1
+systemctl is-enabled apt-daily.timer apt-daily-upgrade.timer 2>&1
+unattended-upgrade --dry-run 2>&1 | tail -8
+pkcon get-updates 2>&1 | tail -8
+asuser gnome-software --version 2>&1 | head -1
+flatpak remote-ls --updates 2>&1 | head -3
+sec "security baseline"
+echo "apparmor: $(systemctl is-active apparmor) ; profiles loaded: $(aa-status --enabled 2>&1; aa-status 2>/dev/null | sed -n '2p')"
+ufw status verbose 2>&1 | head -8
+echo "listening sockets:"; ss -tulnH 2>&1 | awk '{print $1, $5}' | sort -u | head -20
+sec "hardware basics"
+systemctl is-active power-profiles-daemon 2>&1; powerprofilesctl list 2>&1 | head -6
+dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' amd64-microcode intel-microcode firmware-brcm80211 firmware-mediatek fwupd 2>&1
+grep -m1 microcode /proc/cpuinfo 2>&1
+tind-report /tmp/tind-report-test.txt 2>&1 | tail -3
+wc -l /tmp/tind-report-test.txt 2>&1; grep -c '^#####' /tmp/tind-report-test.txt 2>&1
+grep -iE 'proton|claude' /etc/apt/sources.list.d/* 2>&1 | head -3
+dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' proton-vpn-gnome-desktop 2>&1
 sec "desktop entries shown in the app grid (name, package)"
 for f in /usr/share/applications/*.desktop; do
     grep -qE '^(NoDisplay|Hidden)=true' "$f" && continue

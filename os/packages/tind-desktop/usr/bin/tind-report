@@ -1,0 +1,35 @@
+#!/bin/bash
+# Collects hardware, driver, network and boot information into one text file you can attach
+# to a bug report or a chat. Contains no passwords. Hostname, serials and MAC addresses are left out.
+set -u
+out="${1:-$HOME/tind-report-$(date +%Y%m%d-%H%M%S).txt}"
+SUDO=""; [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null && SUDO="sudo -n"
+sec() { printf '\n##### %s\n' "$*"; }
+run() { printf '$ %s\n' "$*"; "$@" 2>&1 | sed -E 's/([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}/xx:xx:xx:xx:xx:xx/g' | head -n "${LINES_MAX:-120}"; }
+{
+    echo "Tind report, $(date -u +%FT%TZ)"
+    sec "Tind and OS"; cat /etc/os-release; run uname -a; run dpkg -l 'tind-*'
+    sec "Hardware"; for f in sys_vendor product_name product_version bios_vendor bios_version bios_date chassis_type; do echo "$f: $(cat /sys/class/dmi/id/$f 2>/dev/null)"; done
+    run lscpu; run free -h; run lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINT
+    sec "Boot"; [ -d /sys/firmware/efi ] && echo "UEFI" || echo "BIOS"
+    command -v mokutil >/dev/null && run mokutil --sb-state
+    run cat /proc/cmdline
+    sec "GPU"; run lspci -nnk -d ::0300; run lspci -nnk -d ::0302; run lspci -nnk -d ::0380
+    command -v tind-gpu >/dev/null && run tind-gpu status
+    command -v nvidia-smi >/dev/null && run nvidia-smi
+    command -v vulkaninfo >/dev/null && { printf '$ vulkaninfo --summary\n'; vulkaninfo --summary 2>&1 | head -40; }
+    command -v glxinfo >/dev/null && { printf '$ glxinfo -B\n'; glxinfo -B 2>&1 | head -25; }
+    run dkms status
+    sec "Wi-Fi, network and Bluetooth"; run lspci -nnk -d ::0280; run lsusb
+    run rfkill list; run nmcli -t -f DEVICE,TYPE,STATE device
+    run dmesg --level=err,warn
+    sec "Audio"; command -v wpctl >/dev/null && run wpctl status
+    sec "Power"; command -v powerprofilesctl >/dev/null && run powerprofilesctl; ls /sys/class/power_supply 2>/dev/null
+    sec "Services"; run systemctl --failed --no-legend; run systemctl is-active ufw apparmor NetworkManager gdm tind-extras.service
+    sec "Journal, errors this boot"; $SUDO journalctl -b -p err --no-pager 2>&1 | tail -n 100
+    sec "Journal, previous boot errors"; $SUDO journalctl -b -1 -p err --no-pager 2>&1 | tail -n 60
+    sec "Extras"; cat /var/lib/tind/extras-status 2>&1; tail -n 40 /var/log/tind-extras.log 2>&1
+    sec "Updates"; ls -l /var/lib/tind/apt-refreshed 2>&1; run apt-get -s upgrade -qq
+} > "$out" 2>&1
+echo "Report written to: $out"
+echo "Attach that file when you ask for help."

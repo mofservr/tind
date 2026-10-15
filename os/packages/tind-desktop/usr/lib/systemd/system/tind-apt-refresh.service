@@ -1,0 +1,13 @@
+[Unit]
+Description=Tind first-boot package list refresh
+After=network-online.target
+Wants=network-online.target
+ConditionPathExists=!/var/lib/tind/apt-refreshed
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/apt-refresh
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target
