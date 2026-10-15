@@ -10,6 +10,7 @@ Installed-Size: 2644
 Description: Tind visual identity: logo, wallpapers, ice shell styling, boot splash
  Tind's identity as installable files: os-release, logo icons, light and dark
  wallpapers, the Tind Ice GNOME Shell styling (night and midday), GNOME defaults (dark by default,
- teal accent, Papirus icons, Nunito Sans font), the Plymouth boot splash and the GRUB theme.
+ teal accent, Papirus icons, Nunito Sans font), the Tind logo as the dock Show Apps button, the Plymouth
+ boot splash and the GRUB theme.
  .
  os-release is replaced via dpkg-divert so it survives base-files upgrades.
