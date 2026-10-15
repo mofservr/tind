@@ -159,11 +159,15 @@ jobs:
         with:
           name: iso-logs
           path: logs/
+      - name: Checksum
+        run: cd os/build && sha256sum ./*.iso | sed 's|\./||' > SHA256SUMS && cat SHA256SUMS
       - uses: actions/upload-artifact@v4
         with:
           name: tind-iso
-          path: os/build/*.iso
-          retention-days: 3
+          path: |
+            os/build/*.iso
+            os/build/SHA256SUMS
+          retention-days: 30
           compression-level: 0
 
   boot:
