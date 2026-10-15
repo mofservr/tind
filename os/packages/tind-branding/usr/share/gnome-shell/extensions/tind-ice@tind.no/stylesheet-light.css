@@ -1,0 +1,70 @@
+/* Tind Ice v2: March midday overrides. Loaded by extension.js on top of stylesheet.css
+ * when org.gnome.desktop.interface color-scheme is not "prefer-dark".
+ * Accent: rosy alpenglow salmon.   tint #f4f9ff -> #f8eef8 at 26 %   accent #e07a78
+ */
+
+#panel {
+  background-gradient-start: rgba(244, 249, 255, 0.26);
+  background-gradient-end: rgba(248, 238, 248, 0.26);
+}
+
+#panel .panel-button,
+#panel .panel-button .system-status-icon,
+#panel .clock-display { color: #1a2a3a; }
+
+#panel .panel-button:hover,
+#panel .panel-button:focus,
+#panel .panel-button:active,
+#panel .panel-button:checked { background-color: rgba(255, 255, 255, 0.40); }
+
+#dash .dash-background,
+#dashtodockContainer #dash .dash-background,
+#dashtodockContainer.left #dash .dash-background {
+  background-gradient-start: rgba(244, 249, 255, 0.26);
+  background-gradient-end: rgba(248, 238, 248, 0.26);
+}
+
+.app-well-app-running-dot,
+#dashtodockContainer .app-well-app-running-dot { background-color: #d96a62; }
+
+#dash .app-well-app:hover .overview-icon,
+#dash .app-well-app:focus .overview-icon { background-color: rgba(255, 255, 255, 0.35); }
+
+.popup-menu-content,
+.candidate-popup-content,
+.notification-banner,
+.message { background-color: rgba(244, 246, 252, 0.55); color: #1a2a3a; }
+
+.popup-menu-item:hover,
+.popup-menu-item:focus,
+.popup-menu-item:active { background-color: rgba(255, 255, 255, 0.40); }
+
+.quick-settings,
+.datemenu-popover {
+  background-gradient-start: rgba(244, 249, 255, 0.42);
+  background-gradient-end: rgba(248, 238, 248, 0.42);
+  color: #1a2a3a;
+}
+
+.quick-toggle,
+.quick-menu-toggle .quick-toggle,
+.quick-toggle-arrow {
+  background-color: rgba(255, 255, 255, 0.32);
+  color: #1a2a3a;
+}
+
+.quick-toggle:checked,
+.quick-menu-toggle:checked .quick-toggle,
+.quick-menu-toggle:checked .quick-toggle-arrow {
+  background-color: rgba(224, 112, 112, 0.50);
+  color: #6b2430;
+}
+
+.quick-settings .icon-button,
+.quick-settings .button.icon-button { background-color: rgba(255, 255, 255, 0.32); }
+
+.slider {
+  color: #ffffff;
+  -barlevel-background-color: rgba(255, 255, 255, 0.42);
+  -barlevel-active-background-color: #e07a78;
+}
