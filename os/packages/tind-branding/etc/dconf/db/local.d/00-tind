@@ -2,7 +2,7 @@
 
 [org/gnome/desktop/interface]
 color-scheme='prefer-dark'
-accent-color='pink'
+accent-color='teal'
 
 [org/gnome/desktop/background]
 picture-uri='file:///usr/share/backgrounds/tind/tind-light.jpg'

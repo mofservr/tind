@@ -1,0 +1,76 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Dark-Apps.dc.html": {
+      "h": 720,
+      "title": "Night · apps open",
+      "w": 1280,
+      "x": 1360,
+      "y": 0
+    },
+    "Light-Apps.dc.html": {
+      "h": 720,
+      "title": "March midday · apps open",
+      "w": 1280,
+      "x": 1360,
+      "y": 840
+    },
+    "Light-Desktop.dc.html": {
+      "h": 720,
+      "title": "March midday · desktop",
+      "w": 1280,
+      "x": 0,
+      "y": 840
+    },
+    "Main.dc.html": {
+      "h": 720,
+      "title": "Night · desktop",
+      "w": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "QS-Night.dc.html": {
+      "h": 720,
+      "w": 1280,
+      "x": 2720,
+      "y": 0,
+      "title": "Night · quick settings"
+    },
+    "QS-Day.dc.html": {
+      "h": 720,
+      "w": 1280,
+      "x": 2720,
+      "y": 840,
+      "title": "March midday · quick settings"
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-13T12:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "title": {
+      "kind": "title1",
+      "maxW": 2640,
+      "text": "Tind — arctic winter. Night (default) and March midday.",
+      "w": 240,
+      "x": 284,
+      "y": -391
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Dark-Apps.dc.html",
+    "Light-Desktop.dc.html",
+    "Light-Apps.dc.html",
+    "QS-Night.dc.html",
+    "QS-Day.dc.html"
+  ],
+  "pages": [],
+  "title": "Tind Linux — Arctic Winter Desktop"
+}
