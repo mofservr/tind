@@ -18,7 +18,9 @@ sec() { echo; echo "##### $*"; }
 for _ in $(seq 1 120); do [ -S "/run/user/$UIDN/bus" ] && pgrep -u tind gnome-shell >/dev/null && break; sleep 2; done
 sleep 30
 # CI only: flip the session to the light scheme after 4 minutes so the boot screenshots show midday too
-( sleep 240; asuser gsettings set org.gnome.desktop.interface color-scheme default ) &
+systemd-run --unit=tind-ci-light --collect \
+    sh -c "sleep 200; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus gsettings set org.gnome.desktop.interface color-scheme default" \
+    >/dev/null 2>&1 || true
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
