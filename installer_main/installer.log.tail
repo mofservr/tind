@@ -1,6 +1,7 @@
 KVM: yes
 Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=32212254720 lazy_refcounts=off refcount_bits=16
 firmware: uefi  extras: no
+Secure Boot: ON (OVMF secboot code, Microsoft keys)
 == phase 1: live ISO, drive the installer
 0 {'wait': 35}
 1 {'key': 'ret'}
@@ -84,7 +85,7 @@ firmware: uefi  extras: no
 79 {'shot': '50-install-16'}
 80 {'wait': 60}
 81 {'shot': '50-install-17'}
-disk used after install: 7848620032 bytes
+disk used after install: 7614300160 bytes
 == phase 2: boot the installed disk
 0 {'wait': 150}
 1 {'shot': '600-installed-00'}
@@ -97,5 +98,5 @@ disk used after install: 7848620032 bytes
 8 {'wait': 90}
 9 {'shot': '604-installed-04'}
 10 {'wait': 90}
-disk size: 7.69 GiB
-    disk size: 7.69 GiB
+disk size: 7.74 GiB
+    disk size: 7.74 GiB

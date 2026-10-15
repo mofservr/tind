@@ -1,5 +1,5 @@
-[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0008 "Tind" from HD(1,GPT,77C3A9EE-13A3-4EE7-8276-0BA024A9ED1C,0x1000,0x96000)/\EFI\Tind\shimx64.efi
-BdsDxe: starting Boot0008 "Tind" from HD(1,GPT,77C3A9EE-13A3-4EE7-8276-0BA024A9ED1C,0x1000,0x96000)/\EFI\Tind\shimx64.efi
+[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0007 "Tind" from HD(1,GPT,5E795FA8-6EE0-451B-8B5F-A257BD5D7429,0x1000,0x96000)/\EFI\Tind\shimx64.efi
+BdsDxe: starting Boot0007 "Tind" from HD(1,GPT,5E795FA8-6EE0-451B-8B5F-A257BD5D7429,0x1000,0x96000)/\EFI\Tind\shimx64.efi
 =====TIND-SELFTEST-BEGIN=====
 
 ##### os-release
@@ -43,8 +43,8 @@ by-id	 event0  event2  event4  event6  mouse0  mouse2
 by-path  event1  event3  event5  mice	 mouse1
 
 ##### session
-1 1000 tind seat0 1076 user    tty2 no -
-2 1000 tind -     1085 manager -    no -
+1 1000 tind seat0 1080 user    tty2 no -
+2 1000 tind -     1089 manager -    no -
 Name=tind Seat=seat0 Type=wayland Active=yes State=active 
 Name=tind Seat= Type=unspecified Active=yes State=active 
 
@@ -57,7 +57,7 @@ ufw: active
 gdm: active
 
 ##### resolv.conf
-lrwxrwxrwx 1 root root 39 okt.  14 21:06 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+lrwxrwxrwx 1 root root 39 okt.  15 08:09 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
 
 ##### ufw
 Status: active
@@ -102,13 +102,13 @@ lrwxrwxrwx 1 root root 36 okt.  13 23:14 /usr/lib/firefox-esr/distribution -> ..
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
 grep: skrivefeil: Røret ble brutt
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
-/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
-/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{d0e2baf9-9f87-4786-a9ea-1ada4c65e8dc}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{dfcdaa35-a645-4b9f-94d7-48e7719970f3}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -116,8 +116,8 @@ newtab@mozilla.org active=true location=app-builtin-addons
 pictureinpicture@mozilla.org active=true location=app-builtin-addons
 addons-search-detection@mozilla.com active=true location=app-builtin-addons
 webcompat@mozilla.org active=true location=app-builtin-addons
-langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
 langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
 uBlock0@raymondhill.net active=true location=app-system-share
 default-theme@mozilla.org active=true location=app-builtin
 user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
@@ -125,8 +125,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "3320c1f0-b6a7-40bb-9fb4-f56f55278481");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "861aafd2-9ee1-4462-95dd-f3eeff19e11d");
+user_pref("toolkit.telemetry.cachedClientID", "dae02c9f-ae16-4139-9545-6aa8ea990947");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "08ea026f-c2b5-47ce-b108-2db73e199509");
 user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -206,8 +206,8 @@ NAME    SIZE FSTYPE MOUNTPOINT
 sr0    1024M        
 vda      30G        
 ├─vda1  300M vfat   /boot/efi
-├─vda2 21,3G ext4   /
-└─vda3  8,4G swap   [SWAP]
+├─vda2 21,4G ext4   /
+└─vda3  8,3G swap   [SWAP]
 
 ##### extras chosen in the installer
 cat: /var/lib/tind/pending-extras: Ingen slik fil eller filkatalog
@@ -240,8 +240,7 @@ inactive
 	Kernel modules: bochs
 
 == Secure Boot
-This system doesn't support Secure Boot
-mokutil not installed
+SecureBoot enabled
 
 == NVIDIA
 no NVIDIA GPU
@@ -317,35 +316,33 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 installed packages: 1600
 
 ##### journal errors (this boot)
-okt. 14 21:23:02 tindtest gdm-autologin][1076]: gkr-pam: couldn't unlock the login keyring.
-okt. 14 21:23:03 tindtest systemd[1085]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1230.scope - Application launched by gnome-session-binary.
-okt. 14 21:23:03 tindtest systemd[1085]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1237.scope - Application launched by gnome-session-binary.
-okt. 14 21:23:03 tindtest systemd[1085]: Failed to start app-gnome-gnome\x2dkeyring\x2dssh-1232.scope - Application launched by gnome-session-binary.
+okt. 15 08:25:38 tindtest gdm-autologin][1080]: gkr-pam: couldn't unlock the login keyring.
+okt. 15 08:25:39 tindtest systemd[1089]: Failed to start app-gnome-im\x2dlaunch-1412.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-okt. 14 21:23:04 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 21:23:04 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 21:23:04 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 21:23:04 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 21:23:04 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-okt. 14 21:23:06 tindtest gnome-shell[1262]: GNOME Shell started at Wed Oct 14 2026 21:23:03 GMT+0200 (sentraleuropeisk sommertid)
-okt. 14 21:23:06 tindtest gnome-shell[1262]: Registering session with GDM
+okt. 15 08:25:40 tindtest gnome-shell[1253]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+okt. 15 08:25:40 tindtest gnome-shell[1253]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+okt. 15 08:25:40 tindtest gnome-shell[1253]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+okt. 15 08:25:40 tindtest gnome-shell[1253]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+okt. 15 08:25:40 tindtest gnome-shell[1253]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+okt. 15 08:25:41 tindtest gnome-shell[1253]: GNOME Shell started at Thu Oct 15 2026 08:25:39 GMT+0200 (sentraleuropeisk sommertid)
+okt. 15 08:25:41 tindtest gnome-shell[1253]: Registering session with GDM
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+okt. 15 08:25:42 tindtest gnome-shell[1253]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
 =====TIND-SELFTEST-END=====
