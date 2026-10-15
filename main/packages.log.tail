@@ -127,7 +127,7 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 == flatpak runtimes of game apps
 -- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 -- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
--- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/25.08 
+-- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 == every opt-in Flatpak ref exists on Flathub
 ok       com.bitwarden.desktop
 ok       org.gnome.Calendar
@@ -201,7 +201,7 @@ Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64
 == tind-extras: real run of the setup scripts
 setup-dev: OK
 setup-gaming: OK
-code 1.141.2-1791980535 ii 
+code 1.142.0-1792035033 ii 
 gamemode 1.8.2-2 ii 
 gh 2.46.0-3 ii 
 git 1:2.47.3-0+deb13u1 ii 
@@ -212,8 +212,8 @@ steam-installer 1:1.0.0.83~ds-3 ii
 wine 10.0~repack-6 ii 
 wine32 10.0~repack-6 ii 
 winetricks 20250102-1 ii 
-1.141.2
-16507d91be0dc1ce4f94c04d4d0430210b8685d9
+1.142.0
+6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
 bp.list
 debian.sources
 vscode.sources
@@ -229,7 +229,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   63G   82G  44% /__w
+/dev/root       145G   63G   83G  44% /__w
 
 == KVM
 not available (VM tests will be slow)
