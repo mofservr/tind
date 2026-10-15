@@ -128,14 +128,9 @@
   border-radius: 18px;
 }
 
-/* ---- Show Apps button = Tind peak (teal on dark tile) -------------------- */
+/* ---- Show Apps button = plain Tind peak, teal on dark ------------------- */
 #dash .show-apps .overview-icon,
 #dashtodockContainer #dash .show-apps .overview-icon {
-  background-color: rgba(12, 21, 35, 0.78);
-  border: 1.5px solid #138677;
-  border-radius: 12px;
   color: #138677;
   -st-icon-style: symbolic;
 }
-#dash .show-apps:hover .overview-icon,
-#dash .show-apps:focus .overview-icon { background-color: rgba(12, 21, 35, 0.9); }
