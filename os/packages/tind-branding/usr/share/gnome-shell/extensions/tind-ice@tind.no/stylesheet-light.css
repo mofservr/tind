@@ -68,3 +68,13 @@
   -barlevel-background-color: rgba(255, 255, 255, 0.42);
   -barlevel-active-background-color: #e07a78;
 }
+
+/* Show Apps button = Tind peak (alpenglow pink on white tile) */
+#dash .show-apps .overview-icon,
+#dashtodockContainer #dash .show-apps .overview-icon {
+  background-color: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid #EC5179;
+  color: #EC5179;
+}
+#dash .show-apps:hover .overview-icon,
+#dash .show-apps:focus .overview-icon { background-color: #ffffff; }
