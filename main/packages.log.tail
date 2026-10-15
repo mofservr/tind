@@ -1,15 +1,3 @@
--- linux-headers-amd64: 6.12.111-1
--- dkms: 3.2.2-1~deb13u1
--- game-devices-udev: 
--- steam-devices: 1:1.0.0.83~ds-3
--- steam-installer: 1:1.0.0.83~ds-3
--- lutris: 0.5.19-2
--- gamemode: 1.8.2-2
--- mangohud: 0.7.2-2
--- wine: 10.0~repack-6
--- wine32: 10.0~repack-6
--- libgl1-mesa-dri:i386: 25.0.7-2+deb13u1
--- mesa-vulkan-drivers:i386: 25.0.7-2+deb13u1
 -- libvulkan1:i386: 1.4.309.0-1
 -- vulkan-tools: 1.4.304.0+dfsg1-1
 -- mesa-utils: 9.0.0-2+b2
@@ -215,6 +203,8 @@ winetricks 20250102-1 ii
 1.142.0
 6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
 bp.list
+claude-desktop.list
+claude-desktop.sources
 debian.sources
 vscode.sources
 Types: deb
@@ -229,7 +219,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   63G   82G  44% /__w
+/dev/root       145G   64G   81G  44% /__w
 
 == KVM
 not available (VM tests will be slow)
@@ -243,6 +233,9 @@ Source: ublock-origin
 Version: 1.67.0+dfsg-1~deb13u1
 Installed-Size: 14290
 Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 
 == Firefox ESR: policy locations it will read (after install)
 ls: cannot access '/etc/firefox/policies': No such file or directory
@@ -261,6 +254,7 @@ ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
 == package names
 == Depends (must exist)
 ok       adwaita-icon-theme
+ok       apparmor
 ok       apt
 ok       bluez
 ok       ca-certificates
@@ -327,6 +321,7 @@ ok       nvidia-driver
 ok       nvidia-kernel-dkms
 ok       nvidia-vulkan-icd
 ok       orca
+ok       packagekit
 ok       papers
 ok       pciutils
 ok       pipewire-audio
@@ -339,20 +334,24 @@ ok       systemd-resolved
 ok       thunderbird
 ok       ufw
 ok       unattended-upgrades
+ok       usbutils
 ok       vulkan-tools
 ok       webext-ublock-origin-firefox
 ok       wireguard-tools
 ok       zenity
 == Recommends / package lists (nice to have)
+ok       amd64-microcode
+ok       apparmor-profiles
 ok       apt-listchanges
-ok       btrfs-progs
 ok       efibootmgr
 ok       firefox-esr
 ok       firefox-esr-l10n-nb-no
 ok       firefox-esr-l10n-nn-no
 ok       firmware-atheros
+ok       firmware-brcm80211
 ok       firmware-iwlwifi
 ok       firmware-linux
+ok       firmware-mediatek
 ok       firmware-misc-nonfree
 ok       firmware-realtek
 ok       fonts-noto-cjk
@@ -372,6 +371,7 @@ ok       grub-pc-bin
 ok       hunspell-en-us
 ok       hunspell-no
 ok       intel-media-va-driver-non-free
+ok       intel-microcode
 ok       keyboard-configuration
 ok       libreoffice-help-en-us
 ok       libreoffice-l10n-nb
@@ -387,9 +387,9 @@ ok       nvidia-settings
 ok       os-prober
 ok       plymouth
 ok       plymouth-themes
+ok       power-profiles-daemon
 ok       qrencode
 ok       shim-signed
-ok       snapper
 ok       sudo
 ok       thunderbird
 ok       thunderbird-l10n-nb-no
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 1
+== exit status: 0
