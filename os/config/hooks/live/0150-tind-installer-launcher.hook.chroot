@@ -1,7 +1,10 @@
 #!/bin/sh
-# hide the stock "Install Debian" launcher; tind-installer ships "Install Tind"
+# hide the stock "Install Debian" launcher; tind-installer ships "Install Tind".
+# The installer window still matches the stock calamares desktop entry, so that entry
+# also gets the Tind icon (otherwise the dock shows the icon theme's own Calamares icon).
 for f in /usr/share/applications/calamares-install-debian.desktop /usr/share/applications/install-debian.desktop /usr/share/applications/calamares.desktop; do
     [ -f "$f" ] || continue
     echo "NoDisplay=true" >> "$f"
+    sed -i 's/^Icon=.*/Icon=tind-logo/' "$f"
 done
 exit 0

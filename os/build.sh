@@ -38,6 +38,8 @@ fi
 cd build
 sudo lb clean --purge >/dev/null 2>&1 || true
 sudo lb config
+# live-media boot menu: our splash and GRUB theme (config/bootloaders) over live-build's stock templates
+sudo cp -an /usr/share/live/build/bootloaders/. config/bootloaders/
 sudo lb build
 ls -lh ./*.iso
 echo "Test it with: ../scripts/test-vm.sh build/live-image-amd64.hybrid.iso"
