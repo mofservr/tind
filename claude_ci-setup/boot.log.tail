@@ -1,20 +1,20 @@
 total 2347780
--rw-r--r-- 1 runner runner 2404122624 Oct 15 08:56 tind-amd64.hybrid.iso
+-rw-r--r-- 1 runner runner 2404122624 Oct 15 08:57 tind-amd64.hybrid.iso
 KVM: yes
-total 3212
--rw-r--r-- 1 runner runner 232862 Oct 15 08:57 boot-t01.png
--rw-r--r-- 1 runner runner 232943 Oct 15 08:58 boot-t02.png
--rw-r--r-- 1 runner runner 232942 Oct 15 08:59 boot-t03.png
--rw-r--r-- 1 runner runner 232942 Oct 15 08:59 boot-t04.png
--rw-r--r-- 1 runner runner 232681 Oct 15 09:00 boot-t05.png
--rw-r--r-- 1 runner runner 232671 Oct 15 09:01 boot-t06.png
--rw-r--r-- 1 runner runner 232845 Oct 15 09:02 boot-t07.png
--rw-r--r-- 1 runner runner 232845 Oct 15 09:02 boot-t08.png
--rw-r--r-- 1 runner runner 232849 Oct 15 09:03 boot-t09.png
--rw-r--r-- 1 runner runner 232815 Oct 15 09:04 boot-t10.png
--rw-r--r-- 1 runner runner 232670 Oct 15 09:05 boot-t11.png
--rw-r--r-- 1 runner runner 232670 Oct 15 09:05 boot-t12.png
--rw-r--r-- 1 runner runner 232868 Oct 15 09:06 boot-t13.png
--rw-r--r-- 1 runner runner 232788 Oct 15 09:07 boot-t14.png
--rw-r--r-- 1 runner runner     96 Oct 15 08:56 boot.log
--rw-r----- 1 runner runner  15972 Oct 15 08:58 serial.log
+total 3268
+-rw-r--r-- 1 runner runner 235669 Oct 15 08:59 boot-t01.png
+-rw-r--r-- 1 runner runner 235378 Oct 15 09:00 boot-t02.png
+-rw-r--r-- 1 runner runner 235362 Oct 15 09:01 boot-t03.png
+-rw-r--r-- 1 runner runner 235362 Oct 15 09:01 boot-t04.png
+-rw-r--r-- 1 runner runner 235603 Oct 15 09:02 boot-t05.png
+-rw-r--r-- 1 runner runner 235642 Oct 15 09:03 boot-t06.png
+-rw-r--r-- 1 runner runner 235538 Oct 15 09:04 boot-t07.png
+-rw-r--r-- 1 runner runner 235538 Oct 15 09:04 boot-t08.png
+-rw-r--r-- 1 runner runner 235369 Oct 15 09:05 boot-t09.png
+-rw-r--r-- 1 runner runner 235651 Oct 15 09:06 boot-t10.png
+-rw-r--r-- 1 runner runner 235538 Oct 15 09:07 boot-t11.png
+-rw-r--r-- 1 runner runner 235538 Oct 15 09:08 boot-t12.png
+-rw-r--r-- 1 runner runner 235673 Oct 15 09:08 boot-t13.png
+-rw-r--r-- 1 runner runner 235653 Oct 15 09:09 boot-t14.png
+-rw-r--r-- 1 runner runner     96 Oct 15 08:58 boot.log
+-rw-r----- 1 runner runner  15918 Oct 15 09:00 serial.log
