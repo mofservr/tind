@@ -45,9 +45,17 @@ jobs:
             echo "firmware: $FW  extras: $EX"
             FWARGS="-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd -drive if=pflash,format=raw,file=$PWD/vars.fd"
             [ "$FW" = bios ] && FWARGS=""
+            SB="$(tr -d '[:space:]' < os/ci/installer-test/SECUREBOOT 2>/dev/null || echo no)"
+            MACH="q35"
+            if [ "$SB" = yes ] && [ "$FW" = uefi ]; then
+              echo "Secure Boot: ON (OVMF secboot code, Microsoft keys)"
+              cp /usr/share/OVMF/OVMF_VARS_4M.ms.fd $PWD/vars.fd
+              FWARGS="-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.secboot.fd -drive if=pflash,format=raw,file=$PWD/vars.fd -global driver=cfi.pflash01,property=secure,value=on"
+              MACH="q35,smm=on"
+            fi
             INSTALL_JSON=os/ci/installer-test/install.json; FIRST_JSON=os/ci/installer-test/firstboot.json
             if [ "$EX" = no ]; then INSTALL_JSON=os/ci/installer-test/install-noextras.json; FIRST_JSON=os/ci/installer-test/firstboot-short.json; fi
-            COMMON="$ACCEL -machine q35 -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none -device qemu-xhci -device usb-kbd -device usb-tablet \
+            COMMON="$ACCEL -machine $MACH -m 4096 -smp 2 -smbios type=1,product=tind-ci -vga std -display none -device qemu-xhci -device usb-kbd -device usb-tablet \
               $FWARGS \
               -drive file=$PWD/disk.qcow2,if=virtio,format=qcow2"
             echo "== phase 1: live ISO, drive the installer"
