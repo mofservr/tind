@@ -23,5 +23,5 @@ The ISO file is over 2 GB. If the checksum differs, download again.
 
 - Open the boot menu at power-on (often F12, F10, Esc or F8) and pick the USB stick.
 - UEFI and old BIOS machines both work. Secure Boot can stay on: the live ISO and the installed system were tested with it on.
-- NVIDIA graphics with Secure Boot on: after install, run `tind-gpu secureboot` once to enrol the driver signing key (a reboot and a short blue MOK screen follow). Until then the open-source driver is used.
+- NVIDIA graphics with Secure Boot on: after install, run `tind-gpu secureboot` once to enrol the driver signing key (a reboot and a short blue MOK screen follow). Until then the NVIDIA module cannot load under Secure Boot and the open-source driver should take over (not yet tried on real hardware).
 - Something wrong? Run `tind-report` in a terminal and attach the file it writes.
