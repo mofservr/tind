@@ -99,6 +99,7 @@ pkcon get-updates 2>&1 | tail -8
 asuser gnome-software --version 2>&1 | head -1
 flatpak remote-ls --updates 2>&1 | head -3
 sec "security baseline"
+echo "lsm: $(cat /sys/kernel/security/lsm 2>&1)"; cat /sys/module/apparmor/parameters/enabled 2>&1; systemctl status apparmor --no-pager 2>&1 | head -8; aa-status 2>&1 | head -4; grep -o "apparmor=[^ ]*\|lsm=[^ ]*" /proc/cmdline; resolvectl llmnr 2>&1 | head -2
 echo "apparmor: $(systemctl is-active apparmor) ; profiles loaded: $(aa-status --enabled 2>&1; aa-status 2>/dev/null | sed -n '2p')"
 ufw status verbose 2>&1 | head -8
 echo "listening sockets:"; ss -tulnH 2>&1 | awk '{print $1, $5}' | sort -u | head -20
@@ -108,7 +109,7 @@ dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' amd64-microcode i
 grep -m1 microcode /proc/cpuinfo 2>&1
 tind-report /tmp/tind-report-test.txt 2>&1 | tail -3
 wc -l /tmp/tind-report-test.txt 2>&1; grep -c '^#####' /tmp/tind-report-test.txt 2>&1
-grep -iE 'proton|claude' /etc/apt/sources.list.d/* 2>&1 | head -3
+ls /etc/apt/sources.list.d/ 2>&1; grep -h -E '^(URIs|Suites)' /etc/apt/sources.list.d/protonvpn* 2>&1; dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\\n' protonvpn-stable-release 2>&1; ls /var/tmp/*.deb 2>&1 | head -2
 dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' proton-vpn-gnome-desktop 2>&1
 sec "desktop entries shown in the app grid (name, package)"
 for f in /usr/share/applications/*.desktop; do

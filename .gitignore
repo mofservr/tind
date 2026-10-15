@@ -3,6 +3,7 @@ os/build/
 os/config/packages.chroot/
 os/config/archives/protonvpn.*
 os/config/package-lists/protonvpn.list.chroot
+os/config/includes.chroot_after_packages/var/tmp/protonvpn-stable-release.deb
 *.iso
 *.log
 __pycache__/

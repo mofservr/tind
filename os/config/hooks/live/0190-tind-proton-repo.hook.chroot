@@ -1,0 +1,10 @@
+#!/bin/sh
+# Keep Proton's apt repository (and its key, which Proton rotates through this package) in the
+# finished image. live-build drops build-time archive entries, so install Proton's release package.
+set -e
+deb=/var/tmp/protonvpn-stable-release.deb
+[ -f "$deb" ] || exit 0
+rm -f /etc/apt/sources.list.d/protonvpn.list
+dpkg -i "$deb"
+rm -f "$deb"
+exit 0
