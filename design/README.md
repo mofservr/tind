@@ -7,6 +7,6 @@ Arctic winter. Night is the default; March midday is the light pair. See TOKENS.
 - `assets/icons/` stock Papirus icons used in the dock (unmodified, GPL-3)
 - `source/` Claude Design board files (.dc.html + canvas.json); live copy: https://claude.ai/artifact/NY3xk8B841T7DUfGKzMc2D
 
-Ported into the OS: os/packages/tind-branding (tind-ice extension: stylesheet.css night, stylesheet-light.css midday,
+Ported into the OS: os/packages/tind-branding (tind-ice extension: stylesheet.css night, the .tind-light section midday,
 extension.js switches them with the colour scheme; wallpapers; dconf accent).
 Still open: the logo (start over), and real-hardware verification of the shell styling.
