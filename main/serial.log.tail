@@ -1,0 +1,400 @@
+N: Name="PC Speaker"
+H: Handlers=kbd event4 
+by-path  event0  event1  event2  event3  event4  mice  mouse0  mouse1
+
+##### session
+1 1000 tind seat0 1464 user    tty2 no -
+2 1000 tind -     1472 manager -    no -
+Name=tind Seat=seat0 Type=wayland Active=yes State=active 
+Name=tind Seat= Type=unspecified Active=yes State=active 
+
+##### failed units
+
+##### services
+NetworkManager: active
+systemd-resolved: active
+ufw: active
+gdm: active
+
+##### resolv.conf
+lrwxrwxrwx 1 root root 39 Oct 16 09:13 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+
+##### ufw
+Status: active
+
+##### flatpak remotes
+[1mName    Options[22m
+flathub system
+
+##### gnome settings
+org.gnome.desktop.interface color-scheme = 'prefer-dark'
+org.gnome.desktop.interface accent-color = 'teal'
+org.gnome.desktop.background picture-uri-dark = 'file:///usr/share/backgrounds/tind/tind-dark.jpg'
+org.gnome.shell enabled-extensions = ['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com']
+org.gnome.shell favorite-apps = ['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Terminal.desktop', 'thunderbird.desktop', 'libreoffice-writer.desktop', 'org.gnome.Software.desktop', 'org.gnome.Settings.desktop']
+org.gnome.shell.extensions.dash-to-dock dock-position = 'LEFT'
+
+##### keyboard (what Calamares preselects)
+input-sources = [('xkb', 'no')]
+setxkbmap: 
+XKBMODEL="pc105"
+XKBLAYOUT="no"
+
+##### gnome-shell extensions
+dash-to-dock@micxgx.gmail.com
+tind-ice@tind.no
+tind-ice@tind.no
+  Name: Tind Ice
+  Description: Tind's ice-glass styling for the top bar, dock, menus and Quick Settings. Pure CSS overlay on top of the stock GNOME Shell theme.
+  Path: /usr/share/gnome-shell/extensions/tind-ice@tind.no
+  Version: 2
+  Enabled: Yes
+  State: ACTIVE
+
+##### firefox policies
+/etc/firefox/policies/policies.json: present
+/usr/lib/firefox-esr/distribution/policies.json: present
+firefox policies.json: valid JSON
+lrwxrwxrwx 1 root root 36 Oct 13 23:14 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
+
+##### ublock origin
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/1p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/3p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar/messages.json
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
+grep: write error: Broken pipe
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
+
+##### firefox startup (headless, 40s)
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{69132bee-d7bd-4de2-8de7-f3a284fff8eb}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+extensions.json present: yes
+formautofill@mozilla.org active=true location=app-builtin-addons
+ipp-activator@mozilla.com active=true location=app-builtin-addons
+newtab@mozilla.org active=true location=app-builtin-addons
+pictureinpicture@mozilla.org active=true location=app-builtin-addons
+addons-search-detection@mozilla.com active=true location=app-builtin-addons
+webcompat@mozilla.org active=true location=app-builtin-addons
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+uBlock0@raymondhill.net active=true location=app-system-share
+default-theme@mozilla.org active=true location=app-builtin
+user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
+policy keys:
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
+user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
+user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
+user_pref("toolkit.telemetry.cachedClientID", "572dcadb-8550-4e29-bfd3-5cb32f2f5ef0");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "d3af0bc9-4f46-42ef-a108-3e457698ae9a");
+user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+
+##### thunderbird policies
+thunderbird policies.json: valid JSON
+
+##### tind-enroll
+tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+
+  sudo tind-enroll init              create this device's key pair, print the public key
+  sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+  sudo tind-enroll status            show tunnel state
+  sudo tind-enroll remove [--purge-key]
+
+The private key is generated here and never leaves this device.
+SERVER_ENDPOINT=""
+SERVER_PUBLIC_KEY=""
+ALLOWED_IPS=""
+DNS_SERVER=""
+DNS_DOMAIN="servr.no"
+KEEPALIVE="25"
+CONNECTION_NAME="tind-servr"
+
+##### enroll init/apply smoke test
+
+The admin will reply with a tunnel address such as 10.8.0.12/32.
+Then run:  sudo tind-enroll apply 10.8.0.12/32
+tind-enroll: SERVER_ENDPOINT is empty in /etc/tind/servr-tunnel.conf. The server admin needs to fill it in first.
+tind-enroll: tunnel 'tind-servr' is not installed
+Tunnel 'tind-servr' was not installed.
+Removed this device's private key.
+
+##### gnome-tour removed?
+dpkg-query: no packages found matching gnome-tour
+
+##### calamares branding
+106:branding: tind
+branding.desc
+icon.png
+logo.png
+show.qml
+welcome.png
+
+##### installer launcher
+-rw-r--r-- 1 root root 227 Oct 16 08:52 /usr/share/applications/tind-install.desktop
+Name=Install Tind
+Exec=/usr/lib/tind/install-launcher
+Icon=tind-logo
+-- original:
+Name=Install Debian
+NoDisplay=true
+
+##### optins
+bitwarden.optin  gnome-extras.optin	nextcloud.optin
+developer.optin  gnome-utilities.optin	spotify.optin
+gaming.optin	 newer-kernel.optin	tweaks.optin
+-rwxr-xr-x 1 root root 1955 Oct 16 08:52 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 Oct 16 08:52 /usr/lib/tind/optin-install
+
+##### nextcloud config
+# Tind: global Nextcloud desktop client defaults.
+# Pre-fills the server address in the account wizard. Users still log in themselves.
+[General]
+overrideServerUrl=https://lagrr.servr.no
+
+##### plymouth
+tind
+bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homeworld joy lines moonlight script softwaves solar spacefun spinfinity spinner text tind tribar 
+
+##### grub defaults
+90-tind.cfg
+
+##### boot mode and bootloader
+booted via: UEFI
+grub-efi-amd64-bin 2.12-9+deb13u2 ii 
+grub-pc-bin 2.12-9+deb13u2 ii 
+ntfs-3g 1:2022.10.3-5+deb13u3 ii 
+os-prober 1.83 ii 
+#GRUB_DISABLE_OS_PROBER=false
+GRUB_DISABLE_OS_PROBER=false
+themes unicode.pf2 
+grep: /boot/grub/grub.cfg: No such file or directory
+NAME   SIZE FSTYPE   MOUNTPOINT
+loop0  2.2G squashfs /run/live/rootfs/filesystem.squashfs
+sr0    2.3G iso9660  /run/live/medium
+
+##### extras chosen in the installer
+cat: /var/lib/tind/pending-extras: No such file or directory
+cat: /var/lib/tind/extras-status: No such file or directory
+tail: cannot open '/var/log/tind-extras.log' for reading: No such file or directory
+dpkg-query: no packages found matching steam-installer
+dpkg-query: no packages found matching lutris
+dpkg-query: no packages found matching wine
+dpkg-query: no packages found matching wine32:i386
+dpkg-query: no packages found matching winetricks
+dpkg-query: no packages found matching gamemode
+dpkg-query: no packages found matching mangohud
+dpkg-query: no packages found matching code
+dpkg-query: no packages found matching gh
+dpkg-query: no packages found matching pipx
+build-essential 12.12 ii 
+git  un 
+/etc/apt/sources.list.d/:
+protonvpn-stable.sources
+
+/etc/sysctl.d/:
+README.sysctl
+vm.max_map_count = 1048576
+inactive
+
+##### gaming and graphics
+== GPUs
+00:01.0 VGA compatible controller [0300]: Device [1234:1111] (rev 02)
+	Subsystem: Red Hat, Inc. Device [1af4:1100]
+	Kernel driver in use: bochs-drm
+	Kernel modules: bochs
+
+== Secure Boot
+This system doesn't support Secure Boot
+mokutil not installed
+
+== NVIDIA
+no NVIDIA GPU
+
+== Vulkan
+	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
+	driverName         = llvmpipe
+vm.max_map_count=1048576
+nvidia-current/550.163.01, 6.12.111+deb13-amd64, x86_64: installed
+550.163.01
+nvidia-current-drm.ko.xz
+nvidia-current.ko.xz
+nvidia-current-modeset.ko.xz
+nvidia-current-peermem.ko.xz
+nvidia-current-uvm.ko.xz
+amd64-microcode-blacklist.conf dkms.conf intel-microcode-blacklist.conf nvidia-options.conf 
+enabled
+masked
+ls: cannot access '/var/lib/dkms/mok.key': No such file or directory
+	apiVersion         = 1.4.305
+	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
+	driverName         = llvmpipe
+
+##### updates
+enabled
+static
+inactive
+-rw-r--r-- 1 root root 0 Oct 16 09:13 /var/lib/tind/apt-refreshed
+58
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::AutocleanInterval "7";
+enabled
+enabled
+Percentage:	100
+Status: 	Querying
+Status: 	Loading cache
+Percentage:	10
+Percentage:	100
+Status: 	Finished
+Results:
+There are no updates available at this time.
+gnome-software 48.3
+
+##### security baseline
+lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
+Y
+○ apparmor.service - Load AppArmor profiles
+     Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Fri 2026-10-16 09:13:25 CEST; 1min 48s ago
+             └─ ConditionPathExists=!/run/live/overlay/work was not met
+       Docs: man:apparmor(7)
+             https://gitlab.com/apparmor/apparmor/wikis/home/
+
+Failed to get profiles: 2....
+apparmor module is loaded.
+Global: no
+Link 2 (enp0s2): no
+apparmor: inactive ; profiles loaded: 
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+listening sockets:
+tcp 127.0.0.1:631
+tcp 127.0.0.53%lo:53
+tcp 127.0.0.54:53
+tcp [::1]:631
+udp 0.0.0.0:51042
+udp 0.0.0.0:5353
+udp 127.0.0.53%lo:53
+udp 127.0.0.54:53
+udp [::]:5353
+udp [::]:54713
+
+##### hardware basics
+active
+* balanced:
+    PlatformDriver:	placeholder
+
+  power-saver:
+    PlatformDriver:	placeholder
+amd64-microcode 3.20250311.1 ii 
+firmware-brcm80211 20250410-2 ii 
+firmware-mediatek 20250410-2 ii 
+fwupd 2.0.20-1~deb13u1 ii 
+intel-microcode 3.20251111.1~deb13u1 ii 
+microcode	: 0xffffffff
+Report written to: /tmp/tind-report-test.txt
+Attach that file when you ask for help.
+224 /tmp/tind-report-test.txt
+12
+protonvpn-stable.sources
+URIs: https://repo.protonvpn.com/debian
+Suites: stable
+protonvpn-stable-release 1.0.8 ii \nls: cannot access '/var/tmp/*.deb': No such file or directory
+proton-vpn-gnome-desktop 0.11.0 ii 
+
+##### desktop entries shown in the app grid (name, package)
+Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
+Name=Camera | gnome-snapshot | org.gnome.Snapshot.desktop
+Name=Disks | gnome-disk-utility | org.gnome.DiskUtility.desktop
+Name=Extensions | gnome-shell-extension-prefs | org.gnome.Extensions.desktop
+Name=Files | nautilus | org.gnome.Nautilus.desktop
+Name=Firefox ESR | firefox-esr | firefox-esr.desktop
+Name=Image Viewer | loupe | org.gnome.Loupe.desktop
+Name=Install Tind | tind-installer | tind-install.desktop
+Name=LibreOffice Calc | libreoffice-calc | libreoffice-calc.desktop
+Name=LibreOffice Impress | libreoffice-impress | libreoffice-impress.desktop
+Name=LibreOffice | libreoffice-common | libreoffice-startcenter.desktop
+Name=LibreOffice Writer | libreoffice-writer | libreoffice-writer.desktop
+Name=Papers | papers | org.gnome.Papers.desktop
+Name=Print Settings | system-config-printer | system-config-printer.desktop
+Name=Proton VPN | proton-vpn-gtk-app | proton.vpn.app.gtk.desktop
+Name=Settings | gnome-control-center | org.gnome.Settings.desktop
+Name=Showtime | showtime | org.gnome.Showtime.desktop
+Name=Software | gnome-software | org.gnome.Software.desktop
+Name=System Monitor | gnome-system-monitor | org.gnome.SystemMonitor.desktop
+Name=Terminal | gnome-terminal | org.gnome.Terminal.desktop
+Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
+Name=Thunderbird | thunderbird | thunderbird.desktop
+Name=Tind Apps | tind-optins | tind-optins.desktop
+
+##### largest installed packages
+301370	firefox-esr
+274488	thunderbird
+187357	papirus-icon-theme
+143940	firmware-netronome
+134337	ibus-data
+126696	libllvm19
+119815	libreoffice-core
+114123	firmware-iwlwifi
+108496	linux-image-6.12.111+deb13-amd64
+100568	libwebkit2gtk-4.1-0
+97239	firmware-atheros
+91908	firmware-amd-graphics
+91217	fonts-noto-cjk
+81104	mesa-vulkan-drivers
+74739	libnvidia-rtcore
+71212	nvidia-kernel-dkms
+69440	libclang-cpp19
+68460	gcc-14-x86-64-linux-gnu
+64591	firmware-nvidia-graphics
+61422	linux-headers-6.12.111+deb13-common
+60869	firmware-nvidia-tesla-535-gsp
+60698	firmware-nvidia-gsp
+60463	firmware-marvell-prestera
+48558	libreoffice-common
+46319	firmware-mediatek
+installed packages: 1833
+
+##### journal errors (this boot)
+Oct 16 09:13:28 tind adduser[1089]: The group `powerdev' does not exist.
+Oct 16 09:13:28 tind adduser[1105]: The group `debian-tor' does not exist.
+Oct 16 09:13:35 tind gdm-autologin][1464]: gkr-pam: couldn't unlock the login keyring.
+Oct 16 09:13:43 tind systemd[1472]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1844.scope - Application launched by gnome-session-binary.
+
+##### gnome-shell journal
+Oct 16 09:13:44 tind gnome-shell[1657]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 16 09:13:46 tind gnome-shell[1657]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 09:13:46 tind gnome-shell[1657]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 09:13:46 tind gnome-shell[1657]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 09:13:46 tind gnome-shell[1657]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 09:13:49 tind gnome-shell[1657]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+Oct 16 09:13:51 tind gnome-shell[1657]: GNOME Shell started at Fri Oct 16 2026 09:13:42 GMT+0200 (Central European Summer Time)
+Oct 16 09:13:51 tind gnome-shell[1657]: Registering session with GDM
+=====TIND-SELFTEST-END=====
