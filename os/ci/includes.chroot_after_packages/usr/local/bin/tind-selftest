@@ -39,7 +39,9 @@ for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface
          "org.gnome.shell.extensions.dash-to-dock autohide" "org.gnome.shell.extensions.dash-to-dock extend-height" \
          "org.gnome.desktop.interface clock-format" "org.gnome.desktop.datetime automatic-timezone" \
          "org.gnome.system.location enabled" "org.gnome.desktop.wm.preferences button-layout" \
-         "org.gnome.settings-daemon.plugins.media-keys terminal" "org.gnome.desktop.default-applications.terminal exec"; do
+         "org.gnome.settings-daemon.plugins.media-keys custom-keybindings" \
+         "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/ binding" \
+         "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/ command"; do
     echo "$k = $(asuser gsettings get $k 2>&1)"
 done
 sec wallpapers

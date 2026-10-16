@@ -296,10 +296,17 @@
 .tind-light .quick-settings .button.icon-button {
   background-color: rgba(26, 42, 58, 0.06);
   border-color: rgba(26, 42, 58, 0.22);
+  color: #1a2a3a;
+}
+
+.tind-light .quick-settings .icon-button:hover,
+.tind-light .quick-settings .icon-button:focus {
+  background-color: rgba(26, 42, 58, 0.10);
+  border-color: rgba(26, 42, 58, 0.34);
 }
 
 .tind-light .slider {
-  color: #ffffff;
+  color: #b84a50;
   -barlevel-background-color: rgba(26, 42, 58, 0.14);
   -barlevel-border-color: rgba(26, 42, 58, 0.22);
   -barlevel-active-background-color: #e07a78;
