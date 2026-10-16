@@ -37,6 +37,14 @@ for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface
          "org.gnome.shell favorite-apps" "org.gnome.shell.extensions.dash-to-dock dock-position"; do
     echo "$k = $(asuser gsettings get $k 2>&1)"
 done
+sec wallpapers
+echo "picker lists: $(ls /usr/share/gnome-background-properties 2>&1 | tr '\n' ' ')"
+echo "gnome-backgrounds: $(dpkg-query -W -f='${db:Status-Abbrev}' gnome-backgrounds 2>&1 | head -1)"
+echo "desktop-base: $(dpkg-query -W -f='${db:Status-Abbrev}' desktop-base 2>&1 | head -1)"
+echo "backgrounds dirs: $(ls /usr/share/backgrounds 2>&1 | tr '\n' ' ')"
+ls /usr/share/desktop-base 2>&1 | head -2
+n=$(ls /usr/share/gnome-background-properties 2>/dev/null | grep -vc '^tind.xml$'); echo "foreign picker lists: $n"
+[ "$n" = 0 ] && echo "wallpapers: only Tind in the picker" || echo "wallpapers: NON-TIND LISTS PRESENT"
 sec "keyboard (what Calamares preselects)"
 echo "input-sources = $(asuser gsettings get org.gnome.desktop.input-sources sources 2>&1)"
 echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbols' | head -1)"

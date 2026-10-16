@@ -210,6 +210,21 @@ jobs:
               sleep 0.5
               [ -f "shots/e$(printf %02d "$j").ppm" ] && convert "shots/e$(printf %02d "$j").ppm" -resize 800x "logs/early-$(printf %02d "$j").png"
             done
+            # Quick Settings panel, dark then light (Super+S). Timed from the self-test marker on the
+            # serial log: the guest flips to the light scheme 200 s after it prints it.
+            for _ in $(seq 1 180); do grep -q 'TIND-SELFTEST-BEGIN' logs/serial.log 2>/dev/null && break; sleep 2; done
+            T0=$(date +%s)
+            qs_shot() {
+              echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 3
+              echo "sendkey meta_l-s" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 4
+              echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
+              sleep 1
+              [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
+              echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
+            }
+            sleep 6; qs_shot quickpanel-dark
+            sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
+            qs_shot quickpanel-light
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop
