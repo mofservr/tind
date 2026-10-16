@@ -1,18 +1,29 @@
 #!/bin/sh
-# Only Tind wallpapers in the Backgrounds picker: drop Debian's (desktop-base) and GNOME's
-# (gnome-backgrounds) artwork. Purge only when apt confirms no Tind core package would go with it.
-for p in gnome-backgrounds desktop-base; do
-    dpkg -s "$p" >/dev/null 2>&1 || continue
-    if apt-get -s purge "$p" 2>/dev/null | grep -q '^Remv tind-\|^Remv gnome-shell \|^Remv gnome-control-center '; then
-        echo "keeping $p (would remove a Tind core package)"
+# Only Tind wallpapers in the Backgrounds picker.
+# gnome-backgrounds (GNOME's artwork) is purged when nothing Tind depends on it.
+# desktop-base (Debian's artwork) cannot be purged: gdm3 and gnome-control-center depend on it.
+# So its picker lists are removed instead, and dpkg is told not to unpack picker lists again
+# on upgrades (Tind's own list, tind.xml, is the one exception).
+# Note: "apt-get -s purge" prints "Purg" (not "Remv") lines, so the guard matches both.
+p=gnome-backgrounds
+if dpkg -s "$p" >/dev/null 2>&1; then
+    if apt-get -s purge "$p" 2>/dev/null | grep -q '^\(Remv\|Purg\) \(tind-\|gnome-shell \|gnome-control-center \|gdm3 \)'; then
+        echo "keeping $p (would remove a core package)"
     else
         apt-get purge -y "$p" || true
     fi
-done
-# Whatever could not be purged: hide it from the picker (Tind's own list is tind.xml).
+fi
+mkdir -p /etc/dpkg/dpkg.cfg.d
+cat > /etc/dpkg/dpkg.cfg.d/90-tind-wallpapers <<'CFG'
+# Tind: the Backgrounds picker lists only Tind's wallpapers
+path-exclude=/usr/share/gnome-background-properties/*
+path-include=/usr/share/gnome-background-properties/tind.xml
+CFG
 for f in /usr/share/gnome-background-properties/*.xml; do
     [ -e "$f" ] || continue
     [ "$(basename "$f")" = tind.xml ] && continue
     rm -f "$f"
 done
+# Debian's wallpaper images are no longer referenced by anything: free the space
+rm -rf /usr/share/desktop-base/*-theme/wallpaper /usr/share/backgrounds/gnome
 exit 0
