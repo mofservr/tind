@@ -1,0 +1,391 @@
+== bash -n and shellcheck (warnings and errors)
+== JSON and XML
+== build .deb packages
+built tind-apps_0.1.0_all.deb
+built tind-branding_0.1.3_all.deb
+built tind-desktop_0.1.1_all.deb
+built tind-extras_0.1.0_all.deb
+built tind-graphics_0.1.0_all.deb
+built tind-installer_0.1.1_all.deb
+built tind-mozilla-config_0.1.0_all.deb
+built tind-optins_0.1.0_all.deb
+built tind-wireguard_0.1.0_all.deb
+== package names exist in trixie (with contrib, non-free, non-free-firmware)
+== Depends (must exist)
+ok       adwaita-icon-theme
+ok       apparmor
+ok       apt
+ok       bluez
+ok       ca-certificates
+ok       calamares
+ok       calamares-settings-debian
+ok       cups
+ok       curl
+ok       dconf-cli
+ok       debconf
+ok       dkms
+ok       evolution-data-server
+ok       firefox-esr
+ok       firmware-amd-graphics
+ok       flatpak
+ok       fontconfig
+ok       fonts-cantarell
+ok       gdm3
+ok       glib-networking
+ok       gnome-calculator
+ok       gnome-control-center
+ok       gnome-disk-utility
+ok       gnome-keyring
+ok       gnome-menus
+ok       gnome-session
+ok       gnome-settings-daemon
+ok       gnome-shell
+ok       gnome-shell-extension-dashtodock
+ok       gnome-shell-extension-prefs
+ok       gnome-snapshot
+ok       gnome-software
+ok       gnome-software-plugin-flatpak
+ok       gnome-sushi
+ok       gnome-system-monitor
+ok       gnome-terminal
+ok       gnome-text-editor
+ok       gnupg
+ok       gsettings-desktop-schemas
+ok       gstreamer1.0-packagekit
+ok       gstreamer1.0-plugins-base
+ok       gstreamer1.0-plugins-good
+ok       gvfs-backends
+ok       gvfs-fuse
+ok       libatk-adaptor
+ok       libcanberra-pulse
+ok       libgl1-mesa-dri
+ok       libglib2.0-bin
+ok       libnotify-bin
+ok       libpam-gnome-keyring
+ok       libreoffice-calc
+ok       libreoffice-gtk3
+ok       libreoffice-impress
+ok       libreoffice-writer
+ok       linux-headers-amd64
+ok       loupe
+ok       mesa-utils
+ok       mesa-va-drivers
+ok       mesa-vdpau-drivers
+ok       mesa-vulkan-drivers
+ok       mokutil
+ok       nautilus
+ok       network-manager
+ok       nvidia-detect
+ok       nvidia-driver
+ok       nvidia-kernel-dkms
+ok       nvidia-vulkan-icd
+ok       orca
+ok       packagekit
+ok       papers
+ok       papirus-icon-theme
+ok       pciutils
+ok       pipewire-audio
+ok       pkexec
+ok       showtime
+ok       system-config-printer
+ok       system-config-printer-common
+ok       system-config-printer-udev
+ok       systemd-resolved
+ok       thunderbird
+ok       ufw
+ok       unattended-upgrades
+ok       usbutils
+ok       vulkan-tools
+ok       webext-ublock-origin-firefox
+ok       wireguard-tools
+ok       zenity
+== Recommends / package lists (nice to have)
+ok       amd64-microcode
+ok       apparmor-profiles
+ok       apt-listchanges
+ok       efibootmgr
+ok       firefox-esr
+ok       firefox-esr-l10n-nb-no
+ok       firefox-esr-l10n-nn-no
+ok       firmware-atheros
+ok       firmware-brcm80211
+ok       firmware-iwlwifi
+ok       firmware-linux
+ok       firmware-mediatek
+ok       firmware-misc-nonfree
+ok       firmware-realtek
+ok       fonts-noto-cjk
+ok       fonts-noto-color-emoji
+ok       fonts-noto-core
+ok       fonts-noto-mono
+ok       fonts-noto-ui-core
+ok       fwupd
+ok       gdm3
+ok       gnome-shell-extension-dashtodock
+ok       gnome-software
+ok       gnome-software-plugin-fwupd
+ok       grub-efi
+ok       grub-efi-amd64
+ok       grub-efi-amd64-signed
+ok       grub-pc-bin
+ok       hunspell-en-us
+ok       hunspell-no
+ok       intel-media-va-driver-non-free
+ok       intel-microcode
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
+ok       low-memory-monitor
+ok       mesa-vulkan-drivers
+ok       myspell-nb
+ok       ntfs-3g
+ok       nvidia-settings
+ok       os-prober
+ok       plymouth
+ok       plymouth-themes
+ok       power-profiles-daemon
+ok       qrencode
+ok       shim-signed
+ok       sudo
+ok       thunderbird
+ok       thunderbird-l10n-nb-no
+ok       thunderbird-l10n-nn-no
+ok       util-linux-extra
+ok       vulkan-tools
+ok       xdg-desktop-portal-gnome
+== calamares stock config
+# Configuration file for Calamares
+# Syntax is YAML 1.2
+---
+
+# "local" is LIBDIR/calamares/modules with settings in SHARE/calamares/modules
+modules-search: [ local, /usr/lib/calamares/modules ]
+
+# If this is set to true, Calamares refers to itself as a "setup program"
+# rather than an "installer". Defaults to the value of dont-chroot, but
+# Calamares will complain if this is not explicitly set.
+oem-setup: false
+
+# If this is set to true, the "Cancel" button will be disabled entirely.
+# The button is also hidden from view.
+#
+# This can be useful if when e.g. Calamares is used as a post-install
+# configuration tool and you require the user to go through all the
+# configuration steps.
+#
+# Default is false, but Calamares will complain if this is not explicitly set.
+#
+# YAML: boolean.
+disable-cancel: false
+
+# If this is set to true, the "Cancel" button will be disabled once
+# you start the 'Installation', meaning there won't be a way to cancel
+# the Installation until it has finished or installation has failed.
+#
+# Default is false, but Calamares will complain if this is not explicitly set.
+#
+# YAML: boolean.
+disable-cancel-during-exec: false
+
+# If this is set to true, then once the end of the sequence has
+# been reached, the quit (done) button is clicked automatically
+# and Calamares will close. Default is false: the user will see
+# that the end of installation has been reached, and that things are ok.
+#
+#
+quit-at-end: false
+
+sequence:
+# Phase 1 - prepare.
+# View modules are shown as UI pages, jobs from job modules
+# are executed immediately in the background.
+# Jobs should be executed sparingly (if at all) in this phase.
+- show:
+  - welcome
+  - locale
+  - keyboard
+  - partition
+  - users
+  - summary
+
+# Phase 2 - install.
+# View modules are not shown. Only the view modules shown
+# in the previous phase are allowed, their names should be
+# added here as placeholders to specify the order in which
+# view module jobs should be enqueued. Job modules are
+# also allowed.
+- exec:
+  - partition
+  - mount
+  - unpackfs
+  - luksbootkeyfile
+  - dpkg-unsafe-io
+  - sources-media
+  - machineid
+  - fstab
+  - locale
+  - keyboard
+  - localecfg
+  - users
+  - displaymanager
+  - networkcfg
+  - hwclock
+  - services-systemd
+  - bootloader-config
+  - grubcfg
+  - bootloader
+  - packages
+  - plymouthcfg
+  - initramfscfg
+  - initramfs
+  - dpkg-unsafe-io-undo
+  - sources-media-unmount
+  - sources-final
+  - umount
+
+# Phase 3 - postinstall.
+# View modules are shown as UI pages, jobs from job modules are
+# executed immediately in the background.
+# Jobs should be executed sparingly (if at all) in this phase.
+- show:
+  - finished
+
+# A branding component is a directory, either in
+# SHARE/calamares/branding or in /etc/calamares/branding
+# (the latter takes precedence). The directory must contain a
+# YAML file branding.desc which may reference additional resources
+# (such as images) as paths relative to the current directory.
+# Only the name of the branding component (directory) should be
+# specified here, Calamares then takes care of finding it and
+# loading the contents.
+branding: debian
+
+# If this is set to true, Calamares will show an "Are you sure?" prompt right
+# before each execution phase, i.e. at points of no return. If this is set to
+# false, no prompt is shown. Default is false.
+#
+# YAML: boolean.
+prompt-install: false
+
+# If this is set to true, Calamares will execute all target environment
+# commands in the current environment, without chroot. This setting should
+# only be used when setting up Calamares as a post-install configuration tool,
+# as opposed to a full operating system installer.
+#
+# Some official Calamares modules are not expected to function with this
+# setting. (e.g. partitioning seems like a bad idea, since that is expected to
+# have been done already)
+#
+# Default is false (for a normal installer).
+#
+# YAML: boolean.
+dont-chroot: false
+
+-- calamares version: 3.3.14-1
+x/usr/lib/x86_64-linux-gnu/calamares/modules/packagechooserq
+x/usr/lib/x86_64-linux-gnu/calamares/modules/packagechooser
+x/usr/lib/x86_64-linux-gnu/calamares/modules/shellprocess
+bootloader contextualprocess displaymanager dracut dracutlukscfg dummycpp dummyprocess dummypython finished finishedq fsresizer fstab grubcfg hostinfo hwclock initcpio initcpiocfg initramfs initramfscfg interactiveterminal keyboard keyboardq license locale localecfg localeq luksbootkeyfile luksopenswaphookcfg machineid mkinitfs mount netinstall networkcfg notesqml oemid openrcdmcryptcfg packagechooser packagechooserq packages partition plymouthcfg preservefiles rawfs removeuser services-openrc services-systemd shellprocess summary summaryq tracking umount unpackfs unpackfsc users usersq welcome welcomeq zfs zfshostid 
+== calamares-settings-debian files and bootloader config
+./etc/calamares/branding/debian/branding.desc
+./etc/calamares/branding/debian/debian-logo.png
+./etc/calamares/branding/debian/show.qml
+./etc/calamares/branding/debian/slide1.png
+./etc/calamares/branding/debian/welcome.png
+./etc/calamares/modules/bootloader.conf
+./etc/calamares/modules/displaymanager.conf
+./etc/calamares/modules/finished.conf
+./etc/calamares/modules/fstab.conf
+./etc/calamares/modules/luksopenswaphookcfg.conf
+./etc/calamares/modules/machineid.conf
+./etc/calamares/modules/mount.conf
+./etc/calamares/modules/packages.conf
+./etc/calamares/modules/unpackfs.conf
+./etc/calamares/modules/users.conf
+./etc/calamares/modules/welcome.conf
+./etc/calamares/settings.conf
+./etc/xdg/autostart/calamares-desktop-icon.desktop
+./usr/bin/add-calamares-desktop-icon
+./usr/bin/calamares-install-debian
+./usr/lib/calamares/modules/bootloader-config/module.desc
+./usr/lib/calamares/modules/dpkg-unsafe-io/module.desc
+./usr/lib/calamares/modules/dpkg-unsafe-io-undo/module.desc
+./usr/lib/calamares/modules/sources-final/module.desc
+./usr/lib/calamares/modules/sources-media/module.desc
+./usr/lib/calamares/modules/sources-media-unmount/module.desc
+./usr/share/applications/calamares-install-debian.desktop
+./usr/share/calamares/helpers/calamares-bootloader-config
+./usr/share/calamares/helpers/calamares-dpkg-unsafe-io
+./usr/share/calamares/helpers/calamares-sources-final
+./usr/share/calamares/helpers/calamares-sources-media
+./usr/share/doc/calamares-settings-debian/changelog.Debian.gz
+./usr/share/doc/calamares-settings-debian/changelog.gz
+./usr/share/doc/calamares-settings-debian/copyright
+./usr/share/glib-2.0/schemas/96_calamares-settings-debian.gschema.override
+./usr/share/lintian/overrides/calamares-settings-debian
+./usr/share/pixmaps/install-debian.png
+---
+efiBootLoader: "grub"
+kernel: "/vmlinuz-linux"
+img: "/initramfs-linux.img"
+fallback: "/initramfs-linux-fallback.img"
+timeout: "10"
+grubInstall: "grub-install"
+grubMkconfig: "grub-mkconfig"
+grubCfg: "/boot/grub/grub.cfg"
+grubProbe: "grub-probe"
+efiBootMgr: "efibootmgr"
+installEFIFallback: true 
+backend: apt
+operations:
+  - remove:
+      - 'live-boot'
+      - 'live-boot-doc'
+      - 'live-config'
+      - 'live-config-doc'
+      - 'live-config-systemd'
+      - 'live-config-systemd'
+      - 'live-tools'
+      - 'live-task-localisation'
+      - 'live-task-recommended'
+      - 'calamares-settings-debian'
+== calamares bootloader helper
+#!/bin/bash
+
+CHROOT=$(mount | grep proc | grep calamares | awk '{print $3}' | sed -e "s#/proc##g")
+
+# Install luks utilities if needed.
+# Also, set secure permissions for the initramfs if we're configuring
+# full-disk-encryption. The initramfs is re-generated later in the
+# installation process so we only set the permissions snippet without
+# regenerating the initramfs right now:
+if [ "$(mount | grep $CHROOT" " | cut -c -16)" = "/dev/mapper/luks" ]; then
+    echo "UMASK=0077" > $CHROOT/etc/initramfs-tools/conf.d/initramfs-permissions
+    chroot $CHROOT apt-get -y install cryptsetup-initramfs cryptsetup keyutils
+fi
+
+echo "Running bootloader-config..."
+
+if [ -d /sys/firmware/efi/efivars ]; then
+    echo " * Installing grub-efi (uefi)..."
+    DEBIAN_FRONTEND=noninteractive chroot $CHROOT apt-get -y install grub-efi
+else
+    echo " * install grub... (bios)"
+    DEBIAN_FRONTEND=noninteractive chroot $CHROOT apt-get -y install grub-pc
+fi
+
+# Re-enable os-prober:
+sed -i "s/#GRUB_DISABLE_OS_PROBER=false/# OS_PROBER re-enabled by Debian Calamares installation:\nGRUB_DISABLE_OS_PROBER=false/g" $CHROOT/etc/default/grub
+chroot $CHROOT /usr/sbin/update-grub
+---
+type:       "job"
+name:       "bootloader-config"
+interface:  "process"
+command:    "/usr/share/calamares/helpers/calamares-bootloader-config"
+timeout:    600
+== backports kernel and nvidia
+-- linux-image-amd64: stable=6.12.111-1 backports=7.2.6-1~bpo13+1
