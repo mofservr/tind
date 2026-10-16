@@ -132,3 +132,10 @@ ok       hunspell-en-us
 ok       hunspell-no
 ok       intel-media-va-driver-non-free
 ok       intel-microcode
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
