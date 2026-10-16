@@ -40,6 +40,7 @@ done
 sec wallpapers
 echo "picker lists: $(ls /usr/share/gnome-background-properties 2>&1 | tr '\n' ' ')"
 echo "gnome-backgrounds: $(dpkg-query -W -f='${db:Status-Abbrev}' gnome-backgrounds 2>&1 | head -1)"
+echo "tind.xml: $(test -e /usr/share/gnome-background-properties/tind.xml && grep -c "<wallpaper " /usr/share/gnome-background-properties/tind.xml || echo MISSING) entries"
 echo "desktop-base: $(dpkg-query -W -f='${db:Status-Abbrev}' desktop-base 2>&1 | head -1)"
 echo "backgrounds dirs: $(ls /usr/share/backgrounds 2>&1 | tr '\n' ' ')"
 ls /usr/share/desktop-base 2>&1 | head -2

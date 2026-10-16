@@ -3,7 +3,7 @@
 # Purge only when apt confirms no tind-* package would be removed with them.
 for p in systemsettings zutty malcontent-gui yelp; do
     dpkg -s "$p" >/dev/null 2>&1 || continue
-    if apt-get -s purge "$p" 2>/dev/null | grep -q '^Remv tind-\|^Remv gnome-shell \|^Remv gnome-control-center '; then
+    if apt-get -s purge "$p" 2>/dev/null | grep -q '^\(Remv\|Purg\) \(tind-\|gnome-shell \|gnome-control-center \|gdm3 \)'; then
         echo "keeping $p (would remove a Tind core package)"
     else
         apt-get purge -y "$p" || true
