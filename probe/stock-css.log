@@ -1,0 +1,12 @@
+Version: 48.7-0+deb13u2
+gresource: /usr/share/gnome-shell/gnome-shell-theme.gresource
+/org/gnome/shell/theme/calendar-today-light.svg
+/org/gnome/shell/theme/calendar-today.svg
+/org/gnome/shell/theme/gnome-shell-dark.css
+/org/gnome/shell/theme/gnome-shell-high-contrast.css
+/org/gnome/shell/theme/gnome-shell-light.css
+/org/gnome/shell/theme/gnome-shell-start.svg
+/org/gnome/shell/theme/pad-osd.css
+/org/gnome/shell/theme/workspace-placeholder.svg
+######## /org/gnome/shell/theme/gnome-shell-dark.css (full rules mentioning quick toggles)
+/__w/_temp/6d6a10e2-8cfc-4dc4-ad47-3580afe782e5.sh: line 12: python3: command not found
