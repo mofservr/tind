@@ -1,3 +1,4 @@
+-- vulkan-tools: 1.4.304.0+dfsg1-1
 -- mesa-utils: 9.0.0-2+b2
 -- libva-drm2: 2.22.0-3
 -- intel-media-va-driver-non-free: 25.2.3+ds1-1
@@ -271,7 +272,6 @@ ok       fontconfig
 ok       fonts-cantarell
 ok       gdm3
 ok       glib-networking
-ok       gnome-backgrounds
 ok       gnome-calculator
 ok       gnome-control-center
 ok       gnome-disk-utility
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 0
+== exit status: 1
