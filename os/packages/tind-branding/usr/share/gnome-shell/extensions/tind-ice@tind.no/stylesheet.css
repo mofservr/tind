@@ -21,7 +21,7 @@
  *
  * Palette (design/TOKENS.md):
  *   night haze #163e4f at 93 % (menus #184052 at 99 %)   accent #0b8274 / #0e7a6e   on-accent text #c9fff0
- *   day haze   #f0f3fa at 93 % (menus #f4f7fb at 99 %)   accent rosy salmon
+ *   day haze   #dcdfee at 95 % (menus #eceef7 at 99 %)   accent rosy salmon
  */
 
 /* ---- top bar ------------------------------------------------------------ */
@@ -56,6 +56,11 @@
 .app-well-app-running-dot,
 #dashtodockContainer .app-well-app-running-dot {
   background-color: #7cf0d8;
+}
+
+#dash .app-well-app.focused .overview-icon {
+  background-color: rgba(255, 255, 255, 0.10);
+  border-radius: 14px;
 }
 
 #dash .app-well-app:hover .overview-icon,
@@ -207,7 +212,7 @@
  * are dark tints (white-on-white would vanish).
  * ====================================================================================== */
 
-.tind-light #panel { background-color: rgba(240, 243, 250, 0.93); }
+.tind-light #panel { background-color: rgba(220, 223, 238, 0.95); }
 
 .tind-light #panel .panel-button,
 .tind-light #panel .panel-button .system-status-icon,
@@ -234,11 +239,13 @@
 .tind-light #dash .dash-background,
 .tind-light #dashtodockContainer #dash .dash-background,
 .tind-light #dashtodockContainer.left #dash .dash-background {
-  background-color: rgba(240, 243, 250, 0.93);
+  background-color: rgba(220, 223, 238, 0.95);
 }
 
 .tind-light .app-well-app-running-dot,
 .tind-light #dashtodockContainer .app-well-app-running-dot { background-color: #d96a62; }
+
+.tind-light #dash .app-well-app.focused .overview-icon { background-color: rgba(26, 42, 58, 0.10); }
 
 .tind-light #dash .app-well-app:hover .overview-icon,
 .tind-light #dash .app-well-app:focus .overview-icon { background-color: rgba(26, 42, 58, 0.09); }
@@ -249,7 +256,7 @@
 .tind-light .message,
 .tind-light .events-button,
 .tind-light .world-clocks-button,
-.tind-light .weather-button { background-color: rgba(244, 247, 251, 0.99); color: #1a2a3a; }
+.tind-light .weather-button { background-color: rgba(236, 238, 247, 0.99); color: #1a2a3a; }
 
 .tind-light .popup-menu-item:hover,
 .tind-light .popup-menu-item:focus,
@@ -257,7 +264,7 @@
 
 .tind-light .quick-settings,
 .tind-light .datemenu-popover {
-  background-color: rgba(244, 247, 251, 0.99);
+  background-color: rgba(236, 238, 247, 0.99);
   color: #1a2a3a;
 }
 
@@ -319,3 +326,18 @@
 
 .tind-light #dash .show-apps .overview-icon,
 .tind-light #dashtodockContainer #dash .show-apps .overview-icon { color: #EC5179; }
+
+/* ---- soft menu shadow (like a window), no outline ------------------------ */
+.popup-menu-content,
+.quick-settings,
+.datemenu-popover,
+.candidate-popup-content {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.30);
+}
+
+.tind-light .popup-menu-content,
+.tind-light .quick-settings,
+.tind-light .datemenu-popover,
+.tind-light .candidate-popup-content {
+  box-shadow: 0 4px 20px rgba(26, 30, 50, 0.28);
+}
