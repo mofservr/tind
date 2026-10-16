@@ -21,14 +21,15 @@ if [ "$1" = "configure" ]; then
 region: "Europe"
 zone: "Oslo"
 CONF
-    # keyboard: start from the live session's layout (Norwegian, set in tind-branding) instead of
-    # guessing from the installer language, which is English and would give English (US)
+    # keyboard: start from the live session's layout (Norwegian, /etc/default/keyboard via locale1)
+    # instead of guessing from the installer language, which is English and would give English (US).
+    # Calamares runs on X11 here, where it would otherwise try setxkbmap and find nothing.
     kb=/etc/calamares/modules/keyboard.conf
     if [ -f "$kb" ]; then
-        sed -i '/^#\?guessLayout:/d' "$kb"
-        printf '\nguessLayout: false\n' >> "$kb"
+        sed -i '/^#\?guessLayout:/d;/^#\?useLocale1:/d' "$kb"
+        printf '\nguessLayout: false\nuseLocale1: true\n' >> "$kb"
     else
-        printf -- '---\nguessLayout: false\n' > "$kb"
+        printf -- '---\nguessLayout: false\nuseLocale1: true\n' > "$kb"
     fi
     # after install: drop the live-session and installer packages from the installed system.
     # try_remove ignores packages that are not present (the stock list names some we do not ship).
