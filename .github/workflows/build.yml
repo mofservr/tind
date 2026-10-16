@@ -222,8 +222,16 @@ jobs:
               [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
               echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             }
-            sleep 6; qs_shot quickpanel-dark
+            sleep 6
+            # leave the overview, open a Terminal with Ctrl+Alt+T and show the plain desktop (dock, bar, window buttons)
+            echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 3
+            echo "sendkey ctrl-alt-t" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 14
+            echo "screendump $PWD/shots/desktop-dark.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-dark)"
+            sleep 1; [ -f shots/desktop-dark.ppm ] && convert shots/desktop-dark.ppm logs/desktop-dark.png
+            qs_shot quickpanel-dark
             sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
+            echo "screendump $PWD/shots/desktop-light.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-light)"
+            sleep 1; [ -f shots/desktop-light.ppm ] && convert shots/desktop-light.ppm logs/desktop-light.png
             qs_shot quickpanel-light
             for i in $(seq 1 14); do
               sleep 45

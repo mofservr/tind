@@ -1,8 +1,11 @@
-/* Tind Ice v3: calm, mostly solid surfaces. Night (default) and midday.
+/* Tind Ice v4: a flat frame, one even haze. Night (default) and midday.
  *
- * Principle: the interface is there and looks pleasant, but never asks for attention. The top bar,
- * dock, menus and Quick Settings are ~92-97 % opaque, a quiet blue-teal at night and a quiet
- * off-white at midday, so the wallpaper only whispers through. No drop shadows, no glow.
+ * Principle: the interface is there and looks pleasant, but never asks for attention.
+ * The top bar (full width) and the dock (full height, always visible, flush left under the bar) are
+ * one flat field with square corners, the same tint everywhere (93 % opaque), so they read as a
+ * frame around the screen. Menus, Quick Settings and cards are rounded and 99 % opaque so text
+ * behind them never competes. Colour is a quiet blue-teal at night and a quiet off-white at midday.
+ * No gradients, no drop shadows, no glow.
  * Controls (Quick Settings toggles, icon buttons, slider tracks) get a subtle 1px outline: light
  * in dark style, dark in light style, so they stay readable on any panel.
  *
@@ -17,16 +20,13 @@
  * Limits of GNOME Shell CSS: no backdrop blur, only two-stop gradients.
  *
  * Palette (design/TOKENS.md):
- *   night surface #163a4e -> #164650 at 92 %     accent  #0b8274 / #0e7a6e   on-accent text #c9fff0
- *   day surface   #eef4fa -> #f4eff7 at 93 %     accent  rosy salmon
+ *   night haze #163e4f at 93 % (menus #184052 at 99 %)   accent #0b8274 / #0e7a6e   on-accent text #c9fff0
+ *   day haze   #f0f3fa at 93 % (menus #f4f7fb at 99 %)   accent rosy salmon
  */
 
 /* ---- top bar ------------------------------------------------------------ */
 #panel {
-  background-color: transparent;
-  background-gradient-direction: horizontal;
-  background-gradient-start: rgba(22, 58, 78, 0.92);
-  background-gradient-end: rgba(22, 70, 80, 0.92);
+  background-color: rgba(22, 62, 79, 0.93);
   border: none;
   box-shadow: none;
 }
@@ -45,13 +45,11 @@
 #dash .dash-background,
 #dashtodockContainer #dash .dash-background,
 #dashtodockContainer.left #dash .dash-background {
-  background-color: transparent;
-  background-gradient-direction: horizontal;
-  background-gradient-start: rgba(22, 58, 78, 0.92);
-  background-gradient-end: rgba(22, 70, 80, 0.92);
+  background-color: rgba(22, 62, 79, 0.93);
   border: none;
-  border-radius: 0 20px 20px 0 !important;
-  margin-left: 0 !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   box-shadow: none;
 }
 
@@ -69,7 +67,7 @@
 /* ---- menus and popovers ------------------------------------------------- */
 .popup-menu-content,
 .candidate-popup-content {
-  background-color: rgba(24, 60, 78, 0.97);
+  background-color: rgba(24, 64, 82, 0.99);
   border: none;
   border-radius: 20px;
   box-shadow: none;
@@ -84,10 +82,7 @@
 /* ---- Quick Settings and the calendar popover ---------------------------- */
 .quick-settings,
 .datemenu-popover {
-  background-color: transparent;
-  background-gradient-direction: horizontal;
-  background-gradient-start: rgba(24, 60, 80, 0.97);
-  background-gradient-end: rgba(22, 72, 80, 0.97);
+  background-color: rgba(24, 64, 82, 0.99);
   border: none;
   border-radius: 24px;
   box-shadow: none;
@@ -194,7 +189,7 @@
 .events-button,
 .world-clocks-button,
 .weather-button {
-  background-color: rgba(24, 60, 78, 0.97);
+  background-color: rgba(24, 64, 82, 0.99);
   border: none;
   border-radius: 18px;
 }
@@ -212,10 +207,7 @@
  * are dark tints (white-on-white would vanish).
  * ====================================================================================== */
 
-.tind-light #panel {
-  background-gradient-start: rgba(238, 244, 250, 0.93);
-  background-gradient-end: rgba(244, 239, 247, 0.93);
-}
+.tind-light #panel { background-color: rgba(240, 243, 250, 0.93); }
 
 .tind-light #panel .panel-button,
 .tind-light #panel .panel-button .system-status-icon,
@@ -223,10 +215,7 @@
 
 /* the overview keeps a dark backdrop in both schemes: the bar goes night-coloured there */
 
-.tind-light #panel:overview {
-  background-gradient-start: rgba(22, 58, 78, 0.92);
-  background-gradient-end: rgba(22, 70, 80, 0.92);
-}
+.tind-light #panel:overview { background-color: rgba(22, 62, 79, 0.93); }
 
 .tind-light #panel:overview .panel-button,
 .tind-light #panel:overview .panel-button .system-status-icon,
@@ -245,8 +234,7 @@
 .tind-light #dash .dash-background,
 .tind-light #dashtodockContainer #dash .dash-background,
 .tind-light #dashtodockContainer.left #dash .dash-background {
-  background-gradient-start: rgba(238, 244, 250, 0.93);
-  background-gradient-end: rgba(244, 239, 247, 0.93);
+  background-color: rgba(240, 243, 250, 0.93);
 }
 
 .tind-light .app-well-app-running-dot,
@@ -261,7 +249,7 @@
 .tind-light .message,
 .tind-light .events-button,
 .tind-light .world-clocks-button,
-.tind-light .weather-button { background-color: rgba(244, 247, 251, 0.97); color: #1a2a3a; }
+.tind-light .weather-button { background-color: rgba(244, 247, 251, 0.99); color: #1a2a3a; }
 
 .tind-light .popup-menu-item:hover,
 .tind-light .popup-menu-item:focus,
@@ -269,8 +257,7 @@
 
 .tind-light .quick-settings,
 .tind-light .datemenu-popover {
-  background-gradient-start: rgba(240, 246, 251, 0.97);
-  background-gradient-end: rgba(246, 241, 248, 0.97);
+  background-color: rgba(244, 247, 251, 0.99);
   color: #1a2a3a;
 }
 

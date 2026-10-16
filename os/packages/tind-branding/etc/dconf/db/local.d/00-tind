@@ -7,6 +7,24 @@ icon-theme='Papirus'
 font-name='Nunito Sans 11'
 document-font-name='Nunito Sans 11'
 
+# 24-hour clock; the time zone is NOT set automatically (that needs the location service)
+clock-format='24h'
+clock-show-weekday=true
+
+[org/gnome/desktop/datetime]
+automatic-timezone=false
+
+[org/gnome/system/location]
+enabled=false
+
+# window buttons: minimize and close
+[org/gnome/desktop/wm/preferences]
+button-layout=':minimize,close'
+
+# Ctrl+Alt+T opens the Terminal
+[org/gnome/settings-daemon/plugins/media-keys]
+terminal=['<Primary><Alt>t']
+
 [org/gnome/desktop/input-sources]
 sources=[('xkb', 'no')]
 
@@ -27,7 +45,11 @@ favorite-apps=['firefox-esr.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.T
 
 [org/gnome/shell/extensions/dash-to-dock]
 dock-position='LEFT'
-extend-height=false
+extend-height=true
+height-fraction=1.0
+dock-fixed=true
+autohide=false
+intellihide=false
 show-trash=false
 show-mounts=false
 running-indicator-style='DOTS'
