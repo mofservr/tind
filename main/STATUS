@@ -1,4 +1,4 @@
 ref: main
-sha: 8b31e356fde2f9ce34801e02c451641b861fb11f
-run: 38877190877
-results: packages=success iso=success boot=success
+sha: a45af144785e9233791088c987e9a9191b93cc95
+run: 38891474132
+results: packages=success iso=cancelled boot=cancelled
