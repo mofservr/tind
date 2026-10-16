@@ -34,7 +34,12 @@ sec flatpak remotes; flatpak remotes 2>&1
 sec gnome settings
 for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface accent-color" \
          "org.gnome.desktop.background picture-uri-dark" "org.gnome.shell enabled-extensions" \
-         "org.gnome.shell favorite-apps" "org.gnome.shell.extensions.dash-to-dock dock-position"; do
+         "org.gnome.shell favorite-apps" "org.gnome.shell.extensions.dash-to-dock dock-position" \
+         "org.gnome.shell.extensions.dash-to-dock dock-fixed" "org.gnome.shell.extensions.dash-to-dock intellihide" \
+         "org.gnome.shell.extensions.dash-to-dock autohide" "org.gnome.shell.extensions.dash-to-dock extend-height" \
+         "org.gnome.desktop.interface clock-format" "org.gnome.desktop.datetime automatic-timezone" \
+         "org.gnome.system.location enabled" "org.gnome.desktop.wm.preferences button-layout" \
+         "org.gnome.settings-daemon.plugins.media-keys terminal" "org.gnome.desktop.default-applications.terminal exec"; do
     echo "$k = $(asuser gsettings get $k 2>&1)"
 done
 sec wallpapers
