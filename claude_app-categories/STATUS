@@ -1,0 +1,4 @@
+ref: claude/app-categories
+sha: 6ceb9f5367a475d310e3132bd5167a4560f847c8
+run: 38915632307
+results: packages=failure iso=skipped boot=skipped

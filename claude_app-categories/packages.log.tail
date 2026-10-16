@@ -1,0 +1,400 @@
+type:       "job"
+name:       "bootloader-config"
+interface:  "process"
+command:    "/usr/share/calamares/helpers/calamares-bootloader-config"
+timeout:    600
+== backports kernel and nvidia
+-- linux-image-amd64: stable=6.12.113-1 backports=7.2.6-1~bpo13+1
+-- linux-headers-amd64: stable=6.12.113-1 backports=7.2.6-1~bpo13+1
+-- nvidia-kernel-dkms: stable=550.163.01-2 backports=550.163.01-4~bpo13+1
+-- nvidia-driver: stable=550.163.01-2 backports=550.163.01-4~bpo13+1
+-- os-prober: stable=1.83 backports=
+-- grub-pc-bin: stable=2.12-9+deb13u2 backports=
+linux-image-amd64:
+  Installed: (none)
+  Candidate: 6.12.113-1
+  Version table:
+     7.2.6-1~bpo13+1 100
+        100 http://deb.debian.org/debian trixie-backports/main amd64 Packages
+     6.12.113-1 500
+        500 http://deb.debian.org/debian-security trixie-security/main amd64 Packages
+     6.12.107-1 500
+        500 http://deb.debian.org/debian trixie/main amd64 Packages
+== calamares QML module examples
+-- packagechooserq/module.desc
+# AUTO-GENERATED metadata file
+# Syntax is YAML 1.2
+---
+type: "viewmodule"
+name: "packagechooserq"
+interface: "qtplugin"
+load: "libcalamares_viewmodule_packagechooserq.so"
+-- welcomeq/module.desc
+# AUTO-GENERATED metadata file
+# Syntax is YAML 1.2
+---
+type: "viewmodule"
+name: "welcomeq"
+interface: "qtplugin"
+load: "libcalamares_viewmodule_welcomeq.so"
+/tmp/cal/x/etc/calamares/branding/debian/show.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/Slide.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/ForwardButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/Presentation.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/NavButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/BackButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/SlideCounter.qml
+/tmp/cal/x/usr/share/calamares/branding/default/show.qml
+/tmp/cal/x/etc/calamares/modules/finished.conf
+/tmp/cal/x/etc/calamares/modules/fstab.conf
+/tmp/cal/x/etc/calamares/modules/users.conf
+/tmp/cal/x/etc/calamares/modules/displaymanager.conf
+/tmp/cal/x/etc/calamares/modules/unpackfs.conf
+/tmp/cal/x/etc/calamares/modules/welcome.conf
+/tmp/cal/x/etc/calamares/modules/luksopenswaphookcfg.conf
+/tmp/cal/x/etc/calamares/modules/machineid.conf
+/tmp/cal/x/etc/calamares/modules/bootloader.conf
+/tmp/cal/x/etc/calamares/modules/packages.conf
+/tmp/cal/x/etc/calamares/modules/mount.conf
+-- packagechooserq.conf
+cat: /tmp/cal/x/usr/share/calamares/modules/packagechooserq.conf: No such file or directory
+-- an example qml (packagechooserq)
+== microsoft repo reachable
+HTTP/2 200 
+date: Fri, 16 Oct 2026 14:27:03 GMT
+content-type: application/octet-stream
+HTTP/2 200 
+date: Fri, 16 Oct 2026 14:27:03 GMT
+content-type: application/octet-stream
+== gaming and graphics candidates
+-- nvidia-driver: 550.163.01-2
+-- nvidia-detect: 550.163.01-2
+-- nvidia-driver-libs: 550.163.01-2
+-- nvidia-driver-libs-i386: 
+-- nvidia-vulkan-icd: 550.163.01-2
+-- nvidia-kernel-dkms: 550.163.01-2
+-- nvidia-open-kernel-dkms: 550.163.01-2
+-- nvidia-settings: 550.163.01-1
+-- nvidia-tesla-470-driver: 
+-- nvidia-legacy-390xx-driver: 
+-- linux-headers-amd64: 6.12.113-1
+-- dkms: 3.2.2-1~deb13u1
+-- game-devices-udev: 
+-- steam-devices: 1:1.0.0.83~ds-3
+-- steam-installer: 1:1.0.0.83~ds-3
+-- lutris: 0.5.19-2
+-- gamemode: 1.8.2-2
+-- mangohud: 0.7.2-2
+-- wine: 10.0~repack-6
+-- wine32: 10.0~repack-6
+-- libgl1-mesa-dri:i386: 25.0.7-2+deb13u1
+-- mesa-vulkan-drivers:i386: 25.0.7-2+deb13u1
+-- libvulkan1:i386: 1.4.309.0-1
+-- vulkan-tools: 1.4.304.0+dfsg1-1
+-- xpadneo-dkms: 
+-- xone-dkms: 
+-- vlc: 3.0.24-0+deb13u1
+-- strawberry: 1.2.10-2
+-- gimp: 3.0.4-3+deb13u11
+-- inkscape: 1.4-6
+-- krita: 1:5.2.9+dfsg-1+deb13u1
+-- kdenlive: 24.12.3-2+deb13u1
+-- frei0r-plugins: 2.3.3-1+b1
+-- breeze-icon-theme: 4:5.116.0-1
+-- audacity: 3.7.3+dfsg-1
+-- obs-studio: 30.2.3+dfsg-3
+-- blender: 4.3.2+dfsg-2
+-- telegram-desktop: 5.7.2+ds-2~bpo13+1
+-- libreoffice-writer: 4:25.2.3-2+deb13u8
+-- libreoffice-calc: 4:25.2.3-2+deb13u8
+-- libreoffice-impress: 4:25.2.3-2+deb13u8
+-- libreoffice-gtk3: 4:25.2.3-2+deb13u8
+-- libreoffice-l10n-nb: 4:25.2.3-2+deb13u8
+-- libreoffice-l10n-nn: 4:25.2.3-2+deb13u8
+-- hunspell-no: 1:25.2.3-1
+-- myspell-nb: 2.2-4
+-- nextcloud-desktop: 3.16.7-1~deb13u1
+-- hplip: 3.22.10+dfsg0-8.1+deb13u1
+-- sane-utils: 1.3.1-3+b1
+-- sane-airscan: 0.99.35-1
+-- wireshark: 4.4.19-0+deb13u1
+-- nmap: 7.95+dfsg-3
+-- mtr: 0.95-1.1+b1
+-- remmina: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-rdp: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-vnc: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-secret: 1.4.39+dfsg-1+deb13u1
+-- virt-manager: 1:5.0.0-5+deb13u1
+-- libvirt-daemon-system: 11.3.0-3+deb13u3
+-- qemu-system-x86: 1:10.0.13+ds-0+deb13u1
+-- mesa-utils: 9.0.0-2+b2
+-- libva-drm2: 2.22.0-3
+-- intel-media-va-driver-non-free: 25.2.3+ds1-1
+-- mesa-va-drivers: 25.0.7-2+deb13u1
+-- mesa-vdpau-drivers: 25.0.7-2+deb13u1
+-- firmware-amd-graphics: 20250410-2
+-- goverlay: 1.0-1
+-- gamescope: 3.16.22+ds-1~bpo13+1
+-- vkbasalt: 0.3.2.10-1+b2
+-- protontricks: 
+-- winetricks: 20250102-1
+-- zenity: 4.1.90-1
+== nvidia-driver depends/recommends
+nvidia-driver
+  PreDepends: nvidia-installer-cleanup
+    nvidia-installer-cleanup:i386
+  PreDepends: nvidia-legacy-check
+  Depends: nvidia-driver-libs
+  Depends: nvidia-driver-bin
+  Depends: xserver-xorg-video-nvidia
+  Depends: nvidia-vdpau-driver
+  Depends: nvidia-alternative
+ |Depends: nvidia-kernel-dkms
+ |Depends: <nvidia-kernel-550.163.01>
+    nvidia-kernel-dkms
+  Depends: <nvidia-open-kernel-550.163.01>
+    nvidia-open-kernel-dkms
+  Depends: nvidia-support
+    nvidia-support:i386
+  Recommends: nvidia-settings
+  Recommends: libnvidia-cfg1
+  Recommends: nvidia-persistenced
+ |Suggests: nvidia-kernel-dkms
+ |Suggests: nvidia-kernel-source
+  Suggests: nvidia-open-kernel-source
+== flathub refs
+app/com.bitwarden.desktop/x86_64/stable
+app/com.github.Matoking.protontricks/x86_64/stable
+app/com.heroicgameslauncher.hgl/x86_64/stable
+app/com.spotify.Client/x86_64/stable
+app/com.valvesoftware.Steam/x86_64/stable
+app/com.valvesoftware.SteamLink/x86_64/stable
+app/io.github.benjamimgois.goverlay/x86_64/stable
+app/net.davidotek.pupgui2/x86_64/stable
+app/net.lutris.Lutris/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Proton-GE/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.InhibitScreensaver/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.slonfig/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.steamtinkerlaunch/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.thcrap_steam_proton_wrapper/x86_64/stable
+runtime/org.freedesktop.Platform.GL32.nvidia-550-100/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-107-02/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-120/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-127-05/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-127-08/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-135/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-142/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-61/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-63/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-65/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-67/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-70/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-71/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-75/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-76/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-79/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-80/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-81/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-82/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-83/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-85/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-54-14/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-54-15/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-67/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-76/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-78/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-90-07/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-90-12/x86_64/1.4
+runtime/org.freedesktop.Platform.VulkanLayer.HdrWsi/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud.Sources/x86_64/stable
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
+== flatpak runtimes of game apps
+-- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
+-- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
+-- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/26.08 
+== Flatpak refs used by the app-box scripts exist on Flathub
+ok       com.discordapp.Discord
+ok       com.heroicgameslauncher.hgl
+ok       net.davidotek.pupgui2
+ok       com.spotify.Client
+ok       com.bitwarden.desktop
+ok       org.telegram.desktop
+ok       org.strawberrymusicplayer.strawberry
+== every opt-in Flatpak ref exists on Flathub
+ok       org.gnome.Calendar
+ok       org.gnome.Contacts
+ok       org.gnome.Weather
+ok       org.gnome.Maps
+ok       org.gnome.clocks
+ok       org.gnome.baobab
+ok       org.gnome.Logs
+ok       org.gnome.font-viewer
+ok       org.gnome.Characters
+ok       org.gnome.SimpleScan
+ok       org.gnome.Connections
+== lutris depends/recommends
+lutris
+  Depends: <python3:any>
+    python3:i386
+    python3
+  Depends: 7zip
+  Depends: cabextract
+    cabextract:i386
+  Depends: curl
+    curl:i386
+  Depends: fluid-soundfont-gs
+  Depends: gir1.2-gtk-3.0
+  Depends: gir1.2-notify-0.7
+  Depends: gir1.2-webkit2-4.1
+  Depends: mesa-utils
+  Depends: psmisc
+    psmisc:i386
+  Depends: python3-dbus
+  Depends: python3-distro
+  Depends: python3-gi
+  Depends: python3-gi-cairo
+  Depends: python3-lxml
+  Depends: python3-magic
+  Depends: python3-pil
+  Depends: python3-requests
+  Depends: python3-setproctitle
+  Depends: python3-yaml
+  Depends: unzip
+    unzip:i386
+  Depends: vulkan-tools
+  Depends: x11-xserver-utils
+    x11-xserver-utils:i386
+  Recommends: python3-evdev
+  Recommends: python3-protobuf
+  Recommends: gvfs-backends
+    gvfs-backends:i386
+ |Recommends: <libwine-development>
+  Recommends: libwine
+  Recommends: winetricks
+  Recommends: fluidsynth
+    fluidsynth:i386
+  Recommends: xdg-desktop-portal
+    xdg-desktop-portal:i386
+ |Recommends: xdg-desktop-portal-gtk
+    xdg-desktop-portal-gtk:i386
+  Recommends: xdg-desktop-portal-kde
+    xdg-desktop-portal-kde:i386
+  Recommends: gamemode
+  Recommends: gamescope
+== newer kernel: dry run
+Inst linux-image-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-7.2.6+deb13-common (7.2.6-1~bpo13+1 Debian Backports:stable-backports [all])
+Inst linux-headers-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+== Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu.
+== tind-extras: real run of the setup scripts
+setup-dev: OK
+setup-gaming: OK
+setup-entertainment: FAILED
+Selecting previously unselected package libqt6concurrent6:amd64.
+Preparing to unpack .../libqt6concurrent6_6.8.2+dfsg-9+deb13u2_amd64.deb ...
+Unpacking libqt6concurrent6:amd64 (6.8.2+dfsg-9+deb13u2) ...
+Selecting previously unselected package sqlite3.
+Preparing to unpack .../sqlite3_3.46.1-7+deb13u2_amd64.deb ...
+Unpacking sqlite3 (3.46.1-7+deb13u2) ...
+Selecting previously unselected package strawberry.
+Preparing to unpack .../strawberry_1.2.10-2_amd64.deb ...
+Unpacking strawberry (1.2.10-2) ...
+Setting up libqt6concurrent6:amd64 (6.8.2+dfsg-9+deb13u2) ...
+Setting up libgpod4t64:amd64 (0.8.3-22+b1) ...
+Setting up libkdsingleapplication-qt6-1.0:amd64 (1.1.0-2) ...
+Setting up sqlite3 (3.46.1-7+deb13u2) ...
+Setting up strawberry (1.2.10-2) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for desktop-file-utils (0.28-1) ...
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+Installing runtime/org.freedesktop.Platform.Locale/x86_64/25.08
+Installing runtime/org.freedesktop.Platform/x86_64/25.08
+Installing app/com.spotify.Client/x86_64/stable
+bwrap: No permissions to create a new namespace, likely because the kernel does not allow non-privileged user namespaces. See <https://deb.li/bubblewrap> or <file:///usr/share/doc/bubblewrap/README.Debian.gz>.
+Error: Failed to install com.spotify.Client: While trying to apply extra data: apply_extra script failed, exit status 256
+setup-communication: OK
+setup-productivity: OK
+setup-hardware: OK
+== creative: simulated install only (a full install is too large for the runner)
+setup-creative packages: OK (simulated)
+== app boxes: things to check by eye
+logs/setup-communication.log:Signal apt signing key fingerprint: DBA36B5181D0C816F630E889D980A17457F6FB06
+logs/setup-gaming.log:NOTE: xpadneo-dkms is not in this Debian release; skipping
+logs/setup-gaming.log:NOTE: xone-dkms is not in this Debian release; skipping
+logs/setup-productivity.log:WARNING: Proton Mail failed; continuing
+Types: deb
+URIs: https://updates.signal.org/desktop/apt
+Suites: xenial
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
+com.bitwarden.desktop
+com.discordapp.Discord
+com.heroicgameslauncher.hgl
+net.davidotek.pupgui2
+org.freedesktop.Platform
+org.freedesktop.Platform
+org.freedesktop.Platform.Compat.i386
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL32.default
+org.freedesktop.Platform.codecs-extra
+org.freedesktop.Platform.codecs-extra
+org.kde.KStyle.Adwaita
+org.kde.Platform
+dpkg-query: no packages found matching xpadneo-dkms
+dpkg-query: no packages found matching xone-dkms
+dpkg-query: no packages found matching proton-mail
+dpkg-query: no packages found matching protonmail
+hplip 3.22.10+dfsg0-8.1+deb13u1 ii 
+libreoffice-writer 4:25.2.3-2+deb13u8 ii 
+mtr 0.95-1.1+b1 ii 
+nextcloud-desktop 3.16.7-1~deb13u1 ii 
+nmap 7.95+dfsg-3 ii 
+remmina 1.4.39+dfsg-1+deb13u1 ii 
+sane-airscan 0.99.35-1 ii 
+sane-utils 1.3.1-3+b1 ii 
+signal-desktop 8.31.0 ii 
+strawberry 1.2.10-2 ii 
+telegram-desktop 5.7.2+ds-2~bpo13+1 ii 
+virt-manager 1:5.0.0-5+deb13u1 ii 
+vlc 3.0.24-0+deb13u1 ii 
+wireshark 4.4.19-0+deb13u1 ii 
