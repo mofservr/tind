@@ -1,0 +1,18 @@
+#!/bin/sh
+# Only Tind wallpapers in the Backgrounds picker: drop Debian's (desktop-base) and GNOME's
+# (gnome-backgrounds) artwork. Purge only when apt confirms no Tind core package would go with it.
+for p in gnome-backgrounds desktop-base; do
+    dpkg -s "$p" >/dev/null 2>&1 || continue
+    if apt-get -s purge "$p" 2>/dev/null | grep -q '^Remv tind-\|^Remv gnome-shell \|^Remv gnome-control-center '; then
+        echo "keeping $p (would remove a Tind core package)"
+    else
+        apt-get purge -y "$p" || true
+    fi
+done
+# Whatever could not be purged: hide it from the picker (Tind's own list is tind.xml).
+for f in /usr/share/gnome-background-properties/*.xml; do
+    [ -e "$f" ] || continue
+    [ "$(basename "$f")" = tind.xml ] && continue
+    rm -f "$f"
+done
+exit 0

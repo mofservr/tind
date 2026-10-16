@@ -1,8 +1,10 @@
 /* Tind Ice v2: clear ice, night (default).
  *
  * Matches the approved mockups in design/mockups/. One even, translucent tint on the top
- * bar, the dock and the menus. No outlines, no drop shadows, almost no glow: the edges are
- * defined by the tint alone. Accent: deep aurora teal.
+ * bar, the dock and the menus. No drop shadows, almost no glow: the edges are defined by the
+ * tint alone. The exception is a subtle 1px outline on Quick Settings toggles, icon buttons and
+ * slider tracks (light in dark style, dark in light style) so they stay readable on a translucent
+ * panel. Accent: deep aurora teal.
  *
  * Light mode (March midday) is the .tind-light section at the end of this file; extension.js
  * puts that class on Main.uiGroup when the colour scheme is not "prefer-dark".
@@ -87,27 +89,57 @@
   color: #eaf6fb;
 }
 
-.quick-toggle,
-.quick-menu-toggle .quick-toggle,
-.quick-toggle-arrow {
+/* Toggle shapes follow stock GNOME: full pills, and a split toggle (toggle + arrow) is one pill
+ * whose halves meet with square inner corners and a single 1px seam. */
+.quick-toggle {
   background-color: rgba(255, 255, 255, 0.09);
-  border: none;
-  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 99px;
   box-shadow: none;
   color: #eaf6fb;
 }
+
+.quick-toggle:hover,
+.quick-toggle:focus { border-color: rgba(255, 255, 255, 0.34); }
+
+.quick-menu-toggle .quick-toggle {
+  border-radius: 99px 0 0 99px;
+  border-right-width: 0;
+}
+
+.quick-menu-toggle .quick-toggle:rtl {
+  border-radius: 0 99px 99px 0;
+  border-right-width: 1px;
+  border-left-width: 0;
+}
+
+.quick-menu-toggle .quick-toggle-arrow {
+  background-color: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0 99px 99px 0;
+  box-shadow: none;
+  color: #eaf6fb;
+}
+
+.quick-menu-toggle .quick-toggle-arrow:rtl {
+  border-radius: 99px 0 0 99px;
+}
+
+.quick-menu-toggle .quick-toggle-arrow:hover,
+.quick-menu-toggle .quick-toggle-arrow:focus { border-color: rgba(255, 255, 255, 0.34); }
 
 .quick-toggle:checked,
 .quick-menu-toggle:checked .quick-toggle,
 .quick-menu-toggle:checked .quick-toggle-arrow {
   background-color: rgba(6, 112, 104, 0.72);
+  border-color: rgba(255, 255, 255, 0.28);
   color: #c9fff0;
 }
 
 .quick-settings .icon-button,
 .quick-settings .button.icon-button {
   background-color: rgba(255, 255, 255, 0.10);
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.22);
   box-shadow: none;
 }
 
@@ -116,8 +148,10 @@
   -barlevel-height: 12px;
   -barlevel-border-radius: 6px;
   -barlevel-background-color: rgba(255, 255, 255, 0.14);
+  -barlevel-border-color: rgba(255, 255, 255, 0.22);
+  -barlevel-border-width: 1px;
   -barlevel-active-background-color: #0b8274;
-  -barlevel-border-width: 0;
+  -barlevel-active-border-color: rgba(255, 255, 255, 0.28);
   -slider-handle-radius: 10px;
 }
 
@@ -192,25 +226,37 @@
 
 .tind-light .quick-toggle,
 .tind-light .quick-menu-toggle .quick-toggle,
-.tind-light .quick-toggle-arrow {
+.tind-light .quick-menu-toggle .quick-toggle-arrow {
   background-color: rgba(255, 255, 255, 0.32);
+  border-color: rgba(26, 42, 58, 0.22);
   color: #1a2a3a;
 }
+
+.tind-light .quick-toggle:hover,
+.tind-light .quick-toggle:focus,
+.tind-light .quick-menu-toggle .quick-toggle-arrow:hover,
+.tind-light .quick-menu-toggle .quick-toggle-arrow:focus { border-color: rgba(26, 42, 58, 0.34); }
 
 .tind-light .quick-toggle:checked,
 .tind-light .quick-menu-toggle:checked .quick-toggle,
 .tind-light .quick-menu-toggle:checked .quick-toggle-arrow {
   background-color: rgba(224, 112, 112, 0.50);
+  border-color: rgba(107, 36, 48, 0.30);
   color: #6b2430;
 }
 
 .tind-light .quick-settings .icon-button,
-.tind-light .quick-settings .button.icon-button { background-color: rgba(255, 255, 255, 0.32); }
+.tind-light .quick-settings .button.icon-button {
+  background-color: rgba(255, 255, 255, 0.32);
+  border-color: rgba(26, 42, 58, 0.22);
+}
 
 .tind-light .slider {
   color: #ffffff;
   -barlevel-background-color: rgba(255, 255, 255, 0.42);
+  -barlevel-border-color: rgba(26, 42, 58, 0.22);
   -barlevel-active-background-color: #e07a78;
+  -barlevel-active-border-color: rgba(107, 36, 48, 0.30);
 }
 
 /* Show Apps button = plain Tind peak, alpenglow pink on light */
