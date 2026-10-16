@@ -1,4 +1,0 @@
-NAME="Bitwarden"
-DESC="Password manager (Flatpak)"
-STATUS="ready"
-FLATPAK_REF="com.bitwarden.desktop"

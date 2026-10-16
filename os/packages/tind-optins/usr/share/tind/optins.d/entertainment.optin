@@ -1,0 +1,4 @@
+NAME="Entertainment"
+DESC="VLC, Strawberry music player (local files and Navidrome) and Spotify (needs internet)"
+STATUS="ready"
+SCRIPT="/usr/lib/tind/setup-entertainment"

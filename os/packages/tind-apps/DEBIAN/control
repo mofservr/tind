@@ -4,11 +4,11 @@ Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: metapackages
 Priority: optional
-Depends: firefox-esr, thunderbird, libreoffice-writer, libreoffice-calc, libreoffice-impress, libreoffice-gtk3, webext-ublock-origin-firefox, tind-mozilla-config, tind-wireguard, tind-optins
-Recommends: firefox-esr-l10n-nb-no, firefox-esr-l10n-nn-no, thunderbird-l10n-nb-no, thunderbird-l10n-nn-no, libreoffice-l10n-nb, libreoffice-l10n-nn, libreoffice-help-en-us, hunspell-no | myspell-nb, hunspell-en-us
+Depends: firefox-esr, thunderbird, webext-ublock-origin-firefox, tind-mozilla-config, tind-wireguard, tind-optins
+Recommends: firefox-esr-l10n-nb-no, firefox-esr-l10n-nn-no, thunderbird-l10n-nb-no, thunderbird-l10n-nn-no, hunspell-no | myspell-nb, hunspell-en-us
 Installed-Size: 4
 Description: Tind default applications
- The pre-installed Tind application set: LibreOffice, Firefox ESR with
+ The pre-installed Tind application set: Firefox ESR with
  restricted defaults and uBlock Origin, Thunderbird, and the WireGuard tunnel
  tooling for servr.no. Proton VPN is added from Proton's own repository by the
  image build (see the build documentation), not from Debian.

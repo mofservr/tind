@@ -1,0 +1,4 @@
+NAME="Communication"
+DESC="Signal and Telegram (needs internet)"
+STATUS="ready"
+SCRIPT="/usr/lib/tind/setup-communication"
