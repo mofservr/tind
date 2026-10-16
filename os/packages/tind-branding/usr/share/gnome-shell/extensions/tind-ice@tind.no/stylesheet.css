@@ -1,27 +1,32 @@
-/* Tind Ice v2: clear ice, night (default).
+/* Tind Ice v3: calm, mostly solid surfaces. Night (default) and midday.
  *
- * Matches the approved mockups in design/mockups/. One even, translucent tint on the top
- * bar, the dock and the menus. No drop shadows, almost no glow: the edges are defined by the
- * tint alone. The exception is a subtle 1px outline on Quick Settings toggles, icon buttons and
- * slider tracks (light in dark style, dark in light style) so they stay readable on a translucent
- * panel. Accent: deep aurora teal.
+ * Principle: the interface is there and looks pleasant, but never asks for attention. The top bar,
+ * dock, menus and Quick Settings are ~92-97 % opaque, a quiet blue-teal at night and a quiet
+ * off-white at midday, so the wallpaper only whispers through. No drop shadows, no glow.
+ * Controls (Quick Settings toggles, icon buttons, slider tracks) get a subtle 1px outline: light
+ * in dark style, dark in light style, so they stay readable on any panel.
  *
- * Light mode (March midday) is the .tind-light section at the end of this file; extension.js
- * puts that class on Main.uiGroup when the colour scheme is not "prefer-dark".
+ * Light mode is the .tind-light section at the end of this file; extension.js puts that class on
+ * Main.uiGroup when the colour scheme is not "prefer-dark".
  *
- * Limits of GNOME Shell CSS: no backdrop blur, no feathered (blurred) edges, only two-stop
- * gradients. The mockups feather the edges; here they are simply soft-tinted and borderless.
+ * Class names are GNOME Shell 48's own (checked against its theme): a split toggle is
+ * .quick-toggle-has-menu containing .quick-toggle (left half), .quick-toggle-separator (1px seam)
+ * and .quick-toggle-menu-button (the arrow, right half). There is no .quick-menu-toggle or
+ * .quick-toggle-arrow class.
+ *
+ * Limits of GNOME Shell CSS: no backdrop blur, only two-stop gradients.
  *
  * Palette (design/TOKENS.md):
- *   night tint  #2a6f8c -> #2a8f94 at 20 %     accent  #0b8274 / #0e7a6e   on-accent text #c9fff0
+ *   night surface #163a4e -> #164650 at 92 %     accent  #0b8274 / #0e7a6e   on-accent text #c9fff0
+ *   day surface   #eef4fa -> #f4eff7 at 93 %     accent  rosy salmon
  */
 
 /* ---- top bar ------------------------------------------------------------ */
 #panel {
   background-color: transparent;
   background-gradient-direction: horizontal;
-  background-gradient-start: rgba(42, 111, 140, 0.20);
-  background-gradient-end: rgba(42, 143, 148, 0.20);
+  background-gradient-start: rgba(22, 58, 78, 0.92);
+  background-gradient-end: rgba(22, 70, 80, 0.92);
   border: none;
   box-shadow: none;
 }
@@ -42,8 +47,8 @@
 #dashtodockContainer.left #dash .dash-background {
   background-color: transparent;
   background-gradient-direction: horizontal;
-  background-gradient-start: rgba(42, 111, 140, 0.20);
-  background-gradient-end: rgba(42, 143, 148, 0.20);
+  background-gradient-start: rgba(22, 58, 78, 0.92);
+  background-gradient-end: rgba(22, 70, 80, 0.92);
   border: none;
   border-radius: 0 20px 20px 0 !important;
   margin-left: 0 !important;
@@ -57,14 +62,14 @@
 
 #dash .app-well-app:hover .overview-icon,
 #dash .app-well-app:focus .overview-icon {
-  background-color: rgba(255, 255, 255, 0.10);
+  background-color: rgba(255, 255, 255, 0.12);
   border-radius: 16px;
 }
 
 /* ---- menus and popovers ------------------------------------------------- */
 .popup-menu-content,
 .candidate-popup-content {
-  background-color: rgba(30, 90, 110, 0.55);
+  background-color: rgba(24, 60, 78, 0.97);
   border: none;
   border-radius: 20px;
   box-shadow: none;
@@ -81,20 +86,19 @@
 .datemenu-popover {
   background-color: transparent;
   background-gradient-direction: horizontal;
-  background-gradient-start: rgba(42, 111, 140, 0.30);
-  background-gradient-end: rgba(42, 143, 148, 0.30);
+  background-gradient-start: rgba(24, 60, 80, 0.97);
+  background-gradient-end: rgba(22, 72, 80, 0.97);
   border: none;
   border-radius: 24px;
   box-shadow: none;
   color: #eaf6fb;
 }
 
-/* Toggle shapes follow stock GNOME: full pills, and a split toggle (toggle + arrow) is one pill
- * whose halves meet with square inner corners and a single 1px seam. */
+/* plain toggles (Dark Style, Night Light, ...) and every toggle half: full pill by default */
 .quick-toggle {
   background-color: rgba(255, 255, 255, 0.09);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 99px;
+  border-radius: 999px;
   box-shadow: none;
   color: #eaf6fb;
 }
@@ -102,38 +106,67 @@
 .quick-toggle:hover,
 .quick-toggle:focus { border-color: rgba(255, 255, 255, 0.34); }
 
-.quick-menu-toggle .quick-toggle {
-  border-radius: 99px 0 0 99px;
+.quick-toggle:checked {
+  background-color: rgba(6, 112, 104, 0.80);
+  border-color: rgba(255, 255, 255, 0.28);
+  color: #c9fff0;
+}
+
+/* split toggle = one pill: toggle half (left), 1px separator, arrow half (right).
+ * Inner corners are square and the separator is the only seam. */
+.quick-toggle-has-menu .quick-toggle:ltr {
+  border-radius: 999px 0 0 999px;
   border-right-width: 0;
 }
 
-.quick-menu-toggle .quick-toggle:rtl {
-  border-radius: 0 99px 99px 0;
-  border-right-width: 1px;
+.quick-toggle-has-menu .quick-toggle:rtl {
+  border-radius: 0 999px 999px 0;
   border-left-width: 0;
 }
 
-.quick-menu-toggle .quick-toggle-arrow {
+/* a toggle half with no arrow next to it stays a full pill */
+.quick-toggle-has-menu .quick-toggle:ltr:last-child,
+.quick-toggle-has-menu .quick-toggle:rtl:last-child {
+  border-radius: 999px;
+  border-width: 1px;
+}
+
+.quick-toggle-has-menu .quick-toggle-menu-button:ltr {
   background-color: rgba(255, 255, 255, 0.09);
   border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 0 99px 99px 0;
+  border-left-width: 0;
+  border-radius: 0 999px 999px 0;
   box-shadow: none;
   color: #eaf6fb;
 }
 
-.quick-menu-toggle .quick-toggle-arrow:rtl {
-  border-radius: 99px 0 0 99px;
+.quick-toggle-has-menu .quick-toggle-menu-button:rtl {
+  background-color: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-right-width: 0;
+  border-radius: 999px 0 0 999px;
+  box-shadow: none;
+  color: #eaf6fb;
 }
 
-.quick-menu-toggle .quick-toggle-arrow:hover,
-.quick-menu-toggle .quick-toggle-arrow:focus { border-color: rgba(255, 255, 255, 0.34); }
+.quick-toggle-has-menu .quick-toggle-menu-button:hover,
+.quick-toggle-has-menu .quick-toggle-menu-button:focus { border-color: rgba(255, 255, 255, 0.34); }
 
-.quick-toggle:checked,
-.quick-menu-toggle:checked .quick-toggle,
-.quick-menu-toggle:checked .quick-toggle-arrow {
-  background-color: rgba(6, 112, 104, 0.72);
+.quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: rgba(6, 112, 104, 0.80);
   border-color: rgba(255, 255, 255, 0.28);
   color: #c9fff0;
+}
+
+.quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(255, 255, 255, 0.22); }
+.quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(201, 255, 240, 0.40); }
+
+/* the expanded card under a toggle (Wi-Fi list, power modes, ...) */
+.quick-toggle-menu {
+  background-color: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: none;
+  color: #eaf6fb;
 }
 
 .quick-settings .icon-button,
@@ -155,10 +188,13 @@
   -slider-handle-radius: 10px;
 }
 
-/* ---- notifications ------------------------------------------------------ */
+/* ---- notifications and calendar cards ----------------------------------- */
 .notification-banner,
-.message {
-  background-color: rgba(30, 90, 110, 0.55);
+.message,
+.events-button,
+.world-clocks-button,
+.weather-button {
+  background-color: rgba(24, 60, 78, 0.97);
   border: none;
   border-radius: 18px;
 }
@@ -172,19 +208,25 @@
 
 /* ======== Light mode (March midday) ===================================================
  * Active while extension.js has put the style class .tind-light on Main.uiGroup (colour scheme is
- * not "prefer-dark"). Accent: rosy alpenglow salmon.  tint #f4f9ff -> #f8eef8 at 26 %
+ * not "prefer-dark"). Accent: rosy alpenglow salmon. Surfaces are near-white, so fills and hovers
+ * are dark tints (white-on-white would vanish).
  * ====================================================================================== */
 
 .tind-light #panel {
-  background-gradient-start: rgba(244, 249, 255, 0.26);
-  background-gradient-end: rgba(248, 238, 248, 0.26);
+  background-gradient-start: rgba(238, 244, 250, 0.93);
+  background-gradient-end: rgba(244, 239, 247, 0.93);
 }
 
 .tind-light #panel .panel-button,
 .tind-light #panel .panel-button .system-status-icon,
 .tind-light #panel .clock-display { color: #1a2a3a; }
 
-/* the overview keeps a dark backdrop in both schemes: keep the panel text light there */
+/* the overview keeps a dark backdrop in both schemes: the bar goes night-coloured there */
+
+.tind-light #panel:overview {
+  background-gradient-start: rgba(22, 58, 78, 0.92);
+  background-gradient-end: rgba(22, 70, 80, 0.92);
+}
 
 .tind-light #panel:overview .panel-button,
 .tind-light #panel:overview .panel-button .system-status-icon,
@@ -193,70 +235,90 @@
 .tind-light #panel .panel-button:hover,
 .tind-light #panel .panel-button:focus,
 .tind-light #panel .panel-button:active,
-.tind-light #panel .panel-button:checked { background-color: rgba(255, 255, 255, 0.40); }
+.tind-light #panel .panel-button:checked { background-color: rgba(26, 42, 58, 0.09); }
+
+.tind-light #panel:overview .panel-button:hover,
+.tind-light #panel:overview .panel-button:focus,
+.tind-light #panel:overview .panel-button:active,
+.tind-light #panel:overview .panel-button:checked { background-color: rgba(255, 255, 255, 0.13); }
 
 .tind-light #dash .dash-background,
 .tind-light #dashtodockContainer #dash .dash-background,
 .tind-light #dashtodockContainer.left #dash .dash-background {
-  background-gradient-start: rgba(244, 249, 255, 0.26);
-  background-gradient-end: rgba(248, 238, 248, 0.26);
+  background-gradient-start: rgba(238, 244, 250, 0.93);
+  background-gradient-end: rgba(244, 239, 247, 0.93);
 }
 
 .tind-light .app-well-app-running-dot,
 .tind-light #dashtodockContainer .app-well-app-running-dot { background-color: #d96a62; }
 
 .tind-light #dash .app-well-app:hover .overview-icon,
-.tind-light #dash .app-well-app:focus .overview-icon { background-color: rgba(255, 255, 255, 0.35); }
+.tind-light #dash .app-well-app:focus .overview-icon { background-color: rgba(26, 42, 58, 0.09); }
 
 .tind-light .popup-menu-content,
 .tind-light .candidate-popup-content,
 .tind-light .notification-banner,
-.tind-light .message { background-color: rgba(244, 246, 252, 0.55); color: #1a2a3a; }
+.tind-light .message,
+.tind-light .events-button,
+.tind-light .world-clocks-button,
+.tind-light .weather-button { background-color: rgba(244, 247, 251, 0.97); color: #1a2a3a; }
 
 .tind-light .popup-menu-item:hover,
 .tind-light .popup-menu-item:focus,
-.tind-light .popup-menu-item:active { background-color: rgba(255, 255, 255, 0.40); }
+.tind-light .popup-menu-item:active { background-color: rgba(26, 42, 58, 0.09); }
 
 .tind-light .quick-settings,
 .tind-light .datemenu-popover {
-  background-gradient-start: rgba(244, 249, 255, 0.42);
-  background-gradient-end: rgba(248, 238, 248, 0.42);
+  background-gradient-start: rgba(240, 246, 251, 0.97);
+  background-gradient-end: rgba(246, 241, 248, 0.97);
   color: #1a2a3a;
 }
 
 .tind-light .quick-toggle,
-.tind-light .quick-menu-toggle .quick-toggle,
-.tind-light .quick-menu-toggle .quick-toggle-arrow {
-  background-color: rgba(255, 255, 255, 0.32);
+.tind-light .quick-toggle-has-menu .quick-toggle-menu-button {
+  background-color: rgba(26, 42, 58, 0.06);
   border-color: rgba(26, 42, 58, 0.22);
   color: #1a2a3a;
 }
 
 .tind-light .quick-toggle:hover,
 .tind-light .quick-toggle:focus,
-.tind-light .quick-menu-toggle .quick-toggle-arrow:hover,
-.tind-light .quick-menu-toggle .quick-toggle-arrow:focus { border-color: rgba(26, 42, 58, 0.34); }
+.tind-light .quick-toggle-has-menu .quick-toggle-menu-button:hover,
+.tind-light .quick-toggle-has-menu .quick-toggle-menu-button:focus {
+  background-color: rgba(26, 42, 58, 0.10);
+  border-color: rgba(26, 42, 58, 0.34);
+}
 
 .tind-light .quick-toggle:checked,
-.tind-light .quick-menu-toggle:checked .quick-toggle,
-.tind-light .quick-menu-toggle:checked .quick-toggle-arrow {
-  background-color: rgba(224, 112, 112, 0.50);
+.tind-light .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: rgba(224, 112, 112, 0.55);
   border-color: rgba(107, 36, 48, 0.30);
   color: #6b2430;
 }
 
+.tind-light .quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(26, 42, 58, 0.22); }
+.tind-light .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(107, 36, 48, 0.30); }
+
+.tind-light .quick-toggle-menu {
+  background-color: rgba(26, 42, 58, 0.05);
+  border-color: rgba(26, 42, 58, 0.16);
+  color: #1a2a3a;
+}
+
 .tind-light .quick-settings .icon-button,
 .tind-light .quick-settings .button.icon-button {
-  background-color: rgba(255, 255, 255, 0.32);
+  background-color: rgba(26, 42, 58, 0.06);
   border-color: rgba(26, 42, 58, 0.22);
 }
 
 .tind-light .slider {
   color: #ffffff;
-  -barlevel-background-color: rgba(255, 255, 255, 0.42);
+  -barlevel-background-color: rgba(26, 42, 58, 0.14);
   -barlevel-border-color: rgba(26, 42, 58, 0.22);
   -barlevel-active-background-color: #e07a78;
   -barlevel-active-border-color: rgba(107, 36, 48, 0.30);
+  -slider-handle-border-width: 1px;
+  -slider-handle-border-color: rgba(26, 42, 58, 0.35);
 }
 
 /* Show Apps button = plain Tind peak, alpenglow pink on light */
