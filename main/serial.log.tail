@@ -1,0 +1,391 @@
+[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: loading Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
+BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1F,0x2)/Sata(0x2,0xFFFF,0x0)
+=====TIND-SELFTEST-BEGIN=====
+
+##### os-release
+cat: /etc/os-release: No such file or directory
+
+##### tind packages
+ii tind-apps 0.1.0
+ii tind-extras 0.1.0
+ii tind-graphics 0.1.0
+ii tind-mozilla-config 0.1.0
+ii tind-optins 0.1.0
+ii tind-wireguard 0.1.0
+
+##### input devices
+N: Name="AT Translated Set 2 keyboard"
+H: Handlers=sysrq kbd leds event0 
+N: Name="Power Button"
+H: Handlers=kbd event1 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse0 event2 
+N: Name="VirtualPS/2 VMware VMMouse"
+H: Handlers=mouse1 event3 
+N: Name="PC Speaker"
+H: Handlers=kbd event4 
+by-path  event0  event1  event2  event3  event4  mice  mouse0  mouse1
+
+##### session
+1 1000 tind seat0 1462 user    tty1 no -
+2 1000 tind -     1513 manager -    no -
+Name=tind Seat=seat0 Type=tty Active=yes State=active 
+Name=tind Seat= Type=unspecified Active=yes State=active 
+
+##### failed units
+
+##### services
+NetworkManager: active
+systemd-resolved: active
+ufw: active
+gdm: inactive
+
+##### resolv.conf
+lrwxrwxrwx 1 root root 39 Oct 16 10:36 /etc/resolv.conf -> ../run/systemd/resolve/stub-resolv.conf
+
+##### ufw
+Status: active
+
+##### flatpak remotes
+[1mName    Options[22m
+flathub system
+
+##### gnome settings
+org.gnome.desktop.interface color-scheme = 'default'
+org.gnome.desktop.interface accent-color = 'blue'
+org.gnome.desktop.background picture-uri-dark = 'file:///usr/share/backgrounds/gnome/adwaita-d.jpg'
+org.gnome.shell enabled-extensions = @as []
+org.gnome.shell favorite-apps = ['calamares-install-debian.desktop', 'firefox-esr.desktop', 'org.gnome.Evolution.desktop', 'rhythmbox.desktop', 'libreoffice-writer.desktop', 'org.gnome.Nautilus.desktop', 'org.gnome.Software.desktop', 'yelp.desktop']
+org.gnome.shell.extensions.dash-to-dock dock-position = No such schema “org.gnome.shell.extensions.dash-to-dock”
+
+##### wallpapers
+picker lists: ls: cannot access '/usr/share/gnome-background-properties': No such file or directory 
+gnome-backgrounds: dpkg-query: no packages found matching gnome-backgrounds
+desktop-base: un 
+backgrounds dirs: ls: cannot access '/usr/share/backgrounds': No such file or directory 
+ls: cannot access '/usr/share/desktop-base': No such file or directory
+foreign picker lists: 0
+wallpapers: only Tind in the picker
+
+##### keyboard (what Calamares preselects)
+input-sources = @a(ss) []
+setxkbmap: 
+XKBMODEL="pc105"
+XKBLAYOUT="no"
+
+##### gnome-shell extensions
+env: ‘gnome-extensions’: No such file or directory
+env: ‘gnome-extensions’: No such file or directory
+
+##### firefox policies
+/etc/firefox/policies/policies.json: present
+/usr/lib/firefox-esr/distribution/policies.json: present
+firefox policies.json: valid JSON
+lrwxrwxrwx 1 root root 36 Oct 13 23:14 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
+
+##### ublock origin
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/1p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/3p-filters.html
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/ar/messages.json
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/_locales/az
+grep: write error: Broken pipe
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/assets/ublock
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock-defs.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/img/ublock.svg
+/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
+
+##### firefox startup (headless, 40s)
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{45143af9-1f1e-4332-8a9f-f0225f121983}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+extensions.json present: yes
+formautofill@mozilla.org active=true location=app-builtin-addons
+ipp-activator@mozilla.com active=true location=app-builtin-addons
+newtab@mozilla.org active=true location=app-builtin-addons
+pictureinpicture@mozilla.org active=true location=app-builtin-addons
+addons-search-detection@mozilla.com active=true location=app-builtin-addons
+webcompat@mozilla.org active=true location=app-builtin-addons
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+uBlock0@raymondhill.net active=true location=app-system-share
+default-theme@mozilla.org active=true location=app-builtin
+user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
+policy keys:
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
+user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
+user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
+user_pref("toolkit.telemetry.cachedClientID", "633b22f1-a496-44bf-9658-626eab7d5521");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "09948392-0333-48ab-aded-27bc67ef26a8");
+user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+
+##### thunderbird policies
+thunderbird policies.json: valid JSON
+
+##### tind-enroll
+tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+
+  sudo tind-enroll init              create this device's key pair, print the public key
+  sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+  sudo tind-enroll status            show tunnel state
+  sudo tind-enroll remove [--purge-key]
+
+The private key is generated here and never leaves this device.
+SERVER_ENDPOINT=""
+SERVER_PUBLIC_KEY=""
+ALLOWED_IPS=""
+DNS_SERVER=""
+DNS_DOMAIN="servr.no"
+KEEPALIVE="25"
+CONNECTION_NAME="tind-servr"
+
+##### enroll init/apply smoke test
+
+The admin will reply with a tunnel address such as 10.8.0.12/32.
+Then run:  sudo tind-enroll apply 10.8.0.12/32
+tind-enroll: SERVER_ENDPOINT is empty in /etc/tind/servr-tunnel.conf. The server admin needs to fill it in first.
+tind-enroll: tunnel 'tind-servr' is not installed
+Tunnel 'tind-servr' was not installed.
+Removed this device's private key.
+
+##### gnome-tour removed?
+dpkg-query: no packages found matching gnome-tour
+
+##### calamares branding
+106:branding: tind
+ls: cannot access '/usr/share/calamares/branding/tind': No such file or directory
+
+##### installer launcher
+ls: cannot access '/usr/share/applications/tind-install.desktop': No such file or directory
+grep: /usr/share/applications/tind-install.desktop: No such file or directory
+-- original:
+Name=Install Debian
+NoDisplay=true
+
+##### optins
+bitwarden.optin  gnome-extras.optin	nextcloud.optin
+developer.optin  gnome-utilities.optin	spotify.optin
+gaming.optin	 newer-kernel.optin	tweaks.optin
+-rwxr-xr-x 1 root root 1955 Oct 16 10:16 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root  854 Oct 16 10:16 /usr/lib/tind/optin-install
+
+##### nextcloud config
+# Tind: global Nextcloud desktop client defaults.
+# Pre-fills the server address in the account wizard. Users still log in themselves.
+[General]
+overrideServerUrl=https://lagrr.servr.no
+
+##### plymouth
+text
+bgrt details fade-in glow script solar spinfinity spinner text tribar 
+
+##### grub defaults
+
+##### boot mode and bootloader
+booted via: UEFI
+grub-efi-amd64-bin 2.12-9+deb13u2 ii 
+grub-pc-bin 2.12-9+deb13u2 ii 
+ntfs-3g 1:2022.10.3-5+deb13u3 ii 
+os-prober 1.83 ii 
+#GRUB_DISABLE_OS_PROBER=false
+unicode.pf2 
+grep: /boot/grub/grub.cfg: No such file or directory
+NAME   SIZE FSTYPE   MOUNTPOINT
+loop0  2.1G squashfs /run/live/rootfs/filesystem.squashfs
+sr0    2.2G iso9660  /run/live/medium
+
+##### extras chosen in the installer
+cat: /var/lib/tind/pending-extras: No such file or directory
+cat: /var/lib/tind/extras-status: No such file or directory
+tail: cannot open '/var/log/tind-extras.log' for reading: No such file or directory
+dpkg-query: no packages found matching steam-installer
+dpkg-query: no packages found matching lutris
+dpkg-query: no packages found matching wine
+dpkg-query: no packages found matching wine32:i386
+dpkg-query: no packages found matching winetricks
+dpkg-query: no packages found matching gamemode
+dpkg-query: no packages found matching mangohud
+dpkg-query: no packages found matching code
+dpkg-query: no packages found matching gh
+dpkg-query: no packages found matching pipx
+build-essential 12.12 ii 
+git  un 
+/etc/apt/sources.list.d/:
+protonvpn-stable.sources
+
+/etc/sysctl.d/:
+README.sysctl
+vm.max_map_count = 1048576
+inactive
+
+##### gaming and graphics
+== GPUs
+00:01.0 VGA compatible controller [0300]: Device [1234:1111] (rev 02)
+	Subsystem: Red Hat, Inc. Device [1af4:1100]
+	Kernel driver in use: bochs-drm
+	Kernel modules: bochs
+
+== Secure Boot
+This system doesn't support Secure Boot
+mokutil not installed
+
+== NVIDIA
+no NVIDIA GPU
+
+== Vulkan
+	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
+	driverName         = llvmpipe
+vm.max_map_count=1048576
+
+Error! System is missing os-release file.
+550.163.01
+nvidia-current-drm.ko.xz
+nvidia-current.ko.xz
+nvidia-current-modeset.ko.xz
+nvidia-current-peermem.ko.xz
+nvidia-current-uvm.ko.xz
+amd64-microcode-blacklist.conf dkms.conf intel-microcode-blacklist.conf nvidia-options.conf 
+enabled
+masked
+ls: cannot access '/var/lib/dkms/mok.key': No such file or directory
+	apiVersion         = 1.4.305
+	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
+	driverName         = llvmpipe
+
+##### updates
+not-found
+static
+inactive
+ls: cannot access '/var/lib/tind/apt-refreshed': No such file or directory
+1
+cat: /etc/apt/apt.conf.d/20tind-auto-upgrades: No such file or directory
+enabled
+enabled
+Status: 	Starting
+Status: 	Loading cache
+Percentage:	100
+Status: 	Querying
+Status: 	Loading cache
+Status: 	Finished
+Results:
+There are no updates available at this time.
+gnome-software 48.3
+
+##### security baseline
+lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
+Y
+○ apparmor.service - Load AppArmor profiles
+     Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
+     Active: inactive (dead)
+  Condition: start condition unmet at Fri 2026-10-16 10:36:21 CEST; 5min ago
+             └─ ConditionPathExists=!/run/live/overlay/work was not met
+       Docs: man:apparmor(7)
+             https://gitlab.com/apparmor/apparmor/wikis/home/
+
+Failed to get profiles: 2....
+apparmor module is loaded.
+Global: yes
+Link 2 (enp0s2): yes
+apparmor: inactive ; profiles loaded: 
+Status: active
+Logging: on (low)
+Default: deny (incoming), allow (outgoing), disabled (routed)
+New profiles: skip
+listening sockets:
+tcp 0.0.0.0:5355
+tcp 127.0.0.1:631
+tcp 127.0.0.53%lo:53
+tcp 127.0.0.54:53
+tcp [::1]:631
+tcp [::]:5355
+udp 0.0.0.0:47990
+udp 0.0.0.0:5353
+udp 0.0.0.0:5355
+udp 127.0.0.53%lo:53
+udp 127.0.0.54:53
+udp [::]:42293
+udp [::]:5353
+udp [::]:5355
+
+##### hardware basics
+active
+* balanced:
+    PlatformDriver:	placeholder
+
+  power-saver:
+    PlatformDriver:	placeholder
+amd64-microcode 3.20250311.1 ii 
+firmware-brcm80211 20250410-2 ii 
+firmware-mediatek 20250410-2 ii 
+fwupd 2.0.20-1~deb13u1 ii 
+intel-microcode 3.20251111.1~deb13u1 ii 
+microcode	: 0xffffffff
+/usr/local/bin/tind-selftest: line 126: tind-report: command not found
+wc: /tmp/tind-report-test.txt: No such file or directory
+grep: /tmp/tind-report-test.txt: No such file or directory
+protonvpn-stable.sources
+URIs: https://repo.protonvpn.com/debian
+Suites: stable
+protonvpn-stable-release 1.0.8 ii \nls: cannot access '/var/tmp/*.deb': No such file or directory
+proton-vpn-gnome-desktop 0.11.0 ii 
+
+##### desktop entries shown in the app grid (name, package)
+Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
+Name=Camera | gnome-snapshot | org.gnome.Snapshot.desktop
+Name=Disks | gnome-disk-utility | org.gnome.DiskUtility.desktop
+Name=Files | nautilus | org.gnome.Nautilus.desktop
+Name=Firefox ESR | firefox-esr | firefox-esr.desktop
+Name=Image Viewer | loupe | org.gnome.Loupe.desktop
+Name=LibreOffice Calc | libreoffice-calc | libreoffice-calc.desktop
+Name=LibreOffice Impress | libreoffice-impress | libreoffice-impress.desktop
+Name=LibreOffice | libreoffice-common | libreoffice-startcenter.desktop
+Name=LibreOffice Writer | libreoffice-writer | libreoffice-writer.desktop
+Name=Papers | papers | org.gnome.Papers.desktop
+Name=Print Settings | system-config-printer | system-config-printer.desktop
+Name=Proton VPN | proton-vpn-gtk-app | proton.vpn.app.gtk.desktop
+Name=Showtime | showtime | org.gnome.Showtime.desktop
+Name=Software | gnome-software | org.gnome.Software.desktop
+Name=System Monitor | gnome-system-monitor | org.gnome.SystemMonitor.desktop
+Name=Terminal | gnome-terminal | org.gnome.Terminal.desktop
+Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
+Name=Thunderbird | thunderbird | thunderbird.desktop
+Name=Tind Apps | tind-optins | tind-optins.desktop
+
+##### largest installed packages
+301370	firefox-esr
+274488	thunderbird
+187357	papirus-icon-theme
+143940	firmware-netronome
+134337	ibus-data
+126696	libllvm19
+119815	libreoffice-core
+114123	firmware-iwlwifi
+108496	linux-image-6.12.111+deb13-amd64
+100568	libwebkit2gtk-4.1-0
+97239	firmware-atheros
+91908	firmware-amd-graphics
+91217	fonts-noto-cjk
+81104	mesa-vulkan-drivers
+74739	libnvidia-rtcore
+71212	nvidia-kernel-dkms
+69440	libclang-cpp19
+68460	gcc-14-x86-64-linux-gnu
+64591	firmware-nvidia-graphics
+61422	linux-headers-6.12.111+deb13-common
+60869	firmware-nvidia-tesla-535-gsp
+60698	firmware-nvidia-gsp
+60463	firmware-marvell-prestera
+48558	libreoffice-common
+46319	firmware-mediatek
+installed packages: 1819
+
+##### journal errors (this boot)
+Oct 16 10:36:24 tind adduser[1101]: The group `powerdev' does not exist.
+Oct 16 10:36:24 tind adduser[1117]: The group `debian-tor' does not exist.
+Oct 16 10:41:08 tind systemd[1513]: Failed to start xdg-desktop-portal-gtk.service - Portal service (GTK/GNOME implementation).
+
+##### gnome-shell journal
+=====TIND-SELFTEST-END=====

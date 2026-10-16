@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 1
+== exit status: 0
