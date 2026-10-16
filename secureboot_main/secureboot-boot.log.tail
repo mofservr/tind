@@ -3,48 +3,48 @@
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
 total 3304
--rw-r--r-- 1 runner runner   7006 Oct 16 00:23 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 16 00:23 secboot-s02.png
--rw-r--r-- 1 runner runner  41969 Oct 16 00:24 secboot-s03.png
--rw-r--r-- 1 runner runner 467539 Oct 16 00:24 secboot-s04.png
--rw-r--r-- 1 runner runner 467581 Oct 16 00:25 secboot-s05.png
--rw-r--r-- 1 runner runner 467581 Oct 16 00:25 secboot-s06.png
--rw-r--r-- 1 runner runner 467514 Oct 16 00:26 secboot-s07.png
--rw-r--r-- 1 runner runner 467514 Oct 16 00:26 secboot-s08.png
--rw-r--r-- 1 runner runner 467515 Oct 16 00:27 secboot-s09.png
--rw-r--r-- 1 runner runner 467515 Oct 16 00:27 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 16 00:22 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 16 00:22 secureboot-inspect.log
--rw-r----- 1 runner runner  19033 Oct 16 00:25 serial-secboot.log
-Oct 16 02:23:55 tind systemd[1473]: Failed to start app-gnome-gnome\x2dkeyring\x2dssh-1649.scope - Application launched by gnome-session-binary.
-Oct 16 02:23:55 tind systemd[1473]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1659.scope - Application launched by gnome-session-binary.
+-rw-r--r-- 1 runner runner   7006 Oct 16 01:41 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 16 01:42 secboot-s02.png
+-rw-r--r-- 1 runner runner  41969 Oct 16 01:42 secboot-s03.png
+-rw-r--r-- 1 runner runner 467687 Oct 16 01:43 secboot-s04.png
+-rw-r--r-- 1 runner runner 467687 Oct 16 01:43 secboot-s05.png
+-rw-r--r-- 1 runner runner 467656 Oct 16 01:44 secboot-s06.png
+-rw-r--r-- 1 runner runner 467656 Oct 16 01:44 secboot-s07.png
+-rw-r--r-- 1 runner runner 467794 Oct 16 01:45 secboot-s08.png
+-rw-r--r-- 1 runner runner 467794 Oct 16 01:45 secboot-s09.png
+-rw-r--r-- 1 runner runner 467721 Oct 16 01:46 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 16 01:41 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 16 01:41 secureboot-inspect.log
+-rw-r----- 1 runner runner  19192 Oct 16 01:44 serial-secboot.log
+Oct 16 03:42:34 tind systemd[1471]: Failed to start app-gnome-tind\x2dgpu\x2dnotify-1873.scope - Application launched by gnome-session-binary.
+Oct 16 03:42:34 tind systemd[1471]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1845.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 16 02:24:03 tind gnome-shell[1663]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 16 02:24:05 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 16 02:24:05 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 16 02:24:05 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 16 02:24:05 tind gnome-shell[1663]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 16 02:24:08 tind gnome-shell[1663]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
-Oct 16 02:24:10 tind gnome-shell[1663]: GNOME Shell started at Fri Oct 16 2026 02:24:02 GMT+0200 (Central European Summer Time)
-Oct 16 02:24:10 tind gnome-shell[1663]: Registering session with GDM
+Oct 16 03:42:36 tind gnome-shell[1661]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 16 03:42:37 tind gnome-shell[1661]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 03:42:37 tind gnome-shell[1661]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 03:42:37 tind gnome-shell[1661]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
+Oct 16 03:42:38 tind gnome-shell[1661]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
+Oct 16 03:42:38 tind gnome-shell[1661]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
+Oct 16 03:42:43 tind gnome-shell[1661]: GNOME Shell started at Fri Oct 16 2026 03:42:34 GMT+0200 (Central European Summer Time)
+Oct 16 03:42:43 tind gnome-shell[1661]: Registering session with GDM
 =====TIND-SELFTEST-END=====
 =====TIND-SELFTEST-BEGIN=====
 == Secure Boot
