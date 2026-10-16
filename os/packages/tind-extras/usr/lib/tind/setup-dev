@@ -1,6 +1,6 @@
 #!/bin/bash
-# Developer base set: git, compilers, Python tooling, GitHub CLI, VS Code (Microsoft apt repository)
-# and Claude Desktop (Anthropic apt repository).
+# Developer base set: git, compilers, Python tooling, GitHub CLI, network and admin tools, VS Code
+# (Microsoft apt repository) and Claude Desktop (Anthropic apt repository).
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -10,6 +10,16 @@ echo "== Tind: developer tools setup"
 MS_FPR="BC528686B50D79E339D3721CEB3E94ADBE1229CF"
 apt-get update
 apt_install git build-essential python3-pip python3-venv pipx curl jq tmux openssh-client gh
+# Network and admin tools: Wireshark (capture without root), nmap, mtr, Remmina (RDP, VNC, SSH) and virt-manager.
+echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
+apt_install wireshark nmap mtr remmina remmina-plugin-rdp remmina-plugin-vnc remmina-plugin-secret \
+    virt-manager libvirt-daemon-system qemu-system-x86
+# let the regular users capture packets and manage VMs (takes effect at their next login)
+for u in $(awk -F: '$3>=1000 && $3<60000 {print $1}' /etc/passwd); do
+    for g in wireshark libvirt; do
+        if getent group "$g" >/dev/null; then usermod -aG "$g" "$u"; fi
+    done
+done
 tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 curl -fsSL https://packages.microsoft.com/keys/microsoft.asc -o "$tmp/ms.asc"
 got="$(gpg --show-keys --with-colons "$tmp/ms.asc" | awk -F: '$1=="fpr"{print $10; exit}')"

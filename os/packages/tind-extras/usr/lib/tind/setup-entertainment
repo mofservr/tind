@@ -1,0 +1,13 @@
+#!/bin/bash
+# Entertainment: VLC, Strawberry (local library and Subsonic servers such as Navidrome) and Spotify (Flathub).
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: entertainment setup"
+ensure_components
+apt-get update
+apt_install vlc gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav
+apt_or_flatpak strawberry org.strawberrymusicplayer.strawberry
+flatpak_install com.spotify.Client
+echo "== Tind: entertainment setup done"

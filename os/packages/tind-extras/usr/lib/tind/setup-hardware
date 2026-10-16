@@ -1,0 +1,10 @@
+#!/bin/bash
+# Hardware extras for printers and scanners: HPLIP (HP) and SANE, with driverless network scanner support.
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: hardware extras setup"
+apt-get update
+apt_install hplip sane-utils sane-airscan
+echo "== Tind: hardware extras setup done"

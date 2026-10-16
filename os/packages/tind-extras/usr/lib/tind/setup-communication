@@ -1,0 +1,29 @@
+#!/bin/bash
+# Communication: Signal (Signal's own apt repository) and Telegram (Debian, Flathub if Debian lacks it).
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: communication setup"
+tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+
+# Signal publishes its apt key and sources file on https://signal.org/download/. Signal does not publish
+# a fingerprint for the apt key, so there is nothing to pin yet: the fingerprint is logged here, and
+# SIGNAL_FPR should be set to it once it has been checked by hand (the CI log shows it).
+SIGNAL_FPR=""
+curl -fsSL https://updates.signal.org/desktop/apt/keys.asc -o "$tmp/signal.asc"
+got="$(gpg --show-keys --with-colons "$tmp/signal.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+echo "Signal apt signing key fingerprint: $got"
+if [ -n "$SIGNAL_FPR" ] && [ "$got" != "$SIGNAL_FPR" ]; then
+    echo "Signal signing key fingerprint mismatch: got $got" >&2; exit 1
+fi
+install -d -m 0755 /usr/share/keyrings
+gpg --dearmor < "$tmp/signal.asc" > /usr/share/keyrings/signal-desktop-keyring.gpg
+chmod 0644 /usr/share/keyrings/signal-desktop-keyring.gpg
+curl -fsSL https://updates.signal.org/static/desktop/apt/signal-desktop.sources -o /etc/apt/sources.list.d/signal-desktop.sources
+echo "-- signal-desktop.sources:"; cat /etc/apt/sources.list.d/signal-desktop.sources
+
+apt-get update
+apt_install signal-desktop
+apt_or_flatpak telegram-desktop org.telegram.desktop
+echo "== Tind: communication setup done"

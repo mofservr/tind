@@ -4,11 +4,11 @@ Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
 Priority: optional
-Depends: apt, curl, gnupg, ca-certificates, debconf, libnotify-bin
+Depends: apt, curl, gnupg, ca-certificates, debconf, libnotify-bin, jq, flatpak
 Installed-Size: 4
-Description: Tind optional stacks: games and developer tools
- Scripts that add the gaming stack (Steam, Lutris, Wine, 32-bit graphics
- libraries, all from Debian packages) and the developer base set (git,
- compilers, Python tools, GitHub CLI, VS Code from Microsoft's apt
- repository). They run from the installer's tick boxes on first boot, or
- later from Tind Apps. Nothing here is on the ISO; all of it needs internet.
+Description: Tind optional app boxes: games, developer, entertainment and more
+ Scripts for the optional app boxes: games (Steam, Lutris, Wine, Discord,
+ Heroic), developer tools, entertainment, creative, communication,
+ productivity and cloud (LibreOffice, Nextcloud, Bitwarden, Proton Mail) and
+ printers and scanners. They run from the installer's tick boxes on first boot,
+ or later from Tind Apps. Nothing here is on the ISO; all of it needs internet.
