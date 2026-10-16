@@ -21,9 +21,14 @@ enabled=false
 [org/gnome/desktop/wm/preferences]
 button-layout=':minimize,close'
 
-# Ctrl+Alt+T opens the Terminal
+# Ctrl+Alt+T opens the Terminal (GNOME 48 has no built-in terminal shortcut key, so it is a custom one)
 [org/gnome/settings-daemon/plugins/media-keys]
-terminal=['<Primary><Alt>t']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/']
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal]
+name='Terminal'
+command='gnome-terminal'
+binding='<Primary><Alt>t'
 
 [org/gnome/desktop/input-sources]
 sources=[('xkb', 'no')]
