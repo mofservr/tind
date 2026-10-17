@@ -1,0 +1,4 @@
+ref: claude/wallpapers-final
+sha: 39a9663864c216ab0c477d56d2d991a8a889c80e
+run: 39029605653
+results: packages=success iso=success boot=success
