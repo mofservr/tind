@@ -21,6 +21,13 @@ sleep 30
 systemd-run --unit=tind-ci-light --collect \
     sh -c "sleep 200; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus gsettings set org.gnome.desktop.interface color-scheme default" \
     >/dev/null 2>&1 || true
+# CI only: open Settings > Appearance (the accent swatches) in the dark session at 60 s and in the light one at
+# 240 s (the flip is at 200 s), each for 40 s; the boot job screenshots them at ~85 s and ~265 s
+for at in 60 240; do
+    systemd-run --unit=tind-ci-settings-$at --collect \
+        sh -c "sleep $at; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus WAYLAND_DISPLAY=wayland-0 timeout 40 gnome-control-center background" \
+        >/dev/null 2>&1 || true
+done
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
