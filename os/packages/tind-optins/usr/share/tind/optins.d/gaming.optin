@@ -1,4 +1,4 @@
 NAME="Games"
-DESC="Steam, Lutris and Wine set up natively, plus Discord, Heroic, ProtonUp-Qt, GameMode, MangoHud and Xbox controller drivers (needs internet, about 2 GB)"
+DESC="Steam, Lutris and Wine set up natively, plus GameMode and MangoHud (needs internet, about 2 GB)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-gaming"

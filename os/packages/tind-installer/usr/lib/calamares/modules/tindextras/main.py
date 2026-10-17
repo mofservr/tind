@@ -18,8 +18,7 @@ def run():
             chosen = f.read().split()
     except OSError:
         pass
-    known = ("gaming", "dev", "entertainment", "creative", "communication", "productivity", "hardware")
-    wanted = [x for x in known if x in chosen]
+    wanted = [x for x in ("gaming", "dev") if x in chosen]
     libcalamares.utils.debug("tindextras: file=%s chosen=%s wanted=%s" % (CHOICE, chosen, wanted))
     if not wanted or not root:
         return None

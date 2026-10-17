@@ -1,4 +1,0 @@
-NAME="Printers and scanners"
-DESC="HP printer support (HPLIP) and scanner support (SANE) (needs internet)"
-STATUS="ready"
-SCRIPT="/usr/lib/tind/setup-hardware"
