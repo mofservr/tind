@@ -1,4 +1,4 @@
 NAME="Developer tools"
-DESC="git, compilers, Python tools, GitHub CLI, VS Code, Claude Desktop, Wireshark, nmap, mtr, Remmina and virt-manager (needs internet)"
+DESC="git, compilers, Python tools, GitHub CLI, VS Code and Claude Desktop (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-dev"

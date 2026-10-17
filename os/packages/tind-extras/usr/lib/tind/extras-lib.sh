@@ -18,21 +18,3 @@ ensure_components() {
 }
 
 apt_install() { apt-get install -y --no-install-recommends "$@"; }
-
-# Small apps come from Flathub, system-wide (same remote as Tind Apps uses).
-flatpak_install() {
-    command -v flatpak >/dev/null 2>&1 || apt_install flatpak
-    flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    flatpak install --system -y --noninteractive flathub "$@"
-}
-
-# Run a nice-to-have step: a failure is logged but does not fail the whole stack.
-optional() {
-    local what="$1"; shift
-    "$@" || echo "WARNING: $what failed; continuing" >&2
-}
-
-# apt_or_flatpak PACKAGE FLATPAK_ID: Debian's package when this release has one, Flathub otherwise.
-apt_or_flatpak() {
-    if apt-cache show "$1" >/dev/null 2>&1; then apt_install "$1"; else flatpak_install "$2"; fi
-}
