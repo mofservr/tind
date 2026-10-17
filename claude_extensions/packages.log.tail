@@ -1,0 +1,400 @@
+-- vulkan-tools: 1.4.304.0+dfsg1-1
+-- mesa-utils: 9.0.0-2+b2
+-- libva-drm2: 2.22.0-3
+-- intel-media-va-driver-non-free: 25.2.3+ds1-1
+-- mesa-va-drivers: 25.0.7-2+deb13u1
+-- mesa-vdpau-drivers: 25.0.7-2+deb13u1
+-- firmware-amd-graphics: 20250410-2
+-- goverlay: 1.0-1
+-- gamescope: 3.16.22+ds-1~bpo13+1
+-- vkbasalt: 0.3.2.10-1+b2
+-- protontricks: 
+-- winetricks: 20250102-1
+-- zenity: 4.1.90-1
+== nvidia-driver depends/recommends
+nvidia-driver
+  PreDepends: nvidia-installer-cleanup
+    nvidia-installer-cleanup:i386
+  PreDepends: nvidia-legacy-check
+  Depends: nvidia-driver-libs
+  Depends: nvidia-driver-bin
+  Depends: xserver-xorg-video-nvidia
+  Depends: nvidia-vdpau-driver
+  Depends: nvidia-alternative
+ |Depends: nvidia-kernel-dkms
+ |Depends: <nvidia-kernel-550.163.01>
+    nvidia-kernel-dkms
+  Depends: <nvidia-open-kernel-550.163.01>
+    nvidia-open-kernel-dkms
+  Depends: nvidia-support
+    nvidia-support:i386
+  Recommends: nvidia-settings
+  Recommends: libnvidia-cfg1
+  Recommends: nvidia-persistenced
+ |Suggests: nvidia-kernel-dkms
+ |Suggests: nvidia-kernel-source
+  Suggests: nvidia-open-kernel-source
+== flathub refs
+app/com.bitwarden.desktop/x86_64/stable
+app/com.github.Matoking.protontricks/x86_64/stable
+app/com.heroicgameslauncher.hgl/x86_64/stable
+app/com.spotify.Client/x86_64/stable
+app/com.valvesoftware.Steam/x86_64/stable
+app/com.valvesoftware.SteamLink/x86_64/stable
+app/io.github.benjamimgois.goverlay/x86_64/stable
+app/net.davidotek.pupgui2/x86_64/stable
+app/net.lutris.Lutris/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Proton-GE/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.InhibitScreensaver/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.slonfig/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.steamtinkerlaunch/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.thcrap_steam_proton_wrapper/x86_64/stable
+runtime/org.freedesktop.Platform.GL32.nvidia-550-100/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-107-02/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-120/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-127-05/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-127-08/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-135/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-142/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-61/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-63/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-65/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-67/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-70/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-71/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-75/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-76/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-79/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-80/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-81/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-82/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-83/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-85/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-54-14/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-54-15/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-67/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-76/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-78/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-90-07/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-90-12/x86_64/1.4
+runtime/org.freedesktop.Platform.VulkanLayer.HdrWsi/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud.Sources/x86_64/stable
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.MangoHud/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.OBSVkCapture/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.gamescope/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.lsfgvk/x86_64/26.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/21.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/22.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/23.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/24.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
+== flatpak runtimes of game apps
+-- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
+-- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
+-- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/26.08 
+== every opt-in Flatpak ref exists on Flathub
+ok       com.bitwarden.desktop
+ok       org.gnome.Calendar
+ok       org.gnome.Contacts
+ok       org.gnome.Weather
+ok       org.gnome.Maps
+ok       org.gnome.clocks
+ok       org.gnome.baobab
+ok       org.gnome.Logs
+ok       org.gnome.font-viewer
+ok       org.gnome.Characters
+ok       org.gnome.SimpleScan
+ok       org.gnome.Connections
+ok       com.spotify.Client
+== lutris depends/recommends
+lutris
+  Depends: <python3:any>
+    python3:i386
+    python3
+  Depends: 7zip
+  Depends: cabextract
+    cabextract:i386
+  Depends: curl
+    curl:i386
+  Depends: fluid-soundfont-gs
+  Depends: gir1.2-gtk-3.0
+  Depends: gir1.2-notify-0.7
+  Depends: gir1.2-webkit2-4.1
+  Depends: mesa-utils
+  Depends: psmisc
+    psmisc:i386
+  Depends: python3-dbus
+  Depends: python3-distro
+  Depends: python3-gi
+  Depends: python3-gi-cairo
+  Depends: python3-lxml
+  Depends: python3-magic
+  Depends: python3-pil
+  Depends: python3-requests
+  Depends: python3-setproctitle
+  Depends: python3-yaml
+  Depends: unzip
+    unzip:i386
+  Depends: vulkan-tools
+  Depends: x11-xserver-utils
+    x11-xserver-utils:i386
+  Recommends: python3-evdev
+  Recommends: python3-protobuf
+  Recommends: gvfs-backends
+    gvfs-backends:i386
+ |Recommends: <libwine-development>
+  Recommends: libwine
+  Recommends: winetricks
+  Recommends: fluidsynth
+    fluidsynth:i386
+  Recommends: xdg-desktop-portal
+    xdg-desktop-portal:i386
+ |Recommends: xdg-desktop-portal-gtk
+    xdg-desktop-portal-gtk:i386
+  Recommends: xdg-desktop-portal-kde
+    xdg-desktop-portal-kde:i386
+  Recommends: gamemode
+  Recommends: gamescope
+== newer kernel: dry run
+Inst linux-image-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-7.2.6+deb13-common (7.2.6-1~bpo13+1 Debian Backports:stable-backports [all])
+Inst linux-headers-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+== Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu.
+== tind-extras: real run of the setup scripts
+setup-dev: OK
+setup-gaming: OK
+code 1.142.0-1792035033 ii 
+gamemode 1.8.2-2 ii 
+gh 2.46.0-3 ii 
+git 1:2.47.3-0+deb13u1 ii 
+lutris 0.5.19-2 ii 
+mangohud 0.7.2-2 ii 
+steam-devices 1:1.0.0.83~ds-3 ii 
+steam-installer 1:1.0.0.83~ds-3 ii 
+wine 10.0~repack-6 ii 
+wine32 10.0~repack-6 ii 
+winetricks 20250102-1 ii 
+1.142.0
+6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
+bp.list
+claude-desktop.list
+claude-desktop.sources
+debian.sources
+vscode.sources
+Types: deb
+URIs: https://packages.microsoft.com/repos/code
+Suites: stable
+Components: main
+Architectures: amd64
+Signed-By: /usr/share/keyrings/microsoft.gpg
+vm.max_map_count = 2147483642
+== verify-on-debian (informational)
+== release
+Debian GNU/Linux 13 (trixie)
+
+== disk (need ~25 GB free here)
+/dev/root       145G   64G   81G  44% /__w
+
+== KVM
+not available (VM tests will be slow)
+
+== live-build
+not installed
+
+== uBlock Origin package: where does it install?
+Package: webext-ublock-origin-firefox
+Source: ublock-origin
+Version: 1.67.0+dfsg-1~deb13u1
+Installed-Size: 14290
+Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+
+== Firefox ESR: policy locations it will read (after install)
+ls: cannot access '/etc/firefox/policies': No such file or directory
+ls: cannot access '/usr/lib/firefox-esr/distribution': No such file or directory
+(open about:policies in Firefox ESR: Active should list Tind's policies)
+
+== Calamares branding setting
+grep: /etc/calamares/settings.conf: No such file or directory
+
+== Dash to Dock package / UUID
+gnome-shell-extension-dashtodock:
+  Installed: (none)
+  Candidate: 100-2
+ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
+
+== package names
+== Depends (must exist)
+ok       adwaita-icon-theme
+ok       apparmor
+ok       apt
+ok       bluez
+ok       ca-certificates
+ok       calamares
+ok       calamares-settings-debian
+ok       cups
+ok       curl
+ok       dconf-cli
+ok       debconf
+ok       dkms
+ok       evolution-data-server
+ok       firefox-esr
+ok       firmware-amd-graphics
+ok       flatpak
+ok       fontconfig
+ok       fonts-cantarell
+ok       gdm3
+ok       glib-networking
+ok       gnome-calculator
+ok       gnome-control-center
+ok       gnome-disk-utility
+ok       gnome-keyring
+ok       gnome-menus
+ok       gnome-session
+ok       gnome-settings-daemon
+ok       gnome-shell
+ok       gnome-shell-extension-dashtodock
+ok       gnome-shell-extension-prefs
+ok       gnome-snapshot
+ok       gnome-software
+ok       gnome-software-plugin-flatpak
+ok       gnome-sushi
+ok       gnome-system-monitor
+ok       gnome-terminal
+ok       gnome-text-editor
+ok       gnupg
+ok       gsettings-desktop-schemas
+ok       gstreamer1.0-packagekit
+ok       gstreamer1.0-plugins-base
+ok       gstreamer1.0-plugins-good
+ok       gvfs-backends
+ok       gvfs-fuse
+ok       libatk-adaptor
+ok       libcanberra-pulse
+ok       libgl1-mesa-dri
+ok       libglib2.0-bin
+ok       libnotify-bin
+ok       libpam-gnome-keyring
+ok       libreoffice-calc
+ok       libreoffice-gtk3
+ok       libreoffice-impress
+ok       libreoffice-writer
+ok       linux-headers-amd64
+ok       loupe
+ok       mesa-utils
+ok       mesa-va-drivers
+ok       mesa-vdpau-drivers
+ok       mesa-vulkan-drivers
+ok       mokutil
+ok       nautilus
+ok       network-manager
+ok       nvidia-detect
+ok       nvidia-driver
+ok       nvidia-kernel-dkms
+ok       nvidia-vulkan-icd
+ok       orca
+ok       packagekit
+ok       papers
+ok       papirus-icon-theme
+ok       pciutils
+ok       pipewire-audio
+ok       pkexec
+ok       showtime
+ok       system-config-printer
+ok       system-config-printer-common
+ok       system-config-printer-udev
+ok       systemd-resolved
+ok       thunderbird
+ok       ufw
+ok       unattended-upgrades
+ok       usbutils
+ok       vulkan-tools
+ok       webext-ublock-origin-firefox
+ok       wireguard-tools
+ok       zenity
+== Recommends / package lists (nice to have)
+ok       amd64-microcode
+ok       apparmor-profiles
+ok       apt-listchanges
+ok       efibootmgr
+ok       firefox-esr
+ok       firefox-esr-l10n-nb-no
+ok       firefox-esr-l10n-nn-no
+ok       firmware-atheros
+ok       firmware-brcm80211
+ok       firmware-iwlwifi
+ok       firmware-linux
+ok       firmware-mediatek
+ok       firmware-misc-nonfree
+ok       firmware-realtek
+ok       fonts-noto-cjk
+ok       fonts-noto-color-emoji
+ok       fonts-noto-core
+ok       fonts-noto-mono
+ok       fonts-noto-ui-core
+ok       fwupd
+ok       gdm3
+ok       gnome-shell-extension-dashtodock
+ok       gnome-software
+ok       gnome-software-plugin-fwupd
+ok       grub-efi
+ok       grub-efi-amd64
+ok       grub-efi-amd64-signed
+ok       grub-pc-bin
+ok       hunspell-en-us
+ok       hunspell-no
+ok       intel-media-va-driver-non-free
+ok       intel-microcode
+ok       keyboard-configuration
+ok       libreoffice-help-en-us
+ok       libreoffice-l10n-nb
+ok       libreoffice-l10n-nn
+ok       live-config
+ok       live-config-systemd
+ok       locales
+ok       low-memory-monitor
+ok       mesa-vulkan-drivers
+ok       myspell-nb
+ok       ntfs-3g
+ok       nvidia-settings
+ok       os-prober
+ok       plymouth
+ok       plymouth-themes
+ok       power-profiles-daemon
+ok       qrencode
+ok       shim-signed
+ok       sudo
+ok       thunderbird
+ok       thunderbird-l10n-nb-no
+ok       thunderbird-l10n-nn-no
+ok       util-linux-extra
+ok       vulkan-tools
+ok       xdg-desktop-portal-gnome
+== exit status: 0
