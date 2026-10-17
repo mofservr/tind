@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.system-monitor-panel"
+          path="/org/gnome/shell/extensions/system-monitor-panel/">
+
+    <key name="refresh-interval" type="i">
+      <default>30</default>
+      <range min="2" max="300"/>
+      <summary>Refresh interval</summary>
+      <description>How often to refresh system metrics, in seconds (2–300).</description>
+    </key>
+
+    <key name="temperature-unit" type="s">
+      <default>'celsius'</default>
+      <summary>Temperature unit</summary>
+      <description>Display temperature in "celsius" or "fahrenheit".</description>
+    </key>
+
+    <key name="network-unit" type="s">
+      <default>'bytes'</default>
+      <summary>Network speed unit</summary>
+      <description>Display network speed in "bytes" (KB/s, MB/s) or "bits" (kbps, Mbps).</description>
+    </key>
+
+    <key name="panel-order" type="as">
+      <default>['cpu','gpu','memory','disk','temperature','network']</default>
+      <summary>Panel metric order</summary>
+      <description>
+        Left-to-right order of the metrics inside the indicator. Valid ids are
+        "cpu", "gpu", "memory", "disk", "temperature" and "network"; unknown
+        ids are ignored and any that are missing are appended in their default
+        order. Hidden metrics keep their place but are not drawn.
+      </description>
+    </key>
+
+    <key name="panel-position" type="s">
+      <default>'right'</default>
+      <summary>Panel position</summary>
+      <description>
+        Where to place the indicator in the top panel: "far-left" (start of the
+        left box), "left" (end of the left box), "right" (start of the right
+        box) or "far-right" (end of the right box).
+      </description>
+    </key>
+
+    <key name="show-cpu" type="b">
+      <default>true</default>
+      <summary>Show CPU usage</summary>
+      <description>Whether to show CPU usage percentage in the panel.</description>
+    </key>
+
+    <key name="show-gpu" type="b">
+      <default>false</default>
+      <summary>Show GPU usage</summary>
+      <description>
+        Whether to show GPU usage percentage in the panel. The entry hides
+        itself on machines where no GPU is detected.
+      </description>
+    </key>
+
+    <key name="show-memory" type="b">
+      <default>true</default>
+      <summary>Show memory usage</summary>
+      <description>Whether to show memory usage percentage in the panel.</description>
+    </key>
+
+    <key name="show-disk" type="b">
+      <default>true</default>
+      <summary>Show disk usage</summary>
+      <description>Whether to show disk usage percentage in the panel.</description>
+    </key>
+
+    <key name="show-temperature" type="b">
+      <default>true</default>
+      <summary>Show temperature</summary>
+      <description>Whether to show device temperature in the panel.</description>
+    </key>
+
+    <key name="show-network" type="b">
+      <default>true</default>
+      <summary>Show network speed</summary>
+      <description>Whether to show network download/upload speed in the panel.</description>
+    </key>
+
+    <key name="show-cpu-card" type="b">
+      <default>true</default>
+      <summary>Show CPU card</summary>
+      <description>Whether to show the CPU card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-gpu-card" type="b">
+      <default>false</default>
+      <summary>Show GPU card</summary>
+      <description>Whether to show the GPU card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-memory-card" type="b">
+      <default>true</default>
+      <summary>Show memory card</summary>
+      <description>Whether to show the memory card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-disk-card" type="b">
+      <default>true</default>
+      <summary>Show disk card</summary>
+      <description>Whether to show the disk usage card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-external-disks" type="b">
+      <default>false</default>
+      <summary>Show external disks</summary>
+      <description>
+        Whether the disk card also lists removable and external drives (USB,
+        SD cards and anything auto-mounted under /run/media, /media or /mnt).
+      </description>
+    </key>
+
+    <key name="show-temperature-card" type="b">
+      <default>true</default>
+      <summary>Show temperature card</summary>
+      <description>Whether to show the temperature card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-network-card" type="b">
+      <default>true</default>
+      <summary>Show network card</summary>
+      <description>Whether to show the network card in the dropdown menu.</description>
+    </key>
+
+    <key name="show-icons" type="b">
+      <default>true</default>
+      <summary>Show icons</summary>
+      <description>Whether to show icons next to metric values in the panel.</description>
+    </key>
+
+  </schema>
+</schemalist>

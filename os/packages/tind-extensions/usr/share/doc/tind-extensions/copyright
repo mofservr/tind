@@ -1,0 +1,15 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Tind GNOME Shell extensions
+
+Files: usr/share/gnome-shell/extensions/system-monitor-panel@naimur/*
+Copyright: naimur900
+License: GPL-2+
+ Source: https://github.com/naimur900/system-monitor-panel-gnome
+ Full text: LICENSE.system-monitor-panel in this directory
+
+Files: usr/share/gnome-shell/extensions/multi-monitors-bar@frederykabryan/*
+Copyright: Frederyk Abryan, with code from Multi Monitors by spin83
+License: GPL-2+
+ Source: https://github.com/FrederykAbryan/multi-monitors-bar_fapv2
+ Original: https://github.com/spin83/multi-monitors-add-on
+ Full text: LICENSE.multi-monitors-bar in this directory

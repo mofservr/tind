@@ -1,0 +1,21 @@
+Package: tind-extensions
+Version: 0.1.0
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: gnome
+Priority: optional
+Depends: gnome-shell (>= 48), libglib2.0-bin
+Installed-Size: 1
+Description: Tind GNOME Shell extensions: System Monitor and Multi Monitor Bar
+ Two third-party GNOME Shell extensions that Tind enables by default, shipped
+ system-wide (both GPL-2.0-or-later):
+ .
+  * System Monitor (system-monitor-panel@naimur) by naimur900:
+    CPU, memory, disk, network and temperature in the top bar.
+    https://github.com/naimur900/system-monitor-panel-gnome
+  * Multi Monitor Bar (multi-monitors-bar@frederykabryan) by Frederyk Abryan,
+    a fork of Multi Monitors by spin83: top bar on every monitor.
+    https://github.com/FrederykAbryan/multi-monitors-bar_fapv2
+ .
+ Which extensions are enabled is set in tind-branding's dconf defaults.
+ Both extensions list GNOME Shell 48 (Debian 13) as supported.

@@ -1,0 +1,462 @@
+/* ============================================
+   System Monitor — GNOME 50 Extension
+   ============================================ */
+
+/* --- Panel Status Indicator --- */
+
+.smp-panel-box {
+  spacing: 10px;
+  padding: 0 2px;
+}
+
+.smp-metric-box {
+  spacing: 3px;
+  padding: 0 1px;
+}
+
+/* Cancel the horizontal padding/margin that the shell's system-status-icon
+   class adds, so `spacing` alone controls the icon-to-label gap. */
+.smp-metric-icon {
+  icon-size: 14px;
+  -st-icon-style: symbolic;
+  padding: 0;
+  margin: 0;
+}
+
+.smp-metric-label {
+  font-size: 11px;
+  font-weight: bold;
+  margin-top: 1px;
+}
+
+/* Color-coded panel labels based on status */
+.smp-label-normal {
+  color: #e0e0e0;
+}
+
+.smp-label-warning {
+  color: #f8e45c; /* Yellow */
+}
+
+.smp-label-critical {
+  color: #ff7b63; /* Red/Orange */
+}
+
+/* --- Dropdown Menu Container --- */
+
+.smp-dropdown-menu {
+  min-width: 560px;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+/* Row that holds two cards side by side (Temperature + Network).
+   spacing: 0 cancels the popup-menu-item default, so the gap between the
+   two cards comes only from their own 4px margins, matching every other gap. */
+.smp-card-row {
+  padding: 0;
+  spacing: 0;
+}
+
+/* --- Dashboard Card Styling --- */
+
+.smp-card {
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 5px;
+  /* Symmetric margin drives a uniform 8px gap between every card
+     (4px + 4px), independent of the container's outer padding. */
+  margin: 4px;
+  padding: 8px 10px;
+  spacing: 6px;
+}
+
+/* Half-width cards that share a row (Temperature + Network). Equal preferred
+   width + x_expand makes them stretch to equal final width; the symmetric 4px
+   card margin already yields the same 8px gap between them as everywhere else. */
+.smp-card-half {
+  width: 250px;
+}
+
+.smp-card-header {
+  spacing: 6px;
+}
+
+.smp-card-icon {
+  icon-size: 14px;
+}
+
+.smp-card-title {
+  font-size: 11.5px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+.smp-card-value {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Small section label used inside cards (e.g. "Per-core usage") */
+.smp-section-subtitle {
+  font-size: 9px;
+  font-weight: bold;
+  color: #8a8a8a;
+  padding-top: 4px;
+  padding-bottom: 1px;
+}
+
+/* Accent Colors for Sections */
+.smp-color-cpu {
+  color: #3584e4;
+} /* Blue */
+.smp-color-cpu-bg {
+  background-color: #3584e4;
+}
+
+.smp-color-gpu {
+  color: #4dd0e1;
+} /* Cyan */
+.smp-color-gpu-bg {
+  background-color: #4dd0e1;
+}
+
+.smp-color-mem {
+  color: #c061cb;
+} /* Purple */
+.smp-color-mem-bg {
+  background-color: #c061cb;
+}
+
+.smp-color-disk {
+  color: #ffa348;
+} /* Orange */
+.smp-color-disk-bg {
+  background-color: #ffa348;
+}
+
+.smp-color-temp {
+  color: #ff7b63;
+} /* Coral */
+.smp-color-temp-bg {
+  background-color: #ff7b63;
+}
+
+.smp-color-net {
+  color: #2ec27e;
+} /* Green */
+.smp-color-net-bg {
+  background-color: #2ec27e;
+}
+
+/* --- Progress Bars --- */
+
+.smp-bar-bg {
+  background-color: rgba(255, 255, 255, 0.07);
+  border-radius: 4px;
+  height: 7px;
+  width: 500px;
+}
+
+/* Narrower bar for the half-width cards (Temperature/Network row) */
+.smp-bar-bg-half {
+  width: 220px;
+}
+
+.smp-bar-fill {
+  border-radius: 4px;
+  height: 7px;
+}
+
+/* --- CPU Cores (always-visible grid) --- */
+
+.smp-cores-container {
+  padding-top: 2px;
+  spacing: 5px;
+}
+
+.smp-cores-row {
+  spacing: 12px;
+}
+
+.smp-core-box {
+  spacing: 6px;
+}
+
+.smp-core-label {
+  font-size: 10px;
+  color: #9a9a9a;
+  width: 42px;
+}
+
+.smp-mini-bar-bg {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  height: 5px;
+  width: 150px;
+}
+
+.smp-mini-bar-fill {
+  border-radius: 3px;
+  height: 5px;
+}
+
+.smp-core-value {
+  font-size: 10px;
+  font-weight: bold;
+  color: #eeeeee;
+  width: 30px;
+  text-align: right;
+}
+
+/* --- GPU List --- */
+
+.smp-gpus-container {
+  padding-top: 2px;
+  spacing: 8px;
+}
+
+.smp-gpu-entry {
+  spacing: 4px;
+}
+
+.smp-gpu-row {
+  spacing: 5px;
+}
+
+.smp-gpu-name {
+  font-size: 10.5px;
+  color: #eeeeee;
+}
+
+/* Marks a GPU as integrated (iGPU) or dedicated (dGPU) */
+.smp-gpu-badge {
+  font-size: 8px;
+  font-weight: bold;
+  color: #4dd0e1;
+  background-color: rgba(77, 208, 225, 0.15);
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+.smp-gpu-percent {
+  font-size: 10.5px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+/* Stands in for the usage bar when the driver reports no utilisation */
+.smp-gpu-note {
+  font-size: 9.5px;
+  color: #888888;
+  max-width: 500px;
+  padding: 1px 0;
+}
+
+/* --- Memory Detail Rows --- */
+
+.smp-detail-row {
+  padding: 1px 0;
+}
+
+.smp-detail-title {
+  font-size: 10.5px;
+  color: #9a9a9a;
+}
+
+.smp-detail-value {
+  font-size: 10.5px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+/* Network current-speed values (slightly larger, accented) */
+.smp-net-speed-value {
+  font-size: 11px;
+  font-weight: bold;
+  color: #2ec27e;
+}
+
+/* Swap usage */
+.smp-swap-box {
+  margin-top: 4px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  spacing: 4px;
+}
+
+.smp-swap-header {
+  spacing: 6px;
+}
+
+.smp-swap-title {
+  font-size: 10px;
+  color: #9a9a9a;
+}
+
+.smp-swap-value {
+  font-size: 10px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+.smp-swap-bar-bg {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  height: 5px;
+  width: 500px;
+}
+
+.smp-swap-bar-fill {
+  background-color: #986aeb;
+  border-radius: 3px;
+  height: 5px;
+}
+
+/* Narrower swap bar for the half-width Memory card */
+.smp-swap-bar-bg-half {
+  width: 220px;
+}
+
+/* --- Disk Filesystem List --- */
+
+.smp-disks-container {
+  padding-top: 4px;
+  spacing: 7px;
+}
+
+.smp-disk-entry {
+  spacing: 3px;
+}
+
+.smp-disk-row {
+  spacing: 5px;
+}
+
+.smp-disk-name {
+  font-size: 10.5px;
+  color: #eeeeee;
+}
+
+/* Marks a removable/USB drive in the filesystem list */
+.smp-disk-badge {
+  font-size: 8px;
+  font-weight: bold;
+  color: #ffa348;
+  background-color: rgba(255, 163, 72, 0.15);
+  border-radius: 3px;
+  padding: 0 4px;
+}
+
+.smp-disk-percent {
+  font-size: 10.5px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+.smp-disk-bar-bg {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 3px;
+  height: 5px;
+  width: 220px;
+}
+
+.smp-disk-bar-fill {
+  border-radius: 3px;
+  height: 5px;
+}
+
+.smp-disk-detail {
+  font-size: 9.5px;
+  color: #9a9a9a;
+}
+
+/* --- Temperature Sensors List --- */
+
+.smp-sensors-container {
+  padding-top: 4px;
+  spacing: 3px;
+}
+
+.smp-sensor-row {
+  padding: 1px 0;
+}
+
+.smp-sensor-name {
+  font-size: 10.5px;
+  color: #9a9a9a;
+}
+
+.smp-sensor-value {
+  font-size: 10.5px;
+  font-weight: bold;
+  color: #eeeeee;
+}
+
+.smp-no-sensors {
+  font-size: 10px;
+  color: #888888;
+  padding: 2px 0;
+}
+
+/* Threshold classes for bars */
+.smp-progress-normal {
+  background-color: #3584e4;
+} /* Blue */
+.smp-progress-warning {
+  background-color: #f8e45c;
+} /* Yellow */
+.smp-progress-critical {
+  background-color: #e01b24;
+} /* Red */
+
+/* --- Footer Layout (Quick Settings buttons) --- */
+
+/* 4px on every side matches the cards' 4px margin, so the buttons line up
+   with the card edges and the top gap matches the 8px used elsewhere. */
+.smp-footer {
+  padding: 4px;
+}
+
+.smp-footer-box {
+  spacing: 8px;
+}
+
+.smp-footer-button {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 5px;
+  padding: 6px 0;
+  transition: background-color 150ms ease;
+}
+
+.smp-footer-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.smp-footer-button:active {
+  background-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Compact icon-only button (Refresh) */
+.smp-footer-icon-button {
+  padding: 6px 11px;
+}
+
+.smp-footer-btn-content {
+  spacing: 6px;
+  x-align: center;
+  y-align: center;
+}
+
+.smp-footer-btn-icon {
+  icon-size: 14px;
+  color: #eeeeee;
+}
+
+.smp-footer-btn-label {
+  font-size: 11px;
+  font-weight: bold;
+  color: #eeeeee;
+}

@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    rm -f /usr/share/gnome-shell/extensions/multi-monitors-bar@frederykabryan/schemas/gschemas.compiled \
+          /usr/share/gnome-shell/extensions/system-monitor-panel@naimur/schemas/gschemas.compiled
+fi
+exit 0

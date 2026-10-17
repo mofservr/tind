@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+if [ "$1" = "configure" ]; then
+    for d in /usr/share/gnome-shell/extensions/multi-monitors-bar@frederykabryan \
+             /usr/share/gnome-shell/extensions/system-monitor-panel@naimur; do
+        [ -d "$d/schemas" ] && glib-compile-schemas "$d/schemas" || true
+    done
+fi
+exit 0

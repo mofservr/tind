@@ -1,0 +1,4 @@
+NAME="Upscayl"
+DESC="AI image upscaler for artwork and old photos (Flatpak)"
+STATUS="ready"
+FLATPAK_REF="org.upscayl.Upscayl"

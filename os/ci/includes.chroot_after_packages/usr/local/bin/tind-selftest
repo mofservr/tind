@@ -65,6 +65,12 @@ echo "input-sources = $(asuser gsettings get org.gnome.desktop.input-sources sou
 echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbols' | head -1)"
 cat /etc/default/keyboard 2>&1 | grep -E '^XKB(LAYOUT|MODEL)'
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
+for u in appindicatorsupport@rgcjonas.gmail.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
+  d=/usr/share/gnome-shell/extensions/$u
+  echo "$u: files $(test -e $d/metadata.json && echo present || echo MISSING), schema $(test -e $d/schemas/gschemas.compiled && echo compiled || echo none-or-NOT-COMPILED), $(asuser gnome-extensions list --enabled 2>&1 | grep -qx "$u" && echo ENABLED || echo NOT-ENABLED)"
+  asuser gnome-extensions info "$u" 2>&1 | grep -iE 'state|error|version' | head -4
+done
+echo "file-roller: $(dpkg -s file-roller >/dev/null 2>&1 && echo installed || echo MISSING)"
 sec firefox policies
 for f in /etc/firefox/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
 jq -e . /etc/firefox/policies/policies.json >/dev/null && echo "firefox policies.json: valid JSON"
