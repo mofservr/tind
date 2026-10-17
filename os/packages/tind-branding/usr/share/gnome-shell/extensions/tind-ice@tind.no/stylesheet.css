@@ -1,37 +1,36 @@
-/* Tind Ice v4: a flat frame, one even haze. Night (default) and midday.
+/* Tind Ice v5: one colour for the whole frame, the window header colour.
  *
- * Principle: the interface is there and looks pleasant, but never asks for attention.
- * The top bar (full width) and the dock (full height, always visible, flush left under the bar) are
- * one flat field with square corners, the same tint everywhere (93 % opaque), so they read as a
- * frame around the screen. Menus, Quick Settings and cards are rounded and 99 % opaque so text
- * behind them never competes. Colour is a quiet blue-teal at night and a quiet off-white at midday.
- * No gradients, no drop shadows, no glow.
- * Controls (Quick Settings toggles, icon buttons, slider tracks) get a subtle 1px outline: light
- * in dark style, dark in light style, so they stay readable on any panel.
+ * The top bar, the dock, menus, Quick Settings and notification cards all use the same solid
+ * colour as GNOME's own window header bar, so shell and apps read as one thing:
+ *   dark  #292929   (text #F2F2F2)        light #DFDBD8   (text #2E2A27)
+ * Solid, no transparency, no gradients, no glow. The top bar and dock stay square and flat (one frame
+ * along the top and left edges); menus, Quick Settings and cards are rounded with a soft window shadow.
+ * Controls (Quick Settings toggles, icon buttons, slider tracks) get a subtle 1px outline.
+ *
+ * Accent colour: nine shades, teal (deep to soft) then alpenglow (soft to deep), see the ACCENTS block
+ * at the end. extension.js puts .tind-accent-<name> (GNOME's accent-color slot) on Main.uiGroup.
+ * The same nine shades are set for GTK 4 / libadwaita apps in /etc/skel/.config/gtk-4.0/gtk.css.
+ * Default accent: Tind teal in the dark theme, alpenglow in the light theme (extension.js swaps them
+ * when the theme changes, unless the user picked something else).
  *
  * Light mode is the .tind-light section at the end of this file; extension.js puts that class on
  * Main.uiGroup when the colour scheme is not "prefer-dark".
  *
  * Class names are GNOME Shell 48's own (checked against its theme): a split toggle is
  * .quick-toggle-has-menu containing .quick-toggle (left half), .quick-toggle-separator (1px seam)
- * and .quick-toggle-menu-button (the arrow, right half). There is no .quick-menu-toggle or
- * .quick-toggle-arrow class.
+ * and .quick-toggle-menu-button (the arrow, right half).
  *
  * Limits of GNOME Shell CSS: no backdrop blur, only two-stop gradients.
- *
- * Palette (design/TOKENS.md):
- *   night haze #163e4f at 93 % (menus #184052 at 99 %)   accent #0b8274 / #0e7a6e   on-accent text #c9fff0
- *   day haze   #dcdfee at 95 % (menus #eceef7 at 99 %)   accent rosy salmon
  */
 
 /* ---- top bar ------------------------------------------------------------ */
 #panel {
-  background-color: rgba(22, 62, 79, 0.93);
+  background-color: #292929;
   border: none;
   box-shadow: none;
 }
 
-#panel .panel-button { color: #eaf6fb; }
+#panel .panel-button { color: #F2F2F2; }
 
 #panel .panel-button:hover,
 #panel .panel-button:focus,
@@ -45,17 +44,12 @@
 #dash .dash-background,
 #dashtodockContainer #dash .dash-background,
 #dashtodockContainer.left #dash .dash-background {
-  background-color: rgba(22, 62, 79, 0.93);
+  background-color: #292929;
   border: none;
   border-radius: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
   box-shadow: none;
-}
-
-.app-well-app-running-dot,
-#dashtodockContainer .app-well-app-running-dot {
-  background-color: #7cf0d8;
 }
 
 #dash .app-well-app.focused .overview-icon {
@@ -72,7 +66,7 @@
 /* ---- menus and popovers ------------------------------------------------- */
 .popup-menu-content,
 .candidate-popup-content {
-  background-color: rgba(24, 64, 82, 0.99);
+  background-color: #292929;
   border: none;
   border-radius: 20px;
   box-shadow: none;
@@ -87,11 +81,11 @@
 /* ---- Quick Settings and the calendar popover ---------------------------- */
 .quick-settings,
 .datemenu-popover {
-  background-color: rgba(24, 64, 82, 0.99);
+  background-color: #292929;
   border: none;
   border-radius: 24px;
   box-shadow: none;
-  color: #eaf6fb;
+  color: #F2F2F2;
 }
 
 /* plain toggles (Dark Style, Night Light, ...) and every toggle half: full pill by default */
@@ -100,17 +94,11 @@
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
   box-shadow: none;
-  color: #eaf6fb;
+  color: #F2F2F2;
 }
 
 .quick-toggle:hover,
 .quick-toggle:focus { border-color: rgba(255, 255, 255, 0.34); }
-
-.quick-toggle:checked {
-  background-color: rgba(6, 112, 104, 0.80);
-  border-color: rgba(255, 255, 255, 0.28);
-  color: #c9fff0;
-}
 
 /* split toggle = one pill: toggle half (left), 1px separator, arrow half (right).
  * Inner corners are square and the separator is the only seam. */
@@ -137,7 +125,7 @@
   border-left-width: 0;
   border-radius: 0 999px 999px 0;
   box-shadow: none;
-  color: #eaf6fb;
+  color: #F2F2F2;
 }
 
 .quick-toggle-has-menu .quick-toggle-menu-button:rtl {
@@ -146,17 +134,11 @@
   border-right-width: 0;
   border-radius: 999px 0 0 999px;
   box-shadow: none;
-  color: #eaf6fb;
+  color: #F2F2F2;
 }
 
 .quick-toggle-has-menu .quick-toggle-menu-button:hover,
 .quick-toggle-has-menu .quick-toggle-menu-button:focus { border-color: rgba(255, 255, 255, 0.34); }
-
-.quick-toggle-has-menu .quick-toggle-menu-button:checked {
-  background-color: rgba(6, 112, 104, 0.80);
-  border-color: rgba(255, 255, 255, 0.28);
-  color: #c9fff0;
-}
 
 .quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(255, 255, 255, 0.22); }
 .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(201, 255, 240, 0.40); }
@@ -166,7 +148,7 @@
   background-color: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: none;
-  color: #eaf6fb;
+  color: #F2F2F2;
 }
 
 .quick-settings .icon-button,
@@ -177,13 +159,12 @@
 }
 
 .slider {
-  color: #e9fffa;
+  color: #F2F2F2;
   -barlevel-height: 12px;
   -barlevel-border-radius: 6px;
   -barlevel-background-color: rgba(255, 255, 255, 0.14);
   -barlevel-border-color: rgba(255, 255, 255, 0.22);
   -barlevel-border-width: 1px;
-  -barlevel-active-background-color: #0b8274;
   -barlevel-active-border-color: rgba(255, 255, 255, 0.28);
   -slider-handle-radius: 10px;
 }
@@ -194,7 +175,7 @@
 .events-button,
 .world-clocks-button,
 .weather-button {
-  background-color: rgba(24, 64, 82, 0.99);
+  background-color: #292929;
   border: none;
   border-radius: 18px;
 }
@@ -212,19 +193,19 @@
  * are dark tints (white-on-white would vanish).
  * ====================================================================================== */
 
-.tind-light #panel { background-color: rgba(220, 223, 238, 0.95); }
+.tind-light #panel { background-color: #DFDBD8; }
 
 .tind-light #panel .panel-button,
 .tind-light #panel .panel-button .system-status-icon,
-.tind-light #panel .clock-display { color: #1a2a3a; }
+.tind-light #panel .clock-display { color: #2E2A27; }
 
 /* the overview keeps a dark backdrop in both schemes: the bar goes night-coloured there */
 
-.tind-light #panel:overview { background-color: rgba(22, 62, 79, 0.93); }
+.tind-light #panel:overview { background-color: #292929; }
 
 .tind-light #panel:overview .panel-button,
 .tind-light #panel:overview .panel-button .system-status-icon,
-.tind-light #panel:overview .clock-display { color: #eaf6fb; }
+.tind-light #panel:overview .clock-display { color: #F2F2F2; }
 
 .tind-light #panel .panel-button:hover,
 .tind-light #panel .panel-button:focus,
@@ -239,11 +220,8 @@
 .tind-light #dash .dash-background,
 .tind-light #dashtodockContainer #dash .dash-background,
 .tind-light #dashtodockContainer.left #dash .dash-background {
-  background-color: rgba(220, 223, 238, 0.95);
+  background-color: #DFDBD8;
 }
-
-.tind-light .app-well-app-running-dot,
-.tind-light #dashtodockContainer .app-well-app-running-dot { background-color: #d96a62; }
 
 .tind-light #dash .app-well-app.focused .overview-icon { background-color: rgba(26, 42, 58, 0.10); }
 
@@ -256,7 +234,7 @@
 .tind-light .message,
 .tind-light .events-button,
 .tind-light .world-clocks-button,
-.tind-light .weather-button { background-color: rgba(236, 238, 247, 0.99); color: #1a2a3a; }
+.tind-light .weather-button { background-color: #DFDBD8; color: #2E2A27; }
 
 .tind-light .popup-menu-item:hover,
 .tind-light .popup-menu-item:focus,
@@ -264,15 +242,15 @@
 
 .tind-light .quick-settings,
 .tind-light .datemenu-popover {
-  background-color: rgba(236, 238, 247, 0.99);
-  color: #1a2a3a;
+  background-color: #DFDBD8;
+  color: #2E2A27;
 }
 
 .tind-light .quick-toggle,
 .tind-light .quick-toggle-has-menu .quick-toggle-menu-button {
   background-color: rgba(26, 42, 58, 0.06);
   border-color: rgba(26, 42, 58, 0.22);
-  color: #1a2a3a;
+  color: #2E2A27;
 }
 
 .tind-light .quick-toggle:hover,
@@ -283,27 +261,20 @@
   border-color: rgba(26, 42, 58, 0.34);
 }
 
-.tind-light .quick-toggle:checked,
-.tind-light .quick-toggle-has-menu .quick-toggle-menu-button:checked {
-  background-color: rgba(224, 112, 112, 0.55);
-  border-color: rgba(107, 36, 48, 0.30);
-  color: #6b2430;
-}
-
 .tind-light .quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(26, 42, 58, 0.22); }
 .tind-light .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(107, 36, 48, 0.30); }
 
 .tind-light .quick-toggle-menu {
   background-color: rgba(26, 42, 58, 0.05);
   border-color: rgba(26, 42, 58, 0.16);
-  color: #1a2a3a;
+  color: #2E2A27;
 }
 
 .tind-light .quick-settings .icon-button,
 .tind-light .quick-settings .button.icon-button {
   background-color: rgba(26, 42, 58, 0.06);
   border-color: rgba(26, 42, 58, 0.22);
-  color: #1a2a3a;
+  color: #2E2A27;
 }
 
 .tind-light .quick-settings .icon-button:hover,
@@ -313,10 +284,8 @@
 }
 
 .tind-light .slider {
-  color: #b84a50;
   -barlevel-background-color: rgba(26, 42, 58, 0.14);
   -barlevel-border-color: rgba(26, 42, 58, 0.22);
-  -barlevel-active-background-color: #e07a78;
   -barlevel-active-border-color: rgba(107, 36, 48, 0.30);
   -slider-handle-border-width: 1px;
   -slider-handle-border-color: rgba(26, 42, 58, 0.35);
@@ -341,3 +310,144 @@
 .tind-light .candidate-popup-content {
   box-shadow: 0 4px 20px rgba(26, 30, 50, 0.28);
 }
+
+/* ======== ACCENTS =====================================================================
+ * One block per GNOME accent slot (the order of the Settings swatches). Each sets: checked toggles,
+ * the slider fill and the dock running dot. The text colour on the accent is white or near-black,
+ * whichever reads at 4.5:1 or better.
+ * ====================================================================================== */
+
+.tind-accent-blue .quick-toggle:checked,
+.tind-accent-blue .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #19685F;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #FFFFFF;
+}
+.tind-accent-blue .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-blue .slider {
+  color: #19685F;
+  -barlevel-active-background-color: #19685F;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-blue .app-well-app-running-dot,
+.tind-accent-blue #dashtodockContainer .app-well-app-running-dot { background-color: #19685F; }
+
+.tind-accent-teal .quick-toggle:checked,
+.tind-accent-teal .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #21857A;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #FFFFFF;
+}
+.tind-accent-teal .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-teal .slider {
+  color: #21857A;
+  -barlevel-active-background-color: #21857A;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-teal .app-well-app-running-dot,
+.tind-accent-teal #dashtodockContainer .app-well-app-running-dot { background-color: #21857A; }
+
+.tind-accent-green .quick-toggle:checked,
+.tind-accent-green .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #3AA79A;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-green .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-green .slider {
+  color: #3AA79A;
+  -barlevel-active-background-color: #3AA79A;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-green .app-well-app-running-dot,
+.tind-accent-green #dashtodockContainer .app-well-app-running-dot { background-color: #3AA79A; }
+
+.tind-accent-yellow .quick-toggle:checked,
+.tind-accent-yellow .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #68C4B7;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-yellow .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-yellow .slider {
+  color: #68C4B7;
+  -barlevel-active-background-color: #68C4B7;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-yellow .app-well-app-running-dot,
+.tind-accent-yellow #dashtodockContainer .app-well-app-running-dot { background-color: #68C4B7; }
+
+.tind-accent-orange .quick-toggle:checked,
+.tind-accent-orange .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #A2DBD2;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-orange .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-orange .slider {
+  color: #A2DBD2;
+  -barlevel-active-background-color: #A2DBD2;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-orange .app-well-app-running-dot,
+.tind-accent-orange #dashtodockContainer .app-well-app-running-dot { background-color: #A2DBD2; }
+
+.tind-accent-red .quick-toggle:checked,
+.tind-accent-red .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #FED2CB;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-red .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-red .slider {
+  color: #FED2CB;
+  -barlevel-active-background-color: #FED2CB;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-red .app-well-app-running-dot,
+.tind-accent-red #dashtodockContainer .app-well-app-running-dot { background-color: #FED2CB; }
+
+.tind-accent-pink .quick-toggle:checked,
+.tind-accent-pink .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #F4988C;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-pink .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-pink .slider {
+  color: #F4988C;
+  -barlevel-active-background-color: #F4988C;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-pink .app-well-app-running-dot,
+.tind-accent-pink #dashtodockContainer .app-well-app-running-dot { background-color: #F4988C; }
+
+.tind-accent-purple .quick-toggle:checked,
+.tind-accent-purple .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #E27E75;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-purple .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-purple .slider {
+  color: #E27E75;
+  -barlevel-active-background-color: #E27E75;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-purple .app-well-app-running-dot,
+.tind-accent-purple #dashtodockContainer .app-well-app-running-dot { background-color: #E27E75; }
+
+.tind-accent-slate .quick-toggle:checked,
+.tind-accent-slate .quick-toggle-has-menu .quick-toggle-menu-button:checked {
+  background-color: #C25D59;
+  border-color: rgba(0, 0, 0, 0.18);
+  color: #14110F;
+}
+.tind-accent-slate .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
+.tind-accent-slate .slider {
+  color: #C25D59;
+  -barlevel-active-background-color: #C25D59;
+  -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
+}
+.tind-accent-slate .app-well-app-running-dot,
+.tind-accent-slate #dashtodockContainer .app-well-app-running-dot { background-color: #C25D59; }

@@ -222,6 +222,18 @@ jobs:
               [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
               echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             }
+            settings_shot() {
+              # type the command into the open Terminal, then screenshot Settings > Appearance (accent swatches)
+              for k in g n o m e minus c o n t r o l minus c e n t e r spc b a c k g r o u n d spc ampersand ret; do
+                case $k in ampersand) k=shift-7;; esac
+                echo "sendkey $k" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 0.15
+              done
+              sleep 12
+              echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
+              sleep 1
+              [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
+              echo "sendkey alt-f4" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 3
+            }
             sleep 6
             # leave the overview, open a Terminal with Ctrl+Alt+T and show the plain desktop (dock, bar, window buttons)
             echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 3
@@ -229,10 +241,12 @@ jobs:
             echo "screendump $PWD/shots/desktop-dark.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-dark)"
             sleep 1; [ -f shots/desktop-dark.ppm ] && convert shots/desktop-dark.ppm logs/desktop-dark.png
             qs_shot quickpanel-dark
+            settings_shot settings-dark
             sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
             echo "screendump $PWD/shots/desktop-light.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-light)"
             sleep 1; [ -f shots/desktop-light.ppm ] && convert shots/desktop-light.ppm logs/desktop-light.png
             qs_shot quickpanel-light
+            settings_shot settings-light
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop

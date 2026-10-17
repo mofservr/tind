@@ -1,0 +1,13 @@
+/* Tind accent colours: nine shades, teal (deep to soft) then alpenglow (soft to deep).
+ * The names are GNOME's accent slots; only the colours are Tind's. Text on an accent is chosen by lightness. */
+:root {
+  --accent-blue: #19685F;
+  --accent-teal: #21857A;
+  --accent-green: #3AA79A;
+  --accent-yellow: #68C4B7;
+  --accent-orange: #A2DBD2;
+  --accent-red: #FED2CB;
+  --accent-pink: #F4988C;
+  --accent-purple: #E27E75;
+  --accent-slate: #C25D59;
+}
