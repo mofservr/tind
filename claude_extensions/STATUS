@@ -1,4 +1,4 @@
 ref: claude/extensions
-sha: a4cfb649f8b015f09696235f6db915e9f7789069
-run: 39059022072
+sha: a028a154462cb42160cedb79a1123b5d58b8cf5c
+run: 39061750860
 results: packages=success iso=success boot=success

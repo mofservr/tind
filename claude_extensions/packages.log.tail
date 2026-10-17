@@ -1,4 +1,3 @@
--- intel-media-va-driver-non-free: 25.2.3+ds1-1
 -- mesa-va-drivers: 25.0.7-2+deb13u1
 -- mesa-vdpau-drivers: 25.0.7-2+deb13u1
 -- firmware-amd-graphics: 20250410-2
@@ -126,6 +125,7 @@ ok       org.gnome.Characters
 ok       org.gnome.SimpleScan
 ok       org.gnome.Connections
 ok       com.spotify.Client
+ok       org.upscayl.Upscayl
 == lutris depends/recommends
 lutris
   Depends: <python3:any>
