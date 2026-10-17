@@ -17,5 +17,5 @@ Dock flush to the left edge, 74 x 420, vertically centred below the bar, right c
 left corners square, icons 46 px in 52 px tiles, 10 px gap, separator before the app-grid button.
 Quick settings: 360 px wide, radius 24, 12 px from the right edge, tiles radius 28 (pill), sliders 12 px high.
 Font: Nunito Sans. Icons: stock Papirus (unmodified). Dock: Firefox, Files, Terminal, Thunderbird, LibreOffice Writer.
-Wallpapers: assets/wallpapers (night 1920x1080, midday 1920x1080, from the ChatGPT images; night source is low-res).
+Wallpapers: the final set of eight pairs lives in os/packages/tind-branding/usr/share/backgrounds/tind (3840x2160).
 No dynamic day/night switching: the light/dark toggle in Settings switches the whole look.
