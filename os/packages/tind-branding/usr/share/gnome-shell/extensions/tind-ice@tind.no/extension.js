@@ -9,12 +9,25 @@
 // When the theme changes and the accent is still the other theme's default, it is swapped; any other
 // accent the user picked is left alone.
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 const LIGHT = 'tind-light';
 const DARK_DEFAULT = 'green';
 const LIGHT_DEFAULT = 'pink';
+// GTK 4 / libadwaita apps (Settings included) take their accent from libadwaita's own fixed colour table,
+// not from the --accent-<slot> variables, so the ring around the Light/Dark preview, switches, checkboxes
+// and so on stayed in GNOME's old colours. User CSS can override @accent_bg_color, but only with one fixed
+// value, so this file is rewritten whenever the accent changes: ~/.config/gtk-4.0/tind-accent.css, pulled
+// in by an @import line at the top of ~/.config/gtk-4.0/gtk.css. Apps started after a change pick it up;
+// an app that is already open keeps the colour it started with.
+const ACCENT_HEX = {
+    blue: '#19685F', teal: '#21857A', green: '#3AA79A', yellow: '#68C4B7', orange: '#A2DBD2',
+    red: '#FED2CB', pink: '#F4988C', purple: '#E27E75', slate: '#C25D59',
+};
+const ACCENT_FG_WHITE = ['blue', 'teal'];
+const GTK_IMPORT = '@import url("tind-accent.css");';
 const SLOTS = ['blue', 'teal', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'slate'];
 
 export default class TindIce extends Extension {
@@ -45,7 +58,40 @@ export default class TindIce extends Extension {
         const accent = this._settings.get_string('accent-color');
         for (const s of SLOTS)
             Main.uiGroup.remove_style_class_name(`tind-accent-${s}`);
-        Main.uiGroup.add_style_class_name(`tind-accent-${SLOTS.includes(accent) ? accent : DARK_DEFAULT}`);
+        const slot = SLOTS.includes(accent) ? accent : DARK_DEFAULT;
+        Main.uiGroup.add_style_class_name(`tind-accent-${slot}`);
+        this._writeGtkAccent(slot);
+    }
+
+    _writeGtkAccent(slot) {
+        try {
+            const dir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gtk-4.0']);
+            GLib.mkdir_with_parents(dir, 0o755);
+            const fg = ACCENT_FG_WHITE.includes(slot) ? '#FFFFFF' : '#14110F';
+            const css = `/* Written by the Tind shell theme whenever the accent colour changes. */\n` +
+                `@define-color accent_bg_color ${ACCENT_HEX[slot]};\n` +
+                `@define-color accent_fg_color ${fg};\n`;
+            const accentFile = Gio.File.new_for_path(GLib.build_filenamev([dir, 'tind-accent.css']));
+            let current = '';
+            try {
+                current = new TextDecoder().decode(accentFile.load_contents(null)[1]);
+            } catch (e) { /* not there yet */ }
+            if (current !== css)
+                accentFile.replace_contents(new TextEncoder().encode(css), null, false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+
+            // gtk.css must start with the @import line; keep whatever else the user has in it
+            const gtkFile = Gio.File.new_for_path(GLib.build_filenamev([dir, 'gtk.css']));
+            let gtk = null;
+            try {
+                gtk = new TextDecoder().decode(gtkFile.load_contents(null)[1]);
+            } catch (e) { /* not there yet */ }
+            if (gtk === null || !gtk.includes(GTK_IMPORT))
+                gtkFile.replace_contents(new TextEncoder().encode(`${GTK_IMPORT}\n${gtk ?? ''}`), null, false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+        } catch (e) {
+            console.warn(`tind-ice: could not write the GTK accent file: ${e.message}`);
+        }
     }
 
     disable() {

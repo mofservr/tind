@@ -121,6 +121,11 @@
   border-radius: 0 999px 999px 0;
 }
 
+/* a toggle whose arrow is hidden (Power Mode, ...) has no arrow half, so its toggle half is the whole
+ * pill and must be round on both ends */
+.quick-toggle-has-menu .quick-toggle:ltr:last-child,
+.quick-toggle-has-menu .quick-toggle:rtl:last-child { border-radius: 999px; }
+
 .quick-toggle-has-menu .quick-toggle-menu-button:ltr {
   background-color: rgba(255, 255, 255, 0.09);
   border-width: 0;

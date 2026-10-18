@@ -1,3 +1,4 @@
+@import url("tind-accent.css");
 /* Tind accent colours: nine shades, teal (deep to soft) then alpenglow (soft to deep).
  * The names are GNOME's accent slots; only the colours are Tind's. Text on an accent is chosen by lightness. */
 :root {
