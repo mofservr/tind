@@ -17,6 +17,20 @@ ensure_components() {
     fi
 }
 
+# First boot often overlaps with another apt run (PackageKit, daily timers). Wait for the lock
+# instead of failing, but only retry on lock errors, never on real failures.
+apt-get() {
+    local n=0 out rc
+    while :; do
+        out="$(command apt-get -o DPkg::Lock::Timeout=600 "$@" 2>&1)"; rc=$?
+        printf '%s\n' "$out"
+        if [ "$rc" -ne 0 ] && grep -q 'Could not get lock' <<<"$out" && [ $((n += 1)) -lt 60 ]; then
+            echo "apt is busy, waiting (try $n)..." >&2; sleep 10; continue
+        fi
+        return "$rc"
+    done
+}
+
 apt_install() { apt-get install -y --no-install-recommends "$@"; }
 
 # Small apps come from Flathub, system-wide (same remote as Tind Apps uses).

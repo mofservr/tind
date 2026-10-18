@@ -4,15 +4,15 @@
 choice=/tmp/tind-extras-choice
 rm -f "$choice"
 sel="$(zenity --list --checklist --title="Install Tind: apps" --width=720 --height=520 \
-    --text="Step 1 of the installation: choose what to add. Everything needs internet and is set up the first time you start the installed Tind. You can also add or change these later in Tind Apps. Press OK to continue to the installer, with or without a tick." \
+    --text="Choose what to add (needs internet, set up on first start). You can change this later in Tind Apps. OK continues to the installer." \
     --column="" --column="id" --column="Apps" --hide-column=2 --separator=" " \
-    FALSE gaming "Games: Steam, Lutris, Wine, Discord, Heroic, ProtonUp-Qt, GameMode, MangoHud, Xbox controllers (about 2 GB)" \
-    FALSE dev "Developer tools: git, compilers, Python, GitHub CLI, VS Code, Claude Desktop, Wireshark, nmap, Remmina, virt-manager" \
+    FALSE gaming "Games: Steam, Lutris, Wine, Discord, Heroic (2 GB)" \
+    FALSE dev "Developer tools: git, Python, VS Code, Claude Desktop, Wireshark" \
     FALSE entertainment "Entertainment: VLC, Strawberry music player, Spotify" \
     FALSE creative "Creative: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, Upscayl" \
     FALSE communication "Communication: Signal, Telegram" \
     TRUE productivity "Productivity and cloud: LibreOffice, Nextcloud, Bitwarden" \
-    FALSE hardware "Printers and scanners: HP printer support (HPLIP) and scanner support (SANE)")" || exit 0
+    FALSE hardware "Printers and scanners: HP printer support, SANE scanners")" || exit 0
 printf '%s\n' "$sel" > "$choice"
 chmod 644 "$choice"
 exec calamares-install-debian
