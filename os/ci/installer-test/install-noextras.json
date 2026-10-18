@@ -39,7 +39,43 @@
   "wait": 6
  },
  {
+  "key": "down"
+ },
+ {
   "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "spc"
  },
  {
   "wait": 1
@@ -48,10 +84,7 @@
   "shot": "20-extras-ticked"
  },
  {
-  "click": [
-   844,
-   519
-  ]
+  "key": "alt-o"
  },
  {
   "wait": 30

@@ -1,0 +1,4 @@
+NAME="Creative"
+DESC="GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender and Upscayl (needs internet, large)"
+STATUS="ready"
+SCRIPT="/usr/lib/tind/setup-creative"

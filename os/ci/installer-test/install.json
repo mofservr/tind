@@ -39,19 +39,55 @@
   "wait": 6
  },
  {
-  "click": [
-   253,
-   420
-  ]
+  "key": "down"
  },
  {
   "wait": 1
  },
  {
-  "click": [
-   253,
-   450
-  ]
+  "key": "spc"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "spc"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "down"
+ },
+ {
+  "wait": 1
+ },
+ {
+  "key": "spc"
  },
  {
   "wait": 1
@@ -60,10 +96,7 @@
   "shot": "20-extras-ticked"
  },
  {
-  "click": [
-   844,
-   519
-  ]
+  "key": "alt-o"
  },
  {
   "wait": 30

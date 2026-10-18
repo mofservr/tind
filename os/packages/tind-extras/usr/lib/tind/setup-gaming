@@ -1,5 +1,6 @@
 #!/bin/bash
-# Native gaming stack from Debian packages: Steam, Lutris, Wine, 32-bit graphics, GameMode, MangoHud.
+# Native gaming stack from Debian packages: Steam, Lutris, Wine, 32-bit graphics, GameMode, MangoHud,
+# plus Xbox controller drivers and Flathub apps (Discord, Heroic, ProtonUp-Qt).
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -16,6 +17,20 @@ pkgs=(steam-installer steam-devices lutris wine wine32:i386 winetricks gamemode 
 # match the installed NVIDIA driver with its 32-bit libraries
 if dpkg -s nvidia-driver >/dev/null 2>&1; then pkgs+=(nvidia-driver-libs:i386); fi
 apt_install "${pkgs[@]}"
+# Xbox controllers beyond the kernel's built-in wired support: xpadneo (Bluetooth) and xone (wireless dongle),
+# when this Debian release ships them. Both are DKMS modules, so under Secure Boot they load only after
+# the machine key has been enrolled (tind-gpu secureboot), the same step the NVIDIA driver needs.
+for p in xpadneo-dkms xone-dkms; do
+    if apt-cache show "$p" >/dev/null 2>&1; then
+        optional "$p" apt_install "$p"
+    else
+        echo "NOTE: $p is not in this Debian release; skipping"
+    fi
+done
+# Small apps from Flathub: Discord, Heroic (Epic, GOG, Amazon) and ProtonUp-Qt (custom Proton versions).
+for app in com.discordapp.Discord com.heroicgameslauncher.hgl net.davidotek.pupgui2; do
+    optional "$app" flatpak_install "$app"
+done
 # Many Proton games need a higher memory-map limit than the Linux default (same value as SteamOS).
 install -D -m 0644 /usr/share/tind/extras/99-tind-gaming.conf /etc/sysctl.d/99-tind-gaming.conf
 sysctl --system >/dev/null 2>&1 || true

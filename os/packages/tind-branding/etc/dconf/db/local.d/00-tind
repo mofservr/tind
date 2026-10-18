@@ -60,3 +60,30 @@ show-trash=false
 show-mounts=false
 running-indicator-style='DOTS'
 dash-max-icon-size=44
+
+# App grid folders. categories/excluded-apps are emptied so GNOME's own Utilities folder
+# does not pull in other apps; only the apps listed here are shown in each folder.
+# Office fills up when the Productivity and cloud box (LibreOffice) is installed.
+[org/gnome/desktop/app-folders]
+folder-children=['Office', 'System', 'Utilities']
+
+[org/gnome/desktop/app-folders/folders/Office]
+name='Office'
+translate=false
+categories=@as []
+excluded-apps=@as []
+apps=['libreoffice-writer.desktop', 'libreoffice-calc.desktop', 'libreoffice-impress.desktop', 'libreoffice-startcenter.desktop']
+
+[org/gnome/desktop/app-folders/folders/System]
+name='System'
+translate=false
+categories=@as []
+excluded-apps=@as []
+apps=['proton.vpn.app.gtk.desktop', 'org.gnome.Extensions.desktop', 'tind-optins.desktop']
+
+[org/gnome/desktop/app-folders/folders/Utilities]
+name='Utilities'
+translate=false
+categories=@as []
+excluded-apps=@as []
+apps=['org.gnome.Calculator.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Loupe.desktop', 'org.gnome.Papers.desktop', 'org.gnome.FileRoller.desktop']

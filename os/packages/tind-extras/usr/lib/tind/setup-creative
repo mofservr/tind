@@ -1,0 +1,13 @@
+#!/bin/bash
+# Creative apps, all from Debian: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, plus Upscayl from Flathub.
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: creative setup"
+apt-get update
+# frei0r-plugins gives Kdenlive its effects; breeze-icon-theme gives KDE apps their icons under GNOME.
+apt_install gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender
+# AI image upscaler for generated artwork and old photos (Flathub).
+optional "Upscayl" flatpak_install org.upscayl.Upscayl
+echo "== Tind: creative setup done"

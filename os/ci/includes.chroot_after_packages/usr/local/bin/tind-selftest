@@ -51,6 +51,13 @@ for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface
          "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/ command"; do
     echo "$k = $(asuser gsettings get $k 2>&1)"
 done
+sec "app grid folders"
+echo "folder-children = $(asuser gsettings get org.gnome.desktop.app-folders folder-children 2>&1)"
+for fo in Office System Utilities; do
+    echo "$fo: $(asuser gsettings get "org.gnome.desktop.app-folders.folder:/org/gnome/desktop/app-folders/folders/$fo/" apps 2>&1)"
+done
+echo "live-only override files (should exist only in the live session):"; ls -l /usr/local/share/applications/ 2>&1 | head -5
+echo "showtime: $(dpkg-query -W -f='${db:Status-Abbrev}' showtime 2>&1 | head -1)"
 sec wallpapers
 echo "picker lists: $(ls /usr/share/gnome-background-properties 2>&1 | tr '\n' ' ')"
 echo "gnome-backgrounds: $(dpkg-query -W -f='${db:Status-Abbrev}' gnome-backgrounds 2>&1 | head -1)"

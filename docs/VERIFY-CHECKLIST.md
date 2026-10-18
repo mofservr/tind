@@ -54,7 +54,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Thunderbird policy is minimal.
 
 ## Lean desktop (2026-10-14)
-- Proven in CI: tind-desktop names GNOME pieces explicitly (no gnome-core); app grid is Calculator, Camera, Disks, Extensions, Files, Firefox, Image Viewer, LibreOffice, Papers, Print Settings, Settings, Showtime, Software, System Monitor, Terminal, Text Editor, Thunderbird, Tind Apps, Install Tind.
+- Proven in CI: tind-desktop names GNOME pieces explicitly (no gnome-core); app grid is Calculator, Camera, Disks, Extensions, Files, Firefox, Image Viewer, LibreOffice, Papers, Print Settings, Settings, Software, System Monitor, Terminal, Text Editor, Thunderbird, Tind Apps, Install Tind.
 - Proven: Calamares install of the lean ISO boots to desktop, autologin, no failed units.
 - Removed apps are opt-ins in tind-optins: gnome-extras, gnome-utilities, tweaks.
 - fwupd added for firmware updates through GNOME Software (unproven on real hardware).
@@ -84,3 +84,16 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - ISO download: `tind-iso` artifact now has `SHA256SUMS`, kept 30 days (see `WRITE-TO-USB.md`). GitHub release assets cap at 2 GB, the ISO is larger.
 - Still unproven: Plymouth and GRUB menu frames (early frames added to the boot job), a real second OS, Wi-Fi chips (Broadcom STA driver deliberately not shipped), suspend and battery behaviour, `fwupd` on real hardware.
 - Proven (build run 38698762129 and installer run 38702037752, UEFI, Secure Boot on): `protonvpn-stable-release` 1.0.8 is installed in the image with its repo entry; on the installed system AppArmor is active (141 profiles, 19 enforcing), ufw active, LLMNR gone (only loopback DNS/CUPS and mDNS 5353 listen), no failed units. Early boot frames in CI: firmware, GRUB menu (stock live-build look), Tind Plymouth splash with progress bar, desktop.
+
+## App boxes (2026-10-16, not yet tested)
+- Seven installer boxes replace the two: Games, Developer tools, Entertainment, Creative, Communication, Productivity and cloud (ticked by default), Printers and scanners. LibreOffice moved from `tind-apps` to the Productivity box, so the live ISO and a no-extras install have no office suite.
+- CI `installer-test`: the dialog is taller and has seven rows, so the click coordinates in `os/ci/installer-test/*.json` (rows and OK button) need to be captured again. The no-extras run now also installs Productivity on first boot unless it is unticked.
+- To check in the VM: Strawberry connects to Navidrome (Subsonic); Signal key fingerprint from the CI log, then pin `SIGNAL_FPR`; Proton Mail install and whether it updates through apt; `xpadneo-dkms` / `xone-dkms` exist in trixie; Heroic, Discord and ProtonUp-Qt launch; Telegram and Strawberry come from Debian rather than Flathub; LibreOffice Draw and Math stay hidden after the first-boot install; the app grid after the box installs.
+- Netflix-style streaming (Widevine) and codecs in the base image are still unchecked.
+
+## One-launcher, folders and trimmed grid (to check on hardware)
+- Live session: only "Install Tind" in the app grid; Tind Apps hidden. After installing: only Tind Apps, no installer entry.
+- App grid shows folders Office, System, Utilities; Showtime is gone; dock starts with Firefox, Thunderbird, Files.
+- An empty Office folder (no LibreOffice yet) is not shown. Not verified.
+- Installing the Entertainment box gives VLC; Spotify failing must not fail the box.
+

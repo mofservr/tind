@@ -3,11 +3,16 @@
 # The choice goes to /tmp/tind-extras-choice, which the installer's tindextras job reads.
 choice=/tmp/tind-extras-choice
 rm -f "$choice"
-sel="$(zenity --list --checklist --title="Install Tind: extras" --width=620 --height=300 \
-    --text="Step 1 of the installation: choose what to add. Both need internet and are set up the first time you start the installed Tind. You can also add them later in Tind Apps. Press OK to continue to the installer, with or without a tick." \
-    --column="" --column="id" --column="Extra" --hide-column=2 --separator=" " \
-    FALSE gaming "Games: Steam, Lutris and Wine (about 2 GB)" \
-    FALSE dev "Developer tools: git, compilers, Python tools, GitHub CLI, VS Code")" || exit 0
+sel="$(zenity --list --checklist --title="Install Tind: apps" --width=720 --height=520 \
+    --text="Step 1 of the installation: choose what to add. Everything needs internet and is set up the first time you start the installed Tind. You can also add or change these later in Tind Apps. Press OK to continue to the installer, with or without a tick." \
+    --column="" --column="id" --column="Apps" --hide-column=2 --separator=" " \
+    FALSE gaming "Games: Steam, Lutris, Wine, Discord, Heroic, ProtonUp-Qt, GameMode, MangoHud, Xbox controllers (about 2 GB)" \
+    FALSE dev "Developer tools: git, compilers, Python, GitHub CLI, VS Code, Claude Desktop, Wireshark, nmap, Remmina, virt-manager" \
+    FALSE entertainment "Entertainment: VLC, Strawberry music player, Spotify" \
+    FALSE creative "Creative: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, Upscayl" \
+    FALSE communication "Communication: Signal, Telegram" \
+    TRUE productivity "Productivity and cloud: LibreOffice, Nextcloud, Bitwarden, Proton Mail" \
+    FALSE hardware "Printers and scanners: HP printer support (HPLIP) and scanner support (SANE)")" || exit 0
 printf '%s\n' "$sel" > "$choice"
 chmod 644 "$choice"
 exec calamares-install-debian
