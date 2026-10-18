@@ -31,36 +31,36 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 25 {'shot': '20-extras-ticked'}
 26 {'key': 'alt-o'}
 27 {'wait': 30}
-28 {'click': [1007, 735]}
+28 {'click': [1045, 735]}
 29 {'wait': 5}
-30 {'click': [1007, 735]}
+30 {'click': [1045, 735]}
 31 {'wait': 5}
-32 {'click': [1007, 735]}
+32 {'click': [1045, 735]}
 33 {'wait': 10}
-34 {'click': [334, 225]}
+34 {'click': [372, 225]}
 35 {'wait': 3}
-36 {'click': [1007, 735]}
+36 {'click': [1045, 735]}
 37 {'wait': 6}
-38 {'click': [426, 204]}
+38 {'click': [464, 204]}
 39 {'type': 'Tind Test'}
-40 {'click': [426, 264]}
+40 {'click': [464, 264]}
 41 {'key': 'ctrl-a'}
 42 {'type': 'tind'}
-43 {'click': [426, 324]}
+43 {'click': [464, 324]}
 44 {'key': 'ctrl-a'}
 45 {'type': 'tindtest'}
-46 {'click': [426, 384]}
+46 {'click': [464, 384]}
 47 {'type': 'tind-test-pw'}
-48 {'click': [632, 384]}
+48 {'click': [670, 384]}
 49 {'type': 'tind-test-pw'}
-50 {'click': [334, 420]}
+50 {'click': [372, 420]}
 51 {'wait': 2}
 52 {'shot': '30-users-filled'}
-53 {'click': [1007, 735]}
+53 {'click': [1045, 735]}
 54 {'wait': 6}
 55 {'shot': '31-summary'}
-56 {'click': [1007, 735]}
-57 {'click': [1007, 781]}
+56 {'click': [1045, 735]}
+57 {'click': [1045, 781]}
 58 {'wait': 60}
 59 {'shot': '50-install-00'}
 60 {'wait': 60}
@@ -97,8 +97,7 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 91 {'shot': '50-install-16'}
 92 {'wait': 60}
 93 {'shot': '50-install-17'}
-disk used after install: 200704 bytes
-INSTALL DID NOT HAPPEN
+disk used after install: 7729393664 bytes
 == phase 2: boot the installed disk
 0 {'wait': 150}
 1 {'shot': '600-installed-00'}
@@ -111,5 +110,5 @@ INSTALL DID NOT HAPPEN
 8 {'wait': 90}
 9 {'shot': '604-installed-04'}
 10 {'wait': 90}
-disk size: 196 KiB
-    disk size: 196 KiB
+disk size: 7.61 GiB
+    disk size: 7.61 GiB
