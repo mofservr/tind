@@ -1,0 +1,23 @@
+[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01H[2J[01;01H[=3h[2J[01;01HBdsDxe: failed to load Boot0002 "UEFI Misc Device" from PciRoot(0x0)/Pci(0x4,0x0): Not Found
+
+>>Start PXE over IPv4.
+  PXE-E16: No valid offer received.
+BdsDxe: failed to load Boot0003 "UEFI PXEv4 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv4(0.0.0.0,0x0,DHCP,0.0.0.0,0.0.0.0,0.0.0.0): Not Found
+
+>>Start PXE over IPv6.
+  PXE-E16: No valid offer received.
+BdsDxe: failed to load Boot0004 "UEFI PXEv6 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000,0x0,Static,0000:0000:0000:0000:0000:0000:0000:0000,0x40,0000:0000:0000:0000:0000:0000:0000:0000): Not Found
+
+>>Start HTTP Boot over IPv4.....
+  Error: Could not retrieve NBP file size from HTTP server.
+
+  Error: Server response timeout.
+BdsDxe: failed to load Boot0005 "UEFI HTTPv4 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv4(0.0.0.0,0x0,DHCP,0.0.0.0,0.0.0.0,0.0.0.0)/Uri(): Not Found
+
+>>Start HTTP Boot over IPv6.
+  Error: Could not retrieve NBP file size from HTTP server.
+
+  Error: Unexpected network error.
+BdsDxe: failed to load Boot0006 "UEFI HTTPv6 (MAC:525400123456)" from PciRoot(0x0)/Pci(0x2,0x0)/MAC(525400123456,0x1)/IPv6(0000:0000:0000:0000:0000:0000:0000:0000,0x0,Static,0000:0000:0000:0000:0000:0000:0000:0000,0x40,0000:0000:0000:0000:0000:0000:0000:0000)/Uri(): Not Found
+BdsDxe: No bootable option or device was found.
+BdsDxe: Press any key to enter the Boot Manager Menu.
