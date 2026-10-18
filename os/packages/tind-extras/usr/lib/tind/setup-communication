@@ -7,10 +7,10 @@ need_root
 echo "== Tind: communication setup"
 tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 
-# Signal publishes its apt key and sources file on https://signal.org/download/. Signal does not publish
-# a fingerprint for the apt key, so there is nothing to pin yet: the fingerprint is logged here, and
-# SIGNAL_FPR should be set to it once it has been checked by hand (the CI log shows it).
-SIGNAL_FPR=""
+# Signal publishes its apt key and sources file on https://signal.org/download/ but no fingerprint for it.
+# SIGNAL_FPR is the fingerprint CI logged for that key (2026-10-18); the script refuses any other key.
+# If Signal ever rotates the key, this stops with a mismatch and the new value has to be checked by hand.
+SIGNAL_FPR="DBA36B5181D0C816F630E889D980A17457F6FB06"
 curl -fsSL https://updates.signal.org/desktop/apt/keys.asc -o "$tmp/signal.asc"
 got="$(gpg --show-keys --with-colons "$tmp/signal.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
 echo "Signal apt signing key fingerprint: $got"

@@ -116,7 +116,7 @@ jobs:
             grep -E "Signal apt signing key|WARNING|NOTE:" logs/setup-*.log | head -20 || true
             cat /etc/apt/sources.list.d/signal-desktop.sources 2>&1 | head -10 || true
             flatpak list --system --columns=application 2>&1 | head -20 || true
-            dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' vlc strawberry telegram-desktop signal-desktop libreoffice-writer nextcloud-desktop hplip sane-utils sane-airscan wireshark nmap mtr remmina virt-manager xpadneo-dkms xone-dkms proton-mail protonmail 2>&1 | head -30 || true
+            dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' vlc strawberry telegram-desktop signal-desktop libreoffice-writer nextcloud-desktop hplip sane-utils sane-airscan wireshark nmap mtr remmina virt-manager xpadneo-dkms xone-dkms 2>&1 | head -30 || true
             dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' git gh code steam-installer lutris wine wine32:i386 winetricks gamemode mangohud steam-devices 2>&1 | head -20 || true
             code --version --no-sandbox --user-data-dir /tmp/codetest 2>&1 | head -2 || true
             ls /etc/apt/sources.list.d/ ; cat /etc/apt/sources.list.d/vscode.sources

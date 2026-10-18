@@ -1,5 +1,5 @@
 #!/bin/bash
-# Productivity and cloud: LibreOffice (Writer, Calc, Impress, Norwegian), Nextcloud client, Bitwarden, Proton Mail.
+# Productivity and cloud: LibreOffice (Writer, Calc, Impress, Norwegian), Nextcloud client, Bitwarden.
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -18,21 +18,4 @@ for f in libreoffice-draw.desktop libreoffice-math.desktop; do
         echo "NoDisplay=true" >> "/usr/share/applications/$f"
     fi
 done
-
-# Proton Mail desktop app. Proton's own setup page only documents a downloadable .deb (no apt repository),
-# so it is installed through apt from that file, but only after its SHA-512 matches the one in Proton's
-# version file. A failure here is logged and does not fail the rest of the box.
-install_proton_mail() {
-    local base=https://proton.me/download/mail/linux d want got
-    d="$(mktemp -d)"
-    curl -fsSL "$base/version.json" -o "$d/version.json" || { rm -rf "$d"; return 1; }
-    want="$(jq -r '[.. | strings | select(test("^[0-9a-fA-F]{128}$"))] | first // empty' "$d/version.json")"
-    if [ -z "$want" ]; then echo "no SHA-512 found in Proton's version file; not installing unverified" >&2; rm -rf "$d"; return 1; fi
-    curl -fsSL "$base/ProtonMail-desktop-beta.deb" -o "$d/ProtonMail-desktop-beta.deb" || { rm -rf "$d"; return 1; }
-    got="$(sha512sum "$d/ProtonMail-desktop-beta.deb" | cut -d' ' -f1)"
-    if [ "${got,,}" != "${want,,}" ]; then echo "Proton Mail checksum mismatch: got $got" >&2; rm -rf "$d"; return 1; fi
-    apt-get install -y "$d/ProtonMail-desktop-beta.deb" || { rm -rf "$d"; return 1; }
-    rm -rf "$d"
-}
-optional "Proton Mail" install_proton_mail
 echo "== Tind: productivity setup done"

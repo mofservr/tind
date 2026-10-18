@@ -1,5 +1,5 @@
 Package: tind-extras
-Version: 0.1.1
+Version: 0.1.2
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
@@ -9,6 +9,6 @@ Installed-Size: 4
 Description: Tind optional app boxes: games, developer, entertainment and more
  Scripts for the optional app boxes: games (Steam, Lutris, Wine, Discord,
  Heroic), developer tools, entertainment, creative, communication,
- productivity and cloud (LibreOffice, Nextcloud, Bitwarden, Proton Mail) and
+ productivity and cloud (LibreOffice, Nextcloud, Bitwarden) and
  printers and scanners. They run from the installer's tick boxes on first boot,
  or later from Tind Apps. Nothing here is on the ISO; all of it needs internet.

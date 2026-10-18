@@ -88,7 +88,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 ## App boxes (2026-10-16, not yet tested)
 - Seven installer boxes replace the two: Games, Developer tools, Entertainment, Creative, Communication, Productivity and cloud (ticked by default), Printers and scanners. LibreOffice moved from `tind-apps` to the Productivity box, so the live ISO and a no-extras install have no office suite.
 - CI `installer-test`: the dialog is taller and has seven rows, so the click coordinates in `os/ci/installer-test/*.json` (rows and OK button) need to be captured again. The no-extras run now also installs Productivity on first boot unless it is unticked.
-- To check in the VM: Strawberry connects to Navidrome (Subsonic); Signal key fingerprint from the CI log, then pin `SIGNAL_FPR`; Proton Mail install and whether it updates through apt; `xpadneo-dkms` / `xone-dkms` exist in trixie; Heroic, Discord and ProtonUp-Qt launch; Telegram and Strawberry come from Debian rather than Flathub; LibreOffice Draw and Math stay hidden after the first-boot install; the app grid after the box installs.
+- To check in the VM: Strawberry connects to Navidrome (Subsonic); Signal installs and updates through apt (key pinned to the CI-logged fingerprint); `xpadneo-dkms` / `xone-dkms` exist in trixie; Heroic, Discord and ProtonUp-Qt launch; Telegram and Strawberry come from Debian rather than Flathub; LibreOffice Draw and Math stay hidden after the first-boot install; the app grid after the box installs.
 - Netflix-style streaming (Widevine) and codecs in the base image are still unchecked.
 
 ## One-launcher, folders and trimmed grid (to check on hardware)

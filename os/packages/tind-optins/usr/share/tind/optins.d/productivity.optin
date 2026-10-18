@@ -1,4 +1,4 @@
 NAME="Productivity and cloud"
-DESC="LibreOffice, Nextcloud (preconfigured for lagrr.servr.no), Bitwarden and Proton Mail (needs internet)"
+DESC="LibreOffice, Nextcloud (preconfigured for lagrr.servr.no), and Bitwarden (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-productivity"
