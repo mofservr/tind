@@ -1,3 +1,5 @@
+Preparing to unpack .../23-libzxcvbn0_2.5+dfsg-2+b2_amd64.deb ...
+Unpacking libzxcvbn0:amd64 (2.5+dfsg-2+b2) ...
 Selecting previously unselected package libreoffice-core.
 Preparing to unpack .../24-libreoffice-core_4%3a25.2.3-2+deb13u8_amd64.deb ...
 Unpacking libreoffice-core (4:25.2.3-2+deb13u8) ...
@@ -322,7 +324,7 @@ W: Target Packages (main/binary-amd64/Packages) is configured multiple times in 
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 Preconfiguring packages ...
-Fetched 13.0 MB in 0s (26.1 MB/s)
+Fetched 13.0 MB in 0s (135 MB/s)
 Selecting previously unselected package libc-l10n.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 61971 files and directories currently installed.)
 Preparing to unpack .../0-libc-l10n_2.41-12+deb13u4_all.deb ...
@@ -380,7 +382,7 @@ Get:1 http://deb.debian.org/debian trixie/main amd64 hunspell-no all 1:25.2.3-1 
 W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-Fetched 3812 kB in 0s (14.3 MB/s)
+Fetched 3812 kB in 0s (47.8 MB/s)
 Selecting previously unselected package hunspell-no.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71865 files and directories currently installed.)
 Preparing to unpack .../hunspell-no_1%3a25.2.3-1_all.deb ...
@@ -395,6 +397,4 @@ Installing app/com.bitwarden.desktop/x86_64/stable
 bwrap: Creating new namespace failed: Operation not permitted
 bwrap: Creating new namespace failed: Operation not permitted
 bwrap: Creating new namespace failed: Operation not permitted
-Proton Mail checksum mismatch: got 9a0f3f4a1190b01017becdf5a0ae92583a7f3c67a34b1557ea7aa80bfed7e5b6d7701bbf0a388cede38a3e7d8c5bc4522b18605eb1949828b2c954954459f55c
-WARNING: Proton Mail failed; continuing
 == Tind: productivity setup done
