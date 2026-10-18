@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Tind live dock
+Exec=/usr/lib/tind/live-dock
+NoDisplay=true
+OnlyShowIn=GNOME;
+X-GNOME-Autostart-Phase=Applications

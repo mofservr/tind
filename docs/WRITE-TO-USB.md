@@ -25,3 +25,14 @@ The ISO file is over 2 GB. If the checksum differs, download again.
 - UEFI and old BIOS machines both work. Secure Boot can stay on: the live ISO and the installed system were tested with it on.
 - NVIDIA graphics with Secure Boot on: after install, run `tind-gpu secureboot` once to enrol the driver signing key (a reboot and a short blue MOK screen follow). Until then the NVIDIA module cannot load under Secure Boot and the open-source driver should take over (not yet tried on real hardware).
 - Something wrong? Run `tind-report` in a terminal and attach the file it writes.
+
+## 5. Install it to the computer's drive
+
+1. In the live session, **Install Tind** is the first icon in the dock (it is also in the app grid).
+2. A short checklist asks which app boxes to add. Press OK to continue, with or without a tick. Everything ticked needs internet and is set up the first time you start the installed Tind.
+3. In the installer pick language, location and keyboard. On **Partitions**, **Erase disk** wipes and formats the whole drive. **Manual partitioning** lets you format and mount partitions yourself. A disk that already has another system may offer more choices, such as installing alongside it.
+4. Enter your name, user name, computer name and password, check the summary, then install.
+5. When it says it is done, remove the USB stick and restart.
+
+Erase disk deletes everything on that drive. Check the drive name in the installer first.
+

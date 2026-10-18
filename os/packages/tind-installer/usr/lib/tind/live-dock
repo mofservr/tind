@@ -1,0 +1,6 @@
+#!/bin/sh
+# Live session only: put "Install Tind" first in the dock so it is easy to find.
+# The package (and so this autostart entry) is removed from the installed system.
+cur="$(gsettings get org.gnome.shell favorite-apps 2>/dev/null)" || exit 0
+case "$cur" in *tind-install.desktop*) exit 0 ;; esac
+gsettings set org.gnome.shell favorite-apps "['tind-install.desktop', 'firefox-esr.desktop', 'thunderbird.desktop', 'org.gnome.Nautilus.desktop']"
