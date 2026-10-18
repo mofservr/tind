@@ -1,3 +1,159 @@
+# Install luks utilities if needed.
+# Also, set secure permissions for the initramfs if we're configuring
+# full-disk-encryption. The initramfs is re-generated later in the
+# installation process so we only set the permissions snippet without
+# regenerating the initramfs right now:
+if [ "$(mount | grep $CHROOT" " | cut -c -16)" = "/dev/mapper/luks" ]; then
+    echo "UMASK=0077" > $CHROOT/etc/initramfs-tools/conf.d/initramfs-permissions
+    chroot $CHROOT apt-get -y install cryptsetup-initramfs cryptsetup keyutils
+fi
+
+echo "Running bootloader-config..."
+
+if [ -d /sys/firmware/efi/efivars ]; then
+    echo " * Installing grub-efi (uefi)..."
+    DEBIAN_FRONTEND=noninteractive chroot $CHROOT apt-get -y install grub-efi
+else
+    echo " * install grub... (bios)"
+    DEBIAN_FRONTEND=noninteractive chroot $CHROOT apt-get -y install grub-pc
+fi
+
+# Re-enable os-prober:
+sed -i "s/#GRUB_DISABLE_OS_PROBER=false/# OS_PROBER re-enabled by Debian Calamares installation:\nGRUB_DISABLE_OS_PROBER=false/g" $CHROOT/etc/default/grub
+chroot $CHROOT /usr/sbin/update-grub
+---
+type:       "job"
+name:       "bootloader-config"
+interface:  "process"
+command:    "/usr/share/calamares/helpers/calamares-bootloader-config"
+timeout:    600
+== backports kernel and nvidia
+-- linux-image-amd64: stable=6.12.113-1 backports=7.2.6-1~bpo13+1
+-- linux-headers-amd64: stable=6.12.113-1 backports=7.2.6-1~bpo13+1
+-- nvidia-kernel-dkms: stable=550.163.01-2 backports=550.163.01-4~bpo13+1
+-- nvidia-driver: stable=550.163.01-2 backports=550.163.01-4~bpo13+1
+-- os-prober: stable=1.83 backports=
+-- grub-pc-bin: stable=2.12-9+deb13u2 backports=
+linux-image-amd64:
+  Installed: (none)
+  Candidate: 6.12.113-1
+  Version table:
+     7.2.6-1~bpo13+1 100
+        100 http://deb.debian.org/debian trixie-backports/main amd64 Packages
+     6.12.113-1 500
+        500 http://deb.debian.org/debian-security trixie-security/main amd64 Packages
+     6.12.107-1 500
+        500 http://deb.debian.org/debian trixie/main amd64 Packages
+== calamares QML module examples
+-- packagechooserq/module.desc
+# AUTO-GENERATED metadata file
+# Syntax is YAML 1.2
+---
+type: "viewmodule"
+name: "packagechooserq"
+interface: "qtplugin"
+load: "libcalamares_viewmodule_packagechooserq.so"
+-- welcomeq/module.desc
+# AUTO-GENERATED metadata file
+# Syntax is YAML 1.2
+---
+type: "viewmodule"
+name: "welcomeq"
+interface: "qtplugin"
+load: "libcalamares_viewmodule_welcomeq.so"
+/tmp/cal/x/etc/calamares/branding/debian/show.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/Slide.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/ForwardButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/Presentation.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/NavButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/BackButton.qml
+/tmp/cal/x/usr/share/calamares/qml/calamares/slideshow/SlideCounter.qml
+/tmp/cal/x/usr/share/calamares/branding/default/show.qml
+/tmp/cal/x/etc/calamares/modules/finished.conf
+/tmp/cal/x/etc/calamares/modules/fstab.conf
+/tmp/cal/x/etc/calamares/modules/users.conf
+/tmp/cal/x/etc/calamares/modules/displaymanager.conf
+/tmp/cal/x/etc/calamares/modules/unpackfs.conf
+/tmp/cal/x/etc/calamares/modules/welcome.conf
+/tmp/cal/x/etc/calamares/modules/luksopenswaphookcfg.conf
+/tmp/cal/x/etc/calamares/modules/machineid.conf
+/tmp/cal/x/etc/calamares/modules/bootloader.conf
+/tmp/cal/x/etc/calamares/modules/packages.conf
+/tmp/cal/x/etc/calamares/modules/mount.conf
+-- packagechooserq.conf
+cat: /tmp/cal/x/usr/share/calamares/modules/packagechooserq.conf: No such file or directory
+-- an example qml (packagechooserq)
+== microsoft repo reachable
+HTTP/2 200 
+date: Sun, 18 Oct 2026 11:35:19 GMT
+content-type: application/octet-stream
+HTTP/2 200 
+date: Sun, 18 Oct 2026 11:35:19 GMT
+content-type: application/octet-stream
+== gaming and graphics candidates
+-- nvidia-driver: 550.163.01-2
+-- nvidia-detect: 550.163.01-2
+-- nvidia-driver-libs: 550.163.01-2
+-- nvidia-driver-libs-i386: 
+-- nvidia-vulkan-icd: 550.163.01-2
+-- nvidia-kernel-dkms: 550.163.01-2
+-- nvidia-open-kernel-dkms: 550.163.01-2
+-- nvidia-settings: 550.163.01-1
+-- nvidia-tesla-470-driver: 
+-- nvidia-legacy-390xx-driver: 
+-- linux-headers-amd64: 6.12.113-1
+-- dkms: 3.2.2-1~deb13u1
+-- game-devices-udev: 
+-- steam-devices: 1:1.0.0.83~ds-3
+-- steam-installer: 1:1.0.0.83~ds-3
+-- lutris: 0.5.19-2
+-- gamemode: 1.8.2-2
+-- mangohud: 0.7.2-2
+-- wine: 10.0~repack-6
+-- wine32: 10.0~repack-6
+-- libgl1-mesa-dri:i386: 25.0.7-2+deb13u1
+-- mesa-vulkan-drivers:i386: 25.0.7-2+deb13u1
+-- libvulkan1:i386: 1.4.309.0-1
+-- vulkan-tools: 1.4.304.0+dfsg1-1
+-- xpadneo-dkms: 
+-- xone-dkms: 
+-- vlc: 3.0.24-0+deb13u1
+-- strawberry: 1.2.10-2
+-- gimp: 3.0.4-3+deb13u11
+-- inkscape: 1.4-6
+-- krita: 1:5.2.9+dfsg-1+deb13u1
+-- kdenlive: 24.12.3-2+deb13u1
+-- frei0r-plugins: 2.3.3-1+b1
+-- breeze-icon-theme: 4:5.116.0-1
+-- audacity: 3.7.3+dfsg-1
+-- obs-studio: 30.2.3+dfsg-3
+-- blender: 4.3.2+dfsg-2
+-- telegram-desktop: 5.7.2+ds-2~bpo13+1
+-- libreoffice-writer: 4:25.2.3-2+deb13u8
+-- libreoffice-calc: 4:25.2.3-2+deb13u8
+-- libreoffice-impress: 4:25.2.3-2+deb13u8
+-- libreoffice-gtk3: 4:25.2.3-2+deb13u8
+-- libreoffice-l10n-nb: 4:25.2.3-2+deb13u8
+-- libreoffice-l10n-nn: 4:25.2.3-2+deb13u8
+-- hunspell-no: 1:25.2.3-1
+-- myspell-nb: 2.2-4
+-- nextcloud-desktop: 3.16.7-1~deb13u1
+-- hplip: 3.22.10+dfsg0-8.1+deb13u1
+-- sane-utils: 1.3.1-3+b1
+-- sane-airscan: 0.99.35-1
+-- wireshark: 4.4.19-0+deb13u1
+-- nmap: 7.95+dfsg-3
+-- mtr: 0.95-1.1+b1
+-- remmina: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-rdp: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-vnc: 1.4.39+dfsg-1+deb13u1
+-- remmina-plugin-secret: 1.4.39+dfsg-1+deb13u1
+-- virt-manager: 1:5.0.0-5+deb13u1
+-- libvirt-daemon-system: 11.3.0-3+deb13u3
+-- qemu-system-x86: 1:10.0.13+ds-0+deb13u1
+-- mesa-utils: 9.0.0-2+b2
+-- libva-drm2: 2.22.0-3
+-- intel-media-va-driver-non-free: 25.2.3+ds1-1
 -- mesa-va-drivers: 25.0.7-2+deb13u1
 -- mesa-vdpau-drivers: 25.0.7-2+deb13u1
 -- firmware-amd-graphics: 20250410-2
@@ -111,8 +267,15 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 -- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 -- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
 -- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/26.08 
-== every opt-in Flatpak ref exists on Flathub
+== Flatpak refs used by the app-box scripts exist on Flathub
+ok       com.discordapp.Discord
+ok       com.heroicgameslauncher.hgl
+ok       net.davidotek.pupgui2
+ok       com.spotify.Client
 ok       com.bitwarden.desktop
+ok       org.telegram.desktop
+ok       org.strawberrymusicplayer.strawberry
+== every opt-in Flatpak ref exists on Flathub
 ok       org.gnome.Calendar
 ok       org.gnome.Contacts
 ok       org.gnome.Weather
@@ -124,8 +287,6 @@ ok       org.gnome.font-viewer
 ok       org.gnome.Characters
 ok       org.gnome.SimpleScan
 ok       org.gnome.Connections
-ok       com.spotify.Client
-ok       org.upscayl.Upscayl
 == lutris depends/recommends
 lutris
   Depends: <python3:any>
@@ -185,216 +346,55 @@ Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64
 == tind-extras: real run of the setup scripts
 setup-dev: OK
 setup-gaming: OK
-code 1.142.0-1792035033 ii 
-gamemode 1.8.2-2 ii 
-gh 2.46.0-3 ii 
-git 1:2.47.3-0+deb13u1 ii 
-lutris 0.5.19-2 ii 
-mangohud 0.7.2-2 ii 
-steam-devices 1:1.0.0.83~ds-3 ii 
-steam-installer 1:1.0.0.83~ds-3 ii 
-wine 10.0~repack-6 ii 
-wine32 10.0~repack-6 ii 
-winetricks 20250102-1 ii 
-1.142.0
-6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
-bp.list
-claude-desktop.list
-claude-desktop.sources
-debian.sources
-vscode.sources
+setup-entertainment: OK
+setup-communication: OK
+setup-productivity: OK
+setup-hardware: OK
+== creative: simulated install only (a full install is too large for the runner)
+setup-creative packages: OK (simulated)
+== app boxes: things to check by eye
+logs/setup-communication.log:Signal apt signing key fingerprint: DBA36B5181D0C816F630E889D980A17457F6FB06
+logs/setup-entertainment.log:WARNING: Spotify failed; continuing
+logs/setup-gaming.log:NOTE: xpadneo-dkms is not in this Debian release; skipping
+logs/setup-gaming.log:NOTE: xone-dkms is not in this Debian release; skipping
+logs/setup-productivity.log:WARNING: Proton Mail failed; continuing
 Types: deb
-URIs: https://packages.microsoft.com/repos/code
-Suites: stable
+URIs: https://updates.signal.org/desktop/apt
+Suites: xenial
 Components: main
 Architectures: amd64
-Signed-By: /usr/share/keyrings/microsoft.gpg
-vm.max_map_count = 2147483642
-== verify-on-debian (informational)
-== release
-Debian GNU/Linux 13 (trixie)
-
-== disk (need ~25 GB free here)
-/dev/root       145G   64G   81G  44% /__w
-
-== KVM
-not available (VM tests will be slow)
-
-== live-build
-not installed
-
-== uBlock Origin package: where does it install?
-Package: webext-ublock-origin-firefox
-Source: ublock-origin
-Version: 1.67.0+dfsg-1~deb13u1
-Installed-Size: 14290
-Maintainer: Debian Mozilla Extension Maintainers <pkg-mozext-maintainers@lists.alioth.debian.org>
-W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-
-== Firefox ESR: policy locations it will read (after install)
-ls: cannot access '/etc/firefox/policies': No such file or directory
-ls: cannot access '/usr/lib/firefox-esr/distribution': No such file or directory
-(open about:policies in Firefox ESR: Active should list Tind's policies)
-
-== Calamares branding setting
-grep: /etc/calamares/settings.conf: No such file or directory
-
-== Dash to Dock package / UUID
-gnome-shell-extension-dashtodock:
-  Installed: (none)
-  Candidate: 100-2
-ls: cannot access '/usr/share/gnome-shell/extensions': No such file or directory
-
-== package names
-== Depends (must exist)
-ok       adwaita-icon-theme
-ok       apparmor
-ok       apt
-ok       bluez
-ok       ca-certificates
-ok       calamares
-ok       calamares-settings-debian
-ok       cups
-ok       curl
-ok       dconf-cli
-ok       debconf
-ok       dkms
-ok       evolution-data-server
-ok       file-roller
-ok       firefox-esr
-ok       firmware-amd-graphics
-ok       flatpak
-ok       fontconfig
-ok       fonts-cantarell
-ok       gdm3
-ok       glib-networking
-ok       gnome-calculator
-ok       gnome-control-center
-ok       gnome-disk-utility
-ok       gnome-keyring
-ok       gnome-menus
-ok       gnome-session
-ok       gnome-settings-daemon
-ok       gnome-shell
-ok       gnome-shell-extension-dashtodock
-ok       gnome-shell-extension-prefs
-ok       gnome-snapshot
-ok       gnome-software
-ok       gnome-software-plugin-flatpak
-ok       gnome-sushi
-ok       gnome-system-monitor
-ok       gnome-terminal
-ok       gnome-text-editor
-ok       gnupg
-ok       gsettings-desktop-schemas
-ok       gstreamer1.0-packagekit
-ok       gstreamer1.0-plugins-base
-ok       gstreamer1.0-plugins-good
-ok       gvfs-backends
-ok       gvfs-fuse
-ok       libatk-adaptor
-ok       libcanberra-pulse
-ok       libgl1-mesa-dri
-ok       libglib2.0-bin
-ok       libnotify-bin
-ok       libpam-gnome-keyring
-ok       libreoffice-calc
-ok       libreoffice-gtk3
-ok       libreoffice-impress
-ok       libreoffice-writer
-ok       linux-headers-amd64
-ok       loupe
-ok       mesa-utils
-ok       mesa-va-drivers
-ok       mesa-vdpau-drivers
-ok       mesa-vulkan-drivers
-ok       mokutil
-ok       nautilus
-ok       network-manager
-ok       nvidia-detect
-ok       nvidia-driver
-ok       nvidia-kernel-dkms
-ok       nvidia-vulkan-icd
-ok       orca
-ok       packagekit
-ok       papers
-ok       papirus-icon-theme
-ok       pciutils
-ok       pipewire-audio
-ok       pkexec
-ok       showtime
-ok       system-config-printer
-ok       system-config-printer-common
-ok       system-config-printer-udev
-ok       systemd-resolved
-ok       thunderbird
-ok       ufw
-ok       unattended-upgrades
-ok       usbutils
-ok       vulkan-tools
-ok       webext-ublock-origin-firefox
-ok       wireguard-tools
-ok       zenity
-== Recommends / package lists (nice to have)
-ok       amd64-microcode
-ok       apparmor-profiles
-ok       apt-listchanges
-ok       efibootmgr
-ok       firefox-esr
-ok       firefox-esr-l10n-nb-no
-ok       firefox-esr-l10n-nn-no
-ok       firmware-atheros
-ok       firmware-brcm80211
-ok       firmware-iwlwifi
-ok       firmware-linux
-ok       firmware-mediatek
-ok       firmware-misc-nonfree
-ok       firmware-realtek
-ok       fonts-noto-cjk
-ok       fonts-noto-color-emoji
-ok       fonts-noto-core
-ok       fonts-noto-mono
-ok       fonts-noto-ui-core
-ok       fwupd
-ok       gdm3
-ok       gnome-shell-extension-appindicator
-ok       gnome-shell-extension-caffeine
-ok       gnome-shell-extension-dashtodock
-ok       gnome-software
-ok       gnome-software-plugin-fwupd
-ok       grub-efi
-ok       grub-efi-amd64
-ok       grub-efi-amd64-signed
-ok       grub-pc-bin
-ok       hunspell-en-us
-ok       hunspell-no
-ok       intel-media-va-driver-non-free
-ok       intel-microcode
-ok       keyboard-configuration
-ok       libreoffice-help-en-us
-ok       libreoffice-l10n-nb
-ok       libreoffice-l10n-nn
-ok       live-config
-ok       live-config-systemd
-ok       locales
-ok       low-memory-monitor
-ok       mesa-vulkan-drivers
-ok       myspell-nb
-ok       ntfs-3g
-ok       nvidia-settings
-ok       os-prober
-ok       plymouth
-ok       plymouth-themes
-ok       power-profiles-daemon
-ok       qrencode
-ok       shim-signed
-ok       sudo
-ok       thunderbird
-ok       thunderbird-l10n-nb-no
-ok       thunderbird-l10n-nn-no
-ok       util-linux-extra
-ok       vulkan-tools
-ok       xdg-desktop-portal-gnome
-== exit status: 0
+Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
+com.bitwarden.desktop
+com.discordapp.Discord
+com.heroicgameslauncher.hgl
+net.davidotek.pupgui2
+org.freedesktop.Platform
+org.freedesktop.Platform
+org.freedesktop.Platform.Compat.i386
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL.default
+org.freedesktop.Platform.GL32.default
+org.freedesktop.Platform.codecs-extra
+org.freedesktop.Platform.codecs-extra
+org.kde.KStyle.Adwaita
+org.kde.Platform
+dpkg-query: no packages found matching xpadneo-dkms
+dpkg-query: no packages found matching xone-dkms
+dpkg-query: no packages found matching proton-mail
+dpkg-query: no packages found matching protonmail
+hplip 3.22.10+dfsg0-8.1+deb13u1 ii 
+libreoffice-writer 4:25.2.3-2+deb13u8 ii 
+mtr 0.95-1.1+b1 ii 
+nextcloud-desktop 3.16.7-1~deb13u1 ii 
+nmap 7.95+dfsg-3 ii 
+remmina 1.4.39+dfsg-1+deb13u1 ii 
+sane-airscan 0.99.35-1 ii 
+sane-utils 1.3.1-3+b1 ii 
+signal-desktop 8.31.0 ii 
+strawberry 1.2.10-2 ii 
+telegram-desktop 5.7.2+ds-2~bpo13+1 ii 
+virt-manager 1:5.0.0-5+deb13u1 ii 
+vlc 3.0.24-0+deb13u1 ii 
+wireshark 4.4.19-0+deb13u1 ii 
