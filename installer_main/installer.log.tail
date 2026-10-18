@@ -8,7 +8,7 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 2 {'wait': 150}
 3 {'click': [400, 300]}
 4 {'wait': 2}
-5 {'click': [42, 625]}
+5 {'click': [38, 763]}
 6 {'wait': 4}
 7 {'type': 'Install'}
 8 {'wait': 3}
