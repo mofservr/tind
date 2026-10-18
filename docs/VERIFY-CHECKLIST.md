@@ -14,7 +14,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Tind Ice extension is ACTIVE and Dash to Dock is enabled (UUID confirmed).
 - Firefox policy files are present at both paths and are valid JSON. uBlock Origin loads and is active in Firefox ESR (`app-system-share`).
 - Thunderbird policy file is valid JSON.
-- `tind-enroll` help, `init`, `status` and `remove` work; `apply` refuses cleanly while the server values are blank.
+- `tind-enroll` help, `init`, `status` and `remove` work; `apply` refuses cleanly on an empty enrolment block.
 - Calamares `branding: tind` is set and the branding files are installed.
 - Live installer launcher is renamed "Install Tind"; the original is hidden.
 - Plymouth default theme is `tind`; GRUB drop-in `90-tind.cfg` is installed.
@@ -40,7 +40,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 | 10 | Plymouth splash renders | boot with a screen capture early | script syntax; fall back to `bgrt` |
 | 11 | GRUB theme on the installed system | reboot after install | PNG depth, font name |
 | 12 | Calamares installer runs through and the installed system boots | install in a VM | partitioning, branding keys |
-| 14 | `tind-enroll apply` with NetworkManager and a real peer | needs the server values | `nmcli connection import` property names |
+| 14 | `tind-enroll apply` with NetworkManager and a real peer | needs an enrolment block from `tind-add-peer` | `nmcli connection import` property names |
 | 15 | Split DNS: `*.servr.no` via the tunnel only | `resolvectl query` on both | `/etc/resolv.conf`, NM `dns=systemd-resolved` |
 | 17 | Nextcloud client honours the preset URL | run the wizard | file location |
 | 18 | Flathub refs exist (`com.spotify.Client` etc.) | `tind-optins install spotify` | `.optin` files |

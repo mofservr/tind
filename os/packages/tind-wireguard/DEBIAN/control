@@ -1,5 +1,5 @@
 Package: tind-wireguard
-Version: 0.1.0
+Version: 0.2.0
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: net
@@ -13,4 +13,5 @@ Description: Always-on split-tunnel WireGuard to servr.no
  server's own addresses (split tunnel), stays up in the background through
  NetworkManager, and resolves servr.no names through the tunnel (split DNS).
  .
- Configure /etc/tind/servr-tunnel.conf once, then run: sudo tind-enroll init
+ Run: sudo tind-enroll init, send the public key to the server admin, then paste the
+ enrolment block that comes back into: sudo tind-enroll apply

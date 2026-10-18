@@ -2,11 +2,13 @@
 # tind-enroll: set up this device's WireGuard split tunnel to servr.no.
 #
 #   sudo tind-enroll init              create this device's key pair, print the public key
-#   sudo tind-enroll apply <ADDRESS>   install the tunnel (ADDRESS e.g. 10.8.0.12/32, from the server admin)
+#   sudo tind-enroll apply [FILE]      install the tunnel from the enrolment block the server admin sends
+#                                      back (paste it, or pass a file; end a paste with Ctrl-D)
 #   sudo tind-enroll status            show tunnel state
 #   sudo tind-enroll remove [--purge-key]
 #
-# The private key is generated here and never leaves this device.
+# The private key is generated here and never leaves this device. The image contains no server
+# details: the endpoint, server key, subnet and DNS all arrive in the enrolment block.
 set -euo pipefail
 
 CONF=/etc/tind/servr-tunnel.conf
@@ -15,27 +17,81 @@ KEY="$KEYDIR/private.key"
 
 die() { echo "tind-enroll: $*" >&2; exit 1; }
 
-usage() { sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
 
 need_root() { [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-enroll $*"; }
 
+# defaults only (names, keepalive); the server values come from the enrolment block
 load_conf() {
-    [ -r "$CONF" ] || die "missing $CONF"
-    # shellcheck disable=SC1090
-    . "$CONF"
-    local v
+    if [ -r "$CONF" ]; then
+        # shellcheck disable=SC1090
+        . "$CONF"
+    fi
     DNS_DOMAIN="${DNS_DOMAIN:-servr.no}"
     KEEPALIVE="${KEEPALIVE:-25}"
     CONNECTION_NAME="${CONNECTION_NAME:-tind-servr}"
     [ "${#CONNECTION_NAME}" -le 15 ] || die "CONNECTION_NAME must be at most 15 characters"
-    # status and remove only need the connection name, not the server values
-    [ "${1:-}" = "--names-only" ] && return 0
-    for v in SERVER_ENDPOINT SERVER_PUBLIC_KEY ALLOWED_IPS DNS_SERVER; do
-        [ -n "${!v:-}" ] || die "$v is empty in $CONF. The server admin needs to fill it in first."
+    return 0
+}
+
+trim() {
+    local v="$1"
+    v="${v#"${v%%[![:space:]]*}"}"
+    v="${v%"${v##*[![:space:]]}"}"
+    printf '%s' "$v"
+}
+
+# Read an enrolment block (KEY=value lines) from a file or stdin. It is never sourced as shell: only
+# the keys below are accepted, and every value is checked in check_values before it is used.
+read_block() {
+    local file="${1:-}" line key val
+    ADDRESS="" SERVER_ENDPOINT="" SERVER_PUBLIC_KEY="" ALLOWED_IPS="" DNS_SERVER=""
+    if [ -n "$file" ]; then
+        [ -r "$file" ] || die "cannot read $file"
+        exec 3<"$file"
+    else
+        if [ -t 0 ]; then
+            echo "Paste the enrolment block from the server admin, then press Ctrl-D:" >&2
+        fi
+        exec 3<&0
+    fi
+    while IFS= read -r line <&3 || [ -n "$line" ]; do
+        line="${line%$'\r'}"
+        line="$(trim "$line")"
+        case "$line" in ""|"#"*) continue ;; esac
+        [[ "$line" == *=* ]] || die "not a KEY=value line in the enrolment block: $line"
+        key="$(trim "${line%%=*}")"
+        val="$(trim "${line#*=}")"
+        val="${val#\"}"
+        val="${val%\"}"
+        case "$key" in
+            ADDRESS|SERVER_ENDPOINT|SERVER_PUBLIC_KEY|ALLOWED_IPS|DNS_SERVER|DNS_DOMAIN|KEEPALIVE)
+                printf -v "$key" '%s' "$val" ;;
+            *) die "unknown key '$key' in the enrolment block" ;;
+        esac
     done
-    case ",${ALLOWED_IPS// /}," in
-        *,0.0.0.0/0,*|*,::/0,*) die "ALLOWED_IPS must not contain a default route; this is a split tunnel." ;;
-    esac
+    exec 3<&-
+}
+
+check_values() {
+    local ip='[0-9]{1,3}(\.[0-9]{1,3}){3}' v item
+    local -a items
+    for v in ADDRESS SERVER_ENDPOINT SERVER_PUBLIC_KEY ALLOWED_IPS DNS_SERVER; do
+        [ -n "${!v:-}" ] || die "$v is missing from the enrolment block"
+    done
+    [[ "$ADDRESS" =~ ^${ip}/32$ ]] || die "ADDRESS must look like 10.0.0.10/32"
+    [[ "$SERVER_ENDPOINT" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?:[0-9]{1,5}$ ]] \
+        || die "SERVER_ENDPOINT must look like vpn.example.org:51820"
+    [[ "$SERVER_PUBLIC_KEY" =~ ^[A-Za-z0-9+/]{43}=$ ]] || die "SERVER_PUBLIC_KEY is not a WireGuard key"
+    [[ "$DNS_SERVER" =~ ^${ip}$ ]] || die "DNS_SERVER must be an IPv4 address"
+    [[ "$DNS_DOMAIN" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?$ ]] || die "DNS_DOMAIN is not a domain name"
+    [[ "$KEEPALIVE" =~ ^[0-9]{1,3}$ ]] || die "KEEPALIVE must be a number of seconds"
+    IFS=, read -r -a items <<< "${ALLOWED_IPS// /}"
+    [ "${#items[@]}" -gt 0 ] || die "ALLOWED_IPS is empty"
+    for item in "${items[@]}"; do
+        [[ "$item" =~ ^${ip}/[0-9]{1,2}$ ]] || die "ALLOWED_IPS entry '$item' is not an IPv4 network like 10.0.0.0/24"
+        [ "${item#*/}" -gt 0 ] || die "ALLOWED_IPS must not contain a default route; this is a split tunnel."
+    done
 }
 
 cmd_init() {
@@ -59,18 +115,18 @@ cmd_init() {
         qrencode -t ansiutf8 "$pub"
     fi
     echo
-    echo "The admin will reply with a tunnel address such as 10.8.0.12/32."
-    echo "Then run:  sudo tind-enroll apply 10.8.0.12/32"
+    echo "The admin will reply with an enrolment block (a few KEY=value lines)."
+    echo "Then run:  sudo tind-enroll apply      and paste it, or:  sudo tind-enroll apply FILE"
 }
 
 cmd_apply() {
     need_root apply "$@"
-    local addr="${1:-}"
-    [ -n "$addr" ] || die "usage: tind-enroll apply <ADDRESS/32>"
-    [[ "$addr" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}/32$ ]] || die "ADDRESS must look like 10.8.0.12/32"
     [ -s "$KEY" ] || die "no key yet; run: sudo tind-enroll init"
-    load_conf
     command -v nmcli >/dev/null 2>&1 || die "NetworkManager (nmcli) is required"
+    load_conf
+    read_block "${1:-}"
+    check_values
+    local addr="$ADDRESS"
 
     local tmp; tmp="$(mktemp -d)"
     trap 'rm -rf "$tmp"' EXIT
@@ -102,7 +158,7 @@ CFG
 }
 
 cmd_status() {
-    load_conf --names-only
+    load_conf
     nmcli -f GENERAL.STATE,IP4.ADDRESS,IP4.DNS connection show "$CONNECTION_NAME" 2>/dev/null \
         || die "tunnel '$CONNECTION_NAME' is not installed"
     command -v wg >/dev/null 2>&1 && wg show "$CONNECTION_NAME" 2>/dev/null || true
@@ -111,7 +167,7 @@ cmd_status() {
 
 cmd_remove() {
     need_root remove "$@"
-    load_conf --names-only
+    load_conf
     nmcli connection delete "$CONNECTION_NAME" 2>/dev/null || echo "Tunnel '$CONNECTION_NAME' was not installed."
     if [ "${1:-}" = "--purge-key" ]; then
         rm -f "$KEY"

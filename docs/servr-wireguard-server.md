@@ -26,18 +26,41 @@ Enable with `systemctl enable --now wg-quick@wg0`. Open **UDP 51820** at the rou
 
 Add a device without restarting: `wg set wg0 peer <pubkey> allowed-ips 10.8.0.12/32`, then add it to `wg0.conf` too.
 
-## 2. What the Tind side needs from you
+## 2. Enrolling a device (nothing server-specific is in the image or the repository)
 
-Fill in `/etc/tind/servr-tunnel.conf` (it ships in the `tind-wireguard` package, so for the ISO edit `os/packages/tind-wireguard/etc/tind/servr-tunnel.conf` before building):
+The image ships no endpoint, server key or subnet. Each device gets them in an **enrolment block** from you.
 
-| Value | Example |
-|---|---|
-| `SERVER_ENDPOINT` | `vpn.servr.no:51820` (a name that resolves publicly) |
-| `SERVER_PUBLIC_KEY` | output of `wg pubkey` on the server |
-| `ALLOWED_IPS` | `10.8.0.0/24` |
-| `DNS_SERVER` | `10.8.0.1` |
+One-time setup on the server: copy `docs/server/tind-add-peer` to `/usr/local/sbin/` and create `/etc/tind-add-peer.conf`:
 
-None of these are secret.
+```sh
+ENDPOINT=vpn.servr.no:51820   # a name devices can reach from anywhere; see "The endpoint name" below
+# optional: WG_IF=wg0  POOL_START=10  ALLOWED_IPS=...  DNS_SERVER=...
+```
+
+Per device:
+
+1. On the device: `sudo tind-enroll init`. It prints the device's public key.
+2. Send that key and a device name to yourself. On the server: `sudo tind-add-peer laptop <public-key>`. It picks the next free address from `POOL_START` upward, adds the peer live and to `wg0.conf`, and prints the block:
+
+   ```
+   ADDRESS=10.0.0.10/32
+   SERVER_ENDPOINT=vpn.servr.no:51820
+   SERVER_PUBLIC_KEY=...
+   ALLOWED_IPS=10.0.0.0/24
+   DNS_SERVER=10.0.0.1
+   ```
+
+3. Send the block back over a channel you trust. On the device: `sudo tind-enroll apply` and paste it (or `apply FILE`).
+
+Running `tind-add-peer` again with the same key prints the same block. `sudo tind-add-peer --list` shows the devices. None of the values are secret, but whoever controls `DNS_SERVER` controls what `servr.no` names resolve to while the tunnel is up, so do not take the block from an untrusted source.
+
+### The endpoint name
+
+Use a name, not the IP, so the repository and the image never contain your address. `vpn.servr.no` works: a public A record gives the IP, and your resolver on the tunnel address can answer the same name with the same public IP, so the lookup works whether or not the tunnel is up. Inside your own network, answer it with the server's LAN address so a device at home connects directly and does not depend on NAT hairpinning.
+
+### What names resolve to inside the tunnel
+
+Only addresses listed in `ALLOWED_IPS` go through the tunnel. If your resolver answers `*.servr.no` with a LAN address such as `192.168.1.37` for tunnel clients, that traffic never enters the tunnel. Either have the tunnel-side resolver answer service names with the server's tunnel address (`10.0.0.1`, with the services listening on it), or set `ALLOWED_IPS` in `/etc/tind-add-peer.conf` to also include the LAN address as a `/32`. The first avoids clashes with a friend's home network using the same `192.168.1.x` range.
 
 ## 3. Names inside the tunnel
 

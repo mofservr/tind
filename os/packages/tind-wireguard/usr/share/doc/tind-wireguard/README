@@ -8,12 +8,17 @@ What it does
 
 Per-device steps
   1. sudo tind-enroll init            -> prints this device's PUBLIC key
-  2. send the public key to the server admin, get back a tunnel address
-  3. sudo tind-enroll apply 10.8.0.12/32
+  2. send the public key to the server admin; the admin replies with an enrolment block
+     (ADDRESS, SERVER_ENDPOINT, SERVER_PUBLIC_KEY, ALLOWED_IPS, DNS_SERVER)
+  3. sudo tind-enroll apply           -> paste the block, end with Ctrl-D (or: apply FILE)
   4. tind-enroll status
 
 Design rules
   - Each device makes its own key. No private key is ever in the Tind image.
-  - /etc/tind/servr-tunnel.conf is filled in once with the server's public values.
+  - The image contains no server details at all: no endpoint, no server key, no subnet.
+    They arrive in the enrolment block, so nothing about the server is in the repository.
+  - The block is parsed as data, never run as shell; every value is checked before use.
   - ALLOWED_IPS must never contain 0.0.0.0/0 (tind-enroll refuses).
-  - Server-side setup is in docs/servr-wireguard-server.md of the Tind repository.
+  - Send the block over a channel you trust: whoever controls DNS_SERVER controls what
+    names under servr.no resolve to while the tunnel is up.
+  - Server side: docs/server/tind-add-peer and docs/servr-wireguard-server.md in the Tind repository.

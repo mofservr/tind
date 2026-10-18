@@ -90,7 +90,15 @@ sec thunderbird policies; jq -e . /etc/thunderbird/policies/policies.json >/dev/
 sec tind-enroll; tind-enroll --help 2>&1 | head -8; cat /etc/tind/servr-tunnel.conf | grep -E '^[A-Z_]+=' | head
 sec "enroll init/apply smoke test"
 tind-enroll init 2>&1 | tail -3
-tind-enroll apply 10.8.0.99/32 2>&1 | tail -2
+tind-enroll apply </dev/null 2>&1 | tail -2   # empty block: must refuse cleanly
+# a made-up block (documentation address, all-zero key) to exercise the real nmcli import path
+tind-enroll apply 2>&1 <<'BLOCK' | tail -3
+ADDRESS=10.99.99.2/32
+SERVER_ENDPOINT=192.0.2.1:51820
+SERVER_PUBLIC_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+ALLOWED_IPS=10.99.99.0/24
+DNS_SERVER=10.99.99.1
+BLOCK
 tind-enroll status 2>&1 | tail -2
 tind-enroll remove --purge-key 2>&1 | tail -2
 sec "gnome-tour removed?"; dpkg -l gnome-tour 2>&1 | tail -1

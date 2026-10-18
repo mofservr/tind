@@ -1,0 +1,130 @@
+#!/bin/bash
+# tind-add-peer: run on the server, as root. Adds a Tind device as a WireGuard peer and prints the
+# enrolment block to send back to that device.
+#
+#   sudo tind-add-peer <device-name> <device-public-key>   add a device (or show its block again)
+#   sudo tind-add-peer --list                              show the Tind devices
+#
+# The device runs `sudo tind-enroll init` first and sends you its public key. You run this, and send
+# back the block it prints. The device pastes it into `sudo tind-enroll apply`.
+#
+# Settings live in /etc/tind-add-peer.conf (shell syntax, root-owned):
+#   ENDPOINT=vpn.example.org:51820   required: the name and port devices reach the server on
+#   WG_IF=wg0                        the WireGuard interface (default wg0)
+#   POOL_START=10                    first host number handed to Tind devices (default 10)
+#   ALLOWED_IPS=10.0.0.0/24          what goes through the tunnel (default: the interface's /24)
+#   DNS_SERVER=10.0.0.1              resolver inside the tunnel (default: the interface's address)
+#
+# Nothing printed here is secret. The device's private key never leaves the device.
+set -euo pipefail
+
+SETTINGS="${TIND_ADD_PEER_CONF:-/etc/tind-add-peer.conf}"
+WG_CONF_DIR="${WG_CONF_DIR:-/etc/wireguard}"
+
+die() { echo "tind-add-peer: $*" >&2; exit 1; }
+
+usage() { sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+
+[ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-add-peer $*"
+command -v wg >/dev/null 2>&1 || die "wg not found; this must run on the WireGuard server"
+
+ENDPOINT="" WG_IF="" POOL_START="" ALLOWED_IPS="" DNS_SERVER=""
+if [ -r "$SETTINGS" ]; then
+    # shellcheck disable=SC1090
+    . "$SETTINGS"
+fi
+WG_IF="${WG_IF:-wg0}"
+POOL_START="${POOL_START:-10}"
+CONF="$WG_CONF_DIR/$WG_IF.conf"
+
+wg show "$WG_IF" >/dev/null 2>&1 || die "interface $WG_IF is not up"
+
+cidr="$(ip -4 -o addr show dev "$WG_IF" | awk '{print $4}' | head -1)"
+[[ "$cidr" =~ ^([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})\.([0-9]{1,3})/24$ ]] \
+    || die "$WG_IF has address '$cidr'; this script handles a /24 tunnel subnet only"
+prefix="${BASH_REMATCH[1]}"
+server_ip="$prefix.${BASH_REMATCH[2]}"
+ALLOWED_IPS="${ALLOWED_IPS:-$prefix.0/24}"
+DNS_SERVER="${DNS_SERVER:-$server_ip}"
+
+# name of the peer with this public key, from the "# tind: name" comment above its [Peer] block
+name_of() {
+    [ -r "$CONF" ] || return 0
+    awk -v k="$1" '
+        /^# tind: / { n = substr($0, 9); next }
+        /^PublicKey/ { sub(/^PublicKey[ ]*=[ ]*/, ""); if ($0 == k) { print n; exit } n = "" }
+    ' "$CONF"
+}
+
+cmd_list() {
+    local key addr
+    echo "Devices on $WG_IF (server is $server_ip):"
+    while read -r key addr; do
+        printf '  %-16s %-18s %s\n' "${addr%/*}" "$(name_of "$key")" "${key:0:8}..."
+    done < <(wg show "$WG_IF" allowed-ips | sort -t. -k4 -n)
+}
+
+cmd_add() {
+    local name="${1:-}" pub="${2:-}" addr used n existing
+    [ -n "$name" ] && [ -n "$pub" ] || usage 1
+    [ -n "$ENDPOINT" ] || die "ENDPOINT is not set in $SETTINGS (example: ENDPOINT=vpn.example.org:51820)"
+    [[ "$ENDPOINT" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?:[0-9]{1,5}$ ]] \
+        || die "ENDPOINT must look like vpn.example.org:51820"
+    [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,30}$ ]] || die "device name: lower-case letters, digits and dashes only"
+    [[ "$pub" =~ ^[A-Za-z0-9+/]{43}=$ ]] || die "that is not a WireGuard public key (44 characters ending in =)"
+    [ "$pub" != "$(wg show "$WG_IF" public-key)" ] || die "that is the server's own public key"
+
+    existing="$(wg show "$WG_IF" allowed-ips | awk -v k="$pub" '$1 == k {print $2}')"
+    if [ -n "$existing" ]; then
+        addr="${existing%/32}"
+        echo "tind-add-peer: this key is already a peer ($addr); printing its block again" >&2
+    else
+        if [ -r "$CONF" ] && grep -qx "# tind: $name" "$CONF"; then
+            die "the name '$name' is already used by another key"
+        fi
+        used="$(wg show "$WG_IF" allowed-ips | awk '{print $2}' | cut -d/ -f1)"
+        if [ -r "$CONF" ]; then
+            used="$used"$'\n'"$(grep -oE "$prefix\.[0-9]+/32" "$CONF" | cut -d/ -f1 || true)"
+        fi
+        used="$used"$'\n'"$server_ip"
+        addr=""
+        for ((n = POOL_START; n <= 250; n++)); do
+            if ! grep -qx "$prefix.$n" <<< "$used"; then
+                addr="$prefix.$n"
+                break
+            fi
+        done
+        [ -n "$addr" ] || die "no free address left from $prefix.$POOL_START to $prefix.250"
+
+        wg set "$WG_IF" peer "$pub" allowed-ips "$addr/32"
+        if [ -w "$CONF" ]; then
+            if ! grep -qF "$pub" "$CONF"; then
+                {
+                    echo
+                    echo "# tind: $name"
+                    echo "[Peer]"
+                    echo "PublicKey = $pub"
+                    echo "AllowedIPs = $addr/32"
+                } >> "$CONF"
+            fi
+        else
+            echo "tind-add-peer: WARNING: $CONF not found. The peer is live but will be lost at the next restart;" >&2
+            echo "  add it to wherever $WG_IF is configured:  PublicKey = $pub   AllowedIPs = $addr/32" >&2
+        fi
+    fi
+
+    cat <<BLOCK
+# Tind servr tunnel enrolment, device: $name
+ADDRESS=$addr/32
+SERVER_ENDPOINT=$ENDPOINT
+SERVER_PUBLIC_KEY=$(wg show "$WG_IF" public-key)
+ALLOWED_IPS=$ALLOWED_IPS
+DNS_SERVER=$DNS_SERVER
+BLOCK
+}
+
+case "${1:-}" in
+    --list) cmd_list ;;
+    -h|--help|"") usage 0 ;;
+    *) cmd_add "$@" ;;
+esac
