@@ -22,7 +22,7 @@ ensure_components() {
 apt-get() {
     local n=0 out rc
     while :; do
-        out="$(command apt-get -o DPkg::Lock::Timeout=600 "$@" 2>&1)"; rc=$?
+        out="$(command apt-get -o DPkg::Lock::Timeout=600 "$@" 2>&1)" && rc=0 || rc=$?   # survives set -e
         printf '%s\n' "$out"
         if [ "$rc" -ne 0 ] && grep -q 'Could not get lock' <<<"$out" && [ $((n += 1)) -lt 60 ]; then
             echo "apt is busy, waiting (try $n)..." >&2; sleep 10; continue
