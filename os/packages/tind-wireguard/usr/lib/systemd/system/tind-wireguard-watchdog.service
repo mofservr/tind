@@ -1,0 +1,7 @@
+[Unit]
+Description=Reconnect the servr.no tunnel if it has gone silent
+After=NetworkManager.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/wireguard-watchdog

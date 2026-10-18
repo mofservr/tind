@@ -22,3 +22,9 @@ Design rules
   - Send the block over a channel you trust: whoever controls DNS_SERVER controls what
     names under servr.no resolve to while the tunnel is up.
   - Server side: docs/server/tind-add-peer and docs/servr-wireguard-server.md in the Tind repository.
+
+Watchdog
+  tind-wireguard-watchdog.timer runs every minute. WireGuard looks up the endpoint name only
+  when the tunnel comes up, so a changed home IP leaves the tunnel silently dead. When the last
+  handshake is older than 150 seconds the watchdog takes the connection down and up again, which
+  looks the name up again. Check: journalctl -t tind-wireguard-watchdog

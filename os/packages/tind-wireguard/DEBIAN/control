@@ -1,5 +1,5 @@
 Package: tind-wireguard
-Version: 0.2.0
+Version: 0.3.0
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: net

@@ -97,3 +97,9 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - An empty Office folder (no LibreOffice yet) is not shown. Not verified.
 - Installing the Entertainment box gives VLC; Spotify failing must not fail the box.
 
+## servr.no tunnel (server side ready 2026-10-18; first device not yet enrolled)
+- Enrol the first device: `sudo tind-enroll init`, then `sudo tind-add-peer <name> <pubkey>` on the server, then `sudo tind-enroll apply` and paste the block. Only Morten's own devices for now.
+- `tind-enroll status` shows a recent handshake; `ping 10.0.0.1` works.
+- `resolvectl query minnr.servr.no` returns `10.0.0.1`; `resolvectl query vpn.servr.no` returns the public IP, not `10.0.0.1`. Test both at home and away.
+- Watchdog (`tind-wireguard-watchdog.timer`): with the tunnel up, `journalctl -t tind-wireguard-watchdog` stays quiet. To test, block UDP 51820 for a few minutes and check that it reconnects, then restores the handshake. Real behaviour after a WAN IP change is unproven.
+- systemd-resolved must be active on the client (it is on Tind); a machine without it will not split DNS correctly.

@@ -108,6 +108,7 @@ DNS_SERVER=10.99.99.1
 BLOCK
 tind-enroll status 2>&1 | tail -2
 tind-enroll remove --purge-key 2>&1 | tail -2
+sec "wireguard watchdog"; systemctl is-enabled tind-wireguard-watchdog.timer 2>&1; /usr/lib/tind/wireguard-watchdog; echo "watchdog with no tunnel installed: exit $?"
 sec "gnome-tour removed?"; dpkg -l gnome-tour 2>&1 | tail -1
 sec calamares branding; grep -n '^branding' /etc/calamares/settings.conf; ls /usr/share/calamares/branding/tind | head
 sec installer launcher

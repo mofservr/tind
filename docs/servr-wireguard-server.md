@@ -1,6 +1,15 @@
-# Server side of the servr.no tunnel (template)
+# Server side of the servr.no tunnel
 
-**Status: untested template.** I have no access to your server and did not read its configuration. Everything below uses example values (`10.8.0.0/24`, port `51820`). Adapt before use.
+**Status: server side ready (2026-10-18).** Real values are used below (tunnel `10.0.0.0/24`, server `10.0.0.1`, `vpn.servr.no:51820`). None of them is secret and no key is in the repository. Full server notes are in the serv'r project doc `claude/TIND.md`.
+
+## Decisions
+
+- **Split tunnel.** Only `10.0.0.0/24` and `*.servr.no` go through the tunnel (`ALLOWED_IPS=10.0.0.0/24`).
+- **Names inside the tunnel (option A).** For queries arriving over the tunnel, `*.servr.no` resolves to `10.0.0.1` (a second dnsmasq that listens on `10.0.0.1` only). The LAN address `192.168.1.37` must **not** be in `ALLOWED_IPS`: it clashes with friends' `192.168.1.x` networks and, at home, sends the tunnel's own endpoint traffic back into the tunnel.
+- **`vpn.servr.no` always resolves to the public IP**, at home and away. Never use it as a tunnel-internal name.
+- **Scope: only Morten's own devices.** Every enrolled device can reach every internal service (Caddy trusts `10.0.0.0/24`). Friends' and family's devices wait for a separate OPNsense WireGuard zone.
+- `tind-add-peer` has no remove command yet. Remove a peer by hand on the server.
+- Client side: `tind-wireguard` includes a watchdog (`tind-wireguard-watchdog.timer`) that reconnects when the last handshake is older than 150 s, because WireGuard resolves the endpoint name only when the tunnel comes up. Split DNS needs `systemd-resolved` on the client (Tind has it active).
 
 ## Goal
 
@@ -11,7 +20,7 @@ Every Tind device keeps a background WireGuard connection to the server. Only th
 ```ini
 # /etc/wireguard/wg0.conf
 [Interface]
-Address = 10.8.0.1/24
+Address = 10.0.0.1/24
 ListenPort = 51820
 PrivateKey = <server private key, generated on the server: wg genkey>
 
@@ -19,12 +28,12 @@ PrivateKey = <server private key, generated on the server: wg genkey>
 [Peer]
 # morten-desktop
 PublicKey = <device public key from `sudo tind-enroll init`>
-AllowedIPs = 10.8.0.12/32
+AllowedIPs = 10.0.0.12/32
 ```
 
 Enable with `systemctl enable --now wg-quick@wg0`. Open **UDP 51820** at the router and firewall. This is the only new public port.
 
-Add a device without restarting: `wg set wg0 peer <pubkey> allowed-ips 10.8.0.12/32`, then add it to `wg0.conf` too.
+Add a device without restarting: `wg set wg0 peer <pubkey> allowed-ips 10.0.0.12/32`, then add it to `wg0.conf` too.
 
 ## 2. Enrolling a device (nothing server-specific is in the image or the repository)
 
@@ -33,7 +42,7 @@ The image ships no endpoint, server key or subnet. Each device gets them in an *
 One-time setup on the server: copy `docs/server/tind-add-peer` to `/usr/local/sbin/` and create `/etc/tind-add-peer.conf`:
 
 ```sh
-ENDPOINT=vpn.servr.no:51820   # a name devices can reach from anywhere; see "The endpoint name" below
+ENDPOINT=vpn.servr.no:51820   # resolves to the public IP, at home and away; see "The endpoint name" below
 # optional: WG_IF=wg0  POOL_START=10  ALLOWED_IPS=...  DNS_SERVER=...
 ```
 
@@ -56,15 +65,15 @@ Running `tind-add-peer` again with the same key prints the same block. `sudo tin
 
 ### The endpoint name
 
-Use a name, not the IP, so the repository and the image never contain your address. `vpn.servr.no` works: a public A record gives the IP, and your resolver on the tunnel address can answer the same name with the same public IP, so the lookup works whether or not the tunnel is up. Inside your own network, answer it with the server's LAN address so a device at home connects directly and does not depend on NAT hairpinning.
+Use a name, not the IP, so the repository and the image never contain your address. `vpn.servr.no` always resolves to the **public** IP, both at home and away (decision above), so the lookup works whether or not the tunnel is up and the endpoint traffic never loops into the tunnel. If the home WAN IP changes, the tunnel goes quiet until it is brought up again; the client watchdog does that.
 
 ### What names resolve to inside the tunnel
 
-Only addresses listed in `ALLOWED_IPS` go through the tunnel. If your resolver answers `*.servr.no` with a LAN address such as `192.168.1.37` for tunnel clients, that traffic never enters the tunnel. Either have the tunnel-side resolver answer service names with the server's tunnel address (`10.0.0.1`, with the services listening on it), or set `ALLOWED_IPS` in `/etc/tind-add-peer.conf` to also include the LAN address as a `/32`. The first avoids clashes with a friend's home network using the same `192.168.1.x` range.
+Only addresses listed in `ALLOWED_IPS` go through the tunnel, so the tunnel-side resolver answers `*.servr.no` with the server's tunnel address `10.0.0.1` (option A above), with the services listening on it. Do not add the LAN address to `ALLOWED_IPS`.
 
 ## 3. Names inside the tunnel
 
-Devices send queries for `*.servr.no` to `DNS_SERVER` while the tunnel is up (systemd-resolved routing domain `~servr.no`). That server needs to answer them with addresses reachable inside the tunnel. If your resolver is dnsmasq, add `listen-address=10.8.0.1` and answer your service names with the server's tunnel-side address. I have not read your `dnsmasq.conf`.
+Devices send queries for `*.servr.no` to `DNS_SERVER` while the tunnel is up (systemd-resolved routing domain `~servr.no`). That server needs to answer them with addresses reachable inside the tunnel. If your resolver is dnsmasq, a second dnsmasq instance listens on `10.0.0.1` only and answers `*.servr.no` with `10.0.0.1`.
 
 ## 4. Per-device firewall rules (nftables sketch)
 
@@ -84,7 +93,7 @@ table inet filter {
 }
 ```
 
-For finer control, restrict by source address: `ip saddr 10.8.0.12 tcp dport 443 accept` gives one device one service.
+For finer control, restrict by source address: `ip saddr 10.0.0.12 tcp dport 443 accept` gives one device one service.
 
 ## 5. Closing the public ports without locking yourself out
 
