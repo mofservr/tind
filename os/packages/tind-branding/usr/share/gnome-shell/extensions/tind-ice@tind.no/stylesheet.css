@@ -296,6 +296,64 @@
 .tind-light #dash .show-apps .overview-icon,
 .tind-light #dashtodockContainer #dash .show-apps .overview-icon { color: #EC5179; }
 
+/* ---- top bar and dock: window-like hairline and a faint shadow ----------- *
+ * Same finish as an app window: a 1px light hairline on the open edge (bottom of the bar, right of the
+ * dock) and a very soft shadow onto the desktop. Quiet on purpose, it only makes the frame look finished. */
+#panel {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+}
+
+#dash .dash-background,
+#dashtodockContainer #dash .dash-background,
+#dashtodockContainer.left #dash .dash-background {
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.14);
+  border-width: 0 1px 0 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.28);
+}
+
+.tind-light #panel {
+  border-bottom-color: rgba(26, 30, 50, 0.16);
+  box-shadow: 0 2px 10px rgba(26, 30, 50, 0.16);
+}
+
+.tind-light #dash .dash-background,
+.tind-light #dashtodockContainer #dash .dash-background,
+.tind-light #dashtodockContainer.left #dash .dash-background {
+  border-color: rgba(26, 30, 50, 0.16);
+  box-shadow: 2px 0 10px rgba(26, 30, 50, 0.16);
+}
+
+/* the overview keeps a dark backdrop, so the bar there uses the night hairline */
+.tind-light #panel:overview {
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.28);
+}
+
+/* ---- System Monitor values in the top bar follow the clock ---------------- *
+ * The extension colours its labels itself (.smp-label-normal is #e0e0e0), which vanished on the light bar.
+ * Warning and critical get deeper amber and red in light mode so they still read on #DFDBD8. */
+.tind-light #panel .smp-label-normal,
+.tind-light #panel .smp-metric-label { color: #2E2A27; }
+
+.tind-light #panel .smp-label-warning { color: #8A5A00; }
+.tind-light #panel .smp-label-critical { color: #B3261E; }
+
+.tind-light #panel:overview .smp-label-normal,
+.tind-light #panel:overview .smp-metric-label { color: #F2F2F2; }
+
+.tind-light #panel:overview .smp-label-warning { color: #f8e45c; }
+.tind-light #panel:overview .smp-label-critical { color: #ff7b63; }
+
+/* ---- light mode: a slight shadow under dock icons ------------------------- *
+ * Pale icons (the Settings gear above all) disappear on the light dock. The shadow is applied to the
+ * St.Icon inside each app icon, so it follows the icon's own shape. */
+.tind-light #dash .overview-icon StIcon,
+.tind-light #dashtodockContainer #dash .overview-icon StIcon {
+  icon-shadow: 0 1px 3px rgba(26, 30, 50, 0.50);
+}
+
 /* ---- soft menu shadow (like a window), no outline ------------------------ */
 .popup-menu-content,
 .quick-settings,
