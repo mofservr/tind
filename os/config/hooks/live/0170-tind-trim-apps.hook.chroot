@@ -13,7 +13,8 @@ done
 for f in vim.desktop im-config.desktop nm-connection-editor.desktop org.freedesktop.IBus.Setup.desktop \
          gnome-system-monitor-kde.desktop kdesystemsettings.desktop systemsettings.desktop \
          zutty.desktop org.freedesktop.MalcontentControl.desktop yelp.desktop \
-         libreoffice-draw.desktop libreoffice-math.desktop nvidia-settings.desktop; do
+         libreoffice-draw.desktop libreoffice-math.desktop nvidia-settings.desktop \
+         system-config-printer.desktop; do
     [ -f "/usr/share/applications/$f" ] && echo "NoDisplay=true" >> "/usr/share/applications/$f"
 done
 exit 0
