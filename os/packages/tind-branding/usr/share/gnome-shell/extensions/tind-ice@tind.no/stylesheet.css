@@ -100,29 +100,30 @@
 .quick-toggle:hover,
 .quick-toggle:focus { border-color: rgba(255, 255, 255, 0.34); }
 
-/* split toggle = one pill: toggle half (left), 1px separator, arrow half (right).
- * Inner corners are square and the separator is the only seam. */
+/* split toggle = one pill. The 1px outline belongs to the pill itself (.quick-toggle-has-menu), not to
+ * its two halves, so the toggle half and the arrow half always have exactly the same size and there is
+ * no per-half hairline that can differ. The halves only carry a fill; the 1px separator is the seam. */
+.quick-toggle-has-menu {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  box-shadow: none;
+}
+
+.quick-toggle-has-menu:hover { border-color: rgba(255, 255, 255, 0.34); }
+
 .quick-toggle-has-menu .quick-toggle:ltr {
+  border-width: 0;
   border-radius: 999px 0 0 999px;
-  border-right-width: 0;
 }
 
 .quick-toggle-has-menu .quick-toggle:rtl {
+  border-width: 0;
   border-radius: 0 999px 999px 0;
-  border-left-width: 0;
-}
-
-/* a toggle half with no arrow next to it stays a full pill */
-.quick-toggle-has-menu .quick-toggle:ltr:last-child,
-.quick-toggle-has-menu .quick-toggle:rtl:last-child {
-  border-radius: 999px;
-  border-width: 1px;
 }
 
 .quick-toggle-has-menu .quick-toggle-menu-button:ltr {
   background-color: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-left-width: 0;
+  border-width: 0;
   border-radius: 0 999px 999px 0;
   box-shadow: none;
   color: #F2F2F2;
@@ -130,15 +131,11 @@
 
 .quick-toggle-has-menu .quick-toggle-menu-button:rtl {
   background-color: rgba(255, 255, 255, 0.09);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-right-width: 0;
+  border-width: 0;
   border-radius: 999px 0 0 999px;
   box-shadow: none;
   color: #F2F2F2;
 }
-
-.quick-toggle-has-menu .quick-toggle-menu-button:hover,
-.quick-toggle-has-menu .quick-toggle-menu-button:focus { border-color: rgba(255, 255, 255, 0.34); }
 
 .quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(255, 255, 255, 0.22); }
 .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(201, 255, 240, 0.40); }
@@ -258,15 +255,24 @@
 .tind-light .quick-toggle-has-menu .quick-toggle-menu-button:hover,
 .tind-light .quick-toggle-has-menu .quick-toggle-menu-button:focus {
   background-color: rgba(26, 42, 58, 0.10);
-  border-color: rgba(26, 42, 58, 0.34);
 }
+
+.tind-light .quick-toggle:hover,
+.tind-light .quick-toggle:focus { border-color: rgba(26, 42, 58, 0.34); }
+
+.tind-light .quick-toggle-has-menu { border-color: rgba(26, 42, 58, 0.22); }
+.tind-light .quick-toggle-has-menu:hover { border-color: rgba(26, 42, 58, 0.34); }
 
 .tind-light .quick-toggle-has-menu .quick-toggle-separator { background-color: rgba(26, 42, 58, 0.22); }
 .tind-light .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(107, 36, 48, 0.30); }
 
+/* The submenu card (Wi-Fi list, ...) must be OPAQUE in light mode. GNOME dims the whole Quick Settings
+ * panel with a dark veil while a submenu is open; the card sits on top of that veil, and a translucent
+ * card lets the veil show through, so its dark text ends up on dark grey. These are the old 5% tint and
+ * 16% outline pre-mixed onto the #DFDBD8 panel. (Dark mode is fine translucent: light text on dark.) */
 .tind-light .quick-toggle-menu {
-  background-color: rgba(26, 42, 58, 0.05);
-  border-color: rgba(26, 42, 58, 0.16);
+  background-color: #D5D2D0;
+  border-color: #C0BFBF;
   color: #2E2A27;
 }
 
@@ -346,6 +352,77 @@
 .tind-light #panel:overview .smp-label-warning { color: #f8e45c; }
 .tind-light #panel:overview .smp-label-critical { color: #ff7b63; }
 
+/* ---- System Monitor dropdown in light mode --------------------------------- *
+ * The extension's own stylesheet is written for a dark menu (#eeeeee text, white-tint cards). On the
+ * light menu (#DFDBD8) every one of those vanished, so light mode gets the same elements re-coloured:
+ * dark text, dark-tint cards and tracks, and deeper section colours that read on a light surface. */
+.tind-light .smp-card {
+  background-color: rgba(26, 42, 58, 0.05);
+  border-color: rgba(26, 42, 58, 0.12);
+}
+
+.tind-light .smp-card-title,
+.tind-light .smp-core-value,
+.tind-light .smp-gpu-name,
+.tind-light .smp-gpu-percent,
+.tind-light .smp-detail-value,
+.tind-light .smp-swap-value,
+.tind-light .smp-disk-name,
+.tind-light .smp-disk-percent,
+.tind-light .smp-sensor-value,
+.tind-light .smp-footer-btn-icon,
+.tind-light .smp-footer-btn-label { color: #2E2A27; }
+
+.tind-light .smp-section-subtitle,
+.tind-light .smp-core-label,
+.tind-light .smp-gpu-note,
+.tind-light .smp-detail-title,
+.tind-light .smp-swap-title,
+.tind-light .smp-disk-detail,
+.tind-light .smp-sensor-name,
+.tind-light .smp-no-sensors { color: #5C5651; }
+
+.tind-light .smp-color-cpu { color: #1B5FB8; }
+.tind-light .smp-color-cpu-bg { background-color: #1B5FB8; }
+.tind-light .smp-color-gpu { color: #0B7A8A; }
+.tind-light .smp-color-gpu-bg { background-color: #0B7A8A; }
+.tind-light .smp-color-mem { color: #8E3A9B; }
+.tind-light .smp-color-mem-bg { background-color: #8E3A9B; }
+.tind-light .smp-color-disk { color: #A8560A; }
+.tind-light .smp-color-disk-bg { background-color: #A8560A; }
+.tind-light .smp-color-temp { color: #B8402B; }
+.tind-light .smp-color-temp-bg { background-color: #B8402B; }
+.tind-light .smp-color-net { color: #1B7A4B; }
+.tind-light .smp-color-net-bg { background-color: #1B7A4B; }
+.tind-light .smp-net-speed-value { color: #1B7A4B; }
+
+.tind-light .smp-gpu-badge { color: #0B7A8A; background-color: rgba(11, 122, 138, 0.15); }
+.tind-light .smp-disk-badge { color: #A8560A; background-color: rgba(168, 86, 10, 0.15); }
+
+.tind-light .smp-bar-bg,
+.tind-light .smp-mini-bar-bg,
+.tind-light .smp-swap-bar-bg,
+.tind-light .smp-disk-bar-bg { background-color: rgba(26, 42, 58, 0.12); }
+
+.tind-light .smp-swap-box { border-top-color: rgba(26, 42, 58, 0.12); }
+.tind-light .smp-swap-bar-fill { background-color: #7A4FCB; }
+
+.tind-light .smp-progress-normal { background-color: #1B5FB8; }
+.tind-light .smp-progress-warning { background-color: #C98A00; }
+.tind-light .smp-progress-critical { background-color: #C01B22; }
+
+.tind-light .smp-footer-button {
+  background-color: rgba(26, 42, 58, 0.06);
+  border-color: rgba(26, 42, 58, 0.16);
+}
+
+.tind-light .smp-footer-button:hover {
+  background-color: rgba(26, 42, 58, 0.11);
+  border-color: rgba(26, 42, 58, 0.28);
+}
+
+.tind-light .smp-footer-button:active { background-color: rgba(26, 42, 58, 0.18); }
+
 /* ---- light mode: a slight shadow under dock icons ------------------------- *
  * Pale icons (the Settings gear above all) disappear on the light dock. The shadow is applied to the
  * St.Icon inside each app icon, so it follows the icon's own shape. */
@@ -381,6 +458,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #FFFFFF;
 }
+.tind-accent-blue .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-blue .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-blue .slider {
   color: #19685F;
@@ -396,6 +474,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #FFFFFF;
 }
+.tind-accent-teal .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-teal .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-teal .slider {
   color: #21857A;
@@ -411,6 +490,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-green .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-green .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-green .slider {
   color: #3AA79A;
@@ -426,6 +506,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-yellow .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-yellow .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-yellow .slider {
   color: #68C4B7;
@@ -441,6 +522,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-orange .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-orange .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-orange .slider {
   color: #A2DBD2;
@@ -456,6 +538,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-red .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-red .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-red .slider {
   color: #FED2CB;
@@ -471,6 +554,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-pink .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-pink .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-pink .slider {
   color: #F4988C;
@@ -486,6 +570,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-purple .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-purple .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-purple .slider {
   color: #E27E75;
@@ -501,6 +586,7 @@
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
+.tind-accent-slate .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-slate .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-slate .slider {
   color: #C25D59;
