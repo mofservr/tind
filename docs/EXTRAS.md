@@ -7,6 +7,7 @@ Nothing from these stacks is on the ISO. Everything is downloaded from Debian (o
 - The choice is written to `/tmp/tind-extras-choice`; the `tindextras` Calamares job copies it to `/var/lib/tind/pending-extras` on the installed system.
 - First boot: `tind-extras.service` waits for internet, runs the chosen setup scripts, writes `/var/lib/tind/extras-status` (running, done, offline, failed:...) and logs to `/var/log/tind-extras.log`. An autostart notification tells the user how it went. If offline, the marker stays and it retries at next boot.
 - Later: the same two entries exist in Tind Apps (`tind-optins`) and call the same scripts.
+- One launcher at a time: the live session shows only "Install Tind" (`tind-installer` ships `/usr/local/share/applications/tind-optins.desktop` with `NoDisplay=true` to hide Tind Apps, which could only install into RAM there). After installing, `tind-installer` is removed, which removes that override and the installer entry, so only Tind Apps is left.
 
 ## What the scripts install
 - `/usr/lib/tind/setup-gaming`: enables contrib/non-free, adds i386, then steam-installer, steam-devices, lutris, wine, wine32:i386, winetricks, gamemode, mangohud, vulkan-tools, 32-bit Mesa/Vulkan libs (plus nvidia-driver-libs:i386 when the NVIDIA driver is installed), and sets `vm.max_map_count` to the SteamOS value. All native apt, no Flatpak, so Steam, Lutris and Wine share one filesystem view.

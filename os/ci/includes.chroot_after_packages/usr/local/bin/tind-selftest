@@ -159,6 +159,7 @@ dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' proton-vpn-gnome-
 sec "desktop entries shown in the app grid (name, package)"
 for f in /usr/share/applications/*.desktop; do
     grep -qE '^(NoDisplay|Hidden)=true' "$f" && continue
+    grep -qE '^(NoDisplay|Hidden)=true' "/usr/local/share/applications/$(basename "$f")" 2>/dev/null && continue
     grep -q '^Type=Application' "$f" || continue
     echo "$(grep -m1 '^Name=' "$f" | cut -c1-40) | $(dpkg -S "$f" 2>/dev/null | cut -d: -f1 | head -1) | $(basename "$f")"
 done | sort | head -80

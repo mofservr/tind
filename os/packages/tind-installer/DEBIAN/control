@@ -1,5 +1,5 @@
 Package: tind-installer
-Version: 0.1.1
+Version: 0.1.2
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
@@ -9,3 +9,5 @@ Installed-Size: 80
 Description: Tind branding for the Calamares installer
  Branding component for Calamares (logo, welcome image, sidebar colours and a
  three-slide installation slideshow) and a postinst that points Calamares at it.
+ It is only on the live image: it also hides Tind Apps there (an installed
+ Tind has Tind Apps and no installer entry), and is removed after installing.
