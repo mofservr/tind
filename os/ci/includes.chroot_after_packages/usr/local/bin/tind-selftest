@@ -72,7 +72,8 @@ echo "input-sources = $(asuser gsettings get org.gnome.desktop.input-sources sou
 echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbols' | head -1)"
 cat /etc/default/keyboard 2>&1 | grep -E '^XKB(LAYOUT|MODEL)'
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
-for u in appindicatorsupport@rgcjonas.gmail.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
+echo "extension dirs: $(ls /usr/share/gnome-shell/extensions | tr '\n' ' ')"
+for u in ubuntu-appindicators@ubuntu.com appindicatorsupport@rgcjonas.gmail.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
   d=/usr/share/gnome-shell/extensions/$u
   echo "$u: files $(test -e $d/metadata.json && echo present || echo MISSING), schema $(test -e $d/schemas/gschemas.compiled && echo compiled || echo none-or-NOT-COMPILED), $(asuser gnome-extensions list --enabled 2>&1 | grep -qx "$u" && echo ENABLED || echo NOT-ENABLED)"
   asuser gnome-extensions info "$u" 2>&1 | grep -iE 'state|error|version' | head -4

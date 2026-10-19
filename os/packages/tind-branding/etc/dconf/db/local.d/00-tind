@@ -45,21 +45,67 @@ picture-uri='file:///usr/share/backgrounds/tind/tranquil-dark.png'
 picture-options='zoom'
 primary-color='#0C1523'
 
+# Tray icons: Debian ships the AppIndicator extension as 'ubuntu-appindicators@ubuntu.com' (shown as
+# "Ubuntu AppIndicators"); the upstream id is kept as well, an unknown id in this list is ignored.
 [org/gnome/shell]
-enabled-extensions=['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info', 'system-monitor-panel@naimur', 'multi-monitors-bar@frederykabryan']
+enabled-extensions=['tind-ice@tind.no', 'dash-to-dock@micxgx.gmail.com', 'ubuntu-appindicators@ubuntu.com', 'appindicatorsupport@rgcjonas.gmail.com', 'caffeine@patapon.info', 'system-monitor-panel@naimur', 'multi-monitors-bar@frederykabryan']
 favorite-apps=['firefox-esr.desktop', 'thunderbird.desktop', 'org.gnome.Nautilus.desktop']
 
 [org/gnome/shell/extensions/dash-to-dock]
+# Left panel-mode dock, always visible, full height; settings as tuned by Morten 2026-10-19
 dock-position='LEFT'
+multi-monitor=true
 extend-height=true
 height-fraction=1.0
 dock-fixed=true
 autohide=false
 intellihide=false
 show-trash=false
-show-mounts=false
+show-mounts=true
+show-mounts-only-mounted=true
+show-mounts-network=false
 running-indicator-style='DOTS'
-dash-max-icon-size=44
+dash-max-icon-size=40
+preview-size-scale=0.16
+icon-size-fixed=false
+always-center-icons=false
+show-favorites=true
+show-running=true
+show-windows-preview=true
+isolate-workspaces=false
+isolate-monitors=false
+workspace-agnostic-urgent-windows=true
+scroll-to-focused-application=true
+show-show-apps-button=true
+show-apps-at-top=false
+show-apps-always-in-the-edge=true
+hot-keys=false
+click-action='previews'
+scroll-action='cycle-windows'
+custom-theme-shrink=true
+disable-overview-on-startup=true
+apply-custom-theme=false
+custom-background-color=false
+transparency-mode='DEFAULT'
+background-opacity=1.0
+
+# System Monitor in the top bar: temperature next to CPU, then memory, disk and network. GPU is only a
+# card in the menu (it stays out of the bar); external disks listed, network card off.
+[org/gnome/shell/extensions/system-monitor-panel]
+panel-order=['temperature', 'cpu', 'gpu', 'memory', 'disk', 'network']
+show-temperature=true
+show-cpu=true
+show-gpu=false
+show-memory=true
+show-disk=true
+show-network=true
+show-cpu-card=true
+show-gpu-card=true
+show-memory-card=true
+show-disk-card=true
+show-external-disks=true
+show-temperature-card=true
+show-network-card=false
 
 # App grid folders. categories/excluded-apps are emptied so GNOME's own Utilities folder
 # does not pull in other apps; only the apps listed here are shown in each folder.

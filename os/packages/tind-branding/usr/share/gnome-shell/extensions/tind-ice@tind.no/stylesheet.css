@@ -1,8 +1,9 @@
 /* Tind Ice v5: one colour for the whole frame, the window header colour.
  *
  * The top bar, the dock, menus, Quick Settings and notification cards all use the same solid
- * colour as GNOME's own window header bar, so shell and apps read as one thing:
- *   dark  #292929   (text #F2F2F2)        light #DFDBD8   (text #2E2A27)
+ * colour, a notch darker than the window header bar (2026-10-19: #121314, the code editor black Morten picked,
+ * so the logo pops), so shell and apps still read as one thing:
+ *   dark  #121314   (text #F2F2F2)        light #DFDBD8   (text #2E2A27)
  * Solid, no transparency, no gradients, no glow. The top bar and dock stay square and flat (one frame
  * along the top and left edges); menus, Quick Settings and cards are rounded with a soft window shadow.
  * Controls (Quick Settings toggles, icon buttons, slider tracks) get a subtle 1px outline.
@@ -25,7 +26,7 @@
 
 /* ---- top bar ------------------------------------------------------------ */
 #panel {
-  background-color: #292929;
+  background-color: #121314;
   border: none;
   box-shadow: none;
 }
@@ -44,7 +45,7 @@
 #dash .dash-background,
 #dashtodockContainer #dash .dash-background,
 #dashtodockContainer.left #dash .dash-background {
-  background-color: #292929;
+  background-color: #121314;
   border: none;
   border-radius: 0 !important;
   margin: 0 !important;
@@ -66,7 +67,7 @@
 /* ---- menus and popovers ------------------------------------------------- */
 .popup-menu-content,
 .candidate-popup-content {
-  background-color: #292929;
+  background-color: #121314;
   border: none;
   border-radius: 20px;
   box-shadow: none;
@@ -81,7 +82,7 @@
 /* ---- Quick Settings and the calendar popover ---------------------------- */
 .quick-settings,
 .datemenu-popover {
-  background-color: #292929;
+  background-color: #121314;
   border: none;
   border-radius: 24px;
   box-shadow: none;
@@ -177,7 +178,7 @@
 .events-button,
 .world-clocks-button,
 .weather-button {
-  background-color: #292929;
+  background-color: #121314;
   border: none;
   border-radius: 18px;
 }
@@ -203,7 +204,7 @@
 
 /* the overview keeps a dark backdrop in both schemes: the bar goes night-coloured there */
 
-.tind-light #panel:overview { background-color: #292929; }
+.tind-light #panel:overview { background-color: #121314; }
 
 .tind-light #panel:overview .panel-button,
 .tind-light #panel:overview .panel-button .system-status-icon,
