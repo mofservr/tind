@@ -1,0 +1,6 @@
+# Tind update repository. Channel: stable (default) or next, change it with: sudo tind-channel next|stable
+Types: deb
+URIs: https://apt.servr.no/
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/tind-archive-keyring.gpg

@@ -1,12 +1,12 @@
 # Extras: the optional app boxes
 
-Seven boxes: Games, Developer tools, Entertainment, Creative, Communication, Productivity and cloud, Printers and scanners. Nothing from them is on the ISO. Everything is downloaded from Debian, Flathub or the vendor's own apt repository, so it needs internet.
+Eight boxes: Games, Developer tools, Entertainment, Creative, Communication, Productivity and cloud, Printers and scanners, Security. Nothing from them is on the ISO. Everything is downloaded from Debian, Flathub or the vendor's own apt repository, so it needs internet.
 
 ## How the user chooses
-- Installer: clicking "Install Tind" first shows a small checklist (`/usr/lib/tind/install-launcher`, zenity) with the seven tick boxes, then starts Calamares. Productivity and cloud is ticked by default (LibreOffice is no longer on the ISO, so a friend who skips it has no office suite until they add it in Tind Apps); the other six start unticked. (Calamares' own packagechooser page only does single selection and shows a placeholder icon, so it was not used. A native Calamares page can replace this when the design is done.)
+- Installer: clicking "Install Tind" first shows a small checklist (`/usr/lib/tind/install-launcher`, zenity) with the eight tick boxes, then starts Calamares. Productivity and cloud is ticked by default (LibreOffice is no longer on the ISO, so a friend who skips it has no office suite until they add it in Tind Apps); the other seven start unticked. (Calamares' own packagechooser page only does single selection and shows a placeholder icon, so it was not used. A native Calamares page can replace this when the design is done.)
 - The choice is written to `/tmp/tind-extras-choice`; the `tindextras` Calamares job copies it to `/var/lib/tind/pending-extras` on the installed system.
 - First boot: `tind-extras.service` waits for internet, runs the chosen setup scripts, writes `/var/lib/tind/extras-status` (running, done, offline, failed:...) and logs to `/var/log/tind-extras.log`. An autostart notification tells the user how it went. If offline, the marker stays and it retries at next boot.
-- Later: the same seven entries exist in Tind Apps (`tind-optins`) and call the same scripts. Marker words: `gaming dev entertainment creative communication productivity hardware`.
+- Later: the same eight entries exist in Tind Apps (`tind-optins`) and call the same scripts. Marker words: `gaming dev entertainment creative communication productivity hardware security`.
 - One launcher at a time: the live session shows only "Install Tind" (`tind-installer` ships `/usr/local/share/applications/tind-optins.desktop` with `NoDisplay=true` to hide Tind Apps, which could only install into RAM there). After installing, `tind-installer` is removed, which removes that override and the installer entry, so only Tind Apps is left.
 
 ## What the scripts install
@@ -18,7 +18,8 @@ Seven boxes: Games, Developer tools, Entertainment, Creative, Communication, Pro
 - `/usr/lib/tind/setup-entertainment`: VLC with the GStreamer plugin sets, Strawberry (Debian package, Flathub fallback; plays local files and talks to Subsonic servers such as Navidrome), Spotify (Flathub).
 - `/usr/lib/tind/setup-creative`: GIMP, Inkscape, Krita, Kdenlive (with frei0r and the Breeze icon theme), Audacity, OBS Studio, Blender (Debian), plus Upscayl from Flathub (non-fatal if it fails).
 - `/usr/lib/tind/setup-communication`: Signal from Signal's apt repository (key and sources file fetched from updates.signal.org; Signal publishes no fingerprint, so `SIGNAL_FPR` is the one CI logged on 2026-10-18 and the script refuses any other key; a rotated key shows up as a mismatch), Telegram (Debian, Flathub fallback).
-- `/usr/lib/tind/setup-productivity`: LibreOffice Writer, Calc, Impress with Norwegian packs and spell-check, Nextcloud client (preconfigured for lagrr.servr.no by `tind-optins`), Bitwarden (Flathub). Proton Mail is not offered (it needs a paid plan); Proton VPN is the only Proton app, pre-installed on the image.
+- `/usr/lib/tind/setup-security`: Proton VPN. A personal choice offered as an option, not on the ISO. It downloads Proton's release package, refuses it unless the SHA-256 matches the value from Proton's own install page, installs it (that package carries Proton's apt key and repo and keeps the key rotating), then installs `proton-vpn-gnome-desktop`.
+- `/usr/lib/tind/setup-productivity`: LibreOffice Writer, Calc, Impress with Norwegian packs and spell-check, Nextcloud client (preconfigured for lagrr.servr.no by `tind-optins`), Bitwarden (Flathub). Proton Mail is not offered (it needs a paid plan); Proton VPN is the only Proton app and lives in the Security box (below).
 - `/usr/lib/tind/setup-hardware`: hplip, sane-utils, sane-airscan.
 
 ## Graphics drivers (always on the ISO)

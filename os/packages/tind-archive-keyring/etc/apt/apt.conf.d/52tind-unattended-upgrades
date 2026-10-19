@@ -1,0 +1,3 @@
+// Tind packages (both channels) install silently with the Debian security updates.
+// "::" appends to the list in 50unattended-upgrades. No automatic reboot is switched on here.
+Unattended-Upgrade::Origins-Pattern:: "origin=Tind";

@@ -1,0 +1,4 @@
+NAME="Security"
+DESC="Proton VPN (needs internet)"
+STATUS="ready"
+SCRIPT="/usr/lib/tind/setup-security"

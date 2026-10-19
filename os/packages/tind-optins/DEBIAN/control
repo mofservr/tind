@@ -1,5 +1,5 @@
 Package: tind-optins
-Version: 0.1.4
+Version: 0.1.5
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
@@ -9,7 +9,7 @@ Installed-Size: 96
 Description: Tind Apps: opt-in application installer
  A small checklist tool for the apps Tind does not install by default: the
  app boxes from the installer (games, developer tools, entertainment, creative,
- communication, productivity and cloud, printers and scanners).
+ communication, productivity and cloud, printers and scanners, security).
  Apps are described by small files in /usr/share/tind/optins.d, installed from
  apt, Flathub or a setup script, and each can also be installed from the
  command line.

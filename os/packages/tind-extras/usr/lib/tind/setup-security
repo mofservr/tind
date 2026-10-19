@@ -1,0 +1,20 @@
+#!/bin/bash
+# Security: Proton VPN, from Proton's own apt repository. Not on the ISO; a personal choice offered as an option.
+set -euo pipefail
+# shellcheck source=/dev/null
+. /usr/lib/tind/extras-lib.sh
+need_root
+echo "== Tind: security setup"
+tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+
+# Proton's release package carries Proton's apt key and repository line and keeps the key rotating
+# (the current key expires 2027-03-03). URL and SHA-256 are from Proton's own Debian install page
+# (protonvpn.com/support/official-linux-vpn-debian); the script refuses a download with any other checksum.
+PROTON_RELEASE_URL="https://repo.protonvpn.com/debian/dists/stable/main/binary-all/protonvpn-stable-release_1.0.8_all.deb"
+PROTON_RELEASE_SHA256="0b14e71586b22e498eb20926c48c7b434b751149b1f2af9902ef1cfe6b03e180"
+curl -fsSL "$PROTON_RELEASE_URL" -o "$tmp/protonvpn-release.deb"
+echo "$PROTON_RELEASE_SHA256  $tmp/protonvpn-release.deb" | sha256sum -c -
+dpkg -i "$tmp/protonvpn-release.deb"
+apt-get update
+apt-get install -y proton-vpn-gnome-desktop
+echo "== Tind: security setup done"

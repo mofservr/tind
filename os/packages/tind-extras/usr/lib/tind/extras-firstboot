@@ -1,6 +1,6 @@
 #!/bin/bash
 # First boot after install: run the stacks the user ticked in the installer.
-# Marker: /var/lib/tind/pending-extras (words: gaming dev entertainment creative communication productivity hardware).
+# Marker: /var/lib/tind/pending-extras (words: gaming dev entertainment creative communication productivity hardware security).
 # Status: /var/lib/tind/extras-status.
 set -u
 marker=/var/lib/tind/pending-extras
@@ -28,6 +28,7 @@ for item in $(cat "$marker"); do
         communication) /usr/lib/tind/setup-communication || failed="$failed communication" ;;
         productivity)  /usr/lib/tind/setup-productivity  || failed="$failed productivity" ;;
         hardware)      /usr/lib/tind/setup-hardware      || failed="$failed hardware" ;;
+        security)      /usr/lib/tind/setup-security      || failed="$failed security" ;;
     esac
 done
 if [ -z "$failed" ]; then

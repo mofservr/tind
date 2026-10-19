@@ -1,0 +1,83 @@
+name: publish-apt
+# Publishes the Tind apt repository (https://apt.servr.no/) to GitHub Pages. No branch is used: the site is
+# deployed straight from this workflow (repo Settings > Pages > Source: GitHub Actions).
+#
+# When it runs:
+#   - after every successful "build" on main (all jobs green, ISO boot test included),
+#   - once a day: this is what promotes a package version from "next" to "stable" after 14 days,
+#   - by hand (Actions > publish-apt > Run workflow), optionally with fast-track or first-run.
+# It always publishes the newest main commit whose "build" run succeeded, never a commit that failed.
+# See docs/UPDATES.md and os/scripts/publish-apt.sh.
+on:
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      fast_track:
+        description: 'Promote every current package to stable now (skip the 14-day wait)'
+        type: boolean
+        default: false
+      first_run:
+        description: 'First publish: there is no live site to read yet'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  actions: read
+  pages: write
+  id-token: write
+
+# one publish at a time; a second run waits instead of racing the first
+concurrency:
+  group: apt-publish
+  cancel-in-progress: false
+
+jobs:
+  site:
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Newest main commit with a successful build
+        id: sha
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha')"
+          [ -n "$sha" ] || { echo "no successful build on main yet" >&2; exit 1; }
+          echo "publishing commit $sha"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.sha.outputs.sha }}
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends apt-utils gnupg jq xz-utils curl dpkg-dev
+      - name: Build the packages and test the publisher
+        run: |
+          os/packages/build-debs.sh
+          os/scripts/test-publish-apt.sh
+      - name: Build the signed repository
+        env:
+          TIND_APT_SIGNING_KEY: ${{ secrets.TIND_APT_SIGNING_KEY }}
+          TIND_APT_FAST_TRACK: ${{ inputs.fast_track && '1' || '0' }}
+          TIND_APT_FIRST_RUN: ${{ inputs.first_run && '1' || '0' }}
+          TIND_APT_URL: https://apt.servr.no
+          TIND_APT_OUT: ${{ github.workspace }}/site
+        run: os/scripts/publish-apt.sh
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy:
+    needs: site
+    runs-on: ubuntu-24.04
+    environment:
+      name: github-pages
+      url: https://apt.servr.no/
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

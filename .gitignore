@@ -1,9 +1,6 @@
 os/dist/
 os/build/
 os/config/packages.chroot/
-os/config/archives/protonvpn.*
-os/config/package-lists/protonvpn.list.chroot
-os/config/hooks/live/0190-tind-proton-repo.hook.chroot
 *.iso
 *.log
 __pycache__/

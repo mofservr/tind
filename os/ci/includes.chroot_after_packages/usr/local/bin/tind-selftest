@@ -79,6 +79,14 @@ for u in ubuntu-appindicators@ubuntu.com appindicatorsupport@rgcjonas.gmail.com 
   asuser gnome-extensions info "$u" 2>&1 | grep -iE 'state|error|version' | head -4
 done
 echo "file-roller: $(dpkg -s file-roller >/dev/null 2>&1 && echo installed || echo MISSING)"
+sec "tind update repository (static checks; the live site is not required to exist yet)"
+echo "tind-archive-keyring: $(dpkg-query -W -f='${Version} ${db:Status-Abbrev}' tind-archive-keyring 2>&1)"
+cat /etc/apt/sources.list.d/tind.sources 2>&1
+echo "$(tind-channel 2>&1)"
+fpr="$(gpg --show-keys --with-colons /usr/share/keyrings/tind-archive-keyring.gpg 2>/dev/null | awk -F: '$1=="fpr"{print $10; exit}')"
+echo "tind repo key fingerprint: $fpr"
+[ "$fpr" = "0F04FB12B3F97F21F3772F7FFE162F9E34C4D769" ] && echo "tind repo key: OK" || echo "tind repo key: MISMATCH"
+echo "unattended-upgrades origins: $(apt-config dump 2>/dev/null | grep -c 'Origins-Pattern::.*origin=Tind') Tind entry"
 sec firefox policies
 for f in /etc/firefox/policies/policies.json /usr/lib/firefox-esr/distribution/policies.json; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
 jq -e . /etc/firefox/policies/policies.json >/dev/null && echo "firefox policies.json: valid JSON"
@@ -166,8 +174,8 @@ dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' amd64-microcode i
 grep -m1 microcode /proc/cpuinfo 2>&1
 tind-report /tmp/tind-report-test.txt 2>&1 | tail -3
 wc -l /tmp/tind-report-test.txt 2>&1; grep -c '^#####' /tmp/tind-report-test.txt 2>&1
-ls /etc/apt/sources.list.d/ 2>&1; grep -h -E '^(URIs|Suites)' /etc/apt/sources.list.d/protonvpn* 2>&1; dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\\n' protonvpn-stable-release 2>&1; ls /var/tmp/*.deb 2>&1 | head -2
-dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' proton-vpn-gnome-desktop 2>&1
+ls /etc/apt/sources.list.d/ 2>&1
+echo "proton in the base image (expected: none, it is the Security box): $(dpkg-query -W -f='${Package} ' protonvpn-stable-release proton-vpn-gnome-desktop 2>/dev/null || true)"
 sec "desktop entries shown in the app grid (name, package)"
 for f in /usr/share/applications/*.desktop; do
     grep -qE '^(NoDisplay|Hidden)=true' "$f" && continue

@@ -6,7 +6,7 @@
 | Firefox ESR, Thunderbird | pre-installed | Debian | ready, restricted by `tind-mozilla-config` |
 | uBlock Origin | pre-installed | Debian package `webext-ublock-origin-firefox` (1.67.0 in trixie) | auto-enable behaviour to verify |
 | WireGuard | pre-installed | Debian | ready, tooling in `tind-wireguard` |
-| Proton VPN | pre-installed | Proton's apt repository; the build fetches Proton's release package, checks its SHA-256 against Proton's install page (`os/third-party.env`), and the image keeps the repo via that package | verified against Proton's page; installs in CI (`proton-vpn-gnome-desktop` 0.11.0) |
+| Proton VPN | opt-in (Security box, Tind Apps) | Proton's apt repository; `setup-security` fetches Proton's release package and checks its SHA-256 against Proton's install page (pinned in the script) | installs in CI (`proton-vpn-gnome-desktop`) |
 | Nextcloud client | opt-in (Productivity and cloud) | Debian `nextcloud-desktop`, global config pre-fills `https://lagrr.servr.no` | ready, `overrideServerUrl` to verify |
 | Spotify | opt-in (Entertainment) | Flathub `com.spotify.Client` | to verify |
 | Steam, Lutris, Wine, gamemode, mangohud | opt-in (Games box at install, or Tind Apps) | Debian apt, native | proven in CI |
@@ -24,9 +24,9 @@
 
 ## Rules used
 
-- Every third-party repository is checked against the vendor's own install page: a pinned key fingerprint (Microsoft, Anthropic) or a pinned package checksum (Proton).
+- Every third-party repository is checked against the vendor's own install page: a pinned key fingerprint (Microsoft, Anthropic) or a pinned package checksum (Proton). Tind's own packages come from `apt.servr.no`, signed with its own key (see UPDATES.md).
 - Flatpak apps install system-wide from Flathub; Debian apps come from Debian.
 
 ## Principles check (homelab principles vs. this list)
 
-Steam, Spotify, Proton VPN and Claude Desktop are closed-source or DRM'd. They are opt-in (Proton is pre-installed at your request) and nothing else in Tind depends on them.
+Steam, Spotify, Proton VPN and Claude Desktop are closed-source or DRM'd. They are all opt-in and nothing else in Tind depends on them.

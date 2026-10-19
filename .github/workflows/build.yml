@@ -17,7 +17,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev shellcheck libxml2-utils jq xz-utils sudo curl
+          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev apt-utils gnupg shellcheck libxml2-utils jq xz-utils sudo curl
       - uses: actions/checkout@v4
       - name: Lint, build packages, check package names
         run: |
@@ -34,6 +34,8 @@ jobs:
             find os -name '*.xml' -print0 | xargs -0 -r -n1 xmllint --noout || rc=1
             echo "== build .deb packages"
             os/packages/build-debs.sh || rc=1
+            echo "== apt repository publisher: promotion rules, signing, real apt against the result"
+            os/scripts/test-publish-apt.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
@@ -107,7 +109,7 @@ jobs:
             apt-get install -y ./os/dist/tind-extras_*_all.deb >/dev/null 2>&1 || { echo "tind-extras install FAILED"; rc=1; }
             /usr/lib/tind/setup-dev > logs/setup-dev.log 2>&1 && echo "setup-dev: OK" || { echo "setup-dev: FAILED"; tail -25 logs/setup-dev.log; rc=1; }
             /usr/lib/tind/setup-gaming > logs/setup-gaming.log 2>&1 && echo "setup-gaming: OK" || { echo "setup-gaming: FAILED"; tail -25 logs/setup-gaming.log; rc=1; }
-            for box in entertainment communication productivity hardware; do
+            for box in entertainment communication productivity hardware security; do
               /usr/lib/tind/setup-$box > logs/setup-$box.log 2>&1 && echo "setup-$box: OK" || { echo "setup-$box: FAILED"; tail -25 logs/setup-$box.log; rc=1; }
             done
             echo "== creative: simulated install only (a full install is too large for the runner)"
@@ -153,7 +155,6 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build ISO
         env:
-          TIND_PROTON: "1"
           TIND_CI: "1"
         run: |
           mkdir -p logs

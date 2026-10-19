@@ -7,7 +7,7 @@ os/            live-build config, the tind-* packages, build and check scripts
   packages/    tind-branding, -desktop, -apps, -mozilla-config, -wireguard, -installer, -optins
   config/      live-build package lists, hooks, archives
   auto/        live-build auto scripts
-  scripts/     verify-on-debian.sh, check-packages.sh, prepare-thirdparty.sh, test-vm.sh
+  scripts/     verify-on-debian.sh, check-packages.sh, test-vm.sh, publish-apt.sh, test-publish-apt.sh
   build.sh     build the ISO on a Debian 13 machine
 docs/          VERIFY-CHECKLIST.md, THIRD-PARTY.md, servr-wireguard-server.md
 .github/       CI: lint, build packages, build the ISO

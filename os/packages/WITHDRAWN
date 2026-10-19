@@ -1,0 +1,6 @@
+# Package versions that must never be promoted from "next" to "stable".
+# One per line: package name, a space, the version. Lines starting with # are ignored.
+# Use it when a version on next turns out to be bad within its 14 days: add it here, push a fixed
+# version (higher number) and stable keeps serving the last good version until the fix has aged.
+# Example:
+#   tind-branding 0.1.19
