@@ -110,11 +110,14 @@ jobs:
             /usr/lib/tind/setup-dev > logs/setup-dev.log 2>&1 && echo "setup-dev: OK" || { echo "setup-dev: FAILED"; tail -25 logs/setup-dev.log; rc=1; }
             /usr/lib/tind/setup-gaming > logs/setup-gaming.log 2>&1 && echo "setup-gaming: OK" || { echo "setup-gaming: FAILED"; tail -25 logs/setup-gaming.log; rc=1; }
             # the runner container has no systemd; some post-install scripts (Proton VPN daemon) call systemctl and fail
-            printf '#!/bin/sh\nexit 0\n' > /usr/local/bin/systemctl && chmod +x /usr/local/bin/systemctl
+            # (diverted at /usr/bin so absolute /bin/systemctl calls are caught too; put back after the loop)
+            dpkg-divert --local --rename --add /usr/bin/systemctl >/dev/null
+            printf '#!/bin/sh\nexit 0\n' > /usr/bin/systemctl && chmod +x /usr/bin/systemctl
+            printf '#!/bin/sh\nexit 101\n' > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d
             for box in entertainment communication productivity hardware security; do
               /usr/lib/tind/setup-$box > logs/setup-$box.log 2>&1 && echo "setup-$box: OK" || { echo "setup-$box: FAILED"; tail -25 logs/setup-$box.log; rc=1; }
             done
-            rm -f /usr/local/bin/systemctl
+            rm -f /usr/bin/systemctl /usr/sbin/policy-rc.d; dpkg-divert --local --rename --remove /usr/bin/systemctl >/dev/null
             echo "== creative: simulated install only (a full install is too large for the runner)"
             apt-get install -s gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender >/dev/null 2>&1 && echo "setup-creative packages: OK (simulated)" || { echo "setup-creative packages: FAILED"; rc=1; }
             echo "== app boxes: things to check by eye"
