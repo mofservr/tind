@@ -142,6 +142,9 @@ ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
 systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
 ls /var/lib/dkms/mok.key 2>&1
 vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
+sec "time sync"
+echo "systemd-timesyncd: $(dpkg-query -W -f='${db:Status-Abbrev}' systemd-timesyncd 2>&1 | head -1) enabled=$(systemctl is-enabled systemd-timesyncd 2>&1) active=$(systemctl is-active systemd-timesyncd 2>&1)"
+timedatectl show -p NTP -p NTPSynchronized 2>&1
 sec "updates"
 systemctl is-enabled tind-apt-refresh.service packagekit.service 2>&1; systemctl is-active tind-apt-refresh.service 2>&1
 ls -l /var/lib/tind/apt-refreshed 2>&1; ls /var/lib/apt/lists | wc -l

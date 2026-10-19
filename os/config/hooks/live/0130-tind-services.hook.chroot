@@ -3,3 +3,5 @@
 set -e
 systemctl enable systemd-resolved || true
 systemctl enable NetworkManager || true
+# network time: without it the clock drifts and apt rejects Debian's signatures ("Not live until ...")
+systemctl enable systemd-timesyncd || true
