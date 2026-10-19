@@ -6,7 +6,8 @@ name: publish-apt
 #   - after every successful "build" on main (all jobs green, ISO boot test included),
 #   - once a day: this is what promotes a package version from "next" to "stable" after 14 days,
 #   - by hand (Actions > publish-apt > Run workflow), optionally with fast-track or first-run.
-# It always publishes the newest main commit whose "build" run succeeded, never a commit that failed.
+# Automatic runs publish the newest main commit whose "build" run succeeded, never a commit that failed.
+# A manual run publishes the commit it was started on.
 # See docs/UPDATES.md and os/scripts/publish-apt.sh.
 on:
   workflow_run:
@@ -46,7 +47,14 @@ jobs:
         id: sha
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
         run: |
+          if [ "$EVENT" = workflow_dispatch ]; then
+            # a manual run publishes the commit it was started on (needed for the very first publish)
+            echo "manual run: publishing commit $GITHUB_SHA"
+            echo "sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           sha="$(gh run list --repo "$GITHUB_REPOSITORY" --workflow build.yml --branch main --status success --limit 1 --json headSha --jq '.[0].headSha')"
           [ -n "$sha" ] || { echo "no successful build on main yet" >&2; exit 1; }
           echo "publishing commit $sha"
