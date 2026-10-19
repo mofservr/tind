@@ -8,6 +8,9 @@
 // Default accent: Tind teal ("green" slot) in the dark theme, alpenglow ("pink" slot) in the light theme.
 // When the theme changes and the accent is still the other theme's default, it is swapped; any other
 // accent the user picked is left alone.
+//
+// 2026-10-19: the GTK accent file is now written for GTK 3 as well (~/.config/gtk-3.0), and the shell
+// stylesheet overrides the tile preview, text selection in shell entries, switches etc. (ACCENTS part 2).
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -64,13 +67,24 @@ export default class TindIce extends Extension {
     }
 
     _writeGtkAccent(slot) {
+        const fg = ACCENT_FG_WHITE.includes(slot) ? '#FFFFFF' : '#14110F';
+        const hex = ACCENT_HEX[slot];
+        // GTK 4 / libadwaita: accent_* colours. GTK 3 (Firefox, Thunderbird, Terminal, LibreOffice, ...):
+        // Adwaita for GTK 3 paints selections, focus rings and switches from theme_selected_*.
+        this._writeGtkDir('gtk-4.0',
+            `@define-color accent_bg_color ${hex};\n@define-color accent_fg_color ${fg};\n`);
+        this._writeGtkDir('gtk-3.0',
+            `@define-color accent_bg_color ${hex};\n@define-color accent_fg_color ${fg};\n` +
+            `@define-color accent_color ${hex};\n` +
+            `@define-color theme_selected_bg_color ${hex};\n@define-color theme_selected_fg_color ${fg};\n` +
+            `@define-color selected_bg_color ${hex};\n@define-color selected_fg_color ${fg};\n`);
+    }
+
+    _writeGtkDir(name, body) {
         try {
-            const dir = GLib.build_filenamev([GLib.get_user_config_dir(), 'gtk-4.0']);
+            const dir = GLib.build_filenamev([GLib.get_user_config_dir(), name]);
             GLib.mkdir_with_parents(dir, 0o755);
-            const fg = ACCENT_FG_WHITE.includes(slot) ? '#FFFFFF' : '#14110F';
-            const css = `/* Written by the Tind shell theme whenever the accent colour changes. */\n` +
-                `@define-color accent_bg_color ${ACCENT_HEX[slot]};\n` +
-                `@define-color accent_fg_color ${fg};\n`;
+            const css = `/* Written by the Tind shell theme whenever the accent colour changes. */\n${body}`;
             const accentFile = Gio.File.new_for_path(GLib.build_filenamev([dir, 'tind-accent.css']));
             let current = '';
             try {
@@ -90,7 +104,7 @@ export default class TindIce extends Extension {
                 gtkFile.replace_contents(new TextEncoder().encode(`${GTK_IMPORT}\n${gtk ?? ''}`), null, false,
                     Gio.FileCreateFlags.REPLACE_DESTINATION, null);
         } catch (e) {
-            console.warn(`tind-ice: could not write the GTK accent file: ${e.message}`);
+            console.warn(`tind-ice: could not write the ${name} accent file: ${e.message}`);
         }
     }
 
