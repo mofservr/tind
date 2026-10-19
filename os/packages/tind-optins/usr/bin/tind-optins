@@ -15,12 +15,20 @@ ids() { local f; for f in "$DIR"/*.optin; do basename "$f" .optin; done; }
 
 as_root() { if [ "$(id -u)" -eq 0 ]; then "$@"; else pkexec "$@"; fi; }
 
+LOG=/var/log/tind-optins.log
+failed=""   # names of opt-ins that did not install (read by the window after install_ids)
+cancelled=0
+
 install_ids() {
-    local id
+    local id rc
+    failed=""; cancelled=0
     for id in "$@"; do
         echo "Installing $(field "$id" NAME) ..."
-        as_root "$HELPER" "$id"
+        rc=0; as_root "$HELPER" "$id" || rc=$?
+        if [ "$rc" -eq 126 ] && [ "$(id -u)" -ne 0 ]; then cancelled=1; return 1; fi   # password prompt dismissed
+        [ "$rc" -eq 0 ] || failed="${failed:+$failed, }$(field "$id" NAME)"
     done
+    [ -z "$failed" ]
 }
 
 case "${1:-}" in
@@ -40,11 +48,23 @@ case "${1:-}" in
             --column="" --column="id" --column="App" --column="About" --hide-column=2 \
             --separator=" " "${rows[@]}")" || exit 0
         [ -n "$sel" ] || exit 0
+        start="$(wc -l < "$LOG" 2>/dev/null || echo 0)"
         # shellcheck disable=SC2086
         if install_ids $sel; then
-            zenity --info --text="Done."
+            zenity --info --no-markup --text="Done."
+        elif [ "$cancelled" -eq 1 ]; then
+            exit 0
         else
-            zenity --error --text="Something failed. Run 'tind-optins install <id>' in a terminal to see why."
+            # this run's error lines (or its last lines when none look like errors), kept short
+            run="$(tail -n +"$((start + 1))" "$LOG" 2>/dev/null | tr -d '\r' || true)"
+            why="$(grep -aiE '^(E:|Err:|error|W: .*fail)|failed|denied|not found|unable|could not' <<<"$run" | tail -n 6 | cut -c1-160 || true)"
+            [ -n "$why" ] || why="$(tail -n 6 <<<"$run" | cut -c1-160)"
+            zenity --error --no-markup --width=560 \
+                --text="Could not install: $failed.
+
+${why:-No details were logged.}
+
+The full log is in $LOG"
         fi
         ;;
     *) echo "usage: tind-optins [--list | install ID...]" >&2; exit 1 ;;

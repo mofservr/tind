@@ -1,4 +1,4 @@
-# Tind GRUB theme: dim mountain background, minimal text menu, pink selection.
+# Tind GRUB theme: Minimal Peak (dark) background, minimal text menu, pink selection.
 desktop-image: "background.png"
 desktop-color: "#0C1523"
 title-text: ""
