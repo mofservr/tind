@@ -1,3 +1,12 @@
+app/io.github.benjamimgois.goverlay/x86_64/stable
+app/net.davidotek.pupgui2/x86_64/stable
+app/net.lutris.Lutris/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
+runtime/com.valvesoftware.Steam.CompatibilityTool.Proton-GE/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.InhibitScreensaver/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.slonfig/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.steamtinkerlaunch/x86_64/stable
+runtime/com.valvesoftware.Steam.Utility.thcrap_steam_proton_wrapper/x86_64/stable
 runtime/org.freedesktop.Platform.GL32.nvidia-550-100/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-107-02/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-120/x86_64/1.4
@@ -72,17 +81,6 @@ ok       com.bitwarden.desktop
 ok       org.telegram.desktop
 ok       org.strawberrymusicplayer.strawberry
 == every opt-in Flatpak ref exists on Flathub
-ok       org.gnome.Calendar
-ok       org.gnome.Contacts
-ok       org.gnome.Weather
-ok       org.gnome.Maps
-ok       org.gnome.clocks
-ok       org.gnome.baobab
-ok       org.gnome.Logs
-ok       org.gnome.font-viewer
-ok       org.gnome.Characters
-ok       org.gnome.SimpleScan
-ok       org.gnome.Connections
 == lutris depends/recommends
 lutris
   Depends: <python3:any>
@@ -133,11 +131,11 @@ lutris
   Recommends: gamemode
   Recommends: gamescope
 == newer kernel: dry run
-Inst linux-image-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-headers-7.2.6+deb13-common (7.2.6-1~bpo13+1 Debian Backports:stable-backports [all])
-Inst linux-headers-7.2.6+deb13-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-headers-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-image-amd64 (7.2.6-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-image-7.2.9+deb13-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-7.2.9+deb13-common (7.2.9-1~bpo13+1 Debian Backports:stable-backports [all])
+Inst linux-headers-7.2.9+deb13-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-headers-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
+Inst linux-image-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
 == Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu.
 == tind-extras: real run of the setup scripts
 setup-dev: OK
@@ -321,6 +319,7 @@ ok       nvidia-detect
 ok       nvidia-driver
 ok       nvidia-kernel-dkms
 ok       nvidia-vulkan-icd
+ok       openssh-client
 ok       orca
 ok       packagekit
 ok       papers
@@ -332,6 +331,7 @@ ok       system-config-printer
 ok       system-config-printer-common
 ok       system-config-printer-udev
 ok       systemd-resolved
+ok       systemd-timesyncd
 ok       thunderbird
 ok       ufw
 ok       unattended-upgrades
