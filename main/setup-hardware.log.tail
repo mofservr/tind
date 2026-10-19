@@ -1,3 +1,9 @@
+Get:34 http://deb.debian.org/debian trixie/main amd64 xfonts-encodings all 1:1.0.4-2.2 [577 kB]
+Get:35 http://deb.debian.org/debian trixie/main amd64 xfonts-utils amd64 1:7.7+7 [93.3 kB]
+Get:36 http://deb.debian.org/debian trixie/main amd64 fonts-urw-base35 all 20200910-8 [10.8 MB]
+Get:37 http://deb.debian.org/debian-security trixie-security/main amd64 libgs-common all 10.05.1~dfsg-1+deb13u3 [148 kB]
+Get:38 http://deb.debian.org/debian-security trixie-security/main amd64 libgs10-common all 10.05.1~dfsg-1+deb13u3 [479 kB]
+Get:39 http://deb.debian.org/debian trixie/main amd64 libijs-0.35 amd64 0.35-15.2 [14.8 kB]
 Get:40 http://deb.debian.org/debian-security trixie-security/main amd64 libjbig2dec0 amd64 0.20-1+deb13u1 [64.9 kB]
 Get:41 http://deb.debian.org/debian-security trixie-security/main amd64 libgs10 amd64 10.05.1~dfsg-1+deb13u3 [2566 kB]
 Get:42 http://deb.debian.org/debian-security trixie-security/main amd64 ghostscript amd64 10.05.1~dfsg-1+deb13u3 [50.6 kB]
@@ -25,9 +31,9 @@ W: Target Packages (main/binary-amd64/Packages) is configured multiple times in 
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 Preconfiguring packages ...
-Fetched 43.9 MB in 31s (1435 kB/s)
+Fetched 43.9 MB in 0s (126 MB/s)
 Selecting previously unselected package bc.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71897 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71898 files and directories currently installed.)
 Preparing to unpack .../00-bc_1.07.1-4_amd64.deb ...
 Unpacking bc (1.07.1-4) ...
 Selecting previously unselected package ssl-cert.
@@ -357,12 +363,7 @@ Setting up xfonts-utils (1:7.7+7) ...
 Setting up cups-filters-core-drivers (1.28.17-6+deb13u1) ...
 Setting up python3-pexpect (4.9-3) ...
 Setting up cups-daemon (2.4.10-3+deb13u2) ...
-invoke-rc.d: could not determine current runlevel
 invoke-rc.d: policy-rc.d denied execution of start.
-Created symlink '/etc/systemd/system/multi-user.target.wants/cups.path' → '/usr/lib/systemd/system/cups.path'.
-Created symlink '/etc/systemd/system/printer.target.wants/cups.service' → '/usr/lib/systemd/system/cups.service'.
-Created symlink '/etc/systemd/system/multi-user.target.wants/cups.service' → '/usr/lib/systemd/system/cups.service'.
-Created symlink '/etc/systemd/system/sockets.target.wants/cups.socket' → '/usr/lib/systemd/system/cups.socket'.
 Setting up libhpmud0:amd64 (3.22.10+dfsg0-8.1+deb13u1) ...
 Setting up libsane-hpaio:amd64 (3.22.10+dfsg0-8.1+deb13u1) ...
 No diversion 'diversion of /lib/udev/rules.d/56-hpmud.rules to /lib/udev/rules.d/56-hpmud.rules.usr-is-merged by usr-is-merged', none removed.
@@ -386,7 +387,6 @@ No diversion 'diversion of /lib/udev/rules.d/60-libsane1.rules to /lib/udev/rule
 No diversion 'diversion of /lib/udev/rules.d/99-libsane1.rules to /lib/udev/rules.d/99-libsane1.rules.usr-is-merged by usr-is-merged', none removed.
 Setting up sane-utils (1.3.1-3+b1) ...
 Adding saned group and user...
-invoke-rc.d: could not determine current runlevel
 invoke-rc.d: policy-rc.d denied execution of start.
 Setting up hplip (3.22.10+dfsg0-8.1+deb13u1) ...
 Creating/updating hplip user account...
