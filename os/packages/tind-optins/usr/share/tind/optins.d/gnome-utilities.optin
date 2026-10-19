@@ -1,4 +1,0 @@
-NAME="GNOME utilities"
-DESC="Disk Usage Analyzer, Logs, Fonts, Characters, Document Scanner, Connections (Flatpak)"
-STATUS="ready"
-FLATPAK_REF="org.gnome.baobab org.gnome.Logs org.gnome.font-viewer org.gnome.Characters org.gnome.SimpleScan org.gnome.Connections"

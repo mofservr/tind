@@ -56,7 +56,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 ## Lean desktop (2026-10-14)
 - Proven in CI: tind-desktop names GNOME pieces explicitly (no gnome-core); app grid is Calculator, Camera, Disks, Extensions, Files, Firefox, Image Viewer, LibreOffice, Papers, Print Settings, Settings, Software, System Monitor, Terminal, Text Editor, Thunderbird, Tind Apps, Install Tind.
 - Proven: Calamares install of the lean ISO boots to desktop, autologin, no failed units.
-- Removed apps are opt-ins in tind-optins: gnome-extras, gnome-utilities, tweaks.
+- Tind Apps lists only the seven app boxes; the old GNOME everyday apps, GNOME utilities, GNOME Tweaks and Newer kernel entries were removed.
 - fwupd added for firmware updates through GNOME Software (unproven on real hardware).
 - Unproven: Flathub refs of the new opt-ins; hook 0170 purge result on the next full ISO (launchers verified hidden in build run 38531716185).
 
@@ -72,7 +72,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Proven (installer run 38614079926, BIOS/SeaBIOS): install completes, installed system boots via BIOS, GRUB in /boot/grub/i386-pc, ext4 root, no failed units. The image carries both grub-efi-amd64-bin and grub-pc-bin; Tind's own bootloader step (`/usr/lib/tind/bootloader-config`, module `tindbootloader`) replaces Debian's helper because that one runs apt (needs network, and grub-pc conflicts with grub-efi-amd64).
 - Image has os-prober and ntfs-3g; `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub.d/90-tind.cfg`. Unproven: an actual second OS being detected and offered by Calamares ("install alongside") and by the GRUB menu.
 - BIOS note: the BIOS install has grub-pc-bin but not the grub-pc package, so grub upgrades do not re-run grub-install on the disk. Acceptable for now.
-- Newer kernel opt-in ("Newer kernel" in Tind Apps, `/usr/lib/tind/setup-newer-kernel`): adds trixie-backports, installs linux-image-amd64 and headers (7.2.6 at test time) and, if present, nvidia-kernel-dkms from backports. Dry run resolves in CI. Unproven: a real install, NVIDIA module building on 7.x, boot into the new kernel.
+- Newer kernel (no Tind Apps entry any more; run `sudo /usr/lib/tind/setup-newer-kernel`): adds trixie-backports, installs linux-image-amd64 and headers (7.2.6 at test time) and, if present, nvidia-kernel-dkms from backports. Dry run resolves in CI. Unproven: a real install, NVIDIA module building on 7.x, boot into the new kernel.
 - Installer test is now selectable: `os/ci/installer-test/FIRMWARE` (uefi|bios) and `EXTRAS` (yes|no).
 
 ## Secure Boot, updates, hardware basics (2026-10-15)

@@ -1,4 +1,0 @@
-NAME="GNOME everyday apps"
-DESC="Calendar, Contacts, Weather, Maps and Clocks (Flatpak)"
-STATUS="ready"
-FLATPAK_REF="org.gnome.Calendar org.gnome.Contacts org.gnome.Weather org.gnome.Maps org.gnome.clocks"

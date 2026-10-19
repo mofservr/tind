@@ -1,4 +1,0 @@
-NAME="Newer kernel"
-DESC="Latest Linux kernel from Debian backports for very new hardware. Restart after. The current kernel stays as a fallback (needs internet)"
-STATUS="ready"
-SCRIPT="/usr/lib/tind/setup-newer-kernel"
