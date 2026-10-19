@@ -1,4 +1,4 @@
 NAME="Security"
-DESC="Proton VPN (needs internet)"
+DESC="Bitwarden password manager and Proton VPN (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-security"

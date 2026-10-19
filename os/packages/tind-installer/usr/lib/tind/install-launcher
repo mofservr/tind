@@ -11,9 +11,9 @@ sel="$(zenity --list --checklist --title="Install Tind: apps" --width=720 --heig
     FALSE entertainment "Entertainment: VLC, Strawberry music player, Spotify" \
     FALSE creative "Creative: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, Upscayl" \
     FALSE communication "Communication: Signal, Telegram" \
-    TRUE productivity "Productivity and cloud: LibreOffice, Nextcloud, Bitwarden" \
+    TRUE productivity "Productivity and cloud: LibreOffice, Nextcloud" \
     FALSE hardware "Printers and scanners: HP printer support, SANE scanners" \
-    FALSE security "Security: Proton VPN")" || exit 0
+    FALSE security "Security: Bitwarden, Proton VPN")" || exit 0
 printf '%s\n' "$sel" > "$choice"
 chmod 644 "$choice"
 exec calamares-install-debian

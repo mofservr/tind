@@ -1,5 +1,5 @@
 #!/bin/bash
-# Productivity and cloud: LibreOffice (Writer, Calc, Impress, Norwegian), Nextcloud client, Bitwarden.
+# Productivity and cloud: LibreOffice (Writer, Calc, Impress, Norwegian) and the Nextcloud client.
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -11,7 +11,6 @@ optional "LibreOffice language packs" apt_install libreoffice-l10n-nb libreoffic
 for p in hunspell-no myspell-nb; do
     if apt-cache show "$p" >/dev/null 2>&1; then optional "Norwegian spell-check" apt_install "$p"; break; fi
 done
-optional "Bitwarden" flatpak_install com.bitwarden.desktop
 # keep the app grid lean: the office suite's Draw and Math launchers stay out of it (same as the image build did)
 for f in libreoffice-draw.desktop libreoffice-math.desktop; do
     if [ -f "/usr/share/applications/$f" ] && ! grep -q '^NoDisplay=true' "/usr/share/applications/$f"; then

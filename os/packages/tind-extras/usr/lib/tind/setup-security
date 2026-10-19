@@ -1,11 +1,12 @@
 #!/bin/bash
-# Security: Proton VPN, from Proton's own apt repository. Not on the ISO; a personal choice offered as an option.
+# Security: Bitwarden (Flathub) and Proton VPN (Proton's own apt repository). Not on the ISO; offered as options.
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
 echo "== Tind: security setup"
 tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
+optional "Bitwarden" flatpak_install com.bitwarden.desktop
 
 # Proton's release package carries Proton's apt key and repository line and keeps the key rotating
 # (the current key expires 2027-03-03). URL and SHA-256 are from Proton's own Debian install page

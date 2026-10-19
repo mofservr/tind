@@ -11,7 +11,7 @@
 | Spotify | opt-in (Entertainment) | Flathub `com.spotify.Client` | to verify |
 | Steam, Lutris, Wine, gamemode, mangohud | opt-in (Games box at install, or Tind Apps) | Debian apt, native | proven in CI |
 | Upscayl | opt-in (Creative) | Flathub `org.upscayl.Upscayl` | to verify |
-| Bitwarden | opt-in (Productivity and cloud) | Flathub `com.bitwarden.desktop` | to verify |
+| Bitwarden | opt-in (Security) | Flathub `com.bitwarden.desktop` | to verify |
 | Discord, Heroic, ProtonUp-Qt | opt-in (Games) | Flathub | to verify |
 | Signal | opt-in (Communication) | Signal's apt repository (`updates.signal.org`); key fingerprint not published, logged and not yet pinned | to verify |
 | Telegram | opt-in (Communication) | Debian `telegram-desktop`, Flathub fallback | to verify |
