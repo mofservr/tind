@@ -1,3 +1,8 @@
+Unpacking libxmlsec1t64:amd64 (1.2.41-1+b1) ...
+Selecting previously unselected package libxmlsec1t64-nss:amd64.
+Preparing to unpack .../22-libxmlsec1t64-nss_1.2.41-1+b1_amd64.deb ...
+Unpacking libxmlsec1t64-nss:amd64 (1.2.41-1+b1) ...
+Selecting previously unselected package libzxcvbn0:amd64.
 Preparing to unpack .../23-libzxcvbn0_2.5+dfsg-2+b2_amd64.deb ...
 Unpacking libzxcvbn0:amd64 (2.5+dfsg-2+b2) ...
 Selecting previously unselected package libreoffice-core.
@@ -324,7 +329,7 @@ W: Target Packages (main/binary-amd64/Packages) is configured multiple times in 
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 Preconfiguring packages ...
-Fetched 13.0 MB in 1s (21.5 MB/s)
+Fetched 13.0 MB in 0s (63.4 MB/s)
 Selecting previously unselected package libc-l10n.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 61993 files and directories currently installed.)
 Preparing to unpack .../0-libc-l10n_2.41-12+deb13u4_all.deb ...
@@ -382,7 +387,7 @@ Get:1 http://deb.debian.org/debian trixie/main amd64 hunspell-no all 1:25.2.3-1 
 W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-Fetched 3812 kB in 0s (16.9 MB/s)
+Fetched 3812 kB in 0s (13.8 MB/s)
 Selecting previously unselected package hunspell-no.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71887 files and directories currently installed.)
 Preparing to unpack .../hunspell-no_1%3a25.2.3-1_all.deb ...
@@ -392,9 +397,4 @@ Processing triggers for dictionaries-common (1.30.10) ...
 W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-Installing runtime/com.bitwarden.desktop.Locale/x86_64/stable
-Installing app/com.bitwarden.desktop/x86_64/stable
-bwrap: Creating new namespace failed: Operation not permitted
-bwrap: Creating new namespace failed: Operation not permitted
-bwrap: Creating new namespace failed: Operation not permitted
 == Tind: productivity setup done
