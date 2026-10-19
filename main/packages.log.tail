@@ -1,31 +1,3 @@
-app/io.github.benjamimgois.goverlay/x86_64/stable
-app/net.davidotek.pupgui2/x86_64/stable
-app/net.lutris.Lutris/x86_64/stable
-runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
-runtime/com.valvesoftware.Steam.CompatibilityTool.Proton-GE/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.InhibitScreensaver/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.slonfig/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.steamtinkerlaunch/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.thcrap_steam_proton_wrapper/x86_64/stable
-runtime/org.freedesktop.Platform.GL32.nvidia-550-100/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-107-02/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-120/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-127-05/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-127-08/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-135/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-142/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-61/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-63/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-65/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-67/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-70/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-71/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-75/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-76/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-79/x86_64/1.4
@@ -144,6 +116,32 @@ setup-entertainment: OK
 setup-communication: OK
 setup-productivity: OK
 setup-hardware: OK
+setup-security: FAILED
+dpkg: dependency problems prevent configuration of proton-vpn-gnome-desktop:
+ proton-vpn-gnome-desktop depends on proton-vpn-daemon; however:
+  Package proton-vpn-daemon is not configured yet.
+
+dpkg: error processing package proton-vpn-gnome-desktop (--configure):
+ dependency problems - leaving unconfigured
+dpkg: dependency problems prevent configuration of proton-vpn-cli:
+ proton-vpn-cli depends on proton-vpn-daemon; however:
+  Package proton-vpn-daemon is not configured yet.
+
+dpkg: error processing package proton-vpn-cli (--configure):
+ dependency problems - leaving unconfigured
+Setting up proton-vpn-gtk-app (4.18.8) ...
+Processing triggers for initramfs-tools (0.148.4) ...
+update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-rt-amd64
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for dbus (1.16.2-2) ...
+Errors were encountered while processing:
+ proton-vpn-daemon
+ proton-vpn-gnome-desktop
+ proton-vpn-cli
+W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
+E: Sub-process /usr/bin/dpkg returned an error code (1)
 == creative: simulated install only (a full install is too large for the runner)
 setup-creative packages: OK (simulated)
 == app boxes: things to check by eye
@@ -206,6 +204,7 @@ bp.list
 claude-desktop.list
 claude-desktop.sources
 debian.sources
+protonvpn-stable.sources
 signal-desktop.sources
 vscode.sources
 Types: deb
@@ -293,6 +292,7 @@ ok       gnome-system-monitor
 ok       gnome-terminal
 ok       gnome-text-editor
 ok       gnupg
+ok       gpgv
 ok       gsettings-desktop-schemas
 ok       gstreamer1.0-packagekit
 ok       gstreamer1.0-plugins-base
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 0
+== exit status: 1
