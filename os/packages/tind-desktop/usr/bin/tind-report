@@ -20,6 +20,17 @@ run() { printf '$ %s\n' "$*"; "$@" 2>&1 | sed -E 's/([0-9A-Fa-f]{2}:){5}[0-9A-Fa
     command -v vulkaninfo >/dev/null && { printf '$ vulkaninfo --summary\n'; vulkaninfo --summary 2>&1 | head -40; }
     command -v glxinfo >/dev/null && { printf '$ glxinfo -B\n'; glxinfo -B 2>&1 | head -25; }
     run dkms status
+    sec "NVIDIA driver switch and fallback"
+    echo "switch state: $(cat /var/lib/tind/nvidia-upgrade.done 2>/dev/null || echo 'not run')  tries: $(cat /var/lib/tind/nvidia-upgrade.tries 2>/dev/null || echo 0)"
+    ls /etc/apt/sources.list.d/tind-nvidia.sources /etc/apt/preferences.d/tind-nvidia 2>&1
+    run apt-cache policy nvidia-driver; run lsmod; run ls /etc/modprobe.d
+    $SUDO journalctl -t tind-nvidia -t tind-gpu-check -b --no-pager 2>&1 | tail -n 30
+    command -v mokutil >/dev/null && run mokutil --list-enrolled
+    sec "Firmware updates"; command -v fwupdmgr >/dev/null && { run fwupdmgr get-devices --no-unreported-check; run fwupdmgr get-updates --no-unreported-check; }
+    sec "Other systems and boot menu"; grep -E "^\s*menuentry '" /boot/grub/grub.cfg 2>/dev/null | sed -E "s/^\s*menuentry '([^']*)'.*/\1/" | head -20
+    run efibootmgr
+    sec "Tind apps and login screen"; ls -1 /usr/share/applications/tind* /etc/xdg/autostart/tind* 2>/dev/null
+    echo "login logo is Tind: $(cmp -s /usr/share/tind/login-logo-64.png /usr/share/images/vendor-logos/logo-text-version-64.png && echo yes || echo NO)"
     sec "Wi-Fi, network and Bluetooth"; run lspci -nnk -d ::0280; run lsusb
     run rfkill list; run nmcli -t -f DEVICE,TYPE,STATE device
     run dmesg --level=err,warn
