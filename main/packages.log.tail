@@ -191,7 +191,7 @@ telegram-desktop 5.7.2+ds-2~bpo13+1 ii
 virt-manager 1:5.0.0-5+deb13u1 ii 
 vlc 3.0.24-0+deb13u1 ii 
 wireshark 4.4.19-0+deb13u1 ii 
-code 1.142.0-1792035033 ii 
+code 1.143.0-1792533444 ii 
 gamemode 1.8.2-2 ii 
 gh 2.46.0-3 ii 
 git 1:2.47.3-0+deb13u1 ii 
@@ -202,8 +202,8 @@ steam-installer 1:1.0.0.83~ds-3 ii
 wine 10.0~repack-6 ii 
 wine32 10.0~repack-6 ii 
 winetricks 20250102-1 ii 
-1.142.0
-6d62b1d5dace93a33b3a6d3eca1317bd5e15bcb1
+1.143.0
+2d0b7506a36c1d6db9a466440131a8e01eab2289
 bp.list
 claude-desktop.list
 debian.sources
@@ -222,7 +222,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   73G   72G  51% /__w
+/dev/root       145G   72G   73G  50% /__w
 
 == KVM
 not available (VM tests will be slow)

@@ -34,9 +34,9 @@ Get:57 http://deb.debian.org/debian trixie/main amd64 libpython3.13 amd64 3.13.5
 Get:58 http://deb.debian.org/debian trixie/main amd64 hplip amd64 3.22.10+dfsg0-8.1+deb13u1 [206 kB]
 Get:59 http://deb.debian.org/debian trixie/main amd64 sane-airscan amd64 0.99.35-1 [131 kB]
 Preconfiguring packages ...
-Fetched 43.9 MB in 0s (134 MB/s)
+Fetched 43.9 MB in 0s (193 MB/s)
 Selecting previously unselected package bc.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 67137 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 67171 files and directories currently installed.)
 Preparing to unpack .../00-bc_1.07.1-4_amd64.deb ...
 Unpacking bc (1.07.1-4) ...
 Selecting previously unselected package ssl-cert.
