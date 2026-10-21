@@ -1,3 +1,12 @@
+Get:25 http://deb.debian.org/debian trixie/main amd64 cups-client amd64 2.4.10-3+deb13u2 [164 kB]
+Get:26 http://deb.debian.org/debian trixie/main amd64 cups-ipp-utils amd64 2.4.10-3+deb13u2 [239 kB]
+Get:27 http://deb.debian.org/debian trixie/main amd64 poppler-utils amd64 25.03.0-5+deb13u4 [213 kB]
+Get:28 http://deb.debian.org/debian trixie/main amd64 libcupsfilters1t64 amd64 1.28.17-6+deb13u1 [127 kB]
+Get:29 http://deb.debian.org/debian trixie/main amd64 libpoppler-cpp2 amd64 25.03.0-5+deb13u4 [44.9 kB]
+Get:30 http://deb.debian.org/debian trixie/main amd64 libqpdf30 amd64 12.2.0-1 [986 kB]
+Get:31 http://deb.debian.org/debian trixie/main amd64 cups-filters-core-drivers amd64 1.28.17-6+deb13u1 [210 kB]
+Get:32 http://deb.debian.org/debian trixie/main amd64 cups-core-drivers amd64 2.4.10-3+deb13u2 [41.1 kB]
+Get:33 http://deb.debian.org/debian trixie/main amd64 libfontenc1 amd64 1:1.1.8-1+b2 [23.3 kB]
 Get:34 http://deb.debian.org/debian trixie/main amd64 xfonts-encodings all 1:1.0.4-2.2 [577 kB]
 Get:35 http://deb.debian.org/debian trixie/main amd64 xfonts-utils amd64 1:7.7+7 [93.3 kB]
 Get:36 http://deb.debian.org/debian trixie/main amd64 fonts-urw-base35 all 20200910-8 [10.8 MB]
@@ -24,16 +33,10 @@ Get:56 http://deb.debian.org/debian trixie/main amd64 python3-reportlab all 4.3.
 Get:57 http://deb.debian.org/debian trixie/main amd64 libpython3.13 amd64 3.13.5-2+deb13u5 [2160 kB]
 Get:58 http://deb.debian.org/debian trixie/main amd64 hplip amd64 3.22.10+dfsg0-8.1+deb13u1 [206 kB]
 Get:59 http://deb.debian.org/debian trixie/main amd64 sane-airscan amd64 0.99.35-1 [131 kB]
-W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 Preconfiguring packages ...
-Fetched 43.9 MB in 0s (205 MB/s)
+Fetched 43.9 MB in 0s (223 MB/s)
 Selecting previously unselected package bc.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71898 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 71118 files and directories currently installed.)
 Preparing to unpack .../00-bc_1.07.1-4_amd64.deb ...
 Unpacking bc (1.07.1-4) ...
 Selecting previously unselected package ssl-cert.
@@ -394,7 +397,4 @@ Processing triggers for fontconfig (2.15.0-2.3) ...
 Processing triggers for libc-bin (2.41-12+deb13u4) ...
 Processing triggers for dbus (1.16.2-2) ...
 Processing triggers for udev (257.13-1~deb13u1) ...
-W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 == Tind: hardware extras setup done
