@@ -1,0 +1,4 @@
+# Login screen (GDM): Tind's horizontal logo instead of Debian's "debian 13" mark. The PNG is the near-white
+# horizontal logo with a transparent background (docs/branding/logo/tind-horizontal-dark.svg, 320 px wide).
+[org/gnome/login-screen]
+logo='/usr/share/tind/login-logo.png'

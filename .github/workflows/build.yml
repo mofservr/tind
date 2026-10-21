@@ -46,6 +46,14 @@ jobs:
             os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade --dry-run || echo "nvidia dry run exited $?"
             echo "-- cuda-keyring key info"
             (cd /tmp && curl -fsS -o ck.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb && dpkg-deb -x ck.deb ck && gpg --show-keys --with-colons ck/usr/share/keyrings/*.gpg | grep -E '^(pub|fpr|uid)') 2>&1 | head -8 || true
+            echo "== login screen: how Debian builds it (informational)"
+            (mkdir -p /tmp/gdmx && cd /tmp/gdmx && apt-get download gdm3 desktop-base gnome-shell >/dev/null 2>&1
+             for d in gdm3_*.deb desktop-base_*.deb gnome-shell_*.deb; do echo "-- $d"; dpkg-deb -c "$d" | awk '{print $6}' | grep -iE "gdm|login|greeter|gresource|desktop-base/(active|.*theme)/(login|gnome)" | head -40; done
+             dpkg-deb -x gdm3_*.deb g; dpkg-deb -e gdm3_*.deb gc; dpkg-deb -e desktop-base_*.deb dc; dpkg-deb -x desktop-base_*.deb db
+             echo "-- greeter dconf defaults"; cat g/usr/share/gdm/greeter.dconf-defaults g/etc/gdm3/greeter.dconf-defaults 2>/dev/null | grep -v '^$' | head -60
+             echo "-- dconf profile"; cat g/etc/dconf/profile/gdm g/usr/share/dconf/profile/gdm 2>/dev/null
+             echo "-- alternatives in maintainer scripts"; grep -hn "alternatives\|gresource\|login" gc/postinst dc/postinst dc/preinst 2>/dev/null | head -30
+             echo "-- desktop-base login files"; find db -ipath '*login*' | head; find db -name '*.gresource*' | head) || true
             echo "== calamares stock config"
             mkdir -p /tmp/cal && cd /tmp/cal && apt-get download calamares-settings-debian calamares >/dev/null 2>&1
             for d in *.deb; do dpkg -x "$d" x; done

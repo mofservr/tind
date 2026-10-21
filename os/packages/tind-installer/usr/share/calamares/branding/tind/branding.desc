@@ -12,10 +12,10 @@ navigation: left
 strings:
     productName:         Tind
     shortProductName:    Tind
-    version:             0.1
-    shortVersion:        0.1
-    versionedName:       Tind 0.1
-    shortVersionedName:  Tind 0.1
+    version:             0.2
+    shortVersion:        0.2
+    versionedName:       Tind 0.2
+    shortVersionedName:  Tind 0.2
     bootloaderEntryName: Tind
     productUrl:          ""
     supportUrl:          ""
