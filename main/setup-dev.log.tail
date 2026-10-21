@@ -81,7 +81,7 @@ The following NEW packages will be installed:
 Need to get 187 MB of archives.
 After this operation, 630 MB of additional disk space will be used.
 Get:1 https://downloads.claude.ai/claude-desktop/apt/stable stable/main amd64 claude-desktop amd64 3.1623.0 [187 MB]
-Fetched 187 MB in 2s (94.8 MB/s)
+Fetched 187 MB in 2s (104 MB/s)
 Selecting previously unselected package claude-desktop.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 39361 files and directories currently installed.)
 Preparing to unpack .../claude-desktop_3.1623.0_amd64.deb ...
@@ -131,7 +131,7 @@ Get:20 http://deb.debian.org/debian trixie/main amd64 virtiofsd amd64 1.13.2-1+d
 W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-Fetched 16.1 MB in 0s (50.6 MB/s)
+Fetched 16.1 MB in 0s (110 MB/s)
 Selecting previously unselected package libcairo-script-interpreter2:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 43932 files and directories currently installed.)
 Preparing to unpack .../00-libcairo-script-interpreter2_1.18.4-1+b1_amd64.deb ...
