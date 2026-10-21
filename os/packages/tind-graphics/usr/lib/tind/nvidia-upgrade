@@ -75,7 +75,7 @@ Package: *
 Pin: origin developer.download.nvidia.com
 Pin-Priority: 1
 
-Package: nvidia-* libnvidia-* libxnvctrl* xserver-xorg-video-nvidia* libcuda1 libegl-nvidia0 libgl1-nvidia-glvnd-glx libgles-nvidia* libglx-nvidia0 libnvcuvid1 glx-alternative-nvidia
+Package: nvidia-* libnvidia-* libxnvctrl* firmware-nvidia-gsp* xserver-xorg-video-nvidia* libcuda1 libegl-nvidia0 libgl1-nvidia-glvnd-glx libgles-nvidia* libglx-nvidia0 libnvcuvid1 glx-alternative-nvidia
 Pin: origin developer.download.nvidia.com
 Pin-Priority: 600
 PREFEOF
@@ -112,10 +112,10 @@ if [ "$DRY" = 1 ]; then
     # diagnostics for the CI log: why would a package not be installable?
     for p in nvidia-kernel-open-dkms nvidia-kernel-dkms; do
         echo "-- $p"; apt-cache policy "$p" | head -6; apt-cache depends "$p" 2>&1 | head -12
-        apt-get -s install "$p" 2>&1 | grep -vE '^(Reading|Building)' | head -8
+        apt-get -s install "$p" 2>&1 | grep -A6 -E 'unmet dependencies|^E:' | head -14
     done
 fi
-sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | grep -v '^Reading\|^Building' | head -12 | tr '\n' ' ')"
+sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | grep -A8 'unmet dependencies' | tr '\n' ' ')"
 # only the NVIDIA driver family may be removed or replaced
 bad="$(echo "$sim" | grep '^Remv ' | awk '{print $2}' | grep -vE '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
 [ -z "$bad" ] || giveup "install would remove: $(echo $bad | tr '\n' ' ')"
