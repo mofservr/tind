@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 systemctl enable tind-gpu-check.service >/dev/null 2>&1 || true
+systemctl enable tind-nvidia-upgrade.service >/dev/null 2>&1 || true
 # not needed for gaming; fails on machines without an NVIDIA card
 systemctl mask nvidia-persistenced.service >/dev/null 2>&1 || true
 exit 0

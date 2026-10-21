@@ -1,10 +1,10 @@
 Package: tind-graphics
-Version: 0.1.0
+Version: 0.1.1
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: metapackages
 Priority: optional
-Depends: dkms, mokutil, linux-headers-amd64, nvidia-driver, nvidia-kernel-dkms, nvidia-vulkan-icd, nvidia-detect, mesa-vulkan-drivers, libgl1-mesa-dri, mesa-va-drivers, mesa-vdpau-drivers, firmware-amd-graphics, vulkan-tools, mesa-utils, pciutils
+Depends: curl, gnupg, dkms, mokutil, linux-headers-amd64, nvidia-driver, nvidia-kernel-dkms, nvidia-vulkan-icd, nvidia-detect, mesa-vulkan-drivers, libgl1-mesa-dri, mesa-va-drivers, mesa-vdpau-drivers, firmware-amd-graphics, vulkan-tools, mesa-utils, pciutils
 Recommends: nvidia-settings, intel-media-va-driver-non-free
 Installed-Size: 4
 Description: Tind graphics: NVIDIA, Mesa, Vulkan and video drivers
@@ -12,3 +12,6 @@ Description: Tind graphics: NVIDIA, Mesa, Vulkan and video drivers
  Mesa Vulkan and VA-API for AMD and Intel, AMD graphics firmware.
  Games and developer tools are separate: see tind-extras. A boot-time check falls back to the open nouveau driver
  when an NVIDIA card is too old for the packaged driver.
+ On the first boot of an installed system with internet, a card of the RTX 20 / GTX 16 generation or newer is
+ moved to NVIDIA's own Debian repository (current driver branch); older cards stay on Debian's driver. Any failure
+ leaves the packaged driver in place.

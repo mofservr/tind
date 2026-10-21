@@ -89,13 +89,18 @@ custom-background-color=false
 transparency-mode='DEFAULT'
 background-opacity=1.0
 
-# System Monitor in the top bar: temperature next to CPU, then memory, disk and network. GPU is only a
-# card in the menu (it stays out of the bar); external disks listed, network card off.
+# System Monitor, as Morten set it up on 2026-10-21: indicator at the end of the left box of the top bar,
+# temperature first and then CPU, GPU, memory, disk and network; every metric and every menu card on
+# (external disks included), refresh every 60 seconds, Celsius, network speed in bits.
 [org/gnome/shell/extensions/system-monitor-panel]
+refresh-interval=60
+temperature-unit='celsius'
+network-unit='bits'
+panel-position='left'
 panel-order=['temperature', 'cpu', 'gpu', 'memory', 'disk', 'network']
 show-temperature=true
 show-cpu=true
-show-gpu=false
+show-gpu=true
 show-memory=true
 show-disk=true
 show-network=true
@@ -105,7 +110,7 @@ show-memory-card=true
 show-disk-card=true
 show-external-disks=true
 show-temperature-card=true
-show-network-card=false
+show-network-card=true
 
 # App grid folders. categories/excluded-apps are emptied so GNOME's own Utilities folder
 # does not pull in other apps; only the apps listed here are shown in each folder.

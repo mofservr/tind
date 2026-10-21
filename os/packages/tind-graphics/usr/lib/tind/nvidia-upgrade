@@ -1,0 +1,134 @@
+#!/bin/bash
+# Moves a Turing-or-newer NVIDIA card (RTX 20 / GTX 16 series and up) from Debian's packaged driver (550)
+# to NVIDIA's own Debian 13 repository, which carries the current driver branch. Older cards (Maxwell,
+# Pascal, Volta) are dropped by NVIDIA's newer branches, so they stay on Debian's driver.
+#
+# Fail-safe: every check runs before anything is installed. If the key, the repository, the simulated
+# install or the version check fails, the repository is removed again and the system is left as it was.
+#
+#   nvidia-upgrade              normal run (as root, from tind-nvidia-upgrade.service or by hand)
+#   nvidia-upgrade --dry-run    add the repository, run the checks, print what would happen, undo it all
+#                               (also skips the GPU check; used by CI)
+set -u
+
+BASE="https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64"
+SRC=/etc/apt/sources.list.d/tind-nvidia.sources
+PREF=/etc/apt/preferences.d/tind-nvidia
+KEYRING=/usr/share/keyrings/tind-nvidia.gpg
+STATE=/var/lib/tind/nvidia-upgrade
+MIN_MAJOR=560
+DRY=0
+[ "${1:-}" = "--dry-run" ] && DRY=1
+
+log() { echo "tind-nvidia: $*"; logger -t tind-nvidia "$*" 2>/dev/null || true; }
+undo() { rm -f "$SRC" "$PREF" "$KEYRING"; apt-get update >/dev/null 2>&1 || true; }
+# a definitive answer: do not try again on the next boot
+finish() { mkdir -p /var/lib/tind; echo "$1" > "$STATE.done"; rm -f "$STATE.tries"; }
+giveup() { log "$1 -- keeping Debian's driver"; undo; [ "$DRY" = 1 ] || finish "skipped: $1"; exit 0; }
+
+[ "$(id -u)" -eq 0 ] || { echo "run as root" >&2; exit 1; }
+mkdir -p /var/lib/tind
+if [ "$DRY" = 0 ]; then
+    [ -e "$STATE.done" ] && exit 0
+    [ ! -d /run/live ] || exit 0
+fi
+
+# 1. Which GPUs? Every NVIDIA GPU must be Turing or newer. PCI device IDs from 0x1e00 up are Turing,
+# Ampere, Ada and Blackwell (Pascal is 0x1b00-0x1d3f, Volta 0x1d81-0x1db6).
+if [ "$DRY" = 0 ]; then
+    command -v lspci >/dev/null 2>&1 || exit 0
+    ids="$(lspci -nn -d 10de: 2>/dev/null | grep -iE 'vga|3d|display' | sed -n 's/.*\[10de:\([0-9a-fA-F]\{4\}\)\].*/\1/p')"
+    [ -n "$ids" ] || { finish "no NVIDIA GPU"; exit 0; }
+    for id in $ids; do
+        [ $((16#$id)) -ge $((16#1e00)) ] || { log "GPU 10de:$id is older than Turing"; finish "older GPU 10de:$id"; exit 0; }
+    done
+    # never change a setup that does not work yet: with Secure Boot on, the NVIDIA module only loads
+    # after the signing key has been enrolled (tind-gpu secureboot)
+    if mokutil --sb-state 2>/dev/null | grep -qi 'SecureBoot enabled' && ! grep -q '^nvidia ' /proc/modules; then
+        finish "Secure Boot on and the NVIDIA module is not loaded"; exit 0
+    fi
+fi
+
+# 2. Network. No connection: try again on the next boot (three tries).
+tries=$(cat "$STATE.tries" 2>/dev/null || echo 0)
+if ! curl -fsS --max-time 20 -o /dev/null "$BASE/Release"; then
+    if [ "$DRY" = 1 ]; then log "cannot reach $BASE"; exit 0; fi
+    echo $((tries + 1)) > "$STATE.tries"
+    [ "$tries" -ge 2 ] && finish "no connection to NVIDIA after three boots"
+    exit 0
+fi
+
+# 3. Key: NVIDIA's cuda-keyring package, unpacked (not installed). If apt rejects that key (the old one is
+# SHA1-signed and refused by Debian 13), try the replacement key file.
+work="$(mktemp -d)"; trap 'rm -rf "$work"' EXIT
+write_source() {
+    cat > "$SRC" <<SRCEOF
+Types: deb
+URIs: $BASE/
+Suites: /
+Signed-By: $KEYRING
+SRCEOF
+}
+# NVIDIA's packages never replace anything except the driver family; CUDA and the rest stay out
+cat > "$PREF" <<'PREFEOF'
+Package: *
+Pin: origin developer.download.nvidia.com
+Pin-Priority: 1
+
+Package: nvidia-driver nvidia-driver-* nvidia-kernel-* nvidia-settings nvidia-vulkan-* nvidia-egl-* nvidia-persistenced nvidia-modprobe nvidia-smi nvidia-alternative nvidia-installer-cleanup nvidia-support xserver-xorg-video-nvidia libnvidia-* libcuda1 libegl-nvidia0 libgl1-nvidia-glvnd-glx libgles-nvidia* libglx-nvidia0 libnvcuvid1 libnvidia-* glx-alternative-nvidia
+Pin: origin developer.download.nvidia.com
+Pin-Priority: 600
+PREFEOF
+
+ok=0
+for method in keyring pubkey; do
+    rm -f "$KEYRING"
+    if [ "$method" = keyring ]; then
+        curl -fsS --max-time 60 -o "$work/k.deb" "$BASE/cuda-keyring_1.1-1_all.deb" || continue
+        dpkg-deb -x "$work/k.deb" "$work/k" || continue
+        k="$(find "$work/k" -name '*.gpg' | head -1)"; [ -n "$k" ] || continue
+        cp "$k" "$KEYRING"
+    else
+        curl -fsS --max-time 60 -o "$work/8793F200.pub" "$BASE/8793F200.pub" || continue
+        gpg --dearmor < "$work/8793F200.pub" > "$KEYRING" 2>/dev/null || continue
+    fi
+    write_source
+    out="$(apt-get update 2>&1)"
+    if ! echo "$out" | grep -E 'nvidia\.com' | grep -qE '^(E|W):|^Err:'; then
+        if apt-cache policy nvidia-driver 2>/dev/null | grep -q 'developer.download.nvidia.com'; then ok=1; log "repository trusted via $method"; break; fi
+    fi
+    log "apt update with the $method key: $(echo "$out" | grep -E 'nvidia\.com' | grep -E '^(E|W|Err):' | head -2 | tr '\n' ' ')"
+done
+[ "$ok" = 1 ] || giveup "NVIDIA repository could not be verified"
+
+# 4. Candidate versions and a simulated install
+cand="$(apt-cache policy nvidia-driver | sed -n 's/^ *Candidate: //p')"
+log "candidate nvidia-driver $cand (Debian's is $(apt-cache madison nvidia-driver | grep -v nvidia.com | head -1 | cut -d'|' -f2 | tr -d ' '))"
+major="${cand#*:}"; major="${major%%.*}"
+case "$major" in ''|*[!0-9]*) giveup "cannot read the driver version '$cand'" ;; esac
+[ "$major" -ge "$MIN_MAJOR" ] || giveup "NVIDIA's driver $cand is not newer than Debian's"
+set_pkgs="nvidia-driver nvidia-kernel-dkms nvidia-settings"
+sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | tail -2 | tr '\n' ' ')"
+# only the NVIDIA driver family may be removed or replaced
+bad="$(echo "$sim" | grep '^Remv ' | awk '{print $2}' | grep -vE '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
+[ -z "$bad" ] || giveup "install would remove: $(echo $bad | tr '\n' ' ')"
+echo "$sim" | grep -E '^(Inst|Remv) ' | head -40
+
+if [ "$DRY" = 1 ]; then
+    log "dry run OK: $set_pkgs would move to $cand"
+    undo
+    exit 0
+fi
+
+# 5. Install. DKMS builds the modules for the installed kernels; the new driver loads at the next boot.
+if DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install $set_pkgs; then
+    finish "installed $cand"
+    log "NVIDIA $cand installed; restart to use it"
+    touch /var/lib/tind/nvidia-upgraded
+else
+    log "install failed; going back to Debian's driver"
+    undo
+    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install --reinstall nvidia-driver nvidia-kernel-dkms >/dev/null 2>&1 || true
+    finish "install failed"
+fi
+exit 0

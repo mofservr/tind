@@ -59,8 +59,14 @@ Architectures: amd64 arm64
 Signed-By: /usr/share/keyrings/claude-desktop-archive-keyring.asc
 SRC
 apt-get update
-# with recommends: the keyring, and QEMU/OVMF that the Cowork tab needs
-apt-get install -y claude-desktop
+# Without recommends: with them the install pulled in the KDE Frameworks stack (systemsettings, kde-cli-tools,
+# kwallet6: 156 packages, 822 MB) that a GNOME desktop does not need. QEMU is installed above; add
+# the pieces the Cowork tab uses (OVMF firmware, virtiofsd, socat, uidmap) and a keyring for stored secrets.
+apt_install claude-desktop
+apt_install ovmf virtiofsd socat uidmap gnome-keyring libpam-gnome-keyring
+# Informational: what the package asks for, and whether any KDE Frameworks libraries came in anyway.
+apt-cache show claude-desktop | grep -E '^(Depends|Recommends|Suggests):' | cut -c1-600 || true
+echo "KDE Frameworks libraries installed: $(dpkg-query -W -f='${Package}\n' 'libkf6*' 2>/dev/null | wc -l)"
 # The claude-desktop package ships its own repository entry (claude-desktop.list). Ours was only needed to
 # install it, and two entries for one repository make every apt update warn. Drop ours when theirs has a key.
 cd_list=/etc/apt/sources.list.d/claude-desktop.list

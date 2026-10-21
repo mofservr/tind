@@ -152,6 +152,8 @@ modinfo -F version nvidia-current 2>&1 | head -1; ls /lib/modules/*/updates/dkms
 ls /etc/modprobe.d | tr '\n' ' '; echo
 ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
 systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
+systemctl is-enabled tind-nvidia-upgrade.service 2>&1
+test -x /usr/lib/tind/nvidia-upgrade && echo "nvidia-upgrade: present" || echo "nvidia-upgrade: MISSING"
 ls /var/lib/dkms/mok.key 2>&1
 vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
 sec "time sync"

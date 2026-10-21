@@ -21,7 +21,10 @@
       "Snippets": false
     },
     "AIControls": {
-      "Default": { "Value": "blocked", "Locked": false }
+      "Default": {
+        "Value": "blocked",
+        "Locked": false
+      }
     },
     "EnableTrackingProtection": {
       "Value": true,
@@ -34,7 +37,8 @@
       "{446900e4-71c2-419f-a6a7-df9c091e268b}": {
         "installation_mode": "normal_installed",
         "install_url": "https://addons.mozilla.org/firefox/downloads/latest/bitwarden-password-manager/latest.xpi",
-        "default_area": "navbar"
+        "default_area": "navbar",
+        "private_browsing": true
       }
     },
     "SearchEngines": {
@@ -48,6 +52,11 @@
           "Description": "Startpage: private Google results"
         }
       ]
+    },
+    "Homepage": {
+      "URL": "https://www.servr.no",
+      "StartPage": "homepage",
+      "Locked": false
     }
   }
 }

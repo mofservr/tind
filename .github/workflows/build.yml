@@ -42,6 +42,10 @@ jobs:
             done
             apt-get update >/dev/null
             os/scripts/check-packages.sh || rc=1
+            echo "== NVIDIA repository dry run (informational): key, apt update, versions, simulated install"
+            os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade --dry-run || echo "nvidia dry run exited $?"
+            echo "-- cuda-keyring key info"
+            (cd /tmp && curl -fsS -o ck.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb && dpkg-deb -x ck.deb ck && gpg --show-keys --with-colons ck/usr/share/keyrings/*.gpg | grep -E '^(pub|fpr|uid)') 2>&1 | head -8 || true
             echo "== calamares stock config"
             mkdir -p /tmp/cal && cd /tmp/cal && apt-get download calamares-settings-debian calamares >/dev/null 2>&1
             for d in *.deb; do dpkg -x "$d" x; done
