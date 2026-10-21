@@ -57,7 +57,7 @@ jobs:
              apt-get install -y --no-install-recommends libglib2.0-bin >/dev/null 2>&1; command -v gresource || echo 'gresource tool missing'
              apt-get download gnome-shell-common >/dev/null 2>&1; dpkg-deb -x gnome-shell-common_*.deb gs
              for r in $(find gs -name '*.gresource'); do echo "gresource: $r"; gresource list "$r" 2>/dev/null | grep -iE "gdm|login|background" | head; gresource extract "$r" /org/gnome/shell/theme/gdm.css 2>/dev/null | grep -nE "lockDialogGroup|background|url" | head -12; done
-             gresource list gs/usr/share/gnome-shell/gnome-shell-theme.gresource 2>&1 | head -40
+             for c in gnome-shell-dark.css gnome-shell-light.css; do echo "-- $c lockDialogGroup"; gresource extract gs/usr/share/gnome-shell/gnome-shell-theme.gresource /org/gnome/shell/theme/$c 2>&1 | grep -n -B1 -A6 'lockDialogGroup' | head -30; done
              grep -rlE "login-background|desktop-base" g gc gs 2>/dev/null | head
              grep -rn "background" g/usr/share/gdm/*.dconf* g/etc/gdm3/* 2>/dev/null | head -5
              echo "-- desktop-base login files"; find db -ipath '*login*' | head; find db -name '*.gresource*' | head) || true

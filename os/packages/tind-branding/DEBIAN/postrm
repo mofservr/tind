@@ -9,6 +9,7 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
         rm -f "$f"
         dpkg-divert --package tind-branding --quiet --rename --divert "$f.debian" --remove "$f" || true
     done
+    update-alternatives --remove desktop-login-background /usr/share/tind/login-background.svg || true
     command -v dconf >/dev/null 2>&1 && dconf update || true
 fi
 exit 0

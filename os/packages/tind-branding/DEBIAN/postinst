@@ -8,6 +8,10 @@ if [ "$1" = "configure" ]; then
     fi
     cp -f /usr/share/tind/os-release /usr/lib/os-release
     ln -sf ../usr/lib/os-release /etc/os-release
+    # Login screen background: desktop-base offers it as the alternative "desktop-login-background" (the blue
+    # Debian artwork). A higher priority makes Tind's flat dark background the automatic choice.
+    update-alternatives --install /usr/share/images/desktop-base/login-background.svg \
+        desktop-login-background /usr/share/tind/login-background.svg 100 || true
     command -v dconf >/dev/null 2>&1 && dconf update || true
     # Login screen: Debian's "debian 13" mark is a file from desktop-base that GDM shows (greeter.dconf-defaults
     # points at it). Divert both sizes and put the Tind logo (near white, transparent) in their place.

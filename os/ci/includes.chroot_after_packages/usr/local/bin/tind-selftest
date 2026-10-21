@@ -154,6 +154,7 @@ ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
 systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
 systemctl is-enabled tind-nvidia-upgrade.service 2>&1
 echo "login logo: $(cmp -s /usr/share/tind/login-logo-64.png /usr/share/images/vendor-logos/logo-text-version-64.png && echo Tind || echo NOT-TIND) $(ls /usr/share/images/vendor-logos/ 2>&1 | tr '\n' ' ')"
+echo "login background alternative: $(update-alternatives --query desktop-login-background 2>&1 | grep -E '^Value:|^Status:' | tr '\n' ' ')"
 test -x /usr/lib/tind/nvidia-upgrade && echo "nvidia-upgrade: present" || echo "nvidia-upgrade: MISSING"
 ls /var/lib/dkms/mok.key 2>&1
 vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
