@@ -104,7 +104,7 @@ echo "policy keys:"; jq -r '.policies|keys|join(", ")' /etc/firefox/policies/pol
 grep -E 'datareporting|toolkit.telemetry|autoDisableScopes|browser.search.region' "$tmp/prefs.js" 2>/dev/null | cut -c1-160 | head -8
 sec thunderbird policies; jq -e . /etc/thunderbird/policies/policies.json >/dev/null && echo "thunderbird policies.json: valid JSON"
 sec "accent names, Mozilla accent defaults, Spotify frame override"
-for f in /usr/share/locale/en/LC_MESSAGES/gnome-control-center-2.0.mo /usr/lib/firefox-esr/defaults/pref/tind-accent.js /usr/lib/thunderbird/defaults/pref/tind-accent.js /var/lib/flatpak/overrides/com.spotify.Client; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
+for f in /usr/share/locale/en_US/LC_MESSAGES/gnome-control-center-2.0.mo /usr/lib/firefox-esr/defaults/pref/tind-accent.js /usr/lib/thunderbird/defaults/pref/tind-accent.js /var/lib/flatpak/overrides/com.spotify.Client; do echo "$f: $(test -e "$f" && echo present || echo MISSING)"; done
 echo "accent tooltip for the green slot: $(python3 -c 'import gettext; print(gettext.translation("gnome-control-center-2.0", "/usr/share/locale", ["en_US"]).gettext("Green"))' 2>&1 | tail -1)"
 sec tind-enroll; tind-enroll --help 2>&1 | head -8; cat /etc/tind/servr-tunnel.conf | grep -E '^[A-Z_]+=' | head
 sec "enroll init/apply smoke test"

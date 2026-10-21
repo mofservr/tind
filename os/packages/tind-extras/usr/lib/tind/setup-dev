@@ -62,6 +62,9 @@ apt-get update
 # Without recommends: with them the install pulled in the KDE Frameworks stack (systemsettings, kde-cli-tools,
 # kwallet6: 156 packages, 822 MB) that a GNOME desktop does not need. QEMU is installed above; add
 # the pieces the Cowork tab uses (OVMF firmware, virtiofsd, socat, uidmap) and a keyring for stored secrets.
+# Its Depends line is an alternative: kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs. apt picks the
+# first one, which drags in the whole KDE Frameworks stack, so install an alternative that is not KDE first.
+apt_install libglib2.0-bin gvfs
 apt_install claude-desktop
 apt_install ovmf virtiofsd socat uidmap gnome-keyring libpam-gnome-keyring
 # Informational: what the package asks for, and whether any KDE Frameworks libraries came in anyway.

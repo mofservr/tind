@@ -75,7 +75,7 @@ Package: *
 Pin: origin developer.download.nvidia.com
 Pin-Priority: 1
 
-Package: nvidia-driver nvidia-driver-* nvidia-kernel-* nvidia-settings nvidia-vulkan-* nvidia-egl-* nvidia-persistenced nvidia-modprobe nvidia-smi nvidia-alternative nvidia-installer-cleanup nvidia-support xserver-xorg-video-nvidia libnvidia-* libcuda1 libegl-nvidia0 libgl1-nvidia-glvnd-glx libgles-nvidia* libglx-nvidia0 libnvcuvid1 libnvidia-* glx-alternative-nvidia
+Package: nvidia-* libnvidia-* xserver-xorg-video-nvidia* libcuda1 libegl-nvidia0 libgl1-nvidia-glvnd-glx libgles-nvidia* libglx-nvidia0 libnvcuvid1 glx-alternative-nvidia
 Pin: origin developer.download.nvidia.com
 Pin-Priority: 600
 PREFEOF
@@ -108,7 +108,7 @@ major="${cand#*:}"; major="${major%%.*}"
 case "$major" in ''|*[!0-9]*) giveup "cannot read the driver version '$cand'" ;; esac
 [ "$major" -ge "$MIN_MAJOR" ] || giveup "NVIDIA's driver $cand is not newer than Debian's"
 set_pkgs="nvidia-driver nvidia-kernel-dkms nvidia-settings"
-sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | tail -2 | tr '\n' ' ')"
+sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | grep -v '^Reading\|^Building' | head -12 | tr '\n' ' ')"
 # only the NVIDIA driver family may be removed or replaced
 bad="$(echo "$sim" | grep '^Remv ' | awk '{print $2}' | grep -vE '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
 [ -z "$bad" ] || giveup "install would remove: $(echo $bad | tr '\n' ' ')"
