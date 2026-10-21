@@ -492,19 +492,19 @@
 
 .tind-accent-green .quick-toggle:checked,
 .tind-accent-green .quick-toggle-has-menu .quick-toggle-menu-button:checked {
-  background-color: #3AA79A;
+  background-color: #138677;
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
 .tind-accent-green .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-green .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-green .slider {
-  color: #3AA79A;
-  -barlevel-active-background-color: #3AA79A;
+  color: #138677;
+  -barlevel-active-background-color: #138677;
   -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
 }
 .tind-accent-green .app-well-app-running-dot,
-.tind-accent-green #dashtodockContainer .app-well-app-running-dot { background-color: #3AA79A; }
+.tind-accent-green #dashtodockContainer .app-well-app-running-dot { background-color: #138677; }
 
 .tind-accent-yellow .quick-toggle:checked,
 .tind-accent-yellow .quick-toggle-has-menu .quick-toggle-menu-button:checked {
@@ -556,19 +556,19 @@
 
 .tind-accent-pink .quick-toggle:checked,
 .tind-accent-pink .quick-toggle-has-menu .quick-toggle-menu-button:checked {
-  background-color: #F4988C;
+  background-color: #EC5179;
   border-color: rgba(0, 0, 0, 0.18);
   color: #14110F;
 }
 .tind-accent-pink .quick-toggle-has-menu:checked { border-color: rgba(0, 0, 0, 0.18); }
 .tind-accent-pink .quick-toggle-has-menu:checked .quick-toggle-separator { background-color: rgba(0, 0, 0, 0.22); }
 .tind-accent-pink .slider {
-  color: #F4988C;
-  -barlevel-active-background-color: #F4988C;
+  color: #EC5179;
+  -barlevel-active-background-color: #EC5179;
   -barlevel-active-border-color: rgba(0, 0, 0, 0.18);
 }
 .tind-accent-pink .app-well-app-running-dot,
-.tind-accent-pink #dashtodockContainer .app-well-app-running-dot { background-color: #F4988C; }
+.tind-accent-pink #dashtodockContainer .app-well-app-running-dot { background-color: #EC5179; }
 
 .tind-accent-purple .quick-toggle:checked,
 .tind-accent-purple .quick-toggle-has-menu .quick-toggle-menu-button:checked {
@@ -631,16 +631,16 @@
 .tind-accent-teal .calendar-today { background-color: #21857A; color: #FFFFFF !important; }
 .tind-accent-teal .osd-monitor-label { background-color: #21857A; color: #FFFFFF; }
 
-.tind-accent-green .tile-preview { background-color: rgba(58, 167, 154, 0.5); border: 1px solid #3AA79A; }
-.tind-accent-green .select-area-rubberband { background-color: rgba(58, 167, 154, 0.3); border: 1px solid #3AA79A; }
-.tind-accent-green .cycler-highlight { border: 5px solid #3AA79A; }
-.tind-accent-green .workspace-thumbnail-indicator { border: 3px solid #3AA79A; }
-.tind-accent-green StEntry { selection-background-color: rgba(58, 167, 154, 0.45); }
-.tind-accent-green .toggle-switch:checked { background: #3AA79A; color: #14110F; }
-.tind-accent-green .check-box:checked StBin { background-color: #3AA79A; color: #14110F; }
-.tind-accent-green .check-box:focus StBin { box-shadow: inset 0 0 0 2px rgba(58, 167, 154, 0.5); }
-.tind-accent-green .calendar-today { background-color: #3AA79A; color: #14110F !important; }
-.tind-accent-green .osd-monitor-label { background-color: #3AA79A; color: #14110F; }
+.tind-accent-green .tile-preview { background-color: rgba(19, 134, 119, 0.5); border: 1px solid #138677; }
+.tind-accent-green .select-area-rubberband { background-color: rgba(19, 134, 119, 0.3); border: 1px solid #138677; }
+.tind-accent-green .cycler-highlight { border: 5px solid #138677; }
+.tind-accent-green .workspace-thumbnail-indicator { border: 3px solid #138677; }
+.tind-accent-green StEntry { selection-background-color: rgba(19, 134, 119, 0.45); }
+.tind-accent-green .toggle-switch:checked { background: #138677; color: #FFFFFF; }
+.tind-accent-green .check-box:checked StBin { background-color: #138677; color: #FFFFFF; }
+.tind-accent-green .check-box:focus StBin { box-shadow: inset 0 0 0 2px rgba(19, 134, 119, 0.5); }
+.tind-accent-green .calendar-today { background-color: #138677; color: #FFFFFF !important; }
+.tind-accent-green .osd-monitor-label { background-color: #138677; color: #FFFFFF; }
 
 .tind-accent-yellow .tile-preview { background-color: rgba(104, 196, 183, 0.5); border: 1px solid #68C4B7; }
 .tind-accent-yellow .select-area-rubberband { background-color: rgba(104, 196, 183, 0.3); border: 1px solid #68C4B7; }
@@ -675,16 +675,16 @@
 .tind-accent-red .calendar-today { background-color: #FED2CB; color: #14110F !important; }
 .tind-accent-red .osd-monitor-label { background-color: #FED2CB; color: #14110F; }
 
-.tind-accent-pink .tile-preview { background-color: rgba(244, 152, 140, 0.5); border: 1px solid #F4988C; }
-.tind-accent-pink .select-area-rubberband { background-color: rgba(244, 152, 140, 0.3); border: 1px solid #F4988C; }
-.tind-accent-pink .cycler-highlight { border: 5px solid #F4988C; }
-.tind-accent-pink .workspace-thumbnail-indicator { border: 3px solid #F4988C; }
-.tind-accent-pink StEntry { selection-background-color: rgba(244, 152, 140, 0.45); }
-.tind-accent-pink .toggle-switch:checked { background: #F4988C; color: #14110F; }
-.tind-accent-pink .check-box:checked StBin { background-color: #F4988C; color: #14110F; }
-.tind-accent-pink .check-box:focus StBin { box-shadow: inset 0 0 0 2px rgba(244, 152, 140, 0.5); }
-.tind-accent-pink .calendar-today { background-color: #F4988C; color: #14110F !important; }
-.tind-accent-pink .osd-monitor-label { background-color: #F4988C; color: #14110F; }
+.tind-accent-pink .tile-preview { background-color: rgba(236, 81, 121, 0.5); border: 1px solid #EC5179; }
+.tind-accent-pink .select-area-rubberband { background-color: rgba(236, 81, 121, 0.3); border: 1px solid #EC5179; }
+.tind-accent-pink .cycler-highlight { border: 5px solid #EC5179; }
+.tind-accent-pink .workspace-thumbnail-indicator { border: 3px solid #EC5179; }
+.tind-accent-pink StEntry { selection-background-color: rgba(236, 81, 121, 0.45); }
+.tind-accent-pink .toggle-switch:checked { background: #EC5179; color: #14110F; }
+.tind-accent-pink .check-box:checked StBin { background-color: #EC5179; color: #14110F; }
+.tind-accent-pink .check-box:focus StBin { box-shadow: inset 0 0 0 2px rgba(236, 81, 121, 0.5); }
+.tind-accent-pink .calendar-today { background-color: #EC5179; color: #14110F !important; }
+.tind-accent-pink .osd-monitor-label { background-color: #EC5179; color: #14110F; }
 
 .tind-accent-purple .tile-preview { background-color: rgba(226, 126, 117, 0.5); border: 1px solid #E27E75; }
 .tind-accent-purple .select-area-rubberband { background-color: rgba(226, 126, 117, 0.3); border: 1px solid #E27E75; }

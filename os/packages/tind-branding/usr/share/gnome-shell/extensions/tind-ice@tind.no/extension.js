@@ -21,7 +21,7 @@
 // 2026-10-21 (later): links in Firefox's address-bar suggestions (URL line, "Switch to Tab") still used GNOME's
 // stock blue. They take the system link colour, so the managed block also sets ui.-moz-hyperlinktext (and the
 // active and visited ones) and the GTK 3 file sets link_color. The accent itself is used on the dark theme; on the
-// light theme it is darkened so text stays readable on a white background.
+// light theme it is darkened and on the dark theme lightened so text stays readable.
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -37,10 +37,10 @@ const LIGHT_DEFAULT = 'pink';
 // in by an @import line at the top of ~/.config/gtk-4.0/gtk.css. Apps started after a change pick it up;
 // an app that is already open keeps the colour it started with.
 const ACCENT_HEX = {
-    blue: '#19685F', teal: '#21857A', green: '#3AA79A', yellow: '#68C4B7', orange: '#A2DBD2',
-    red: '#FED2CB', pink: '#F4988C', purple: '#E27E75', slate: '#C25D59',
+    blue: '#19685F', teal: '#21857A', green: '#138677', yellow: '#68C4B7', orange: '#A2DBD2',
+    red: '#FED2CB', pink: '#EC5179', purple: '#E27E75', slate: '#C25D59',
 };
-const ACCENT_FG_WHITE = ['blue', 'teal'];
+const ACCENT_FG_WHITE = ['blue', 'teal', 'green'];
 const GTK_IMPORT = '@import url("tind-accent.css");';
 const MOZ_PROFILE_ROOTS = ['.mozilla/firefox', '.thunderbird', '.config/mozilla/firefox', '.config/thunderbird'];
 const MOZ_BEGIN = '// BEGIN tind-accent (managed by the Tind shell theme; rewritten at login and when the accent changes)';
@@ -83,7 +83,7 @@ export default class TindIce extends Extension {
     _writeGtkAccent(slot) {
         const fg = ACCENT_FG_WHITE.includes(slot) ? '#FFFFFF' : '#14110F';
         const hex = ACCENT_HEX[slot];
-        const link = this._dark() ? hex : this._darken(hex, 0.45);
+        const link = this._dark() ? this._lighten(hex, 0.35) : this._darken(hex, 0.25);
         // GTK 4 / libadwaita: accent_* colours. GTK 3 (Firefox, Thunderbird, Terminal, LibreOffice, ...):
         // Adwaita for GTK 3 paints selections, focus rings and switches from theme_selected_*.
         this._writeGtkDir('gtk-4.0',
@@ -95,6 +95,12 @@ export default class TindIce extends Extension {
             `@define-color theme_selected_bg_color ${hex};\n@define-color theme_selected_fg_color ${fg};\n` +
             `@define-color selected_bg_color ${hex};\n@define-color selected_fg_color ${fg};\n`);
         this._writeMozillaPrefs(hex, fg, link);
+    }
+
+    _lighten(hex, amount) {
+        const n = parseInt(hex.slice(1), 16);
+        const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => Math.round(v + (255 - v) * amount));
+        return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
     }
 
     _darken(hex, amount) {
