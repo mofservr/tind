@@ -20,7 +20,7 @@ Presentation {
             anchors.centerIn: parent
             horizontalAlignment: Text.AlignHCenter
             color: "#E8F3F8"; font.pixelSize: 30
-            text: "Welcome to Tind\n\nA calm, fast desktop.\nCold mountain, warm welcome."
+            text: "Welcome to Tind\n\nA calm, fast desktop."
         }
     }
     Slide {

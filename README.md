@@ -1,6 +1,6 @@
 # Tind
 
-A Debian 13 (trixie) based GNOME desktop for daily use and gaming. Cold mountain, warm welcome.
+A Debian 13 (trixie) based GNOME desktop for daily use and gaming.
 
 ```
 os/            live-build config, the tind-* packages, build and check scripts

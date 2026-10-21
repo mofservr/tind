@@ -23,13 +23,3 @@ terminal-border: "0"
   item_spacing = 6
   scrollbar = false
 }
-
-+ label {
-  top = 82%
-  left = 0
-  width = 100%
-  align = "center"
-  font = "Unifont Regular 16"
-  color = "#9CC7DB"
-  text = "tind   cold mountain, warm welcome"
-}
