@@ -53,6 +53,11 @@ jobs:
              echo "-- greeter dconf defaults"; cat g/usr/share/gdm/greeter.dconf-defaults g/etc/gdm3/greeter.dconf-defaults 2>/dev/null | grep -v '^$' | head -60
              echo "-- dconf profile"; cat g/etc/dconf/profile/gdm g/usr/share/dconf/profile/gdm 2>/dev/null
              echo "-- alternatives in maintainer scripts"; grep -hn "alternatives\|gresource\|login" gc/postinst dc/postinst dc/preinst 2>/dev/null | head -30
+             echo "-- how the GDM background is chosen"
+             apt-get download gnome-shell-common >/dev/null 2>&1; dpkg-deb -x gnome-shell-common_*.deb gs
+             for r in $(find gs -name '*.gresource'); do echo "gresource: $r"; gresource list "$r" 2>/dev/null | grep -iE "gdm|login|background" | head; gresource extract "$r" /org/gnome/shell/theme/gdm.css 2>/dev/null | grep -nE "lockDialogGroup|background|url" | head -12; done
+             grep -rlE "login-background|desktop-base" g gc gs 2>/dev/null | head
+             grep -rn "background" g/usr/share/gdm/*.dconf* g/etc/gdm3/* 2>/dev/null | head -5
              echo "-- desktop-base login files"; find db -ipath '*login*' | head; find db -name '*.gresource*' | head) || true
             echo "== calamares stock config"
             mkdir -p /tmp/cal && cd /tmp/cal && apt-get download calamares-settings-debian calamares >/dev/null 2>&1

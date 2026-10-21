@@ -4,6 +4,11 @@ if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
     rm -f /usr/lib/os-release
     dpkg-divert --package tind-branding --quiet --rename \
         --divert /usr/lib/os-release.debian --remove /usr/lib/os-release || true
+    for n in 64 128; do
+        f=/usr/share/images/vendor-logos/logo-text-version-$n.png
+        rm -f "$f"
+        dpkg-divert --package tind-branding --quiet --rename --divert "$f.debian" --remove "$f" || true
+    done
     command -v dconf >/dev/null 2>&1 && dconf update || true
 fi
 exit 0

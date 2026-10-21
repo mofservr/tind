@@ -9,6 +9,16 @@ if [ "$1" = "configure" ]; then
     cp -f /usr/share/tind/os-release /usr/lib/os-release
     ln -sf ../usr/lib/os-release /etc/os-release
     command -v dconf >/dev/null 2>&1 && dconf update || true
+    # Login screen: Debian's "debian 13" mark is a file from desktop-base that GDM shows (greeter.dconf-defaults
+    # points at it). Divert both sizes and put the Tind logo (near white, transparent) in their place.
+    for n in 64 128; do
+        f=/usr/share/images/vendor-logos/logo-text-version-$n.png
+        if ! dpkg-divert --list "$f" | grep -q tind-branding; then
+            dpkg-divert --package tind-branding --quiet --rename --divert "$f.debian" --add "$f"
+        fi
+        mkdir -p /usr/share/images/vendor-logos
+        cp -f /usr/share/tind/login-logo-$n.png "$f"
+    done
     command -v fc-cache >/dev/null 2>&1 && fc-cache -f /usr/share/fonts/truetype/nunito-sans || true
     command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -q -t /usr/share/icons/hicolor || true
     if command -v plymouth-set-default-theme >/dev/null 2>&1; then
