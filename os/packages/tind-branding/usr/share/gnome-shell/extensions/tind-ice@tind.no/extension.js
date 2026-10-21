@@ -17,6 +17,11 @@
 // teal), for selections, focus rings, checkboxes and buttons. Their ui.* colour prefs override that, so the
 // accent is also written as a managed block in user.js of every Firefox and Thunderbird profile. Mozilla
 // apps read user.js at start, so a running Firefox keeps its colour until it is restarted.
+//
+// 2026-10-21 (later): links in Firefox's address-bar suggestions (URL line, "Switch to Tab") still used GNOME's
+// stock blue. They take the system link colour, so the managed block also sets ui.-moz-hyperlinktext (and the
+// active and visited ones) and the GTK 3 file sets link_color. The accent itself is used on the dark theme; on the
+// light theme it is darkened so text stays readable on a white background.
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -78,6 +83,7 @@ export default class TindIce extends Extension {
     _writeGtkAccent(slot) {
         const fg = ACCENT_FG_WHITE.includes(slot) ? '#FFFFFF' : '#14110F';
         const hex = ACCENT_HEX[slot];
+        const link = this._dark() ? hex : this._darken(hex, 0.45);
         // GTK 4 / libadwaita: accent_* colours. GTK 3 (Firefox, Thunderbird, Terminal, LibreOffice, ...):
         // Adwaita for GTK 3 paints selections, focus rings and switches from theme_selected_*.
         this._writeGtkDir('gtk-4.0',
@@ -85,18 +91,26 @@ export default class TindIce extends Extension {
         this._writeGtkDir('gtk-3.0',
             `@define-color accent_bg_color ${hex};\n@define-color accent_fg_color ${fg};\n` +
             `@define-color accent_color ${hex};\n` +
+            `@define-color link_color ${link};\n@define-color visited_link_color ${link};\n` +
             `@define-color theme_selected_bg_color ${hex};\n@define-color theme_selected_fg_color ${fg};\n` +
             `@define-color selected_bg_color ${hex};\n@define-color selected_fg_color ${fg};\n`);
-        this._writeMozillaPrefs(hex, fg);
+        this._writeMozillaPrefs(hex, fg, link);
+    }
+
+    _darken(hex, amount) {
+        const n = parseInt(hex.slice(1), 16);
+        const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(v => Math.round(v * (1 - amount)));
+        return '#' + c.map(v => v.toString(16).padStart(2, '0')).join('').toUpperCase();
     }
 
     // Firefox / Thunderbird: colour prefs in user.js (see the 2026-10-21 note at the top).
-    _writeMozillaPrefs(hex, fg) {
+    _writeMozillaPrefs(hex, fg, link) {
         const pairs = [
             ['ui.accentcolor', hex], ['ui.accentcolortext', fg],
             ['ui.highlight', hex], ['ui.highlighttext', fg],
             ['ui.selecteditem', hex], ['ui.selecteditemtext', fg],
             ['ui.-moz_menuhover', hex], ['ui.-moz_menuhovertext', fg],
+            ['ui.-moz-hyperlinktext', link], ['ui.-moz-activehyperlinktext', link], ['ui.-moz-visitedhyperlinktext', link],
         ];
         const block = `${MOZ_BEGIN}\n${pairs.map(([k, v]) => `user_pref("${k}", "${v}");`).join('\n')}\n${MOZ_END}\n`;
         const home = GLib.get_home_dir();

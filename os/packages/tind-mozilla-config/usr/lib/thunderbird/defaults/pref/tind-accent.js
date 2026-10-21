@@ -9,3 +9,6 @@ pref("ui.selecteditem", "#3AA79A");
 pref("ui.selecteditemtext", "#14110F");
 pref("ui.-moz_menuhover", "#3AA79A");
 pref("ui.-moz_menuhovertext", "#14110F");
+pref("ui.-moz-hyperlinktext", "#3AA79A");
+pref("ui.-moz-activehyperlinktext", "#3AA79A");
+pref("ui.-moz-visitedhyperlinktext", "#3AA79A");
