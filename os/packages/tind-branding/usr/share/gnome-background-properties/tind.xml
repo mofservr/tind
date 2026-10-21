@@ -38,6 +38,15 @@
     <scolor>#0C1523</scolor>
   </wallpaper>
   <wallpaper deleted="false">
+    <name>Tind</name>
+    <filename>/usr/share/backgrounds/tind/tind-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/tind/tind-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#9DBBDB</pcolor>
+    <scolor>#0C1523</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
     <name>Minimal Flat</name>
     <filename>/usr/share/backgrounds/tind/minimal-flat-light.jpg</filename>
     <filename-dark>/usr/share/backgrounds/tind/minimal-flat-dark.jpg</filename-dark>
@@ -48,8 +57,8 @@
   </wallpaper>
   <wallpaper deleted="false">
     <name>Minimal Corner</name>
-    <filename>/usr/share/backgrounds/tind/minimal-corner-light.jpg</filename>
-    <filename-dark>/usr/share/backgrounds/tind/minimal-corner-dark.jpg</filename-dark>
+    <filename>/usr/share/backgrounds/tind/minimal-corner-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/tind/minimal-corner-dark.png</filename-dark>
     <options>zoom</options>
     <shade_type>solid</shade_type>
     <pcolor>#E6E2DC</pcolor>
@@ -57,8 +66,8 @@
   </wallpaper>
   <wallpaper deleted="false">
     <name>Minimal Glow</name>
-    <filename>/usr/share/backgrounds/tind/minimal-glow-light.jpg</filename>
-    <filename-dark>/usr/share/backgrounds/tind/minimal-glow-dark.jpg</filename-dark>
+    <filename>/usr/share/backgrounds/tind/minimal-glow-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/tind/minimal-glow-dark.png</filename-dark>
     <options>zoom</options>
     <shade_type>solid</shade_type>
     <pcolor>#E6E2DC</pcolor>

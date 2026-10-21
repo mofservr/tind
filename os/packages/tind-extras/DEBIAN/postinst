@@ -1,4 +1,11 @@
 #!/bin/sh
 set -e
 systemctl enable tind-extras.service >/dev/null 2>&1 || true
+# 0.1.7: the claude-desktop package ships claude-desktop.list; the claude-desktop.sources that the Developer
+# tools box wrote before installing it is now a duplicate (apt warns about it on every update).
+cd_list=/etc/apt/sources.list.d/claude-desktop.list
+if [ -f "$cd_list" ] && [ -f /etc/apt/sources.list.d/claude-desktop.sources ]; then
+    cd_key="$(sed -n 's/.*signed-by=\([^] ]*\).*/\1/p' "$cd_list" | head -1)"
+    if [ -n "$cd_key" ] && [ -s "$cd_key" ]; then rm -f /etc/apt/sources.list.d/claude-desktop.sources; fi
+fi
 exit 0

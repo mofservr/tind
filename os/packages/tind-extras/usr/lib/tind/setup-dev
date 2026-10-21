@@ -61,4 +61,11 @@ SRC
 apt-get update
 # with recommends: the keyring, and QEMU/OVMF that the Cowork tab needs
 apt-get install -y claude-desktop
+# The claude-desktop package ships its own repository entry (claude-desktop.list). Ours was only needed to
+# install it, and two entries for one repository make every apt update warn. Drop ours when theirs has a key.
+cd_list=/etc/apt/sources.list.d/claude-desktop.list
+if [ -f "$cd_list" ]; then
+    cd_key="$(sed -n 's/.*signed-by=\([^] ]*\).*/\1/p' "$cd_list" | head -1)"
+    if [ -n "$cd_key" ] && [ -s "$cd_key" ]; then rm -f /etc/apt/sources.list.d/claude-desktop.sources; fi
+fi
 echo "== Tind: developer tools setup done"

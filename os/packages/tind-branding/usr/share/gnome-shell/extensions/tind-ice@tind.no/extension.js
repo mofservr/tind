@@ -11,6 +11,12 @@
 //
 // 2026-10-19: the GTK accent file is now written for GTK 3 as well (~/.config/gtk-3.0), and the shell
 // stylesheet overrides the tile preview, text selection in shell entries, switches etc. (ACCENTS part 2).
+//
+// 2026-10-21: Firefox and Thunderbird ignore the GTK 3 colours above. On GNOME (theme "Adwaita") they use
+// the accent the settings portal reports, which is GNOME's stock colour for the slot (stock green for our
+// teal), for selections, focus rings, checkboxes and buttons. Their ui.* colour prefs override that, so the
+// accent is also written as a managed block in user.js of every Firefox and Thunderbird profile. Mozilla
+// apps read user.js at start, so a running Firefox keeps its colour until it is restarted.
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -31,6 +37,9 @@ const ACCENT_HEX = {
 };
 const ACCENT_FG_WHITE = ['blue', 'teal'];
 const GTK_IMPORT = '@import url("tind-accent.css");';
+const MOZ_PROFILE_ROOTS = ['.mozilla/firefox', '.thunderbird', '.config/mozilla/firefox', '.config/thunderbird'];
+const MOZ_BEGIN = '// BEGIN tind-accent (managed by the Tind shell theme; rewritten at login and when the accent changes)';
+const MOZ_END = '// END tind-accent';
 const SLOTS = ['blue', 'teal', 'green', 'yellow', 'orange', 'red', 'pink', 'purple', 'slate'];
 
 export default class TindIce extends Extension {
@@ -78,6 +87,56 @@ export default class TindIce extends Extension {
             `@define-color accent_color ${hex};\n` +
             `@define-color theme_selected_bg_color ${hex};\n@define-color theme_selected_fg_color ${fg};\n` +
             `@define-color selected_bg_color ${hex};\n@define-color selected_fg_color ${fg};\n`);
+        this._writeMozillaPrefs(hex, fg);
+    }
+
+    // Firefox / Thunderbird: colour prefs in user.js (see the 2026-10-21 note at the top).
+    _writeMozillaPrefs(hex, fg) {
+        const pairs = [
+            ['ui.accentcolor', hex], ['ui.accentcolortext', fg],
+            ['ui.highlight', hex], ['ui.highlighttext', fg],
+            ['ui.selecteditem', hex], ['ui.selecteditemtext', fg],
+            ['ui.-moz_menuhover', hex], ['ui.-moz_menuhovertext', fg],
+        ];
+        const block = `${MOZ_BEGIN}\n${pairs.map(([k, v]) => `user_pref("${k}", "${v}");`).join('\n')}\n${MOZ_END}\n`;
+        const home = GLib.get_home_dir();
+        for (const root of MOZ_PROFILE_ROOTS) {
+            try {
+                const rootDir = Gio.File.new_for_path(GLib.build_filenamev([home, root]));
+                if (!rootDir.query_exists(null))
+                    continue;
+                const en = rootDir.enumerate_children('standard::name,standard::type',
+                    Gio.FileQueryInfoFlags.NONE, null);
+                let info;
+                while ((info = en.next_file(null)) !== null) {
+                    if (info.get_file_type() !== Gio.FileType.DIRECTORY)
+                        continue;
+                    const profile = GLib.build_filenamev([home, root, info.get_name()]);
+                    if (GLib.file_test(GLib.build_filenamev([profile, 'prefs.js']), GLib.FileTest.EXISTS))
+                        this._writePrefsBlock(profile, block);
+                }
+                en.close(null);
+            } catch (e) {
+                console.warn(`tind-ice: could not update Mozilla profiles under ${root}: ${e.message}`);
+            }
+        }
+    }
+
+    _writePrefsBlock(profile, block) {
+        try {
+            const file = Gio.File.new_for_path(GLib.build_filenamev([profile, 'user.js']));
+            let current = '';
+            try {
+                current = new TextDecoder().decode(file.load_contents(null)[1]);
+            } catch (e) { /* no user.js yet */ }
+            const rest = current.replace(/(^|\n)\/\/ BEGIN tind-accent[\s\S]*?\/\/ END tind-accent\n?/, '$1');
+            const next = `${rest}${rest === '' || rest.endsWith('\n') ? '' : '\n'}${block}`;
+            if (next !== current)
+                file.replace_contents(new TextEncoder().encode(next), null, false,
+                    Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+        } catch (e) {
+            console.warn(`tind-ice: could not write user.js in ${profile}: ${e.message}`);
+        }
     }
 
     _writeGtkDir(name, body) {
