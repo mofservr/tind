@@ -12,43 +12,43 @@ lrwxrwxrwx  1 root root      23 Sep 23 15:40 OVMF_CODE_4M.snakeoil.fd -> OVMF_CO
 xorriso : UPDATE :       1 files restored (3328.0k) in 1 seconds = 2.5xD
 Extracted from ISO image: file '/boot/grub/efi.img'='/home/runner/work/tind/tind/efi/efi.img'
 total 3328
--r--r--r-- 1 runner runner 3407872 Oct 22 07:59 efi.img
+-r--r--r-- 1 runner runner 3407872 Oct 22 12:24 efi.img
 == files in efi.img
  Volume in drive : has no label
- Volume Serial Number is 6AD9-C253
+ Volume Serial Number is 6ADA-008E
 Directory for ::/
 
-EFI          <DIR>     2026-10-22   7:59 
-boot         <DIR>     2026-10-22   7:59 
+EFI          <DIR>     2026-10-22  12:24 
+boot         <DIR>     2026-10-22  12:24 
         2 files                   0 bytes
 
 Directory for ::/EFI
 
-.            <DIR>     2026-10-22   7:59 
-..           <DIR>     2026-10-22   7:59 
-boot         <DIR>     2026-10-22   7:59 
+.            <DIR>     2026-10-22  12:24 
+..           <DIR>     2026-10-22  12:24 
+boot         <DIR>     2026-10-22  12:24 
         3 files                   0 bytes
 
 Directory for ::/EFI/boot
 
-.            <DIR>     2026-10-22   7:59 
-..           <DIR>     2026-10-22   7:59 
+.            <DIR>     2026-10-22  12:24 
+..           <DIR>     2026-10-22  12:24 
 bootx64  efi   1036152 2026-06-22  21:30 
 grubx64  efi   2328000 2026-04-30  19:02 
         4 files           3 364 152 bytes
 
 Directory for ::/boot
 
-.            <DIR>     2026-10-22   7:59 
-..           <DIR>     2026-10-22   7:59 
-grub         <DIR>     2026-10-22   7:59 
+.            <DIR>     2026-10-22  12:24 
+..           <DIR>     2026-10-22  12:24 
+grub         <DIR>     2026-10-22  12:24 
         3 files                   0 bytes
 
 Directory for ::/boot/grub
 
-.            <DIR>     2026-10-22   7:59 
-..           <DIR>     2026-10-22   7:59 
-grub     cfg       104 2026-10-22   7:59 
+.            <DIR>     2026-10-22  12:24 
+..           <DIR>     2026-10-22  12:24 
+grub     cfg       104 2026-10-22  12:24 
         3 files                 104 bytes
 
 Total files listed:
