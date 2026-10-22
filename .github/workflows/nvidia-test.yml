@@ -17,6 +17,9 @@ defaults:
   run:
     shell: bash
 
+permissions:
+  contents: write
+
 jobs:
   rule:
     runs-on: ubuntu-24.04
@@ -75,3 +78,17 @@ jobs:
         with:
           name: nvidia-test-logs
           path: /tmp/*.log
+      - name: Push logs to ci-logs branch
+        if: always()
+        env:
+          GH_SHA: ${{ github.sha }}
+        run: |
+          set -eu
+          url="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git clone --depth 1 --branch ci-logs "$url" /tmp/out 2>/dev/null || { git init -q /tmp/out; git -C /tmp/out checkout -q -b ci-logs; git -C /tmp/out remote add origin "$url"; }
+          d=/tmp/out/nvidia_main; rm -rf "$d"; mkdir -p "$d"
+          for f in /tmp/*.log /tmp/*.txt; do [ -e "$f" ] || continue; tail -n 300 "$f" > "$d/$(basename "$f").tail"; done
+          printf 'sha: %s\n' "$GH_SHA" > "$d/STATUS"
+          cd /tmp/out && git add -A
+          git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "nvidia-test logs $GH_SHA" || true
+          for n in 1 2 3; do git pull -q --rebase origin ci-logs && git push -q origin ci-logs && break; sleep 3; done
