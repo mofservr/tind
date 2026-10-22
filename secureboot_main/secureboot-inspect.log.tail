@@ -54,15 +54,6 @@ grub     cfg       104 2026-10-16   1:07
 Total files listed:
        15 files           3 364 256 bytes
                              10 240 bytes free
-efi/EFI/boot/grubx64.efi
--- efi/EFI/boot/grubx64.efi
-signature 1
-image signature issuers:
- - /CN=Debian Secure Boot CA
-image signature certificates:
- - subject: /CN=Debian Secure Boot Signer 2022 - grub2
-   issuer:  /CN=Debian Secure Boot CA
-efi/EFI/boot/grubx64.efi: PE32+ executable (EFI application) x86-64 (stripped to external PDB), for MS Windows, 5 sections
 efi/EFI/boot/bootx64.efi
 -- efi/EFI/boot/bootx64.efi
 warning: data remaining[908192 vs 1036152]: gaps between PE/COFF sections?
@@ -78,3 +69,12 @@ signature 2
 image signature issuers:
  - /C=US/O=Microsoft Corporation/CN=Microsoft UEFI CA 2023
 efi/EFI/boot/bootx64.efi: PE32+ executable (EFI application) x86-64 (stripped to external PDB), for MS Windows, 10 sections
+efi/EFI/boot/grubx64.efi
+-- efi/EFI/boot/grubx64.efi
+signature 1
+image signature issuers:
+ - /CN=Debian Secure Boot CA
+image signature certificates:
+ - subject: /CN=Debian Secure Boot Signer 2022 - grub2
+   issuer:  /CN=Debian Secure Boot CA
+efi/EFI/boot/grubx64.efi: PE32+ executable (EFI application) x86-64 (stripped to external PDB), for MS Windows, 5 sections
