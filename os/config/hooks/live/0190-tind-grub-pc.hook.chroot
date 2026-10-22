@@ -1,0 +1,19 @@
+#!/bin/sh
+# BIOS installs need the grub-pc package: it runs grub-install again whenever GRUB is upgraded, which keeps the
+# boot code on the disk in step with /boot/grub. It conflicts with grub-efi-amd64, so it cannot be installed in
+# this image. Keep it, and anything it needs that is missing, as .deb files. The installer's bootloader helper
+# (tind-installer, bootloader-config) installs them on BIOS machines only, offline, and removes them afterwards.
+set -e
+apt-get update -qq || true
+need="$(apt-get -s install grub-pc 2>/dev/null | sed -n 's/^Inst \([^ ]*\) .*/\1/p' | tr '\n' ' ')"
+echo "grub-pc offline set: ${need:-nothing}"
+[ -n "$need" ] || { echo "WARNING: could not work out what grub-pc needs; BIOS installs will not get grub-pc"; exit 0; }
+case "$(echo "$need" | wc -w)" in
+    1|2|3|4) ;;
+    *) echo "WARNING: grub-pc would pull in too much ($need); not keeping it"; exit 0 ;;
+esac
+mkdir -p /usr/share/tind/offline
+cd /usr/share/tind/offline
+# shellcheck disable=SC2086
+apt-get download $need
+ls -l /usr/share/tind/offline

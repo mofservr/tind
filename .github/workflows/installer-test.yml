@@ -1,6 +1,9 @@
 name: installer-test
 # Runs after every successful "build" on main that built an ISO (the ISO of that build run), when a file under
 # os/ci/installer-test/ changes (the ISO of the build run named in ISO_RUN_ID), and by hand.
+# It installs under UEFI with Secure Boot (logs in installer_main on ci-logs). The BIOS install (SeaBIOS, logs in
+# installer_bios_main) runs only on demand: put [bios] in the commit message of a build, start the workflow by hand
+# and choose bios or both, or set os/ci/installer-test/FIRMWARE to bios (or "uefi bios") for a push that changes it.
 on:
   push:
     branches-ignore: [ci-logs]
@@ -10,6 +13,12 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch:
+    inputs:
+      firmware:
+        description: 'Which install to run'
+        type: choice
+        options: [uefi, bios, both]
+        default: uefi
 
 defaults:
   run:
@@ -20,8 +29,41 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  install:
+  plan:
     if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[skip iso]')) }}
+    runs-on: ubuntu-24.04
+    outputs:
+      fw: ${{ steps.p.outputs.fw }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - name: Which firmware modes to install
+        id: p
+        env:
+          EVENT: ${{ github.event_name }}
+          MSG: ${{ github.event.workflow_run.head_commit.message }}
+          CHOICE: ${{ inputs.firmware }}
+        run: |
+          case "$EVENT" in
+            workflow_dispatch)
+              case "$CHOICE" in bios) fw='["bios"]' ;; both) fw='["uefi","bios"]' ;; *) fw='["uefi"]' ;; esac ;;
+            workflow_run)
+              case "$MSG" in *"[bios]"*) fw='["uefi","bios"]' ;; *) fw='["uefi"]' ;; esac ;;
+            *)
+              fw="$(jq -cn --arg s "$(cat os/ci/installer-test/FIRMWARE 2>/dev/null)" '$s | split(" ") | map(select(. == "uefi" or . == "bios"))')"
+              [ "$fw" != "[]" ] || fw='["uefi"]' ;;
+          esac
+          echo "modes: $fw"
+          echo "fw=$fw" >> "$GITHUB_OUTPUT"
+
+  install:
+    needs: plan
+    name: install (${{ matrix.fw }})
+    strategy:
+      fail-fast: false
+      matrix:
+        fw: ${{ fromJSON(needs.plan.outputs.fw) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
@@ -57,7 +99,7 @@ jobs:
             ISO=$(ls $PWD/iso/*.iso | head -1)
             qemu-img create -f qcow2 $PWD/disk.qcow2 30G
             cp /usr/share/OVMF/OVMF_VARS_4M.fd $PWD/vars.fd
-            FW="$(tr -d '[:space:]' < os/ci/installer-test/FIRMWARE 2>/dev/null || echo uefi)"
+            FW="${{ matrix.fw }}"
             EX="$(tr -d '[:space:]' < os/ci/installer-test/EXTRAS 2>/dev/null || echo yes)"
             echo "firmware: $FW  extras: $EX"
             FWARGS="-drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE_4M.fd -drive if=pflash,format=raw,file=$PWD/vars.fd"
@@ -98,7 +140,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: installer-logs
+          name: installer-logs-${{ matrix.fw }}
           path: logs/
       - name: Push logs to ci-logs branch
         if: always()
@@ -109,11 +151,12 @@ jobs:
           set -eu
           git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out 2>/dev/null \
             || { git init -q out; git -C out checkout -q -b ci-logs; git -C out remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
-          d="out/installer_${GH_REF//\//_}"
+          sfx=""; [ "${{ matrix.fw }}" = bios ] && sfx="_bios"
+          d="out/installer${sfx}_${GH_REF//\//_}"
           rm -rf "$d"; mkdir -p "$d"
           for f in logs/*.log; do [ -e "$f" ] || continue; b=$(basename "$f"); tail -n 400 "$f" > "$d/$b.tail"; gzip -9 -c "$f" > "$d/$b.gz"; done
           cp logs/*.png "$d/" 2>/dev/null || true
-          printf 'ref: %s\nsha: %s\n' "$GH_REF" "$GH_SHA" > "$d/STATUS"
+          printf 'ref: %s\nsha: %s\nfirmware: %s\n' "$GH_REF" "$GH_SHA" "${{ matrix.fw }}" > "$d/STATUS"
           cd out && git add -A
           git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "installer logs $GH_REF $GH_SHA" || true
           for n in 1 2 3; do git pull -q --rebase origin ci-logs && git push -q origin ci-logs && break; sleep 3; done

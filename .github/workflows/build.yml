@@ -17,7 +17,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev apt-utils gnupg shellcheck libxml2-utils jq xz-utils sudo curl
+          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev apt-utils gnupg shellcheck libxml2-utils jq xz-utils sudo curl pciutils pci.ids
       - uses: actions/checkout@v4
       - name: Lint, build packages, check package names
         run: |
@@ -36,6 +36,8 @@ jobs:
             os/packages/build-debs.sh || rc=1
             echo "== apt repository publisher: promotion rules, signing, real apt against the result"
             os/scripts/test-publish-apt.sh || rc=1
+            echo "== NVIDIA GPU rule (0x1e00 and up), table and pci.ids sweep"
+            os/scripts/test-nvidia-rule.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"

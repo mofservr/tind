@@ -9,13 +9,20 @@
 #   nvidia-upgrade              normal run (as root, from tind-nvidia-upgrade.service or by hand)
 #   nvidia-upgrade --dry-run    add the repository, run the checks, print what would happen, undo it all
 #                               (also skips the GPU check; used by CI)
+#
+# Test hooks, for CI only (all unset in normal use):
+#   TIND_NVIDIA_STATE=prefix    where the state files go (default /var/lib/tind/nvidia-upgrade)
+#   TIND_NVIDIA_CHECK_ONLY=1    stop after the GPU check and say whether it would carry on
+#   TIND_NVIDIA_FORCE=1         skip the GPU check (a CI runner has no GPU)
+#   TIND_NVIDIA_TEST_FAIL=1     treat a successful install as failed, to test the way back to Debian's driver
 set -u
 
 BASE="https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64"
 SRC=/etc/apt/sources.list.d/tind-nvidia.sources
 PREF=/etc/apt/preferences.d/tind-nvidia
 KEYRING=/usr/share/keyrings/tind-nvidia.gpg
-STATE=/var/lib/tind/nvidia-upgrade
+STATE="${TIND_NVIDIA_STATE:-/var/lib/tind/nvidia-upgrade}"
+STATE_DIR="$(dirname "$STATE")"
 MIN_MAJOR=560
 DRY=0
 [ "${1:-}" = "--dry-run" ] && DRY=1
@@ -23,11 +30,11 @@ DRY=0
 log() { echo "tind-nvidia: $*"; logger -t tind-nvidia "$*" 2>/dev/null || true; }
 undo() { rm -f "$SRC" "$PREF" "$KEYRING"; apt-get update >/dev/null 2>&1 || true; }
 # a definitive answer: do not try again on the next boot
-finish() { mkdir -p /var/lib/tind; echo "$1" > "$STATE.done"; rm -f "$STATE.tries"; }
+finish() { mkdir -p "$STATE_DIR"; echo "$1" > "$STATE.done"; rm -f "$STATE.tries"; }
 giveup() { log "$1 -- keeping Debian's driver"; undo; [ "$DRY" = 1 ] || finish "skipped: $1"; exit 0; }
 
 [ "$(id -u)" -eq 0 ] || { echo "run as root" >&2; exit 1; }
-mkdir -p /var/lib/tind
+mkdir -p "$STATE_DIR"
 if [ "$DRY" = 0 ]; then
     [ -e "$STATE.done" ] && exit 0
     [ ! -d /run/live ] || exit 0
@@ -35,13 +42,14 @@ fi
 
 # 1. Which GPUs? Every NVIDIA GPU must be Turing or newer. PCI device IDs from 0x1e00 up are Turing,
 # Ampere, Ada and Blackwell (Pascal is 0x1b00-0x1d3f, Volta 0x1d81-0x1db6).
-if [ "$DRY" = 0 ]; then
+if [ "$DRY" = 0 ] && [ "${TIND_NVIDIA_FORCE:-0}" != 1 ]; then
     command -v lspci >/dev/null 2>&1 || exit 0
     ids="$(lspci -nn -d 10de: 2>/dev/null | grep -iE 'vga|3d|display' | sed -n 's/.*\[10de:\([0-9a-fA-F]\{4\}\)\].*/\1/p')"
     [ -n "$ids" ] || { finish "no NVIDIA GPU"; exit 0; }
     for id in $ids; do
         [ $((16#$id)) -ge $((16#1e00)) ] || { log "GPU 10de:$id is older than Turing"; finish "older GPU 10de:$id"; exit 0; }
     done
+    if [ "${TIND_NVIDIA_CHECK_ONLY:-0}" = 1 ]; then echo "check-only: Turing or newer, would carry on"; exit 0; fi
     # never change a setup that does not work yet: with Secure Boot on, the NVIDIA module only loads
     # after the signing key has been enrolled (tind-gpu secureboot)
     if mokutil --sb-state 2>/dev/null | grep -qi 'SecureBoot enabled' && ! grep -q '^nvidia ' /proc/modules; then
@@ -128,14 +136,31 @@ if [ "$DRY" = 1 ]; then
 fi
 
 # 5. Install. DKMS builds the modules for the installed kernels; the new driver loads at the next boot.
-if DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install $set_pkgs; then
+# The driver packages installed now (Debian's), so a failed install can put exactly these back.
+before="$(dpkg-query -W -f='${db:Status-Abbrev}\t${binary:Package}\n' 2>/dev/null | awk -F'\t' '$1 ~ /^ii/ {print $2}' \
+    | grep -E '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
+installed=0
+DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install $set_pkgs && installed=1
+if [ "${TIND_NVIDIA_TEST_FAIL:-0}" = 1 ]; then
+    echo "== CI: dkms status after the install"; dkms status 2>&1 || true
+    installed=0
+fi
+if [ "$installed" = 1 ]; then
     finish "installed $cand"
     log "NVIDIA $cand installed; restart to use it"
-    touch /var/lib/tind/nvidia-upgraded
+    touch "$STATE_DIR/nvidia-upgraded"
 else
     log "install failed; going back to Debian's driver"
     undo
-    DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install --reinstall nvidia-driver nvidia-kernel-dkms >/dev/null 2>&1 || true
+    if [ -n "$before" ]; then
+        # Without NVIDIA's repository the candidates are Debian's (priority 500 beats the installed 100), which are
+        # older than what was just installed, so going back is a downgrade to Debian's versions.
+        # shellcheck disable=SC2086
+        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y --allow-downgrades install $before >/dev/null 2>&1 \
+            || log "could not put Debian's driver packages back"
+    else
+        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install --reinstall nvidia-driver nvidia-kernel-dkms >/dev/null 2>&1 || true
+    fi
     finish "install failed"
 fi
 exit 0

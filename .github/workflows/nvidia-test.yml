@@ -1,0 +1,77 @@
+name: nvidia-test
+# Tests nvidia-upgrade on a runner without a GPU, in a trixie container: Debian's driver (550) is installed as
+# the baseline, then the script runs twice against NVIDIA's real repository.
+#   1. forced failure (TIND_NVIDIA_TEST_FAIL): the way back must restore Debian's driver packages;
+#   2. normal run (TIND_NVIDIA_FORCE): the new driver must install and DKMS must build its module.
+# Runs by hand, or when the script, this workflow or the rule test changes. Not part of the ISO build.
+on:
+  push:
+    branches-ignore: [ci-logs]
+    paths:
+      - 'os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade'
+      - 'os/scripts/test-nvidia-rule.sh'
+      - '.github/workflows/nvidia-test.yml'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  rule:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: GPU rule against every NVIDIA chip in pci.ids (strict)
+        run: |
+          sudo apt-get update && sudo apt-get install -y --no-install-recommends pciutils pci.ids
+          sudo os/scripts/test-nvidia-rule.sh --strict
+
+  upgrade:
+    runs-on: ubuntu-24.04
+    container: debian:trixie
+    timeout-minutes: 60
+    steps:
+      - name: Install tools and Debian's driver as the baseline
+        run: |
+          set -eu
+          for f in /etc/apt/sources.list.d/*.sources; do
+            sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
+          done
+          apt-get update
+          export DEBIAN_FRONTEND=noninteractive
+          apt-get install -y --no-install-recommends git ca-certificates curl gnupg dkms build-essential kmod pciutils \
+            linux-headers-amd64 linux-image-amd64 mokutil
+          apt-get install -y nvidia-driver nvidia-kernel-dkms nvidia-settings
+          dpkg-query -W -f='${Package} ${Version}\n' 'nvidia-driver' 'nvidia-kernel-dkms' | tee /tmp/baseline.txt
+          dkms status || true
+      - uses: actions/checkout@v4
+      - name: Forced failure, the way back to Debian's driver
+        run: |
+          set -u
+          export TIND_NVIDIA_STATE=/tmp/tnv-fail/state TIND_NVIDIA_FORCE=1 TIND_NVIDIA_TEST_FAIL=1
+          mkdir -p /tmp/tnv-fail
+          bash os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade 2>&1 | tee /tmp/fail.log
+          dpkg-query -W -f='${Package} ${Version}\n' 'nvidia-driver' 'nvidia-kernel-dkms' | tee /tmp/after-fail.txt
+          if ! diff -u /tmp/baseline.txt /tmp/after-fail.txt; then echo "TEST FAILED: Debian's driver was not restored"; exit 1; fi
+          [ ! -e /etc/apt/sources.list.d/tind-nvidia.sources ] || { echo "TEST FAILED: NVIDIA's repository is still configured"; exit 1; }
+          grep -q 'install failed' /tmp/tnv-fail/state.done || { echo "TEST FAILED: state is '$(cat /tmp/tnv-fail/state.done)'"; exit 1; }
+          echo "way back: OK"
+      - name: Normal run, new driver and DKMS build
+        run: |
+          set -u
+          export TIND_NVIDIA_STATE=/tmp/tnv-ok/state TIND_NVIDIA_FORCE=1
+          mkdir -p /tmp/tnv-ok
+          bash os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade 2>&1 | tee /tmp/ok.log
+          cat /tmp/tnv-ok/state.done
+          grep -q '^installed ' /tmp/tnv-ok/state.done || { echo "TEST FAILED: state is '$(cat /tmp/tnv-ok/state.done)'"; exit 1; }
+          v="$(dpkg-query -W -f='${Version}' nvidia-driver)"; echo "nvidia-driver now $v"
+          [ "${v#*:}" ] && [ "$(echo "${v#*:}" | cut -d. -f1)" -ge 560 ] || { echo "TEST FAILED: version $v"; exit 1; }
+          dkms status | tee /tmp/dkms.txt
+          grep -qE 'installed' /tmp/dkms.txt || { echo "TEST FAILED: DKMS built nothing"; exit 1; }
+          echo "upgrade: OK"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nvidia-test-logs
+          path: /tmp/*.log

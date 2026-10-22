@@ -9,6 +9,33 @@ if [ "$(mount | grep "$CHROOT " | cut -c -16)" = "/dev/mapper/luks" ]; then
     chroot "$CHROOT" apt-get -y install cryptsetup-initramfs cryptsetup keyutils
 fi
 
+# BIOS only: swap in the grub-pc package, so GRUB's boot code is installed again whenever GRUB is upgraded. It
+# conflicts with grub-efi-amd64, so the image carries it as .deb files (hook 0190-tind-grub-pc) and it is
+# installed here, offline. It never fails the installation: Calamares has already run grub-install, so without
+# grub-pc the computer boots, it just does not get the re-install on upgrades.
+OFFLINE=/usr/share/tind/offline
+bios_grub_pc() {
+    local dev disk sim bad n
+    ls "$CHROOT$OFFLINE"/grub-pc_*.deb >/dev/null 2>&1 || { echo " * bios: no grub-pc package on the image, skipping"; return 0; }
+    dev="$(findmnt -n -o SOURCE "$CHROOT" 2>/dev/null)"
+    disk="$(lsblk -no PKNAME "$dev" 2>/dev/null | head -1)"
+    [ -n "$disk" ] || { echo " * bios: cannot tell which disk holds '$dev', skipping grub-pc"; return 0; }
+    sim="$(chroot "$CHROOT" sh -c "apt-get -s install $OFFLINE/*.deb" 2>&1)" || { echo " * bios: grub-pc cannot be installed ($(echo "$sim" | grep '^E:' | head -2 | tr '\n' ' ')), skipping"; return 0; }
+    # only the EFI flavour of GRUB may be removed by the swap
+    bad=""
+    for n in $(echo "$sim" | sed -n 's/^Remv \([^ ]*\) .*/\1/p'); do
+        case "$n" in grub-efi|grub-efi-amd64|grub-efi-amd64-signed) ;; *) bad="$bad $n" ;; esac
+    done
+    [ -z "$bad" ] || { echo " * bios: grub-pc would also remove$bad, skipping"; return 0; }
+    echo "grub-pc grub-pc/install_devices multiselect /dev/$disk" | chroot "$CHROOT" debconf-set-selections
+    echo "grub-pc grub-pc/install_devices_empty boolean false" | chroot "$CHROOT" debconf-set-selections
+    if chroot "$CHROOT" sh -c "DEBIAN_FRONTEND=noninteractive apt-get install -y $OFFLINE/*.deb"; then
+        echo " * bios: grub-pc installed, boot code written to /dev/$disk"
+    else
+        echo " * bios: installing grub-pc failed; the computer still boots, GRUB just will not be re-installed on upgrades"
+    fi
+}
+
 echo "Running Tind bootloader-config..."
 if [ -d /sys/firmware/efi/efivars ]; then
     echo " * uefi: grub-efi is already installed"
@@ -16,5 +43,7 @@ if [ -d /sys/firmware/efi/efivars ]; then
 else
     echo " * bios: using grub-pc-bin"
     chroot "$CHROOT" test -d /usr/lib/grub/i386-pc || { echo "grub-pc-bin missing"; exit 1; }
+    bios_grub_pc
 fi
+rm -rf "${CHROOT:?}$OFFLINE"
 chroot "$CHROOT" /usr/sbin/update-grub
