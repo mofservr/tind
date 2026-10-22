@@ -6,6 +6,25 @@ boot, firmware and login-screen details, so no screenshots are needed except whe
 
 Machine: ______________________  CPU/GPU: ______________________  BIOS or UEFI: ________
 
+## Before you start
+
+1. Write the ISO to a USB stick as described in `WRITE-TO-USB.md` and boot from it (UEFI or BIOS, whichever your
+   machine uses). Choose "Install Tind" in the dock at the left of the live desktop.
+2. Tick the tests below as you go. You do not need to understand them: if something looks wrong, write down what
+   you saw and carry on.
+3. At the end, open a terminal and run `tind-report`. It writes one text file in your home folder and prints
+   its name. It hides your serial numbers and network addresses; read it first if you want to be sure.
+
+## Which tests are mine?
+
+| My machine | Do these |
+|---|---|
+| Any | "Every machine" |
+| NVIDIA graphics | "NVIDIA" test that matches the card, plus "Secure Boot on" if it is on |
+| Laptop with Intel or AMD graphics **and** NVIDIA | the NVIDIA tests and "Hybrid graphics" |
+| Windows (or another OS) on the same disk | "Second OS installed" |
+| Older PC without UEFI (BIOS only) | "BIOS-only PC" |
+
 ## Every machine
 
 - [ ] **Install**: the installer finishes and the machine reboots into Tind. Note the install type (erase / alongside / replace).
@@ -20,6 +39,10 @@ Machine: ______________________  CPU/GPU: ______________________  BIOS or UEFI: 
 - [ ] **NVIDIA, older than RTX 20** (GTX 9xx / 10xx): `tind-gpu status` shows the Debian driver (550) or nouveau, and the screen works.
 - [ ] **NVIDIA, RTX 20 or newer**: after the first boot with internet and one restart, `tind-gpu status` shows the NVIDIA repository driver (615 or newer), and a game or `vulkaninfo --summary` runs on it.
 - [ ] **Secure Boot on**: `tind-gpu secureboot`, restart, enrol the key in the blue screen, then `tind-gpu status` shows the NVIDIA module loaded.
+- [ ] **BIOS-only PC**: after the install, `dpkg -l grub-pc grub-efi-amd64 | tail -2` shows `ii` for grub-pc
+  and `rc` or nothing for grub-efi-amd64; the machine boots without the USB stick.
+- [ ] **Hybrid graphics** (Intel or AMD plus NVIDIA): the desktop runs on the integrated GPU
+  (`tind-gpu status` lists both); a game started from Steam or Lutris uses the NVIDIA card.
 - [ ] **Second OS installed** (Windows or another Linux): the GRUB menu lists it and it boots.
 - [ ] **fwupd**: `fwupdmgr get-updates` runs without an error (it may say there is nothing to update).
 - [ ] **Lutris and Steam** start from the Games box.

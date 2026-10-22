@@ -134,6 +134,9 @@ jobs:
             python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 $FIRST_JSON
             echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
             sleep 5; qemu-img info -U disk.qcow2 | grep 'disk size' || true
+            echo "== daily-machine checks of the installed system (roadmap d1; warnings only until the baseline is known)"
+            tr -d '\r' < logs/serial-installed.log | grep -a '^DAILY ' | tee logs/daily.log || echo "no DAILY lines found"
+            grep -a '^DAILY .* FAIL' logs/daily.log | sed 's/^/::warning::/' || true
           } 2>&1 | tee logs/installer.log
           for d in shots1 shots2; do for f in $d/*.png; do if [ -e "$f" ]; then cp "$f" "logs/$d-$(basename "$f")"; fi; done; done
           test ! -e logs/INSTALL_FAILED

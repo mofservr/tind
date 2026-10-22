@@ -62,6 +62,23 @@ expect "$(suite_ver s6 stable tind-branding)" "$newver" "day 34: newer version p
 echo "tind-branding $newver" > "$t/WITHDRAWN"
 run s7 20 "$t/debs2" s3
 expect "$(suite_ver s7 stable tind-branding)" "$oldver" "withdrawn version is never promoted"
+
+# withdrawal rehearsal: the withdrawn version stays blocked from stable however old it gets, a fixed higher version
+# replaces it and is promoted after its own 14 days. (next carries the newest version, as documented in UPDATES.md.)
+run s9 20 "$t/debs2" s3
+expect "$(suite_ver s9 next tind-branding)"   "$newver" "withdrawal: next still carries the bad version until a fix comes"
+run s9b 40 "$t/debs2" s9
+expect "$(suite_ver s9b stable tind-branding)" "$oldver" "withdrawal: still blocked on stable after 20 days on next"
+newver2="${oldver}.2"; mkdir -p "$t/debs3" "$t/wd"; cp "$t"/debs1/tind-*.deb "$t/debs3/"
+br3="$(ls "$t"/debs3/tind-branding_*_all.deb)"; dpkg-deb -R "$br3" "$t/wd"
+sed -i "s/^Version: .*/Version: $newver2/" "$t/wd/DEBIAN/control"; rm "$br3"
+dpkg-deb --root-owner-group -Zxz --build "$t/wd" "$t/debs3/tind-branding_${newver2}_all.deb" >/dev/null
+run s9c 41 "$t/debs3" s9b
+expect "$(suite_ver s9c next tind-branding)"   "$newver2" "withdrawal: the fixed version is on next"
+expect "$(suite_ver s9c stable tind-branding)" "$oldver"  "withdrawal: the fixed version has to age first"
+run s9d 55 "$t/debs3" s9c
+expect "$(suite_ver s9d stable tind-branding)" "$newver2" "withdrawal: the fixed version is promoted after 14 days"
+[ ! -f "$t/s9d/pool/main/tind-branding/tind-branding_${newver}_all.deb" ] || fail "the withdrawn file is still in the pool"
 : > "$t/WITHDRAWN"
 
 run s8 20 "$t/debs2" s3 TIND_APT_FAST_TRACK=1

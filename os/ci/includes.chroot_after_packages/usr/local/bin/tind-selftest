@@ -204,4 +204,23 @@ sec "largest installed packages"; dpkg-query -Wf '${Installed-Size}\t${Package}\
 echo "installed packages: $(dpkg-query -f '.\n' -W | wc -l)"
 sec "journal errors (this boot)"; journalctl -p err -b --no-pager 2>&1 | tail -40
 sec gnome-shell journal; journalctl -b --no-pager _COMM=gnome-shell 2>&1 | grep -iE 'error|tind|stylesheet|extension' | tail -25
+# daily-machine checks (roadmap d1): one DAILY line per check, "ok" or "FAIL <why>". The installer test prints them
+# as warnings for now; they become failures once a few runs show the baseline.
+sec "daily machine checks"
+daily() { echo "DAILY $1 $2"; }
+failed="$(systemctl --failed --no-legend --plain 2>&1 | awk '{print $1}' | tr '\n' ' ')"
+[ -z "${failed// /}" ] && daily failed-units ok || daily failed-units "FAIL $failed"
+ua="$(cat /etc/apt/apt.conf.d/20tind-auto-upgrades 2>/dev/null)"
+if echo "$ua" | grep -q 'Unattended-Upgrade "1"' && systemctl is-enabled apt-daily-upgrade.timer >/dev/null 2>&1 \
+   && grep -q 'apt.servr.no\|Tind' /etc/apt/apt.conf.d/52tind-unattended-upgrades 2>/dev/null; then
+    daily silent-updates-configured ok
+else
+    daily silent-updates-configured "FAIL (auto-upgrades file, apt-daily-upgrade.timer or the Tind origin is missing)"
+fi
+aptout="$(apt-get update 2>&1)"; aptmsg="$(echo "$aptout" | grep -E '^(W|E|N):' | head -3 | tr '\n' '|')"
+[ -z "$aptmsg" ] && daily apt-update-quiet ok || daily apt-update-quiet "FAIL $aptmsg"
+bad="$(grep -nE 'command not found|Traceback|: line [0-9]+:|Permission denied' /tmp/tind-report-test.txt 2>/dev/null | head -3 | tr '\n' '|')"
+[ -s /tmp/tind-report-test.txt ] && [ -z "$bad" ] && daily tind-report-clean ok || daily tind-report-clean "FAIL ${bad:-empty report}"
+nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
+echo "DAILY info autostart-update-entries: ${nag:-none}"
 echo "=====TIND-SELFTEST-END====="
