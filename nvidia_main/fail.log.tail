@@ -1,34 +1,3 @@
-Get:23 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-cfg1 615.71.10-1 [272 kB]
-Get:24 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libxnvctrl0 615.71.10-1 [11.1 kB]
-Get:25 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-settings 615.71.10-1 [765 kB]
-Get:26 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-dkms 615.71.10-1 [131 kB]
-Get:27 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-support 615.71.10-1 [171 kB]
-Get:28 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  firmware-nvidia-gsp 615.71.10-1 [75.7 MB]
-Get:29 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-open-dkms 615.71.10-1 [16.5 MB]
-Get:30 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-modprobe 615.71.10-1 [21.5 kB]
-Get:31 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-powerd 615.71.10-1 [1202 kB]
-Get:32 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-allocator1 615.71.10-1 [184 kB]
-Get:33 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-api1 615.71.10-1 [411 kB]
-Get:34 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-gbm1 1.1.4-2 [13.0 kB]
-Get:35 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-wayland21 1.0.2-1 [36.7 kB]
-Get:36 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-xcb1 1:1.0.6-1 [34.0 kB]
-Get:37 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-xlib1 1:1.0.6-1 [34.7 kB]
-Get:38 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-ngx1 615.71.10-1 [5954 kB]
-Get:39 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-vksc-core 615.71.10-1 [4264 kB]
-Get:40 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-encode1 615.71.10-1 [229 kB]
-Fetched 204 MB in 8s (26.3 MB/s)
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46759 files and directories currently installed.)
-Removing nvidia-suspend-common (550.163.01-2) ...
-dpkg: nvidia-driver-bin: dependency problems, but removing anyway as you requested:
- nvidia-driver depends on nvidia-driver-bin (= 550.163.01-2).
-
-Removing nvidia-driver-bin (550.163.01-2) ...
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46729 files and directories currently installed.)
-Preparing to unpack .../nvidia-driver_615.71.10-1_amd64.deb ...
-Unpacking nvidia-driver (615.71.10-1) over (550.163.01-2) ...
-Preparing to unpack .../libnvcuvid1_615.71.10-1_amd64.deb ...
-Unpacking libnvcuvid1:amd64 (615.71.10-1) over (550.163.01-2) ...
-Preparing to unpack .../nvidia-driver-libs_615.71.10-1_amd64.deb ...
 Unpacking nvidia-driver-libs:amd64 (615.71.10-1) over (550.163.01-2) ...
 dpkg: nvidia-egl-common: dependency problems, but removing anyway as you requested:
  nvidia-egl-icd:amd64 depends on nvidia-egl-common.
@@ -235,7 +204,7 @@ Sign command: /lib/modules/6.12.113+deb13-amd64/build/scripts/sign-file
 Signing key: /var/lib/dkms/mok.key
 Public certificate (MOK): /var/lib/dkms/mok.pub
 
-Building module(s)..................................................................... done.
+Building module(s)............................................................... done.
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia.ko
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-modeset.ko
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-drm.ko
@@ -270,7 +239,6 @@ Processing triggers for glx-alternative-nvidia (1.2.2) ...
 Processing triggers for initramfs-tools (0.148.4) ...
 update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-amd64
 W: No zstd in /usr/bin:/sbin:/bin, using gzip
-libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
@@ -282,6 +250,7 @@ libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprob
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 Processing triggers for update-glx (1.2.2) ...
 Processing triggers for glx-alternative-nvidia (1.2.2) ...
 update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia because link group glx is broken
@@ -297,4 +266,35 @@ W: No zstd in /usr/bin:/sbin:/bin, using gzip
 == CI: dkms status after the install
 nvidia/615.71.10, 6.12.113+deb13-amd64, x86_64: installed
 tind-nvidia: install failed; going back to Debian's driver
-tind-nvidia: could not put Debian's driver packages back
+tind-nvidia: going back: installing45 driver packages at Debian's version, removing: libnvidia-api1:amd64- libnvidia-egl-wayland21:amd64- libnvidia-egl-xcb1:amd64- libnvidia-egl-xlib1:amd64- libnvidia-ngx1- libnvidia-vksc-core- nvidia-egl-icd- nvidia-kernel-open-dkms- nvidia-powerd-
+                 Conflicts: nvidia-driver-bin
+                 Conflicts: nvidia-suspend-common
+ nvidia-driver-libs : Depends: libnvidia-api1 (= 615.71.10-1) but it is not going to be installed
+                      Depends: libnvidia-egl-wayland21 (>= 1.0.0) but it is not going to be installed
+                      Depends: libnvidia-egl-xcb1 (>= 1:1.0.4) but it is not going to be installed
+                      Depends: libnvidia-egl-xlib1 (>= 1:1.0.4) but it is not going to be installed
+                      Depends: libnvidia-ngx1 (= 615.71.10-1) but it is not going to be installed
+                      Depends: libnvidia-vksc-core (= 615.71.10-1) but it is not going to be installed
+                      Recommends: nvidia-driver-libs:i386 (= 615.71.10-1) but it is not installable
+ nvidia-egl-icd : Conflicts: nvidia-egl-common
+ nvidia-kernel-dkms : Depends: nvidia-kernel-open-dkms (= 615.71.10-1) but it is not going to be installed
+ nvidia-kernel-support : Conflicts: nvidia-alternative
+                         Conflicts: nvidia-installer-cleanup
+                         Conflicts: nvidia-kernel-common
+                         Conflicts: nvidia-legacy-check
+                         Conflicts: nvidia-support
+ nvidia-vulkan-icd : Conflicts: nvidia-vulkan-common
+E: Unable to correct problems, you have held broken packages.
+E: The following information from --solver 3.0 may provide additional context:
+   Unable to satisfy dependencies. Reached two conflicting decisions:
+   1. nvidia-kernel-support:amd64=615.71.10-1 is selected for install because:
+      1. nvidia-kernel-support:amd64 is selected for install
+      2. nvidia-kernel-support:amd64 is available in versions 615.71.10-1, 550.163.01-2
+         [selected nvidia-kernel-support:amd64]
+      For context, additional choices that could not be installed:
+      * In nvidia-kernel-support:amd64 is available in versions 615.71.10-1, 550.163.01-2:
+        - nvidia-kernel-support:amd64=550.163.01-2 is not selected for install
+   2. nvidia-kernel-support:amd64=615.71.10-1 is not selected for install because:
+      1. nvidia-alternative:amd64=550.163.01-2 is selected for install
+      2. nvidia-kernel-support:amd64=615.71.10-1 Conflicts nvidia-alternative
+tind-nvidia: could not put Debian's driver packages back (nvidia-driver is 615.71.10-1)
