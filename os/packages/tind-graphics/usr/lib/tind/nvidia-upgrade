@@ -140,6 +140,10 @@ fi
 # The driver packages installed now (Debian's), so a failed install can put exactly these back.
 before="$(dpkg-query -W -f='${db:Status-Abbrev}\t${binary:Package}\n' 2>/dev/null | awk -F'\t' '$1 ~ /^ii/ {print $2}' \
     | grep -E "$FAMILY" || true)"
+# the same packages with their versions: the way back asks for these exact versions, because left to choose the
+# resolver keeps the newer installed ones
+beforev="$(dpkg-query -W -f='${db:Status-Abbrev}\t${binary:Package}\t${Version}\n' 2>/dev/null | awk -F'\t' '$1 ~ /^ii/ {print $2 "=" $3}' \
+    | grep -E "$FAMILY" || true)"
 installed=0
 DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install $set_pkgs && installed=1
 if [ "${TIND_NVIDIA_TEST_FAIL:-0}" = 1 ]; then
@@ -163,9 +167,9 @@ else
         for p in $after; do
             case " $(echo $before) " in *" ${p%%:*} "*|*" $p "*) ;; *) extra="$extra ${p}-" ;; esac
         done
-        log "going back: installing$(echo " " $before | wc -w) driver packages at Debian's version, removing:$extra"
+        log "going back: $(echo "$beforev" | wc -w) driver packages to their Debian versions, removing:$extra"
         # shellcheck disable=SC2086
-        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y --allow-downgrades install $before $extra 2>&1 | tail -30 \
+        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y --allow-downgrades install $beforev $extra 2>&1 | tail -30 \
             || true
         # the answer is what is installed now, not the exit code of a pipe
         now="$(dpkg-query -W -f='${Version}' nvidia-driver 2>/dev/null || true)"
