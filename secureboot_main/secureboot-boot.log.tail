@@ -2,49 +2,49 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 3344
--rw-r--r-- 1 runner runner   7006 Oct 22 07:25 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 22 07:26 secboot-s02.png
--rw-r--r-- 1 runner runner  41969 Oct 22 07:26 secboot-s03.png
--rw-r--r-- 1 runner runner 467485 Oct 22 07:27 secboot-s04.png
--rw-r--r-- 1 runner runner 467485 Oct 22 07:27 secboot-s05.png
--rw-r--r-- 1 runner runner 477657 Oct 22 07:28 secboot-s06.png
--rw-r--r-- 1 runner runner 477657 Oct 22 07:28 secboot-s07.png
--rw-r--r-- 1 runner runner 477510 Oct 22 07:29 secboot-s08.png
--rw-r--r-- 1 runner runner 477510 Oct 22 07:29 secboot-s09.png
--rw-r--r-- 1 runner runner 477821 Oct 22 07:30 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 22 07:25 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 22 07:25 secureboot-inspect.log
--rw-r----- 1 runner runner  19799 Oct 22 07:28 serial-secboot.log
-Oct 22 09:26:31 tind gdm-autologin][1469]: gkr-pam: couldn't unlock the login keyring.
-Oct 22 09:26:39 tind systemd[1477]: Failed to start app-gnome-tind\x2dgpu\x2dnotify-1887.scope - Application launched by gnome-session-binary.
+total 5160
+-rw-r--r-- 1 runner runner   7006 Oct 22 08:36 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 22 08:37 secboot-s02.png
+-rw-r--r-- 1 runner runner 663733 Oct 22 08:37 secboot-s03.png
+-rw-r--r-- 1 runner runner 663890 Oct 22 08:38 secboot-s04.png
+-rw-r--r-- 1 runner runner 664400 Oct 22 08:38 secboot-s05.png
+-rw-r--r-- 1 runner runner 646064 Oct 22 08:39 secboot-s06.png
+-rw-r--r-- 1 runner runner 645278 Oct 22 08:39 secboot-s07.png
+-rw-r--r-- 1 runner runner 644839 Oct 22 08:40 secboot-s08.png
+-rw-r--r-- 1 runner runner 644213 Oct 22 08:40 secboot-s09.png
+-rw-r--r-- 1 runner runner 644198 Oct 22 08:41 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 22 08:36 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 22 08:36 secureboot-inspect.log
+-rw-r----- 1 runner runner  21483 Oct 22 08:39 serial-secboot.log
+42551	fonts-noto-core
+installed packages: 1650
+
+##### journal errors (this boot)
+Oct 22 10:37:30 tind adduser[1125]: The group `powerdev' does not exist.
+Oct 22 10:37:30 tind adduser[1141]: The group `debian-tor' does not exist.
+Oct 22 10:37:34 tind gdm-autologin][1490]: gkr-pam: couldn't unlock the login keyring.
+Oct 22 10:37:35 tind systemd[1499]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1685.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 22 09:26:41 tind gnome-shell[1663]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 22 09:26:42 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:42 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:42 tind gnome-shell[1663]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 22 09:26:42 tind gnome-shell[1663]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 22 09:26:44 tind gnome-shell[1663]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
-Oct 22 09:26:47 tind gnome-shell[1663]: GNOME Shell started at Thu Oct 22 2026 09:26:39 GMT+0200 (Central European Summer Time)
-Oct 22 09:26:47 tind gnome-shell[1663]: Registering session with GDM
+Oct 22 10:37:36 tind gnome-shell[1686]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Oct 22 10:37:36 tind gnome-shell[1686]: Enabling experimental feature 'scale-monitor-framebuffer'
+Oct 22 10:37:36 tind gnome-shell[1686]: Enabling experimental feature 'xwayland-native-scaling'
+Oct 22 10:37:38 tind gnome-shell[1686]: Thread 'KMS thread' will be using high priority scheduling
+Oct 22 10:37:38 tind gnome-shell[1686]: pci id for fd 12: 1234:1111, driver (null)
+Oct 22 10:37:38 tind gnome-shell[1686]: pci id for fd 13: 1234:1111, driver (null)
+Oct 22 10:37:38 tind gnome-shell[1686]: kmsro: driver missing
+Oct 22 10:37:38 tind gnome-shell[1686]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 22 10:37:38 tind gnome-shell[1686]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 22 10:37:38 tind gnome-shell[1686]: Created gbm renderer for '/dev/dri/card0'
+Oct 22 10:37:38 tind gnome-shell[1686]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 22 10:37:38 tind gnome-shell[1686]: Using public X11 display :0, (using :1 for managed services)
+Oct 22 10:37:38 tind gnome-shell[1686]: Using Wayland display name 'wayland-0'
+Oct 22 10:37:38 tind gnome-shell[1686]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 22 10:37:39 tind gnome-shell[1686]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 22 10:37:40 tind gnome-shell[1686]: Will monitor session 1
+Oct 22 10:37:41 tind gnome-shell[1686]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 22 10:37:45 tind gnome-shell[1686]: GNOME Shell started at Thu Oct 22 2026 10:37:39 GMT+0200 (Central European Summer Time)
+Oct 22 10:37:45 tind gnome-shell[1686]: Registering session with GDM
 =====TIND-SELFTEST-END=====
 =====TIND-SELFTEST-BEGIN=====
 == Secure Boot
