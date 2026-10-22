@@ -134,12 +134,14 @@ jobs:
             python3 os/ci/drive.py $PWD/mon2.sock $PWD/shots2 $FIRST_JSON
             echo quit | socat - UNIX-CONNECT:$PWD/mon2.sock >/dev/null || true
             sleep 5; qemu-img info -U disk.qcow2 | grep 'disk size' || true
-            echo "== daily-machine checks of the installed system (roadmap d1; warnings only until the baseline is known)"
-            tr -d '\r' < logs/serial-installed.log | grep -a '^DAILY ' | tee logs/daily.log || echo "no DAILY lines found"
-            grep -a '^DAILY .* FAIL' logs/daily.log | sed 's/^/::warning::/' || true
+            echo "== daily-machine checks of the installed system (roadmap d1; the installer test fails if one is not ok)"
+            tr -d '\r' < logs/serial-installed.log | grep -a '^DAILY ' > logs/daily.log || true
+            cat logs/daily.log
+            [ "$(grep -ac '^DAILY [a-z-]* ok' logs/daily.log)" -ge 4 ] || { echo "DAILY CHECKS: fewer than four passed (see above)"; touch logs/DAILY_FAILED; }
           } 2>&1 | tee logs/installer.log
           for d in shots1 shots2; do for f in $d/*.png; do if [ -e "$f" ]; then cp "$f" "logs/$d-$(basename "$f")"; fi; done; done
           test ! -e logs/INSTALL_FAILED
+          test ! -e logs/DAILY_FAILED
       - uses: actions/upload-artifact@v4
         if: always()
         with:
