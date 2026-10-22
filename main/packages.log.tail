@@ -1,5 +1,3 @@
-app/com.valvesoftware.SteamLink/x86_64/stable
-app/io.github.benjamimgois.goverlay/x86_64/stable
 app/net.davidotek.pupgui2/x86_64/stable
 app/net.lutris.Lutris/x86_64/stable
 runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
@@ -362,6 +360,8 @@ ok       fonts-noto-mono
 ok       fonts-noto-ui-core
 ok       fwupd
 ok       gdm3
+ok       geoclue-2.0
+ok       gir1.2-dbusmenu-glib-0.4
 ok       gnome-shell-extension-appindicator
 ok       gnome-shell-extension-caffeine
 ok       gnome-shell-extension-dashtodock
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 0
+== exit status: 1
