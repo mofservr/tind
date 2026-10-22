@@ -1,26 +1,3 @@
-Office: ['libreoffice-writer.desktop', 'libreoffice-calc.desktop', 'libreoffice-impress.desktop', 'libreoffice-startcenter.desktop']
-System: ['proton.vpn.app.gtk.desktop', 'org.gnome.Extensions.desktop', 'tind-optins.desktop']
-Utilities: ['org.gnome.Calculator.desktop', 'org.gnome.TextEditor.desktop', 'org.gnome.SystemMonitor.desktop', 'org.gnome.DiskUtility.desktop', 'org.gnome.Loupe.desktop', 'org.gnome.Papers.desktop', 'org.gnome.FileRoller.desktop']
-live-only override files (should exist only in the live session):
-total 1
--rw-r--r-- 1 root root 13 Oct 18 18:24 mimeinfo.cache
--rw-r--r-- 1 root root 80 Oct 18 18:24 tind-optins.desktop
-showtime: dpkg-query: no packages found matching showtime
-
-##### wallpapers
-picker lists: tind.xml 
-gnome-backgrounds: dpkg-query: no packages found matching gnome-backgrounds
-tind.xml: 8 entries
-desktop-base: ii 
-backgrounds dirs: tind 
-active-theme
-ceratopsian-theme
-foreign picker lists: 0
-wallpapers: only Tind in the picker
-
-##### keyboard (what Calamares preselects)
-input-sources = [('xkb', 'no')]
-setxkbmap: 
 XKBMODEL="pc105"
 XKBLAYOUT="no"
 
@@ -30,14 +7,17 @@ dash-to-dock@micxgx.gmail.com
 multi-monitors-bar@frederykabryan
 system-monitor-panel@naimur
 tind-ice@tind.no
+ubuntu-appindicators@ubuntu.com
 tind-ice@tind.no
   Name: Tind Ice
   Description: Tind's ice-glass styling for the top bar, dock, menus and Quick Settings. Pure CSS overlay on top of the stock GNOME Shell theme.
   Path: /usr/share/gnome-shell/extensions/tind-ice@tind.no
-  Version: 2
+  Version: 3
   Enabled: Yes
   State: ACTIVE
-appindicatorsupport@rgcjonas.gmail.com: files MISSING, schema none-or-NOT-COMPILED, NOT-ENABLED
+extension dirs: caffeine@patapon.info dash-to-dock@micxgx.gmail.com multi-monitors-bar@frederykabryan system-monitor-panel@naimur tind-ice@tind.no ubuntu-appindicators@ubuntu.com 
+ubuntu-appindicators@ubuntu.com: files present, schema none-or-NOT-COMPILED, ENABLED
+  State: ACTIVE
 caffeine@patapon.info: files present, schema compiled, ENABLED
   Version: 55
   State: ACTIVE
@@ -47,13 +27,27 @@ system-monitor-panel@naimur: files present, schema compiled, ENABLED
 multi-monitors-bar@frederykabryan: files present, schema compiled, ENABLED
   Version: 56
   State: ACTIVE
+dbusmenu typelib: ii   geoclue: ii 
 file-roller: installed
+
+##### tind update repository (static checks; the live site is not required to exist yet)
+tind-archive-keyring: 0.1.0 ii 
+# Tind update repository. Channel: stable (default) or next, change it with: sudo tind-channel next|stable
+Types: deb
+URIs: https://apt.servr.no/
+Suites: stable
+Components: main
+Signed-By: /usr/share/keyrings/tind-archive-keyring.gpg
+Tind update channel: stable
+tind repo key fingerprint: 0F04FB12B3F97F21F3772F7FFE162F9E34C4D769
+tind repo key: OK
+unattended-upgrades origins: 1 Tind entry
 
 ##### firefox policies
 /etc/firefox/policies/policies.json: present
 /usr/lib/firefox-esr/distribution/policies.json: present
 firefox policies.json: valid JSON
-lrwxrwxrwx 1 root root 36 Oct 13 23:14 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
+lrwxrwxrwx 1 root root 36 Oct 21 04:42 /usr/lib/firefox-esr/distribution -> ../../share/firefox-esr/distribution
 
 ##### ublock origin
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
@@ -72,7 +66,7 @@ grep: write error: Broken pipe
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{40ca8683-41c6-4cd5-84f0-ea30d31f94d5}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{b0d8a4c4-57ba-4261-947a-b20d19b1cbab}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -86,16 +80,23 @@ uBlock0@raymondhill.net active=true location=app-system-share
 default-theme@mozilla.org active=true location=app-builtin
 user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
 policy keys:
-AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, FirefoxHome, OverrideFirstRunPage, SearchEngines, UserMessaging
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "82f1eca9-0861-4c9a-9fac-99c7d58faf79");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "a381f309-6375-43cf-a182-d7a564b15b98");
-user_pref("toolkit.telemetry.previousBuildID", "20261006170429");
+user_pref("toolkit.telemetry.cachedClientID", "b9df2340-2105-42ef-a3a0-6074e4ea1390");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "253fb7a2-6e85-4399-9739-b6c2f8acff26");
+user_pref("toolkit.telemetry.previousBuildID", "20261019143936");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
 ##### thunderbird policies
 thunderbird policies.json: valid JSON
+
+##### accent names, Mozilla accent defaults, Spotify frame override
+/usr/share/locale/en_US/LC_MESSAGES/gnome-control-center-2.0.mo: present
+/usr/lib/firefox-esr/defaults/pref/tind-accent.js: present
+/usr/lib/thunderbird/defaults/pref/tind-accent.js: present
+/var/lib/flatpak/overrides/com.spotify.Client: present
+accent tooltip for the green slot: Aurora
 
 ##### tind-enroll
 tind-enroll: set up this device's WireGuard split tunnel to servr.no.
@@ -115,13 +116,19 @@ CONNECTION_NAME="tind-servr"
 The admin will reply with an enrolment block (a few KEY=value lines).
 Then run:  sudo tind-enroll apply      and paste it, or:  sudo tind-enroll apply FILE
 tind-enroll: ADDRESS is missing from the enrolment block
+
 Tunnel 'tind-servr' is up and will start automatically.
 Only traffic to 10.99.99.0/24 and names under servr.no uses it.
-/usr/bin/tind-enroll: line 1: tmp: unbound variable
+tind-enroll apply: no shell errors
+tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (fcdc3462-7bdb-42eb-97e1-b7bbd54293f0) successfully deleted.
+Connection 'tind-servr' (268b9c80-aecc-4a8c-b772-4cc61c867c0f) successfully deleted.
 Removed this device's private key.
+
+##### wireguard watchdog
+enabled
+watchdog with no tunnel installed: exit 0
 
 ##### gnome-tour removed?
 dpkg-query: no packages found matching gnome-tour
@@ -135,7 +142,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 227 Oct 18 18:24 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 227 Oct 22 09:59 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=/usr/lib/tind/install-launcher
 Icon=tind-logo
@@ -144,12 +151,10 @@ Name=Install Debian
 NoDisplay=true
 
 ##### optins
-communication.optin  gaming.optin	    newer-kernel.optin
-creative.optin	     gnome-extras.optin     productivity.optin
-developer.optin      gnome-utilities.optin  tweaks.optin
-entertainment.optin  hardware.optin
--rwxr-xr-x 1 root root 1955 Oct 18 18:24 /usr/bin/tind-optins
--rwxr-xr-x 1 root root  854 Oct 18 18:24 /usr/lib/tind/optin-install
+communication.optin  developer.optin	  gaming.optin	  productivity.optin
+creative.optin	     entertainment.optin  hardware.optin  security.optin
+-rwxr-xr-x 1 root root 2927 Oct 22 09:59 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Oct 22 09:59 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -196,7 +201,7 @@ dpkg-query: no packages found matching pipx
 build-essential 12.12 ii 
 git  un 
 /etc/apt/sources.list.d/:
-protonvpn-stable.sources
+tind.sources
 
 /etc/sysctl.d/:
 README.sysctl
@@ -230,36 +235,39 @@ nvidia-current-uvm.ko.xz
 amd64-microcode-blacklist.conf dkms.conf intel-microcode-blacklist.conf nvidia-options.conf 
 enabled
 masked
+enabled
+login logo: Tind logo-128.png logo-256.png logo-64.png logo.svg logo-text-128.png logo-text-256.png logo-text-64.png logo-text.svg logo-text-version-128.png logo-text-version-128.png.debian logo-text-version-256.png logo-text-version-64.png logo-text-version-64.png.debian logo-text-version.svg 
+login background alternative: Status: auto Value: /usr/share/tind/login-background.svg 
+nvidia-upgrade: present
 ls: cannot access '/var/lib/dkms/mok.key': No such file or directory
 	apiVersion         = 1.4.305
 	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
 	driverName         = llvmpipe
 
+##### time sync
+systemd-timesyncd: ii  enabled=enabled active=active
+NTP=yes
+NTPSynchronized=yes
+
 ##### updates
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Oct 22 09:26 /var/lib/tind/apt-refreshed
-58
+-rw-r--r-- 1 root root 0 Oct 22 10:36 /var/lib/tind/apt-refreshed
+56
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 APT::Periodic::AutocleanInterval "7";
 enabled
 enabled
-/usr/bin/dpkg --status-fd 10 --no-triggers --unpack --auto-deconfigure /var/cache/apt/archives/firefox-esr-l10n-nb-no_153.5.1esr-1~deb13u1_all.deb /var/cache/apt/archives/firefox-esr-l10n-nn-no_153.5.1esr-1~deb13u1_all.deb /var/cache/apt/archives/firefox-esr_153.5.1esr-1~deb13u1_amd64.deb 
-/usr/bin/dpkg --status-fd 10 --configure --pending 
-Preconfiguring packages ...
-Preconfiguring packages ...
-/usr/bin/dpkg --status-fd 10 --no-triggers --unpack --auto-deconfigure /var/cache/apt/archives/ca-certificates_20250419+deb13u1_all.deb 
-/usr/bin/dpkg --status-fd 10 --configure --pending 
+Percentage:	100
+Status: 	Querying
+Status: 	Loading cache
+Percentage:	10
+Percentage:	100
+Status: 	Finished
 Results:
-Security     ca-certificates-20250419+deb13u1.all (debian-stable-security-main)
-Security     firefox-esr-153.5.1esr-1~deb13u1.amd64 (debian-stable-security-main)
-Security     firefox-esr-l10n-nb-no-153.5.1esr-1~deb13u1.all (debian-stable-security-main)
-Security     firefox-esr-l10n-nn-no-153.5.1esr-1~deb13u1.all (debian-stable-security-main)
-Normal       proton-vpn-gtk-app-4.18.8.all (local)
-Normal       protonvpn-stable-release-1.0.10.all (local)
-Normal       python3-proton-vpn-api-core-5.8.11.amd64 (local)
+There are no updates available at this time.
 gnome-software 48.3
 
 ##### security baseline
@@ -268,7 +276,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Thu 2026-10-22 09:26:40 CEST; 1min 48s ago
+  Condition: start condition unmet at Thu 2026-10-22 10:36:33 CEST; 1min 49s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -287,11 +295,11 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:51358
+udp 0.0.0.0:51581
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:48040
+udp [::]:38632
 udp [::]:5353
 
 ##### hardware basics
@@ -309,13 +317,10 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-246 /tmp/tind-report-test.txt
-12
-protonvpn-stable.sources
-URIs: https://repo.protonvpn.com/debian
-Suites: stable
-protonvpn-stable-release 1.0.8 ii \nls: cannot access '/var/tmp/*.deb': No such file or directory
-proton-vpn-gnome-desktop 0.11.0 ii 
+587 /tmp/tind-report-test.txt
+16
+tind.sources
+proton in the base image (expected: none, it is the Security box): 
 
 ##### desktop entries shown in the app grid (name, package)
 Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
@@ -328,7 +333,6 @@ Name=Firefox ESR | firefox-esr | firefox-esr.desktop
 Name=Image Viewer | loupe | org.gnome.Loupe.desktop
 Name=Install Tind | tind-installer | tind-install.desktop
 Name=Papers | papers | org.gnome.Papers.desktop
-Name=Proton VPN | proton-vpn-gtk-app | proton.vpn.app.gtk.desktop
 Name=Settings | gnome-control-center | org.gnome.Settings.desktop
 Name=Software | gnome-software | org.gnome.Software.desktop
 Name=System Monitor | gnome-system-monitor | org.gnome.SystemMonitor.desktop
@@ -337,7 +341,7 @@ Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
 Name=Thunderbird | thunderbird | thunderbird.desktop
 
 ##### largest installed packages
-301370	firefox-esr
+301518	firefox-esr
 274488	thunderbird
 187357	papirus-icon-theme
 143940	firmware-netronome
@@ -352,7 +356,6 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 81104	mesa-vulkan-drivers
 74739	libnvidia-rtcore
 71212	nvidia-kernel-dkms
-69440	libclang-cpp19
 68460	gcc-14-x86-64-linux-gnu
 64591	firmware-nvidia-graphics
 61466	linux-headers-6.12.113+deb13-common
@@ -362,39 +365,36 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 46319	firmware-mediatek
 43166	libdnnl3.6
 42827	libnvidia-gpucomp
-installed packages: 1708
+42551	fonts-noto-core
+installed packages: 1650
 
 ##### journal errors (this boot)
-Oct 22 09:26:42 tind adduser[1123]: The group `powerdev' does not exist.
-Oct 22 09:26:42 tind adduser[1139]: The group `debian-tor' does not exist.
-Oct 22 09:26:47 tind gdm-autologin][1501]: gkr-pam: couldn't unlock the login keyring.
-Oct 22 09:26:48 tind systemd[1509]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1678.scope - Application launched by gnome-session-binary.
-Oct 22 09:26:48 tind systemd[1509]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1682.scope - Application launched by gnome-session-binary.
+Oct 22 10:36:35 tind adduser[1102]: The group `powerdev' does not exist.
+Oct 22 10:36:35 tind adduser[1118]: The group `debian-tor' does not exist.
+Oct 22 10:36:41 tind gdm-autologin][1480]: gkr-pam: couldn't unlock the login keyring.
+Oct 22 10:36:43 tind systemd[1489]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1660.scope - Application launched by gnome-session-binary.
+Oct 22 10:36:43 tind systemd[1489]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1664.scope - Application launched by gnome-session-binary.
+Oct 22 10:36:50 tind systemd[1489]: Failed to start app-gnome-tind\x2dlive\x2ddock-1846.scope - Application launched by gnome-session-binary.
+Oct 22 10:36:50 tind systemd[1489]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1850.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 22 09:26:55 tind gnome-shell[1695]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 22 09:26:56 tind gnome-shell[1695]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:56 tind gnome-shell[1695]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:56 tind gnome-shell[1695]: Failed to import DBusMenu, quicklists are not available: Error: Requiring Dbusmenu, version none: Typelib file for namespace 'Dbusmenu' (any version) not found
-Oct 22 09:26:57 tind gnome-shell[1695]: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name org.freedesktop.GeoClue2 was not provided by any .service files
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 37 with keysym 37 (keycode 10).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 32 with keysym 32 (keycode b).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 39 with keysym 39 (keycode 12).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 34 with keysym 34 (keycode d).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 38 with keysym 38 (keycode 11).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 31 with keysym 31 (keycode a).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 33 with keysym 33 (keycode c).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 35 with keysym 35 (keycode e).
-Oct 22 09:26:57 tind gnome-shell[1695]: Overwriting existing binding of keysym 36 with keysym 36 (keycode f).
-Oct 22 09:27:00 tind gnome-shell[1695]: GNOME Shell started at Thu Oct 22 2026 09:26:53 GMT+0200 (Central European Summer Time)
-Oct 22 09:27:00 tind gnome-shell[1695]: Registering session with GDM
+Oct 22 10:36:43 tind gnome-shell[1680]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Oct 22 10:36:43 tind gnome-shell[1680]: Enabling experimental feature 'scale-monitor-framebuffer'
+Oct 22 10:36:43 tind gnome-shell[1680]: Enabling experimental feature 'xwayland-native-scaling'
+Oct 22 10:36:46 tind gnome-shell[1680]: Thread 'KMS thread' will be using high priority scheduling
+Oct 22 10:36:46 tind gnome-shell[1680]: pci id for fd 12: 1234:1111, driver (null)
+Oct 22 10:36:46 tind gnome-shell[1680]: pci id for fd 13: 1234:1111, driver (null)
+Oct 22 10:36:46 tind gnome-shell[1680]: kmsro: driver missing
+Oct 22 10:36:47 tind gnome-shell[1680]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 22 10:36:47 tind gnome-shell[1680]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 22 10:36:47 tind gnome-shell[1680]: Created gbm renderer for '/dev/dri/card0'
+Oct 22 10:36:47 tind gnome-shell[1680]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 22 10:36:47 tind gnome-shell[1680]: Using public X11 display :0, (using :1 for managed services)
+Oct 22 10:36:47 tind gnome-shell[1680]: Using Wayland display name 'wayland-0'
+Oct 22 10:36:47 tind gnome-shell[1680]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 22 10:36:48 tind gnome-shell[1680]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 22 10:36:51 tind gnome-shell[1680]: Will monitor session 1
+Oct 22 10:36:51 tind gnome-shell[1680]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 22 10:36:57 tind gnome-shell[1680]: GNOME Shell started at Thu Oct 22 2026 10:36:49 GMT+0200 (Central European Summer Time)
+Oct 22 10:36:57 tind gnome-shell[1680]: Registering session with GDM
 =====TIND-SELFTEST-END=====
