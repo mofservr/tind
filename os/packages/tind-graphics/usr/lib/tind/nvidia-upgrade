@@ -24,6 +24,7 @@ KEYRING=/usr/share/keyrings/tind-nvidia.gpg
 STATE="${TIND_NVIDIA_STATE:-/var/lib/tind/nvidia-upgrade}"
 STATE_DIR="$(dirname "$STATE")"
 MIN_MAJOR=560
+FAMILY='^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)'
 DRY=0
 [ "${1:-}" = "--dry-run" ] && DRY=1
 
@@ -125,7 +126,7 @@ if [ "$DRY" = 1 ]; then
 fi
 sim="$(apt-get -s install $set_pkgs 2>&1)" || giveup "simulated install failed: $(echo "$sim" | grep -A8 'unmet dependencies' | tr '\n' ' ')"
 # only the NVIDIA driver family may be removed or replaced
-bad="$(echo "$sim" | grep '^Remv ' | awk '{print $2}' | grep -vE '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
+bad="$(echo "$sim" | grep '^Remv ' | awk '{print $2}' | grep -vE "$FAMILY" || true)"
 [ -z "$bad" ] || giveup "install would remove: $(echo $bad | tr '\n' ' ')"
 echo "$sim" | grep -E '^(Inst|Remv) ' | head -40
 
@@ -138,7 +139,7 @@ fi
 # 5. Install. DKMS builds the modules for the installed kernels; the new driver loads at the next boot.
 # The driver packages installed now (Debian's), so a failed install can put exactly these back.
 before="$(dpkg-query -W -f='${db:Status-Abbrev}\t${binary:Package}\n' 2>/dev/null | awk -F'\t' '$1 ~ /^ii/ {print $2}' \
-    | grep -E '^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)' || true)"
+    | grep -E "$FAMILY" || true)"
 installed=0
 DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install $set_pkgs && installed=1
 if [ "${TIND_NVIDIA_TEST_FAIL:-0}" = 1 ]; then
@@ -154,10 +155,21 @@ else
     undo
     if [ -n "$before" ]; then
         # Without NVIDIA's repository the candidates are Debian's (priority 500 beats the installed 100), which are
-        # older than what was just installed, so going back is a downgrade to Debian's versions.
+        # older than what was just installed, so going back is a downgrade to Debian's versions. Driver packages
+        # that only the new driver brought in are removed in the same step (name-), so they cannot block it.
+        after="$(dpkg-query -W -f='${db:Status-Abbrev}\t${binary:Package}\n' 2>/dev/null | awk -F'\t' '$1 ~ /^ii/ {print $2}' \
+            | grep -E "$FAMILY" || true)"
+        extra=""
+        for p in $after; do
+            case " $(echo $before) " in *" ${p%%:*} "*|*" $p "*) ;; *) extra="$extra ${p}-" ;; esac
+        done
+        log "going back: installing$(echo " " $before | wc -w) driver packages at Debian's version, removing:$extra"
         # shellcheck disable=SC2086
-        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y --allow-downgrades install $before >/dev/null 2>&1 \
-            || log "could not put Debian's driver packages back"
+        DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y --allow-downgrades install $before $extra 2>&1 | tail -30 \
+            || true
+        # the answer is what is installed now, not the exit code of a pipe
+        now="$(dpkg-query -W -f='${Version}' nvidia-driver 2>/dev/null || true)"
+        case "$now" in 615*|6[0-9][0-9]*) log "could not put Debian's driver packages back (nvidia-driver is $now)" ;; *) log "Debian's driver is back (nvidia-driver $now)" ;; esac
     else
         DEBIAN_FRONTEND=noninteractive apt-get -o DPkg::Lock::Timeout=600 -y install --reinstall nvidia-driver nvidia-kernel-dkms >/dev/null 2>&1 || true
     fi
