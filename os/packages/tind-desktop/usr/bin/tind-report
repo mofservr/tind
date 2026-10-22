@@ -1,11 +1,30 @@
 #!/bin/bash
 # Collects hardware, driver, network and boot information into one text file you can attach
-# to a bug report or a chat. Contains no passwords. Hostname, serials and MAC addresses are left out.
+# to a bug report or a chat. Contains no passwords. MAC addresses and serial numbers are masked;
+# the computer name and user name can still appear.
 set -u
 out="${1:-$HOME/tind-report-$(date +%Y%m%d-%H%M%S).txt}"
 SUDO=""; [ "$(id -u)" -ne 0 ] && command -v sudo >/dev/null && SUDO="sudo -n"
 sec() { printf '\n##### %s\n' "$*"; }
-run() { printf '$ %s\n' "$*"; "$@" 2>&1 | sed -E 's/([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}/xx:xx:xx:xx:xx:xx/g' | head -n "${LINES_MAX:-120}"; }
+# A missing tool is reported as such instead of printing a shell error.
+run() {
+    printf '$ %s\n' "$*"
+    if ! command -v "$1" >/dev/null 2>&1; then echo "(not installed)"; return 0; fi
+    "$@" 2>&1 | head -n "${LINES_MAX:-120}"
+}
+# MAC addresses and serial numbers are masked in the whole report, whichever command printed them.
+scrub() { sed -E -e 's/([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}/xx:xx:xx:xx:xx:xx/g' -e 's/(Serial Number:[[:space:]]*).*/\1(removed)/'; }
+# The system journal needs root or the adm/systemd-journal group.
+can_read_journal() { [ "$(id -u)" -eq 0 ] || id -nG | tr ' ' '\n' | grep -qxE 'adm|systemd-journal'; }
+jctl() {
+    if can_read_journal; then journalctl "$@" 2>&1
+    elif [ -n "$SUDO" ] && $SUDO true 2>/dev/null; then $SUDO journalctl "$@" 2>&1
+    else echo "(no access to the system journal; run: sudo tind-report)"; fi
+}
+if ! can_read_journal && [ -n "$SUDO" ] && ! $SUDO true 2>/dev/null && [ -t 0 ]; then
+    echo "The system journal needs your password once (press Enter to skip it):"
+    sudo -v 2>/dev/null || true
+fi
 {
     echo "Tind report, $(date -u +%FT%TZ)"
     sec "Tind and OS"; cat /etc/os-release; run uname -a; run dpkg -l 'tind-*'
@@ -24,23 +43,33 @@ run() { printf '$ %s\n' "$*"; "$@" 2>&1 | sed -E 's/([0-9A-Fa-f]{2}:){5}[0-9A-Fa
     echo "switch state: $(cat /var/lib/tind/nvidia-upgrade.done 2>/dev/null || echo 'not run')  tries: $(cat /var/lib/tind/nvidia-upgrade.tries 2>/dev/null || echo 0)"
     ls /etc/apt/sources.list.d/tind-nvidia.sources /etc/apt/preferences.d/tind-nvidia 2>&1
     run apt-cache policy nvidia-driver; run lsmod; run ls /etc/modprobe.d
-    $SUDO journalctl -t tind-nvidia -t tind-gpu-check -b --no-pager 2>&1 | tail -n 30
+    jctl -t tind-nvidia -t tind-gpu-check -b --no-pager | tail -n 30
     command -v mokutil >/dev/null && run mokutil --list-enrolled
-    sec "Firmware updates"; command -v fwupdmgr >/dev/null && { run fwupdmgr get-devices --no-unreported-check; run fwupdmgr get-updates --no-unreported-check; }
+    sec "Firmware updates"; run fwupdmgr get-devices --no-unreported-check; run fwupdmgr get-updates --no-unreported-check
+    printf '$ journalctl -u fwupd-refresh.service (all boots)\n'; jctl -u fwupd-refresh.service --no-pager | tail -n 25
     sec "Other systems and boot menu"; grep -E "^\s*menuentry '" /boot/grub/grub.cfg 2>/dev/null | sed -E "s/^\s*menuentry '([^']*)'.*/\1/" | head -20
     run efibootmgr
     sec "Tind apps and login screen"; ls -1 /usr/share/applications/tind* /etc/xdg/autostart/tind* 2>/dev/null
     echo "login logo is Tind: $(cmp -s /usr/share/tind/login-logo-64.png /usr/share/images/vendor-logos/logo-text-version-64.png && echo yes || echo NO)"
     sec "Wi-Fi, network and Bluetooth"; run lspci -nnk -d ::0280; run lsusb
-    run rfkill list; run nmcli -t -f DEVICE,TYPE,STATE device
-    run dmesg --level=err,warn
+    if command -v rfkill >/dev/null 2>&1; then
+        run rfkill list
+    else
+        echo '$ rfkill list (rfkill is not installed; /sys/class/rfkill instead)'
+        for r in /sys/class/rfkill/rfkill*; do
+            [ -e "$r" ] || continue
+            echo "$(cat "$r/type" 2>/dev/null) $(cat "$r/name" 2>/dev/null): soft=$(cat "$r/soft" 2>/dev/null) hard=$(cat "$r/hard" 2>/dev/null)"
+        done
+    fi
+    run nmcli -t -f DEVICE,TYPE,STATE device
+    printf '$ kernel warnings and errors this boot\n'; jctl -k -b -p warning --no-pager | tail -n 60
     sec "Audio"; command -v wpctl >/dev/null && run wpctl status
     sec "Power"; command -v powerprofilesctl >/dev/null && run powerprofilesctl; ls /sys/class/power_supply 2>/dev/null
     sec "Services"; run systemctl --failed --no-legend; run systemctl is-active ufw apparmor NetworkManager gdm tind-extras.service
-    sec "Journal, errors this boot"; $SUDO journalctl -b -p err --no-pager 2>&1 | tail -n 100
-    sec "Journal, previous boot errors"; $SUDO journalctl -b -1 -p err --no-pager 2>&1 | tail -n 60
+    sec "Journal, errors this boot"; jctl -b -p err --no-pager | tail -n 100
+    sec "Journal, previous boot errors"; jctl -b -1 -p err --no-pager | tail -n 60
     sec "Extras"; cat /var/lib/tind/extras-status 2>&1; tail -n 40 /var/log/tind-extras.log 2>&1
     sec "Updates"; ls -l /var/lib/tind/apt-refreshed 2>&1; run apt-get -s upgrade -qq
-} > "$out" 2>&1
+} 2>&1 | scrub > "$out"
 echo "Report written to: $out"
 echo "Attach that file when you ask for help."
