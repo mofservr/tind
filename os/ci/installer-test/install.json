@@ -9,10 +9,7 @@
   "wait": 150
  },
  {
-  "click": [
-   400,
-   300
-  ]
+  "key": "esc"
  },
  {
   "wait": 2
@@ -27,7 +24,7 @@
   ]
  },
  {
-  "wait": 8
+  "wait": 25
  },
  {
   "shot": "11-after-launch"
