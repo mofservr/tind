@@ -1,6 +1,6 @@
 KVM: yes
 Formatting '/home/runner/work/tind/tind/disk.qcow2', fmt=qcow2 cluster_size=65536 extended_l2=off compression_type=zlib size=32212254720 lazy_refcounts=off refcount_bits=16
-firmware: uefi  extras: yes
+firmware: uefi  extras: no
 Secure Boot: ON (OVMF secboot code, Microsoft keys)
 == phase 1: live ISO, drive the installer
 0 {'wait': 35}
@@ -15,121 +15,101 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 9 {'wait': 4}
 10 {'key': 'down'}
 11 {'wait': 1}
-12 {'key': 'spc'}
+12 {'key': 'down'}
 13 {'wait': 1}
 14 {'key': 'down'}
 15 {'wait': 1}
-16 {'key': 'spc'}
+16 {'key': 'down'}
 17 {'wait': 1}
 18 {'key': 'down'}
 19 {'wait': 1}
 20 {'key': 'down'}
 21 {'wait': 1}
-22 {'key': 'down'}
+22 {'key': 'spc'}
 23 {'wait': 1}
-24 {'key': 'down'}
-25 {'wait': 1}
-26 {'key': 'spc'}
-27 {'wait': 1}
-28 {'shot': '20-extras-ticked'}
-29 {'key': 'alt-o'}
-30 {'wait': 30}
+24 {'shot': '20-extras-ticked'}
+25 {'key': 'alt-o'}
+26 {'wait': 30}
+27 {'click': [1045, 735]}
+28 {'wait': 5}
+29 {'click': [1045, 735]}
+30 {'wait': 5}
 31 {'click': [1045, 735]}
-32 {'wait': 5}
-33 {'click': [1045, 735]}
-34 {'wait': 5}
+32 {'wait': 10}
+33 {'click': [372, 225]}
+34 {'wait': 3}
 35 {'click': [1045, 735]}
-36 {'wait': 10}
-37 {'click': [372, 225]}
-38 {'wait': 3}
-39 {'click': [1045, 735]}
-40 {'wait': 6}
-41 {'click': [464, 204]}
-42 {'type': 'Tind Test'}
-43 {'click': [464, 264]}
-44 {'key': 'ctrl-a'}
-45 {'type': 'tind'}
-46 {'click': [464, 324]}
-47 {'key': 'ctrl-a'}
-48 {'type': 'tindtest'}
-49 {'click': [464, 384]}
-50 {'type': 'tind-test-pw'}
-51 {'click': [670, 384]}
-52 {'type': 'tind-test-pw'}
-53 {'click': [372, 420]}
-54 {'wait': 2}
-55 {'shot': '30-users-filled'}
-56 {'click': [1045, 735]}
-57 {'wait': 6}
-58 {'shot': '31-summary'}
-59 {'click': [1045, 735]}
-60 {'click': [1045, 781]}
+36 {'wait': 6}
+37 {'click': [464, 204]}
+38 {'type': 'Tind Test'}
+39 {'click': [464, 264]}
+40 {'key': 'ctrl-a'}
+41 {'type': 'tind'}
+42 {'click': [464, 324]}
+43 {'key': 'ctrl-a'}
+44 {'type': 'tindtest'}
+45 {'click': [464, 384]}
+46 {'type': 'tind-test-pw'}
+47 {'click': [670, 384]}
+48 {'type': 'tind-test-pw'}
+49 {'click': [372, 420]}
+50 {'wait': 2}
+51 {'shot': '30-users-filled'}
+52 {'click': [1045, 735]}
+53 {'wait': 6}
+54 {'shot': '31-summary'}
+55 {'click': [1045, 735]}
+56 {'click': [1045, 781]}
+57 {'wait': 60}
+58 {'shot': '50-install-00'}
+59 {'wait': 60}
+60 {'shot': '50-install-01'}
 61 {'wait': 60}
-62 {'shot': '50-install-00'}
+62 {'shot': '50-install-02'}
 63 {'wait': 60}
-64 {'shot': '50-install-01'}
+64 {'shot': '50-install-03'}
 65 {'wait': 60}
-66 {'shot': '50-install-02'}
+66 {'shot': '50-install-04'}
 67 {'wait': 60}
-68 {'shot': '50-install-03'}
+68 {'shot': '50-install-05'}
 69 {'wait': 60}
-70 {'shot': '50-install-04'}
+70 {'shot': '50-install-06'}
 71 {'wait': 60}
-72 {'shot': '50-install-05'}
+72 {'shot': '50-install-07'}
 73 {'wait': 60}
-74 {'shot': '50-install-06'}
+74 {'shot': '50-install-08'}
 75 {'wait': 60}
-76 {'shot': '50-install-07'}
+76 {'shot': '50-install-09'}
 77 {'wait': 60}
-78 {'shot': '50-install-08'}
+78 {'shot': '50-install-10'}
 79 {'wait': 60}
-80 {'shot': '50-install-09'}
+80 {'shot': '50-install-11'}
 81 {'wait': 60}
-82 {'shot': '50-install-10'}
+82 {'shot': '50-install-12'}
 83 {'wait': 60}
-84 {'shot': '50-install-11'}
+84 {'shot': '50-install-13'}
 85 {'wait': 60}
-86 {'shot': '50-install-12'}
+86 {'shot': '50-install-14'}
 87 {'wait': 60}
-88 {'shot': '50-install-13'}
+88 {'shot': '50-install-15'}
 89 {'wait': 60}
-90 {'shot': '50-install-14'}
+90 {'shot': '50-install-16'}
 91 {'wait': 60}
-92 {'shot': '50-install-15'}
-93 {'wait': 60}
-94 {'shot': '50-install-16'}
-95 {'wait': 60}
-96 {'shot': '50-install-17'}
-disk used after install: 7736729600 bytes
+92 {'shot': '50-install-17'}
+disk used after install: 7695577088 bytes
 == phase 2: boot the installed disk
-0 {'wait': 120}
+0 {'wait': 150}
 1 {'shot': '600-installed-00'}
-2 {'wait': 120}
+2 {'wait': 90}
 3 {'shot': '601-installed-01'}
-4 {'wait': 120}
+4 {'wait': 90}
 5 {'shot': '602-installed-02'}
-6 {'wait': 120}
+6 {'wait': 90}
 7 {'shot': '603-installed-03'}
-8 {'wait': 120}
+8 {'wait': 90}
 9 {'shot': '604-installed-04'}
-10 {'wait': 120}
-11 {'shot': '605-installed-05'}
-12 {'wait': 120}
-13 {'shot': '606-installed-06'}
-14 {'wait': 120}
-15 {'shot': '607-installed-07'}
-16 {'wait': 120}
-17 {'shot': '608-installed-08'}
-18 {'wait': 120}
-19 {'shot': '609-installed-09'}
-20 {'wait': 120}
-21 {'shot': '610-installed-10'}
-22 {'wait': 120}
-23 {'shot': '611-installed-11'}
-24 {'wait': 120}
-25 {'shot': '612-installed-12'}
-26 {'wait': 120}
-27 {'shot': '613-installed-13'}
-28 {'wait': 120}
-disk size: 8.9 GiB
-    disk size: 8.9 GiB
+10 {'wait': 90}
+disk size: 9 GiB
+    disk size: 9 GiB
+== daily-machine checks of the installed system (roadmap d1; warnings only until the baseline is known)
+no DAILY lines found
