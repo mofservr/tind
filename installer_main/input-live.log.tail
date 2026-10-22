@@ -8,184 +8,166 @@ BdsDxe: starting Boot0001 "UEFI QEMU DVD-ROM QM00005 " from PciRoot(0x0)/Pci(0x1
 -event2   DEVICE_ADDED                 VirtualPS/2 VMware VMMouse        seat0 default group5  cap:p left scroll-nat calib
 -event5   POINTER_MOTION_ABSOLUTE      +0.000s	 31.25/ 37.50
  event5   POINTER_BUTTON               +0.625s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +1.175s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +3.576s	  2.97/ 95.37
- event5   POINTER_BUTTON               +4.277s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +4.827s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +9.100s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +9.147s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +9.267s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +9.387s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +9.748s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +9.868s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +10.468s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +10.588s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +11.189s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +11.309s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +11.910s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +12.029s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +12.630s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +12.750s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +13.351s	KEY_L (38) pressed
- event4   KEYBOARD_KEY                 +13.470s	KEY_L (38) released
- event4   KEYBOARD_KEY                 +17.148s	KEY_ENTER (28) pressed
- event4   KEYBOARD_KEY                 +17.191s	KEY_ENTER (28) released
- event4   KEYBOARD_KEY                 +23.876s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +23.916s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +25.516s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +25.636s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +27.236s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +27.356s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +28.956s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +29.076s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +30.676s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +30.796s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +32.396s	KEY_DOWN (108) pressed
- event4   KEYBOARD_KEY                 +32.516s	KEY_DOWN (108) released
- event4   KEYBOARD_KEY                 +34.116s	KEY_SPACE (57) pressed
- event4   KEYBOARD_KEY                 +34.236s	KEY_SPACE (57) released
- event4   KEYBOARD_KEY                 +37.900s	KEY_LEFTALT (56) pressed
- event4   KEYBOARD_KEY                 +37.939s	KEY_O (24) pressed
- event4   KEYBOARD_KEY                 +38.059s	KEY_O (24) released
- event4   KEYBOARD_KEY                 +38.179s	KEY_LEFTALT (56) released
--event5   POINTER_MOTION_ABSOLUTE      +68.816s	 81.64/ 91.87
- event5   POINTER_BUTTON               +69.442s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +69.993s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +76.094s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +76.645s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +82.746s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +83.297s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +93.772s	 29.06/ 28.12
- event5   POINTER_BUTTON               +94.398s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +94.949s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +98.424s	 81.64/ 91.87
- event5   POINTER_BUTTON               +99.050s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +99.601s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +106.076s	 36.25/ 25.50
- event5   POINTER_BUTTON               +106.702s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +107.253s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +107.532s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +107.573s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +107.693s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +107.813s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +108.173s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +108.293s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +108.894s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +109.013s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +109.614s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +109.734s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +110.335s	KEY_SPACE (57) pressed
- event4   KEYBOARD_KEY                 +110.455s	KEY_SPACE (57) released
- event4   KEYBOARD_KEY                 +111.055s	KEY_LEFTSHIFT (42) pressed
- event4   KEYBOARD_KEY                 +111.175s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +111.295s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +111.415s	KEY_LEFTSHIFT (42) released
- event4   KEYBOARD_KEY                 +111.776s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +111.895s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +112.496s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +112.616s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +113.217s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +113.336s	KEY_T (20) released
--event5   POINTER_MOTION_ABSOLUTE      +114.213s	 36.25/ 33.00
- event5   POINTER_BUTTON               +114.839s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +115.390s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +115.589s	KEY_LEFTCTRL (29) pressed
- event4   KEYBOARD_KEY                 +115.709s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +115.829s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +115.949s	KEY_LEFTCTRL (29) released
- event4   KEYBOARD_KEY                 +116.310s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +116.430s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +117.030s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +117.150s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +117.751s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +117.870s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +118.471s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +118.591s	KEY_D (32) released
--event5   POINTER_MOTION_ABSOLUTE      +119.468s	 36.25/ 40.50
- event5   POINTER_BUTTON               +120.093s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +120.644s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +120.924s	KEY_LEFTCTRL (29) pressed
- event4   KEYBOARD_KEY                 +120.963s	KEY_A (30) pressed
- event4   KEYBOARD_KEY                 +121.083s	KEY_A (30) released
- event4   KEYBOARD_KEY                 +121.203s	KEY_LEFTCTRL (29) released
- event4   KEYBOARD_KEY                 +121.564s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +121.684s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +122.285s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +122.404s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +123.005s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +123.125s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +123.726s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +123.845s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +124.446s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +124.566s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +125.167s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +125.286s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +125.887s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +126.007s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +126.608s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +126.727s	KEY_T (20) released
--event5   POINTER_MOTION_ABSOLUTE      +127.604s	 36.25/ 48.00
- event5   POINTER_BUTTON               +128.230s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +128.780s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +129.060s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +129.100s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +129.701s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +129.820s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +130.421s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +130.541s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +131.141s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +131.261s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +131.862s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +131.982s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +132.583s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +132.702s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +133.303s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +133.423s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +134.024s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +134.143s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +134.744s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +134.864s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +135.465s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +135.584s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +136.185s	KEY_P (25) pressed
- event4   KEYBOARD_KEY                 +136.305s	KEY_P (25) released
- event4   KEYBOARD_KEY                 +136.906s	KEY_W (17) pressed
- event4   KEYBOARD_KEY                 +137.025s	KEY_W (17) released
--event5   POINTER_MOTION_ABSOLUTE      +137.900s	 52.34/ 48.00
- event5   POINTER_BUTTON               +138.528s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +139.078s	BTN_LEFT (272) released, seat count: 0
--event4   KEYBOARD_KEY                 +139.278s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +139.398s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +139.999s	KEY_I (23) pressed
- event4   KEYBOARD_KEY                 +140.118s	KEY_I (23) released
- event4   KEYBOARD_KEY                 +140.719s	KEY_N (49) pressed
- event4   KEYBOARD_KEY                 +140.839s	KEY_N (49) released
- event4   KEYBOARD_KEY                 +141.440s	KEY_D (32) pressed
- event4   KEYBOARD_KEY                 +141.559s	KEY_D (32) released
- event4   KEYBOARD_KEY                 +142.160s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +142.280s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +142.881s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +143.000s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +143.601s	KEY_E (18) pressed
- event4   KEYBOARD_KEY                 +143.721s	KEY_E (18) released
- event4   KEYBOARD_KEY                 +144.322s	KEY_S (31) pressed
- event4   KEYBOARD_KEY                 +144.441s	KEY_S (31) released
- event4   KEYBOARD_KEY                 +145.042s	KEY_T (20) pressed
- event4   KEYBOARD_KEY                 +145.162s	KEY_T (20) released
- event4   KEYBOARD_KEY                 +145.763s	KEY_MINUS (12) pressed
- event4   KEYBOARD_KEY                 +145.882s	KEY_MINUS (12) released
- event4   KEYBOARD_KEY                 +146.483s	KEY_P (25) pressed
- event4   KEYBOARD_KEY                 +146.603s	KEY_P (25) released
- event4   KEYBOARD_KEY                 +147.204s	KEY_W (17) pressed
- event4   KEYBOARD_KEY                 +147.323s	KEY_W (17) released
--event5   POINTER_MOTION_ABSOLUTE      +148.200s	 29.06/ 52.50
- event5   POINTER_BUTTON               +148.826s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +149.376s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +153.728s	 81.64/ 91.87
- event5   POINTER_BUTTON               +154.354s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +154.905s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_BUTTON               +163.874s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +164.424s	BTN_LEFT (272) released, seat count: 0
- event5   POINTER_MOTION_ABSOLUTE      +164.825s	 81.64/ 97.62
- event5   POINTER_BUTTON               +165.526s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +166.076s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +1.176s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +5.973s	  2.19/  8.12
+ event5   POINTER_BUTTON               +6.597s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +7.147s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +21.343s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +21.374s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +22.975s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +23.095s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +24.695s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +24.815s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +26.423s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +26.535s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +28.143s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +28.263s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +29.863s	KEY_DOWN (108) pressed
+ event4   KEYBOARD_KEY                 +29.983s	KEY_DOWN (108) released
+ event4   KEYBOARD_KEY                 +31.578s	KEY_SPACE (57) pressed
+ event4   KEYBOARD_KEY                 +31.698s	KEY_SPACE (57) released
+ event4   KEYBOARD_KEY                 +35.279s	KEY_LEFTALT (56) pressed
+ event4   KEYBOARD_KEY                 +35.322s	KEY_O (24) pressed
+ event4   KEYBOARD_KEY                 +35.442s	KEY_O (24) released
+ event4   KEYBOARD_KEY                 +35.562s	KEY_LEFTALT (56) released
+-event5   POINTER_MOTION_ABSOLUTE      +66.200s	 81.64/ 91.87
+ event5   POINTER_BUTTON               +66.825s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +67.376s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +73.478s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +74.029s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +80.130s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +80.681s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +91.157s	 29.06/ 28.12
+ event5   POINTER_BUTTON               +91.783s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +92.334s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +95.808s	 81.64/ 91.87
+ event5   POINTER_BUTTON               +96.435s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +96.986s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +103.460s	 36.25/ 25.50
+ event5   POINTER_BUTTON               +104.088s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +104.639s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +104.913s	KEY_LEFTSHIFT (42) pressed
+ event4   KEYBOARD_KEY                 +104.958s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +105.078s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +105.198s	KEY_LEFTSHIFT (42) released
+ event4   KEYBOARD_KEY                 +105.559s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +105.679s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +106.280s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +106.399s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +107.000s	KEY_D (32) pressed
+ event4   KEYBOARD_KEY                 +107.120s	KEY_D (32) released
+ event4   KEYBOARD_KEY                 +107.721s	KEY_SPACE (57) pressed
+ event4   KEYBOARD_KEY                 +107.840s	KEY_SPACE (57) released
+ event4   KEYBOARD_KEY                 +108.441s	KEY_LEFTSHIFT (42) pressed
+ event4   KEYBOARD_KEY                 +108.561s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +108.681s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +108.801s	KEY_LEFTSHIFT (42) released
+ event4   KEYBOARD_KEY                 +109.162s	KEY_E (18) pressed
+ event4   KEYBOARD_KEY                 +109.281s	KEY_E (18) released
+ event4   KEYBOARD_KEY                 +109.883s	KEY_S (31) pressed
+ event4   KEYBOARD_KEY                 +110.002s	KEY_S (31) released
+ event4   KEYBOARD_KEY                 +110.603s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +110.723s	KEY_T (20) released
+-event5   POINTER_MOTION_ABSOLUTE      +111.600s	 36.25/ 33.00
+ event5   POINTER_BUTTON               +112.225s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +112.776s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +113.058s	KEY_LEFTCTRL (29) pressed
+ event4   KEYBOARD_KEY                 +113.096s	KEY_A (30) pressed
+ event4   KEYBOARD_KEY                 +113.216s	KEY_A (30) released
+ event4   KEYBOARD_KEY                 +113.336s	KEY_LEFTCTRL (29) released
+ event4   KEYBOARD_KEY                 +113.697s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +113.816s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +114.417s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +114.537s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +115.138s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +115.257s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +115.858s	KEY_D (32) pressed
+ event4   KEYBOARD_KEY                 +115.978s	KEY_D (32) released
+-event5   POINTER_MOTION_ABSOLUTE      +116.860s	 36.25/ 40.50
+ event5   POINTER_BUTTON               +117.481s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +118.031s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +118.231s	KEY_LEFTCTRL (29) pressed
+ event4   KEYBOARD_KEY                 +118.351s	KEY_A (30) pressed
+ event4   KEYBOARD_KEY                 +118.471s	KEY_A (30) released
+ event4   KEYBOARD_KEY                 +118.591s	KEY_LEFTCTRL (29) released
+ event4   KEYBOARD_KEY                 +118.951s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +119.071s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +119.672s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +119.792s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +120.393s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +120.512s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +121.113s	KEY_D (32) pressed
+ event4   KEYBOARD_KEY                 +121.233s	KEY_D (32) released
+ event4   KEYBOARD_KEY                 +121.834s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +121.954s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +122.554s	KEY_E (18) pressed
+ event4   KEYBOARD_KEY                 +122.674s	KEY_E (18) released
+ event4   KEYBOARD_KEY                 +123.275s	KEY_S (31) pressed
+ event4   KEYBOARD_KEY                 +123.395s	KEY_S (31) released
+ event4   KEYBOARD_KEY                 +123.995s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +124.115s	KEY_T (20) released
+-event5   POINTER_MOTION_ABSOLUTE      +124.992s	 36.25/ 48.00
+ event5   POINTER_BUTTON               +125.618s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +126.168s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +126.449s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +126.488s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +127.089s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +127.209s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +127.809s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +127.929s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +128.530s	KEY_D (32) pressed
+ event4   KEYBOARD_KEY                 +128.650s	KEY_D (32) released
+ event4   KEYBOARD_KEY                 +129.250s	KEY_MINUS (12) pressed
+ event4   KEYBOARD_KEY                 +129.370s	KEY_MINUS (12) released
+ event4   KEYBOARD_KEY                 +129.971s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +130.091s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +130.691s	KEY_E (18) pressed
+ event4   KEYBOARD_KEY                 +130.811s	KEY_E (18) released
+ event4   KEYBOARD_KEY                 +131.412s	KEY_S (31) pressed
+ event4   KEYBOARD_KEY                 +131.532s	KEY_S (31) released
+ event4   KEYBOARD_KEY                 +132.132s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +132.252s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +132.853s	KEY_MINUS (12) pressed
+ event4   KEYBOARD_KEY                 +132.973s	KEY_MINUS (12) released
+ event4   KEYBOARD_KEY                 +133.574s	KEY_P (25) pressed
+ event4   KEYBOARD_KEY                 +133.693s	KEY_P (25) released
+ event4   KEYBOARD_KEY                 +134.294s	KEY_W (17) pressed
+ event4   KEYBOARD_KEY                 +134.413s	KEY_W (17) released
+-event5   POINTER_MOTION_ABSOLUTE      +135.293s	 52.34/ 48.00
+ event5   POINTER_BUTTON               +135.916s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +136.467s	BTN_LEFT (272) released, seat count: 0
+-event4   KEYBOARD_KEY                 +136.667s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +136.786s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +137.387s	KEY_I (23) pressed
+ event4   KEYBOARD_KEY                 +137.507s	KEY_I (23) released
+ event4   KEYBOARD_KEY                 +138.108s	KEY_N (49) pressed
+ event4   KEYBOARD_KEY                 +138.227s	KEY_N (49) released
+ event4   KEYBOARD_KEY                 +138.828s	KEY_D (32) pressed
+ event4   KEYBOARD_KEY                 +138.948s	KEY_D (32) released
+ event4   KEYBOARD_KEY                 +139.549s	KEY_MINUS (12) pressed
+ event4   KEYBOARD_KEY                 +139.668s	KEY_MINUS (12) released
+ event4   KEYBOARD_KEY                 +140.269s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +140.389s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +140.990s	KEY_E (18) pressed
+ event4   KEYBOARD_KEY                 +141.109s	KEY_E (18) released
+ event4   KEYBOARD_KEY                 +141.711s	KEY_S (31) pressed
+ event4   KEYBOARD_KEY                 +141.830s	KEY_S (31) released
+ event4   KEYBOARD_KEY                 +142.431s	KEY_T (20) pressed
+ event4   KEYBOARD_KEY                 +142.551s	KEY_T (20) released
+ event4   KEYBOARD_KEY                 +143.152s	KEY_MINUS (12) pressed
+ event4   KEYBOARD_KEY                 +143.271s	KEY_MINUS (12) released
+ event4   KEYBOARD_KEY                 +143.872s	KEY_P (25) pressed
+ event4   KEYBOARD_KEY                 +143.992s	KEY_P (25) released
+ event4   KEYBOARD_KEY                 +144.593s	KEY_W (17) pressed
+ event4   KEYBOARD_KEY                 +144.712s	KEY_W (17) released
+-event5   POINTER_MOTION_ABSOLUTE      +145.588s	 29.06/ 52.50
+ event5   POINTER_BUTTON               +146.215s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +146.766s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +151.188s	 81.64/ 91.87
+ event5   POINTER_BUTTON               +151.813s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +152.363s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_BUTTON               +161.400s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +161.950s	BTN_LEFT (272) released, seat count: 0
+ event5   POINTER_MOTION_ABSOLUTE      +162.351s	 81.64/ 97.62
+ event5   POINTER_BUTTON               +163.052s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +163.603s	BTN_LEFT (272) released, seat count: 0
