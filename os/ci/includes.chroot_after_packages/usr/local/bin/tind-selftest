@@ -73,11 +73,12 @@ echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbol
 cat /etc/default/keyboard 2>&1 | grep -E '^XKB(LAYOUT|MODEL)'
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
 echo "extension dirs: $(ls /usr/share/gnome-shell/extensions | tr '\n' ' ')"
-for u in ubuntu-appindicators@ubuntu.com appindicatorsupport@rgcjonas.gmail.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
+for u in ubuntu-appindicators@ubuntu.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
   d=/usr/share/gnome-shell/extensions/$u
   echo "$u: files $(test -e $d/metadata.json && echo present || echo MISSING), schema $(test -e $d/schemas/gschemas.compiled && echo compiled || echo none-or-NOT-COMPILED), $(asuser gnome-extensions list --enabled 2>&1 | grep -qx "$u" && echo ENABLED || echo NOT-ENABLED)"
   asuser gnome-extensions info "$u" 2>&1 | grep -iE 'state|error|version' | head -4
 done
+echo "dbusmenu typelib: $(dpkg-query -W -f='${db:Status-Abbrev}' gir1.2-dbusmenu-glib-0.4 2>&1 | head -1)  geoclue: $(dpkg-query -W -f='${db:Status-Abbrev}' geoclue-2.0 2>&1 | head -1)"
 echo "file-roller: $(dpkg -s file-roller >/dev/null 2>&1 && echo installed || echo MISSING)"
 sec "tind update repository (static checks; the live site is not required to exist yet)"
 echo "tind-archive-keyring: $(dpkg-query -W -f='${Version} ${db:Status-Abbrev}' tind-archive-keyring 2>&1)"
@@ -111,13 +112,20 @@ sec "enroll init/apply smoke test"
 tind-enroll init 2>&1 | tail -3
 tind-enroll apply </dev/null 2>&1 | tail -2   # empty block: must refuse cleanly
 # a made-up block (documentation address, all-zero key) to exercise the real nmcli import path
-tind-enroll apply 2>&1 <<'BLOCK' | tail -3
+tmp_before="$(find /tmp -maxdepth 1 -name 'tmp.*' | wc -l)"
+apply_out="$(tind-enroll apply 2>&1 <<'BLOCK'
 ADDRESS=10.99.99.2/32
 SERVER_ENDPOINT=192.0.2.1:51820
 SERVER_PUBLIC_KEY=AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
 ALLOWED_IPS=10.99.99.0/24
 DNS_SERVER=10.99.99.1
 BLOCK
+)"
+echo "$apply_out" | tail -3
+# regression: the cleanup trap once failed with "tmp: unbound variable" and left the private-key temp dir behind
+if echo "$apply_out" | grep -q "unbound variable"; then echo "tind-enroll apply: FAIL: shell error in the cleanup trap"; else echo "tind-enroll apply: no shell errors"; fi
+tmp_after="$(find /tmp -maxdepth 1 -name 'tmp.*' | wc -l)"
+[ "$tmp_after" -le "$tmp_before" ] && echo "tind-enroll apply: temp dir removed" || echo "tind-enroll apply: FAIL: temp dir left behind ($tmp_before -> $tmp_after)"
 tind-enroll status 2>&1 | tail -2
 tind-enroll remove --purge-key 2>&1 | tail -2
 sec "wireguard watchdog"; systemctl is-enabled tind-wireguard-watchdog.timer 2>&1; /usr/lib/tind/wireguard-watchdog; echo "watchdog with no tunnel installed: exit $?"

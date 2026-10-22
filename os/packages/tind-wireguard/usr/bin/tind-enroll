@@ -129,7 +129,9 @@ cmd_apply() {
     local addr="$ADDRESS"
 
     local tmp; tmp="$(mktemp -d)"
-    trap 'rm -rf "$tmp"' EXIT
+    # Expand $tmp now: it is local to this function, so with set -u an EXIT trap that reads it later
+    # fails with "tmp: unbound variable" and the directory holding the private key is never removed.
+    trap "rm -rf '$tmp'" EXIT
     local file="$tmp/$CONNECTION_NAME.conf"
     umask 077
     cat > "$file" <<CFG

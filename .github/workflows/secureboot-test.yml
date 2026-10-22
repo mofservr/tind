@@ -1,18 +1,28 @@
 name: secureboot-test
 # Inspects the ISO's EFI files and boots the live ISO under OVMF with Secure Boot enabled (Microsoft keys).
-# Reuses the ISO from the build run named in os/ci/secureboot/ISO_RUN_ID.
+# Runs after every successful "build" on main that built an ISO (the ISO of that build run), when a file under
+# os/ci/secureboot/ changes (the ISO of the build run named in ISO_RUN_ID), and by hand.
 on:
   push:
     branches-ignore: [ci-logs]
     paths: ['os/ci/secureboot/**', '.github/workflows/secureboot-test.yml']
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 defaults:
   run:
     shell: bash
 
+concurrency:
+  group: secureboot-test
+  cancel-in-progress: false
+
 jobs:
   secureboot:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[skip iso]')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
@@ -20,9 +30,16 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Read ISO run id
         id: iso
-        run: echo "run=$(tr -d '[:space:]' < os/ci/secureboot/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [ "${{ github.event_name }}" = workflow_run ]; then
+            echo "run=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=$(tr -d '[:space:]' < os/ci/secureboot/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/download-artifact@v4
         with:
           name: tind-iso
@@ -83,11 +100,13 @@ jobs:
         env:
           GH_REF: ${{ github.ref_name }}
           GH_RUN: ${{ github.run_id }}
+          GH_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -eu
           git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out
           d="out/secureboot_${GH_REF//\//_}"
           rm -rf "$d"; mkdir -p "$d"
+          printf 'ref: %s\nsha: %s\nrun: %s\n' "$GH_REF" "$GH_SHA" "$GH_RUN" > "$d/STATUS"
           for f in logs/*.log; do [ -e "$f" ] && tail -n 400 "$f" > "$d/$(basename "$f").tail"; done
           for f in logs/*.png; do [ -e "$f" ] && convert "$f" -resize 800x -quality 60 "$d/$(basename "$f" .png).jpg"; done
           cd out

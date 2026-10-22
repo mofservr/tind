@@ -1,17 +1,27 @@
 name: installer-test
-# Runs when a file under os/ci/installer-test/ changes. Reuses the ISO from the build run named in ISO_RUN_ID.
+# Runs after every successful "build" on main that built an ISO (the ISO of that build run), when a file under
+# os/ci/installer-test/ changes (the ISO of the build run named in ISO_RUN_ID), and by hand.
 on:
   push:
     branches-ignore: [ci-logs]
     paths: ['os/ci/installer-test/**', 'os/ci/drive.py', '.github/workflows/installer-test.yml']
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 
 defaults:
   run:
     shell: bash
 
+concurrency:
+  group: installer-test
+  cancel-in-progress: false
+
 jobs:
   install:
+    if: ${{ github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && !contains(github.event.workflow_run.head_commit.message, '[skip iso]')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
     permissions:
@@ -19,9 +29,16 @@ jobs:
       actions: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
       - name: Read ISO run id
         id: iso
-        run: echo "run=$(tr -d '[:space:]' < os/ci/installer-test/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [ "${{ github.event_name }}" = workflow_run ]; then
+            echo "run=${{ github.event.workflow_run.id }}" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=$(tr -d '[:space:]' < os/ci/installer-test/ISO_RUN_ID)" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/download-artifact@v4
         with:
           name: tind-iso
@@ -87,7 +104,7 @@ jobs:
         if: always()
         env:
           GH_REF: ${{ github.ref_name }}
-          GH_SHA: ${{ github.sha }}
+          GH_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
         run: |
           set -eu
           git clone --depth 1 --branch ci-logs "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out 2>/dev/null \
@@ -99,4 +116,4 @@ jobs:
           printf 'ref: %s\nsha: %s\n' "$GH_REF" "$GH_SHA" > "$d/STATUS"
           cd out && git add -A
           git -c user.name=ci -c user.email=ci@users.noreply.github.com commit -q -m "installer logs $GH_REF $GH_SHA" || true
-          git push origin ci-logs
+          for n in 1 2 3; do git pull -q --rebase origin ci-logs && git push -q origin ci-logs && break; sleep 3; done
