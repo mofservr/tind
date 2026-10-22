@@ -24,7 +24,7 @@ KEYRING=/usr/share/keyrings/tind-nvidia.gpg
 STATE="${TIND_NVIDIA_STATE:-/var/lib/tind/nvidia-upgrade}"
 STATE_DIR="$(dirname "$STATE")"
 MIN_MAJOR=560
-FAMILY='^(lib)?(nvidia|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)'
+FAMILY='^(lib)?(nvidia|firmware-nvidia-gsp|xnvctrl|xserver-xorg-video-nvidia|glx-|libegl-nvidia|libgl.*nvidia|libglx-nvidia|libcuda|libnvcuvid)'
 DRY=0
 [ "${1:-}" = "--dry-run" ] && DRY=1
 
