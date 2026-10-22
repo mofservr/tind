@@ -17,6 +17,9 @@ KEY="$KEYDIR/private.key"
 
 die() { echo "tind-enroll: $*" >&2; exit 1; }
 
+APPLY_TMP=""
+cleanup_apply() { [ -z "$APPLY_TMP" ] || rm -rf "$APPLY_TMP"; return 0; }
+
 usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
 
 need_root() { [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-enroll $*"; }
@@ -128,11 +131,11 @@ cmd_apply() {
     check_values
     local addr="$ADDRESS"
 
-    local tmp; tmp="$(mktemp -d)"
-    # Expand $tmp now: it is local to this function, so with set -u an EXIT trap that reads it later
-    # fails with "tmp: unbound variable" and the directory holding the private key is never removed.
-    trap "rm -rf '$tmp'" EXIT
-    local file="$tmp/$CONNECTION_NAME.conf"
+    # The temp dir holds the config with the private key. It is a global on purpose: an EXIT trap that
+    # reads a function-local variable fails under set -u ("tmp: unbound variable") and the dir stays.
+    APPLY_TMP="$(mktemp -d)"
+    trap cleanup_apply EXIT
+    local file="$APPLY_TMP/$CONNECTION_NAME.conf"
     umask 077
     cat > "$file" <<CFG
 [Interface]
