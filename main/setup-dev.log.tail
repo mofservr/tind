@@ -55,7 +55,7 @@ Setting up libblockdev3:amd64 (3.3.0-2.1) ...
 Setting up libblockdev-part3:amd64 (3.3.0-2.1) ...
 Setting up gvfs-libs:amd64 (1.57.2-2+deb13u1) ...
 Setting up udisks2 (2.10.1-12.1+deb13u2) ...
-sda: Failed to write 'change' to '/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/VMBUS:00/f8b3781a-1e82-4818-a1c3-63d806ec15bb/host0/target0:0:0/0:0:0:0/block/sda/uevent': Read-only file system
+sda: Failed to write 'change' to '/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/f8b3781a-1e82-4818-a1c3-63d806ec15bb/host0/target0:0:0/0:0:0:0/block/sda/uevent': Read-only file system
 Created symlink '/etc/systemd/system/graphical.target.wants/udisks2.service' → '/usr/lib/systemd/system/udisks2.service'.
 Setting up gvfs-daemons (1.57.2-2+deb13u1) ...
 Setting up gvfs:amd64 (1.57.2-2+deb13u1) ...
@@ -75,7 +75,7 @@ The following NEW packages will be installed:
 Need to get 187 MB of archives.
 After this operation, 630 MB of additional disk space will be used.
 Get:1 https://downloads.claude.ai/claude-desktop/apt/stable stable/main amd64 claude-desktop amd64 3.1623.3 [187 MB]
-Fetched 187 MB in 23s (8105 kB/s)
+Fetched 187 MB in 1s (171 MB/s)
 Selecting previously unselected package claude-desktop.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 39361 files and directories currently installed.)
 Preparing to unpack .../claude-desktop_3.1623.3_amd64.deb ...
@@ -125,7 +125,7 @@ Get:20 http://deb.debian.org/debian trixie/main amd64 virtiofsd amd64 1.13.2-1+d
 W: Target Packages (main/binary-amd64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-arm64/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
 W: Target Packages (main/binary-all/Packages) is configured multiple times in /etc/apt/sources.list.d/claude-desktop.list:4 and /etc/apt/sources.list.d/claude-desktop.sources:1
-Fetched 16.1 MB in 0s (160 MB/s)
+Fetched 16.1 MB in 0s (39.2 MB/s)
 Selecting previously unselected package libcairo-script-interpreter2:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 43932 files and directories currently installed.)
 Preparing to unpack .../00-libcairo-script-interpreter2_1.18.4-1+b1_amd64.deb ...
