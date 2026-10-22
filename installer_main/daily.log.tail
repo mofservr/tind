@@ -1,0 +1,5 @@
+DAILY failed-units ok
+DAILY silent-updates-configured ok
+DAILY apt-update-quiet ok
+DAILY tind-report-clean ok
+DAILY info autostart-update-entries: none
