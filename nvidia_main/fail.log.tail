@@ -204,7 +204,7 @@ Sign command: /lib/modules/6.12.113+deb13-amd64/build/scripts/sign-file
 Signing key: /var/lib/dkms/mok.key
 Public certificate (MOK): /var/lib/dkms/mok.pub
 
-Building module(s).......................................................... done.
+Building module(s).................................................................... done.
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia.ko
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-modeset.ko
 Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-drm.ko
@@ -239,7 +239,6 @@ Processing triggers for glx-alternative-nvidia (1.2.2) ...
 Processing triggers for initramfs-tools (0.148.4) ...
 update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-amd64
 W: No zstd in /usr/bin:/sbin:/bin, using gzip
-libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
@@ -251,6 +250,7 @@ libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprob
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
 Processing triggers for update-glx (1.2.2) ...
 Processing triggers for glx-alternative-nvidia (1.2.2) ...
 update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia because link group glx is broken
@@ -266,35 +266,35 @@ W: No zstd in /usr/bin:/sbin:/bin, using gzip
 == CI: dkms status after the install
 nvidia/615.71.10, 6.12.113+deb13-amd64, x86_64: installed
 tind-nvidia: install failed; going back to Debian's driver
-tind-nvidia: going back: 45 driver packages to their Debian versions, removing: libnvidia-api1:amd64- libnvidia-egl-wayland21:amd64- libnvidia-egl-xcb1:amd64- libnvidia-egl-xlib1:amd64- libnvidia-ngx1- libnvidia-vksc-core- nvidia-egl-icd- nvidia-kernel-open-dkms- nvidia-powerd-
-Building dependency tree...
-Reading state information...
-glx-alternative-mesa is already the newest version (1.2.2).
-glx-alternative-mesa set to manually installed.
-glx-alternative-nvidia is already the newest version (1.2.2).
-glx-alternative-nvidia set to manually installed.
-glx-diversions is already the newest version (1.2.2).
-glx-diversions set to manually installed.
-libglx-mesa0 is already the newest version (25.0.7-2+deb13u1).
-libglx-mesa0 set to manually installed.
-libnvidia-egl-wayland1 is already the newest version (1:1.1.18-1).
-libnvidia-egl-wayland1 set to manually installed.
-Solving dependencies...
-Some packages could not be installed. This may mean that you have
-requested an impossible situation or if you are using the unstable
-distribution that some required packages have not yet been created
-or been moved out of Incoming.
-The following information may help to resolve the situation:
-
-The following packages have unmet dependencies:
- nvidia-kernel-dkms : Depends: firmware-nvidia-gsp (= 550.163.01) or
-                               firmware-nvidia-gsp-550.163.01
-E: Unable to correct problems, you have held broken packages.
-E: The following information from --solver 3.0 may provide additional context:
-   Unable to satisfy dependencies. Reached two conflicting decisions:
-   1. nvidia-kernel-dkms:amd64=550.163.01-2 is selected as a downgrade
-   2. nvidia-kernel-dkms:amd64=550.163.01-2 Depends firmware-nvidia-gsp (= 550.163.01) | firmware-nvidia-gsp-550.163.01
-      but none of the choices are installable:
-      - firmware-nvidia-gsp:amd64=550.163.01-2 is not selected for install
-      - firmware-nvidia-gsp:amd64=550.163.01-2 is not selected for install
-tind-nvidia: could not put Debian's driver packages back (nvidia-driver is 615.71.10-1)
+tind-nvidia: going back: 46 driver packages to their Debian versions, removing: libnvidia-api1:amd64- libnvidia-egl-wayland21:amd64- libnvidia-egl-xcb1:amd64- libnvidia-egl-xlib1:amd64- libnvidia-ngx1- libnvidia-vksc-core- libxnvctrl0:amd64- nvidia-egl-icd- nvidia-kernel-open-dkms- nvidia-powerd-
+Signing module /var/lib/dkms/nvidia-current/550.163.01/build/nvidia-drm.ko
+Signing module /var/lib/dkms/nvidia-current/550.163.01/build/nvidia-uvm.ko
+Signing module /var/lib/dkms/nvidia-current/550.163.01/build/nvidia-peermem.ko
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-modeset.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-drm.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-uvm.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-peermem.ko.xz
+Running depmod.... done.
+Setting up nvidia-smi (550.163.01-2) ...
+Setting up nvidia-driver-bin (550.163.01-2) ...
+Setting up nvidia-driver-libs:amd64 (550.163.01-2) ...
+Setting up nvidia-persistenced (550.163.01-1) ...
+invoke-rc.d: could not determine current runlevel
+invoke-rc.d: policy-rc.d denied execution of restart.
+Setting up libcuda1:amd64 (550.163.01-2) ...
+Setting up nvidia-driver (550.163.01-2) ...
+Setting up libnvcuvid1:amd64 (550.163.01-2) ...
+Setting up libnvidia-encode1:amd64 (550.163.01-2) ...
+Processing triggers for glx-alternative-nvidia (1.2.2) ...
+Processing triggers for glx-alternative-mesa (1.2.2) ...
+update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia because link group glx is broken
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for update-glx (1.2.2) ...
+Processing triggers for glx-alternative-nvidia (1.2.2) ...
+update-alternatives: updating alternative /usr/lib/nvidia because link group glx has changed slave links
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for initramfs-tools (0.148.4) ...
+update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-amd64
+W: No zstd in /usr/bin:/sbin:/bin, using gzip
+tind-nvidia: Debian's driver is back (nvidia-driver 550.163.01-2)

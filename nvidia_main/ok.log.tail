@@ -1,0 +1,300 @@
+Get:19 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-ptxjitcompiler1 615.71.10-1 [9081 kB]
+Get:20 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-pkcs11-openssl3 615.71.10-1 [135 kB]
+Get:21 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-vdpau-driver 615.71.10-1 [434 kB]
+Get:22 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-persistenced 615.71.10-1 [27.1 kB]
+Get:23 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-cfg1 615.71.10-1 [272 kB]
+Get:24 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libxnvctrl0 615.71.10-1 [11.1 kB]
+Get:25 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-settings 615.71.10-1 [765 kB]
+Get:26 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-dkms 615.71.10-1 [131 kB]
+Get:27 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-support 615.71.10-1 [171 kB]
+Get:28 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  firmware-nvidia-gsp 615.71.10-1 [75.7 MB]
+Get:29 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-kernel-open-dkms 615.71.10-1 [16.5 MB]
+Get:30 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-modprobe 615.71.10-1 [21.5 kB]
+Get:31 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  nvidia-powerd 615.71.10-1 [1202 kB]
+Get:32 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-allocator1 615.71.10-1 [184 kB]
+Get:33 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-api1 615.71.10-1 [411 kB]
+Get:34 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-gbm1 1.1.4-2 [13.0 kB]
+Get:35 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-wayland21 1.0.2-1 [36.7 kB]
+Get:36 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-xcb1 1:1.0.6-1 [34.0 kB]
+Get:37 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-egl-xlib1 1:1.0.6-1 [34.7 kB]
+Get:38 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-ngx1 615.71.10-1 [5954 kB]
+Get:39 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-vksc-core 615.71.10-1 [4264 kB]
+Get:40 https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64  libnvidia-encode1 615.71.10-1 [229 kB]
+Fetched 204 MB in 9s (22.8 MB/s)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46760 files and directories currently installed.)
+Removing nvidia-suspend-common (550.163.01-2) ...
+dpkg: nvidia-driver-bin: dependency problems, but removing anyway as you requested:
+ nvidia-driver depends on nvidia-driver-bin (= 550.163.01-2).
+
+Removing nvidia-driver-bin (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46730 files and directories currently installed.)
+Preparing to unpack .../nvidia-driver_615.71.10-1_amd64.deb ...
+Unpacking nvidia-driver (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../libnvcuvid1_615.71.10-1_amd64.deb ...
+Unpacking libnvcuvid1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../nvidia-driver-libs_615.71.10-1_amd64.deb ...
+Unpacking nvidia-driver-libs:amd64 (615.71.10-1) over (550.163.01-2) ...
+dpkg: nvidia-egl-common: dependency problems, but removing anyway as you requested:
+ nvidia-egl-icd:amd64 depends on nvidia-egl-common.
+
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46726 files and directories currently installed.)
+Removing nvidia-egl-common (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46717 files and directories currently installed.)
+Preparing to unpack .../nvidia-egl-icd_615.71.10-1_amd64.deb ...
+Unpacking nvidia-egl-icd (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../libegl-nvidia0_615.71.10-1_amd64.deb ...
+Unpacking libegl-nvidia0:amd64 (615.71.10-1) over (550.163.01-2) ...
+dpkg: nvidia-vulkan-common: dependency problems, but removing anyway as you requested:
+ nvidia-vulkan-icd:amd64 depends on nvidia-vulkan-common.
+
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46711 files and directories currently installed.)
+Removing nvidia-vulkan-common (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46701 files and directories currently installed.)
+Preparing to unpack .../nvidia-vulkan-icd_615.71.10-1_amd64.deb ...
+Unpacking nvidia-vulkan-icd:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../libnvidia-rtcore_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-rtcore:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../xserver-xorg-video-nvidia_615.71.10-1_amd64.deb ...
+Unpacking xserver-xorg-video-nvidia (615.71.10-1) over (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46688 files and directories currently installed.)
+Removing libgl1-nvidia-glvnd-glx:amd64 (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46679 files and directories currently installed.)
+Preparing to unpack .../00-libglx-nvidia0_615.71.10-1_amd64.deb ...
+Unpacking libglx-nvidia0:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../01-libgles-nvidia2_615.71.10-1_amd64.deb ...
+Unpacking libgles-nvidia2:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../02-libgles-nvidia1_615.71.10-1_amd64.deb ...
+Unpacking libgles-nvidia1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../03-libnvidia-eglcore_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-eglcore:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../04-libnvidia-glcore_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-glcore:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../05-libnvidia-glvkspirv_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-glvkspirv:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../06-nvidia-smi_615.71.10-1_amd64.deb ...
+Unpacking nvidia-smi (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../07-libnvidia-ml1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-ml1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../08-libnvidia-gpucomp_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-gpucomp:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../09-libcuda1_615.71.10-1_amd64.deb ...
+Unpacking libcuda1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../10-libnvidia-ptxjitcompiler1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-ptxjitcompiler1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../11-libnvidia-pkcs11-openssl3_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-pkcs11-openssl3:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../12-nvidia-vdpau-driver_615.71.10-1_amd64.deb ...
+Unpacking nvidia-vdpau-driver:amd64 (615.71.10-1) over (550.163.01-2) ...
+Preparing to unpack .../13-nvidia-persistenced_615.71.10-1_amd64.deb ...
+Unpacking nvidia-persistenced (615.71.10-1) over (550.163.01-1) ...
+Preparing to unpack .../14-libnvidia-cfg1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-cfg1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Selecting previously unselected package libxnvctrl0:amd64.
+Preparing to unpack .../15-libxnvctrl0_615.71.10-1_amd64.deb ...
+Unpacking libxnvctrl0:amd64 (615.71.10-1) ...
+Preparing to unpack .../16-nvidia-settings_615.71.10-1_amd64.deb ...
+Unpacking nvidia-settings (615.71.10-1) over (550.163.01-1) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46621 files and directories currently installed.)
+Removing nvidia-support (20240109+1) ...
+dpkg: nvidia-installer-cleanup: dependency problems, but removing anyway as you requested:
+ nvidia-settings depends on nvidia-installer-cleanup.
+ nvidia-legacy-check depends on nvidia-installer-cleanup (>= 20151021).
+ nvidia-kernel-dkms depends on nvidia-installer-cleanup.
+ glx-diversions depends on nvidia-installer-cleanup.
+
+Removing nvidia-installer-cleanup (20240109+1) ...
+dpkg: nvidia-kernel-common: dependency problems, but removing anyway as you requested:
+ nvidia-kernel-support depends on nvidia-kernel-common (>= 20151021).
+
+Removing nvidia-kernel-common (20240109+1) ...
+dpkg: nvidia-legacy-check: dependency problems, but removing anyway as you requested:
+ nvidia-alternative depends on nvidia-legacy-check (>= 495).
+
+Removing nvidia-legacy-check (550.163.01-2) ...
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46590 files and directories currently installed.)
+Preparing to unpack .../nvidia-kernel-dkms_615.71.10-1_amd64.deb ...
+Module nvidia-current/550.163.01 for kernel 6.12.113+deb13-amd64 (x86_64):
+Before uninstall, this module version was ACTIVE on this kernel.
+Deleting /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current.ko.xz
+Deleting /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-modeset.ko.xz
+Deleting /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-drm.ko.xz
+Deleting /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-uvm.ko.xz
+Deleting /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-current-peermem.ko.xz
+Running depmod.... done.
+
+Deleting module nvidia-current/550.163.01 completely from the DKMS tree.
+Unpacking nvidia-kernel-dkms (615.71.10-1) over (550.163.01-2) ...
+dpkg: nvidia-alternative: dependency problems, but removing anyway as you requested:
+ nvidia-kernel-support depends on nvidia-alternative (= 550.163.01-2).
+ nvidia-kernel-support depends on nvidia-alternative--kmod-alias; however:
+  Package nvidia-alternative--kmod-alias is not installed.
+  Package nvidia-alternative which provides nvidia-alternative--kmod-alias is to be removed.
+ nvidia-kernel-support depends on nvidia-alternative (= 550.163.01-2).
+ nvidia-kernel-support depends on nvidia-alternative--kmod-alias; however:
+  Package nvidia-alternative--kmod-alias is not installed.
+  Package nvidia-alternative which provides nvidia-alternative--kmod-alias is to be removed.
+
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46120 files and directories currently installed.)
+Removing nvidia-alternative (550.163.01-2) ...
+update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia/current because link group nvidia is broken
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libEGL_nvidia.so.0 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libEGL_nvidia.so.0 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libGLESv1_CM_nvidia.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libGLESv1_CM_nvidia.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libGLESv2_nvidia.so.2 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libGLESv2_nvidia.so.2 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libGLX_nvidia.so.0 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libGLX_nvidia.so.0 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libcuda.so because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libcuda.so (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libcuda.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libcuda.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/nvidia/libglxserver_nvidia.so because associated file /usr/lib/nvidia/current/libglxserver_nvidia.so (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libnvcuvid.so because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libnvcuvid.so (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libnvcuvid.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libnvcuvid.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/nvidia/libnvidia-cfg.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libnvidia-cfg.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libnvidia-ml.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libnvidia-ml.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/libnvidia-ptxjitcompiler.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libnvidia-ptxjitcompiler.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/x86_64-linux-gnu/vdpau/libvdpau_nvidia.so.1 because associated file /usr/lib/x86_64-linux-gnu/nvidia/current/libvdpau_nvidia.so.1 (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/bin/nv-control-dpy because associated file /usr/lib/nvidia/current/nv-control-dpy (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/nvidia/nvidia-application-profiles-key-documentation because associated file /usr/share/nvidia/nvidia-application-profiles-550.163.01-key-documentation (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/nvidia/nvidia-bug-report.sh because associated file /usr/lib/nvidia/current/nvidia-bug-report.sh (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/bin/nvidia-debugdump because associated file /usr/lib/nvidia/current/nvidia-debugdump (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/bin/nvidia-settings because associated file /usr/lib/nvidia/current/nvidia-settings (of link group nvidia) doesn't exist
+update-alternatives: warning: not removing /usr/bin/nvidia-settings since it's not a symlink
+update-alternatives: warning: skip creation of /usr/share/man/man1/nvidia-settings.1.gz because associated file /usr/lib/nvidia/current/nvidia-settings.1.gz (of link group nvidia) doesn't exist
+update-alternatives: warning: not removing /usr/share/man/man1/nvidia-settings.1.gz since it's not a symlink
+update-alternatives: warning: skip creation of /usr/share/applications/nvidia-settings.desktop because associated file /usr/lib/nvidia/current/nvidia-settings.desktop (of link group nvidia) doesn't exist
+update-alternatives: warning: not removing /usr/share/applications/nvidia-settings.desktop since it's not a symlink
+update-alternatives: warning: skip creation of /usr/bin/nvidia-smi because associated file /usr/lib/nvidia/current/nvidia-smi (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/share/man/man1/nvidia-smi.1.gz because associated file /usr/lib/nvidia/current/nvidia-smi.1.gz (of link group nvidia) doesn't exist
+update-alternatives: warning: skip creation of /usr/lib/nvidia/nvidia_drv.so because associated file /usr/lib/nvidia/current/nvidia_drv.so (of link group nvidia) doesn't exist
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46104 files and directories currently installed.)
+Preparing to unpack .../nvidia-kernel-support_615.71.10-1_amd64.deb ...
+Unpacking nvidia-kernel-support (615.71.10-1) over (550.163.01-2) ...
+dpkg: warning: unable to delete old directory '/etc/nvidia/current': Directory not empty
+dpkg: warning: unable to delete old directory '/etc/nvidia': Directory not empty
+Preparing to unpack .../firmware-nvidia-gsp_615.71.10-1_amd64.deb ...
+Unpacking firmware-nvidia-gsp (615.71.10-1) over (550.163.01-2) ...
+dpkg: warning: unable to delete old directory '/usr/lib/firmware/nvidia': Directory not empty
+dpkg: warning: unable to delete old directory '/usr/lib/firmware': Directory not empty
+Preparing to unpack .../nvidia-modprobe_615.71.10-1_amd64.deb ...
+Unpacking nvidia-modprobe (615.71.10-1) over (570.133.07-1) ...
+Setting up nvidia-modprobe (615.71.10-1) ...
+Setting up nvidia-kernel-support (615.71.10-1) ...
+update-initramfs: deferring update (trigger activated)
+Selecting previously unselected package nvidia-kernel-open-dkms.
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 46100 files and directories currently installed.)
+Preparing to unpack .../00-nvidia-kernel-open-dkms_615.71.10-1_amd64.deb ...
+Unpacking nvidia-kernel-open-dkms (615.71.10-1) ...
+Selecting previously unselected package nvidia-powerd.
+Preparing to unpack .../01-nvidia-powerd_615.71.10-1_amd64.deb ...
+Unpacking nvidia-powerd (615.71.10-1) ...
+Preparing to unpack .../02-libnvidia-allocator1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-allocator1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Selecting previously unselected package libnvidia-api1:amd64.
+Preparing to unpack .../03-libnvidia-api1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-api1:amd64 (615.71.10-1) ...
+Preparing to unpack .../04-libnvidia-egl-gbm1_1.1.4-2_amd64.deb ...
+Unpacking libnvidia-egl-gbm1:amd64 (1.1.4-2) over (1.1.2.1-1) ...
+Selecting previously unselected package libnvidia-egl-wayland21:amd64.
+Preparing to unpack .../05-libnvidia-egl-wayland21_1.0.2-1_amd64.deb ...
+Unpacking libnvidia-egl-wayland21:amd64 (1.0.2-1) ...
+Selecting previously unselected package libnvidia-egl-xcb1:amd64.
+Preparing to unpack .../06-libnvidia-egl-xcb1_1%3a1.0.6-1_amd64.deb ...
+Unpacking libnvidia-egl-xcb1:amd64 (1:1.0.6-1) ...
+Selecting previously unselected package libnvidia-egl-xlib1:amd64.
+Preparing to unpack .../07-libnvidia-egl-xlib1_1%3a1.0.6-1_amd64.deb ...
+Unpacking libnvidia-egl-xlib1:amd64 (1:1.0.6-1) ...
+Selecting previously unselected package libnvidia-ngx1.
+Preparing to unpack .../08-libnvidia-ngx1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-ngx1 (615.71.10-1) ...
+Selecting previously unselected package libnvidia-vksc-core.
+Preparing to unpack .../09-libnvidia-vksc-core_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-vksc-core (615.71.10-1) ...
+Preparing to unpack .../10-libnvidia-encode1_615.71.10-1_amd64.deb ...
+Unpacking libnvidia-encode1:amd64 (615.71.10-1) over (550.163.01-2) ...
+Setting up libnvidia-glvkspirv:amd64 (615.71.10-1) ...
+Setting up libnvidia-egl-wayland21:amd64 (1.0.2-1) ...
+Setting up libnvidia-ml1:amd64 (615.71.10-1) ...
+Setting up nvidia-powerd (615.71.10-1) ...
+Setting up libnvidia-cfg1:amd64 (615.71.10-1) ...
+Setting up libnvidia-allocator1:amd64 (615.71.10-1) ...
+Setting up libnvidia-egl-xcb1:amd64 (1:1.0.6-1) ...
+Setting up libxnvctrl0:amd64 (615.71.10-1) ...
+Setting up libnvidia-pkcs11-openssl3:amd64 (615.71.10-1) ...
+Setting up libnvidia-ngx1 (615.71.10-1) ...
+Setting up nvidia-vdpau-driver:amd64 (615.71.10-1) ...
+Setting up libnvidia-egl-xlib1:amd64 (1:1.0.6-1) ...
+Setting up firmware-nvidia-gsp (615.71.10-1) ...
+Setting up nvidia-settings (615.71.10-1) ...
+Setting up libnvidia-gpucomp:amd64 (615.71.10-1) ...
+Setting up nvidia-smi (615.71.10-1) ...
+Setting up libnvidia-api1:amd64 (615.71.10-1) ...
+Setting up libnvidia-egl-gbm1:amd64 (1.1.4-2) ...
+Setting up libnvidia-rtcore:amd64 (615.71.10-1) ...
+Setting up libnvidia-eglcore:amd64 (615.71.10-1) ...
+Setting up nvidia-persistenced (615.71.10-1) ...
+Setting up nvidia-kernel-open-dkms (615.71.10-1) ...
+Loading new nvidia/615.71.10 DKMS files...
+Building for 6.12.113+deb13-amd64
+
+Building initial module nvidia/615.71.10 for 6.12.113+deb13-amd64
+Sign command: /lib/modules/6.12.113+deb13-amd64/build/scripts/sign-file
+Signing key: /var/lib/dkms/mok.key
+Public certificate (MOK): /var/lib/dkms/mok.pub
+
+Building module(s)................................................................... done.
+Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia.ko
+Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-modeset.ko
+Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-drm.ko
+Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-peermem.ko
+Signing module /var/lib/dkms/nvidia/615.71.10/build/kernel-open/nvidia-uvm.ko
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-modeset.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-drm.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-peermem.ko.xz
+Installing /lib/modules/6.12.113+deb13-amd64/updates/dkms/nvidia-uvm.ko.xz
+Running depmod.... done.
+Setting up libnvidia-glcore:amd64 (615.71.10-1) ...
+Setting up nvidia-kernel-dkms (615.71.10-1) ...
+Setting up libgles-nvidia1:amd64 (615.71.10-1) ...
+Setting up libnvidia-ptxjitcompiler1:amd64 (615.71.10-1) ...
+Setting up libegl-nvidia0:amd64 (615.71.10-1) ...
+Setting up libgles-nvidia2:amd64 (615.71.10-1) ...
+Setting up libcuda1:amd64 (615.71.10-1) ...
+Setting up nvidia-egl-icd (615.71.10-1) ...
+Setting up libglx-nvidia0:amd64 (615.71.10-1) ...
+Setting up xserver-xorg-video-nvidia (615.71.10-1) ...
+Setting up nvidia-vulkan-icd:amd64 (615.71.10-1) ...
+Setting up libnvidia-vksc-core (615.71.10-1) ...
+Setting up nvidia-driver-libs:amd64 (615.71.10-1) ...
+Setting up libnvcuvid1:amd64 (615.71.10-1) ...
+Setting up nvidia-driver (615.71.10-1) ...
+Setting up libnvidia-encode1:amd64 (615.71.10-1) ...
+Processing triggers for hicolor-icon-theme (0.18-2) ...
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for dbus (1.16.2-2) ...
+Processing triggers for glx-alternative-nvidia (1.2.2) ...
+Processing triggers for initramfs-tools (0.148.4) ...
+update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-amd64
+W: No zstd in /usr/bin:/sbin:/bin, using gzip
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia.conf
+libkmod: ERROR: conf_files_filter_out: Cannot stat directory entry: /etc/modprobe.d/nvidia-blacklists-nouveau.conf
+Processing triggers for update-glx (1.2.2) ...
+Processing triggers for glx-alternative-nvidia (1.2.2) ...
+update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia because link group glx is broken
+update-alternatives: warning: not removing /usr/bin/nvidia-bug-report.sh since it's not a symlink
+update-alternatives: warning: not removing /usr/share/X11/xorg.conf.d/nvidia-drm-outputclass.conf since it's not a symlink
+update-alternatives: warning: not removing /usr/lib/xorg/modules/drivers/nvidia_drv.so since it's not a symlink
+update-alternatives: warning: forcing reinstallation of alternative /usr/lib/nvidia because link group glx is broken
+update-alternatives: warning: not removing /usr/bin/nvidia-bug-report.sh since it's not a symlink
+Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for initramfs-tools (0.148.4) ...
+update-initramfs: Generating /boot/initrd.img-6.12.113+deb13-amd64
+W: No zstd in /usr/bin:/sbin:/bin, using gzip
+tind-nvidia: NVIDIA 615.71.10-1 installed; restart to use it
