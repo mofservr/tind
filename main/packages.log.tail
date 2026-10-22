@@ -1,3 +1,9 @@
+app/com.bitwarden.desktop/x86_64/stable
+app/com.github.Matoking.protontricks/x86_64/stable
+app/com.spotify.Client/x86_64/stable
+app/com.valvesoftware.Steam/x86_64/stable
+app/com.valvesoftware.SteamLink/x86_64/stable
+app/io.github.benjamimgois.goverlay/x86_64/stable
 app/net.davidotek.pupgui2/x86_64/stable
 app/net.lutris.Lutris/x86_64/stable
 runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
@@ -70,10 +76,8 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 == flatpak runtimes of game apps
 -- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 -- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
--- com.heroicgameslauncher.hgl:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 == Flatpak refs used by the app-box scripts exist on Flathub
 ok       com.discordapp.Discord
-ok       com.heroicgameslauncher.hgl
 ok       net.davidotek.pupgui2
 ok       com.spotify.Client
 ok       com.bitwarden.desktop
@@ -148,7 +152,7 @@ setup-security: OK
 setup-creative packages: OK (simulated)
 == app boxes: things to check by eye
 logs/setup-communication.log:Signal apt signing key fingerprint: DBA36B5181D0C816F630E889D980A17457F6FB06
-logs/setup-entertainment.log:WARNING: Spotify failed; continuing
+logs/setup-entertainment.log:NOTE: Spotify skipped, user namespaces are not available here (expected in CI, not on real hardware)
 logs/setup-gaming.log:NOTE: xpadneo-dkms is not in this Debian release; skipping
 logs/setup-gaming.log:NOTE: xone-dkms is not in this Debian release; skipping
 Types: deb
@@ -159,16 +163,12 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
 com.bitwarden.desktop
 com.discordapp.Discord
-com.heroicgameslauncher.hgl
 net.davidotek.pupgui2
 org.freedesktop.Platform
-org.freedesktop.Platform
-org.freedesktop.Platform.Compat.i386
 org.freedesktop.Platform.GL.default
 org.freedesktop.Platform.GL.default
 org.freedesktop.Platform.GL.default
 org.freedesktop.Platform.GL.default
-org.freedesktop.Platform.GL32.default
 org.freedesktop.Platform.codecs-extra
 org.freedesktop.Platform.codecs-extra
 org.kde.KStyle.Adwaita
@@ -220,7 +220,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   73G   73G  50% /__w
+/dev/root       145G   71G   74G  49% /__w
 
 == KVM
 not available (VM tests will be slow)
