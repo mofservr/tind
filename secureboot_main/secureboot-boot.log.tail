@@ -3,48 +3,48 @@
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
 total 4544
--rw-r--r-- 1 runner runner   7006 Oct 22 13:00 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 22 13:01 secboot-s02.png
--rw-r--r-- 1 runner runner  41926 Oct 22 13:01 secboot-s03.png
--rw-r--r-- 1 runner runner 663103 Oct 22 13:02 secboot-s04.png
--rw-r--r-- 1 runner runner 663103 Oct 22 13:02 secboot-s05.png
--rw-r--r-- 1 runner runner 645564 Oct 22 13:03 secboot-s06.png
--rw-r--r-- 1 runner runner 645564 Oct 22 13:03 secboot-s07.png
--rw-r--r-- 1 runner runner 645069 Oct 22 13:04 secboot-s08.png
--rw-r--r-- 1 runner runner 645069 Oct 22 13:04 secboot-s09.png
--rw-r--r-- 1 runner runner 645103 Oct 22 13:05 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 22 13:00 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 22 13:00 secureboot-inspect.log
--rw-r----- 1 runner runner  21627 Oct 22 13:03 serial-secboot.log
+-rw-r--r-- 1 runner runner   7006 Oct 22 13:53 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 22 13:53 secboot-s02.png
+-rw-r--r-- 1 runner runner  41926 Oct 22 13:54 secboot-s03.png
+-rw-r--r-- 1 runner runner 662916 Oct 22 13:54 secboot-s04.png
+-rw-r--r-- 1 runner runner 662788 Oct 22 13:55 secboot-s05.png
+-rw-r--r-- 1 runner runner 644968 Oct 22 13:55 secboot-s06.png
+-rw-r--r-- 1 runner runner 645270 Oct 22 13:56 secboot-s07.png
+-rw-r--r-- 1 runner runner 645319 Oct 22 13:56 secboot-s08.png
+-rw-r--r-- 1 runner runner 645210 Oct 22 13:57 secboot-s09.png
+-rw-r--r-- 1 runner runner 644677 Oct 22 13:57 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 22 13:52 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 22 13:52 secureboot-inspect.log
+-rw-r----- 1 runner runner  21760 Oct 22 13:55 serial-secboot.log
 installed packages: 1650
 
 ##### journal errors (this boot)
-Oct 22 15:01:26 tind adduser[1089]: The group `powerdev' does not exist.
-Oct 22 15:01:26 tind adduser[1105]: The group `debian-tor' does not exist.
-Oct 22 15:01:32 tind gdm-autologin][1462]: gkr-pam: couldn't unlock the login keyring.
-Oct 22 15:01:33 tind systemd[1470]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1662.scope - Application launched by gnome-session-binary.
-Oct 22 15:01:40 tind systemd[1470]: Failed to start app-gnome-tind\x2dlive\x2ddock-1823.scope - Application launched by gnome-session-binary.
+Oct 22 15:53:49 tind adduser[1092]: The group `powerdev' does not exist.
+Oct 22 15:53:50 tind adduser[1108]: The group `debian-tor' does not exist.
+Oct 22 15:53:55 tind gdm-autologin][1463]: gkr-pam: couldn't unlock the login keyring.
+Oct 22 15:53:57 tind systemd[1471]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1643.scope - Application launched by gnome-session-binary.
+Oct 22 15:54:04 tind systemd[1471]: Failed to start app-gnome-tind\x2dlive\x2ddock-1840.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 22 15:01:34 tind gnome-shell[1663]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Oct 22 15:01:34 tind gnome-shell[1663]: Enabling experimental feature 'scale-monitor-framebuffer'
-Oct 22 15:01:34 tind gnome-shell[1663]: Enabling experimental feature 'xwayland-native-scaling'
-Oct 22 15:01:37 tind gnome-shell[1663]: Thread 'KMS thread' will be using high priority scheduling
-Oct 22 15:01:37 tind gnome-shell[1663]: pci id for fd 12: 1234:1111, driver (null)
-Oct 22 15:01:37 tind gnome-shell[1663]: pci id for fd 13: 1234:1111, driver (null)
-Oct 22 15:01:37 tind gnome-shell[1663]: kmsro: driver missing
-Oct 22 15:01:37 tind gnome-shell[1663]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 22 15:01:37 tind gnome-shell[1663]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 22 15:01:37 tind gnome-shell[1663]: Created gbm renderer for '/dev/dri/card0'
-Oct 22 15:01:37 tind gnome-shell[1663]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 22 15:01:37 tind gnome-shell[1663]: Using public X11 display :0, (using :1 for managed services)
-Oct 22 15:01:37 tind gnome-shell[1663]: Using Wayland display name 'wayland-0'
-Oct 22 15:01:37 tind gnome-shell[1663]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 22 15:01:38 tind gnome-shell[1663]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 22 15:01:40 tind gnome-shell[1663]: Will monitor session 1
-Oct 22 15:01:41 tind gnome-shell[1663]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 22 15:01:47 tind gnome-shell[1663]: GNOME Shell started at Thu Oct 22 2026 15:01:39 GMT+0200 (Central European Summer Time)
-Oct 22 15:01:47 tind gnome-shell[1663]: Registering session with GDM
+Oct 22 15:53:57 tind gnome-shell[1662]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Oct 22 15:53:57 tind gnome-shell[1662]: Enabling experimental feature 'scale-monitor-framebuffer'
+Oct 22 15:53:57 tind gnome-shell[1662]: Enabling experimental feature 'xwayland-native-scaling'
+Oct 22 15:54:00 tind gnome-shell[1662]: Thread 'KMS thread' will be using high priority scheduling
+Oct 22 15:54:00 tind gnome-shell[1662]: pci id for fd 12: 1234:1111, driver (null)
+Oct 22 15:54:00 tind gnome-shell[1662]: pci id for fd 13: 1234:1111, driver (null)
+Oct 22 15:54:00 tind gnome-shell[1662]: kmsro: driver missing
+Oct 22 15:54:01 tind gnome-shell[1662]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 22 15:54:01 tind gnome-shell[1662]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 22 15:54:01 tind gnome-shell[1662]: Created gbm renderer for '/dev/dri/card0'
+Oct 22 15:54:01 tind gnome-shell[1662]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 22 15:54:01 tind gnome-shell[1662]: Using public X11 display :0, (using :1 for managed services)
+Oct 22 15:54:01 tind gnome-shell[1662]: Using Wayland display name 'wayland-0'
+Oct 22 15:54:01 tind gnome-shell[1662]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 22 15:54:02 tind gnome-shell[1662]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 22 15:54:04 tind gnome-shell[1662]: Will monitor session 1
+Oct 22 15:54:05 tind gnome-shell[1662]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 22 15:54:12 tind gnome-shell[1662]: GNOME Shell started at Thu Oct 22 2026 15:54:03 GMT+0200 (Central European Summer Time)
+Oct 22 15:54:12 tind gnome-shell[1662]: Registering session with GDM
 =====TIND-SELFTEST-END=====
 =====TIND-SELFTEST-BEGIN=====
 == Secure Boot
