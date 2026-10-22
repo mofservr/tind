@@ -6,11 +6,11 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 0 {'wait': 35}
 1 {'key': 'ret'}
 2 {'wait': 150}
-3 {'click': [400, 300]}
+3 {'key': 'esc'}
 4 {'wait': 2}
 5 {'shot': '10-before-launch'}
 6 {'click': [28, 65]}
-7 {'wait': 8}
+7 {'wait': 25}
 8 {'shot': '11-after-launch'}
 9 {'wait': 4}
 10 {'key': 'down'}
@@ -96,8 +96,7 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 90 {'shot': '50-install-16'}
 91 {'wait': 60}
 92 {'shot': '50-install-17'}
-disk used after install: 200704 bytes
-INSTALL DID NOT HAPPEN
+disk used after install: 7660113920 bytes
 == phase 2: boot the installed disk
 0 {'wait': 150}
 1 {'shot': '600-installed-00'}
@@ -110,5 +109,5 @@ INSTALL DID NOT HAPPEN
 8 {'wait': 90}
 9 {'shot': '604-installed-04'}
 10 {'wait': 90}
-disk size: 196 KiB
-    disk size: 196 KiB
+disk size: 8.57 GiB
+    disk size: 8.57 GiB
