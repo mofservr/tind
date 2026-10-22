@@ -203,7 +203,7 @@ winetricks 20250102-1 ii
 1.143.0
 2d0b7506a36c1d6db9a466440131a8e01eab2289
 bp.list
-claude-desktop.list
+claude-desktop.sources
 debian.sources
 protonvpn-stable.sources
 signal-desktop.sources

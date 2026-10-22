@@ -1,4 +1,4 @@
 ref: main
-sha: 77a045364d6a4a34994d38fd50c48e0a42040f10
-run: 39828455339
-results: packages=success iso=skipped boot=skipped
+sha: f8869ede92024adaabc14269dda000f8777da582
+run: 39843524304
+results: packages=success iso=success boot=success
