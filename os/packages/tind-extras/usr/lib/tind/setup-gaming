@@ -1,6 +1,6 @@
 #!/bin/bash
 # Native gaming stack from Debian packages: Steam, Lutris, Wine, 32-bit graphics, GameMode, MangoHud,
-# plus Xbox controller drivers and Flathub apps (Discord, Heroic, ProtonUp-Qt).
+# plus Xbox controller drivers and Flathub apps (Discord, ProtonUp-Qt). Lutris also covers GOG and Epic, so there is no separate Heroic.
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
@@ -27,8 +27,8 @@ for p in xpadneo-dkms xone-dkms; do
         echo "NOTE: $p is not in this Debian release; skipping"
     fi
 done
-# Small apps from Flathub: Discord, Heroic (Epic, GOG, Amazon) and ProtonUp-Qt (custom Proton versions).
-for app in com.discordapp.Discord com.heroicgameslauncher.hgl net.davidotek.pupgui2; do
+# Small apps from Flathub: Discord and ProtonUp-Qt (custom Proton versions).
+for app in com.discordapp.Discord net.davidotek.pupgui2; do
     optional "$app" flatpak_install "$app"
 done
 # Many Proton games need a higher memory-map limit than the Linux default (same value as SteamOS).

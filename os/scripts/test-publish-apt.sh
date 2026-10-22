@@ -99,8 +99,13 @@ Components: main
 Signed-By: $t/test-keyring.gpg
 EOF
 APT=(-o "Dir::Etc::sourcelist=/dev/null" -o "Dir::Etc::sourceparts=$t/apt/etc" -o "Dir::State=$t/apt/state"
-     -o "Dir::State::status=/var/lib/dpkg/status" -o "Dir::Cache=$t/apt/cache" -o "Debug::NoLocking=1" -o "APT::Sandbox::User=")
-apt-get "${APT[@]}" update 2>&1 | tail -3
+     -o "Dir::State::status=/var/lib/dpkg/status" -o "Dir::Cache=$t/apt/cache" -o "Debug::NoLocking=1" -o "APT::Sandbox::User="
+     -o "APT::Architectures::=amd64" -o "APT::Architectures::=i386")
+apt-get "${APT[@]}" update > "$t/update.log" 2>&1 || { cat "$t/update.log"; fail "apt-get update failed"; }
+tail -3 "$t/update.log"
+# every Tind package is architecture "all", but apt asks for amd64 and i386 indexes too: no notice about it
+if grep -qi "support architecture" "$t/update.log"; then cat "$t/update.log"; fail "apt prints the architecture notice"; fi
+echo "ok: no architecture notice"
 got="$(apt-cache "${APT[@]}" policy tind-branding | sed -n 's/^  Candidate: //p')"
 expect "$got" "$newver" "real apt-get update verifies the signature and sees the package"
 

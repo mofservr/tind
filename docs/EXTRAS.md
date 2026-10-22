@@ -13,7 +13,7 @@ Eight boxes: Games, Developer tools, Entertainment, Creative, Communication, Pro
 - `/usr/lib/tind/setup-gaming`: enables contrib/non-free, adds i386, then steam-installer, steam-devices, lutris, wine, wine32:i386, winetricks, gamemode, mangohud, vulkan-tools, 32-bit Mesa/Vulkan libs (plus nvidia-driver-libs:i386 when the NVIDIA driver is installed), and sets `vm.max_map_count` to the SteamOS value. All native apt, no Flatpak, so Steam, Lutris and Wine share one filesystem view.
 - `/usr/lib/tind/setup-dev`: git, build-essential, python3-pip, python3-venv, pipx, curl, jq, tmux, openssh-client, gh, VS Code from Microsoft's apt repository, and Claude Desktop (beta) from Anthropic's apt repository. Both keys are accepted only if their fingerprints match the pinned ones in the script.
 
-- `/usr/lib/tind/setup-gaming` also installs `xpadneo-dkms` and `xone-dkms` when Debian ships them (skipped with a note otherwise), and Discord, Heroic and ProtonUp-Qt from Flathub.
+- `/usr/lib/tind/setup-gaming` also installs `xpadneo-dkms` and `xone-dkms` when Debian ships them (skipped with a note otherwise), and Discord and ProtonUp-Qt from Flathub. Heroic is not part of the box: Lutris already installs from GOG and Epic.
 - `/usr/lib/tind/setup-dev` also installs Wireshark (capture without root), nmap, mtr, Remmina with RDP/VNC/secret plugins, virt-manager, libvirt and QEMU, and adds the regular users to the `wireshark` and `libvirt` groups (effective at next login).
 - `/usr/lib/tind/setup-entertainment`: VLC with the GStreamer plugin sets, Strawberry (Debian package, Flathub fallback; plays local files and talks to Subsonic servers such as Navidrome), Spotify (Flathub).
 - `/usr/lib/tind/setup-creative`: GIMP, Inkscape, Krita, Kdenlive (with frei0r and the Breeze icon theme), Audacity, OBS Studio, Blender (Debian), plus Upscayl from Flathub (non-fatal if it fails).
@@ -26,13 +26,13 @@ Eight boxes: Games, Developer tools, Entertainment, Creative, Communication, Pro
 `tind-graphics`: NVIDIA 550 (DKMS), Mesa Vulkan/VA-API/VDPAU, AMD graphics firmware, Intel media driver. Old NVIDIA cards fall back to nouveau (`tind-gpu-check.service`). With Secure Boot on, `tind-gpu secureboot` enrolls a per-machine signing key (login prompt offers it).
 
 ## Flatpak
-Used for small apps only: Discord, Heroic, ProtonUp-Qt, Spotify, Bitwarden, Upscayl (and Telegram or Strawberry if Debian lacks them), plus the GNOME everyday apps and utilities opt-ins.
+Used for small apps only: Discord, ProtonUp-Qt, Spotify, Bitwarden, Upscayl (and Telegram or Strawberry if Debian lacks them), plus the GNOME everyday apps and utilities opt-ins.
 
 ## Newer kernel (opt-in)
 The newer kernel (no longer a Tind Apps entry; run `sudo /usr/lib/tind/setup-newer-kernel` by hand) is `/usr/lib/tind/setup-newer-kernel`: adds Debian trixie-backports, installs the backports kernel and headers, and the NVIDIA DKMS module from backports when the NVIDIA driver is installed. The current kernel stays installed and in the boot menu as a fallback. Needs internet and a restart.
 
 ## Flatpak steps are non-fatal
-Each Flatpak app in the boxes (Spotify, Discord, Heroic, ProtonUp-Qt, Bitwarden, Upscayl) is installed through `optional`, so one that fails (Spotify's `apply_extra` download failed in CI) is logged as a warning and the rest of the box still installs.
+Each Flatpak app in the boxes (Spotify, Discord, ProtonUp-Qt, Bitwarden, Upscayl) is installed through `optional`, so one that fails (Spotify's `apply_extra` download failed in CI) is logged as a warning and the rest of the box still installs.
 
 ## App grid
 Folders (defaults in `tind-branding`, users can rearrange): **Office** (LibreOffice Writer, Calc, Impress, Start Center; fills up when the Productivity box is installed), **System** (Proton VPN, Extensions, Tind Apps), **Utilities** (Calculator, Text Editor, System Monitor, Disks, Image Viewer, Papers, Archive Manager). Settings, Software, Terminal, Camera, Firefox, Thunderbird and Files stay at the top level. Showtime is not installed; VLC comes with the Entertainment box. The standalone Print Settings app is hidden (printers are in GNOME Settings).

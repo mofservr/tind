@@ -12,5 +12,11 @@ apt_or_flatpak strawberry org.strawberrymusicplayer.strawberry
 # Spotify is a nice-to-have: its Flatpak runs an apply_extra download that can fail; log it and carry on.
 # Its window frame: on Wayland Spotify draws Chromium's own Windows-style title bar, so tind-extras ships a
 # system override (var/lib/flatpak/overrides/com.spotify.Client) that runs it on X11 with the GNOME frame.
-optional "Spotify" flatpak_install com.spotify.Client
+# apply_extra runs inside bubblewrap, which needs user namespaces. The CI sandbox does not allow them, so there
+# the install always fails; say so in one line instead of logging a failed install.
+if unshare --user true 2>/dev/null; then
+    optional "Spotify" flatpak_install com.spotify.Client
+else
+    echo "NOTE: Spotify skipped, user namespaces are not available here (expected in CI, not on real hardware)"
+fi
 echo "== Tind: entertainment setup done"

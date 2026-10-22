@@ -18,25 +18,22 @@
   "wait": 2
  },
  {
+  "shot": "10-before-launch"
+ },
+ {
   "click": [
-   38,
-   763
+   28,
+   65
   ]
  },
  {
+  "wait": 8
+ },
+ {
+  "shot": "11-after-launch"
+ },
+ {
   "wait": 4
- },
- {
-  "type": "Install"
- },
- {
-  "wait": 3
- },
- {
-  "key": "ret"
- },
- {
-  "wait": 6
  },
  {
   "key": "down"

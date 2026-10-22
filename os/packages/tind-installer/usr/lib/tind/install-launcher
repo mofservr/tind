@@ -6,7 +6,7 @@ rm -f "$choice"
 sel="$(zenity --list --checklist --title="Install Tind: apps" --width=720 --height=520 \
     --text="Choose what to add (needs internet, set up on first start). You can change this later in Tind Apps. OK continues to the installer." \
     --column="" --column="id" --column="Apps" --hide-column=2 --separator=" " \
-    FALSE gaming "Games: Steam, Lutris, Wine, Discord, Heroic (2 GB)" \
+    FALSE gaming "Games: Steam, Lutris, Wine, Discord (2 GB)" \
     FALSE dev "Developer tools: git, Python, VS Code, Claude Desktop, Wireshark" \
     FALSE entertainment "Entertainment: VLC, Strawberry music player, Spotify" \
     FALSE creative "Creative: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, Upscayl" \

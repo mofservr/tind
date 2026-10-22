@@ -65,6 +65,8 @@ fi
     printf '$ kernel warnings and errors this boot\n'; jctl -k -b -p warning --no-pager | tail -n 60
     sec "Audio"; command -v wpctl >/dev/null && run wpctl status
     sec "Power"; command -v powerprofilesctl >/dev/null && run powerprofilesctl; ls /sys/class/power_supply 2>/dev/null
+    sec "Time"; run timedatectl; run timedatectl timesync-status
+    printf '$ journalctl -u systemd-timesyncd (this boot)\n'; jctl -u systemd-timesyncd -b --no-pager | tail -n 15
     sec "Services"; run systemctl --failed --no-legend; run systemctl is-active ufw apparmor NetworkManager gdm tind-extras.service
     sec "Journal, errors this boot"; jctl -b -p err --no-pager | tail -n 100
     sec "Journal, previous boot errors"; jctl -b -1 -p err --no-pager | tail -n 60

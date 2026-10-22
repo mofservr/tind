@@ -104,13 +104,13 @@ jobs:
             echo "== flathub refs"
             apt-get install -y flatpak >/dev/null 2>&1
             flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-            flatpak remote-ls --system flathub --columns=ref 2>&1 | grep -E 'com.valvesoftware.Steam|net.lutris.Lutris|com.heroicgameslauncher.hgl|net.davidotek.pupgui2|VulkanLayer|GL32?.nvidia-550|com.github.Matoking.protontricks|io.github.benjamimgois.goverlay|com.spotify.Client|com.bitwarden.desktop|org.gnome.(Calendar|Contacts|Weather|Maps|clocks|baobab|Logs|font-viewer|Characters|SimpleScan|Connections)$' | sort | head -80
+            flatpak remote-ls --system flathub --columns=ref 2>&1 | grep -E 'com.valvesoftware.Steam|net.lutris.Lutris|net.davidotek.pupgui2|VulkanLayer|GL32?.nvidia-550|com.github.Matoking.protontricks|io.github.benjamimgois.goverlay|com.spotify.Client|com.bitwarden.desktop|org.gnome.(Calendar|Contacts|Weather|Maps|clocks|baobab|Logs|font-viewer|Characters|SimpleScan|Connections)$' | sort | head -80
             echo "== flatpak runtimes of game apps"
-            for a in com.valvesoftware.Steam net.lutris.Lutris com.heroicgameslauncher.hgl; do
+            for a in com.valvesoftware.Steam net.lutris.Lutris; do
               echo "-- $a: $(flatpak remote-info --system flathub $a 2>&1 | grep -i 'runtime' | head -2 | tr '\n' ' ')"
             done
             echo "== Flatpak refs used by the app-box scripts exist on Flathub"
-            for r in com.discordapp.Discord com.heroicgameslauncher.hgl net.davidotek.pupgui2 com.spotify.Client com.bitwarden.desktop org.telegram.desktop org.strawberrymusicplayer.strawberry; do
+            for r in com.discordapp.Discord net.davidotek.pupgui2 com.spotify.Client com.bitwarden.desktop org.telegram.desktop org.strawberrymusicplayer.strawberry; do
               if flatpak remote-info --system flathub "$r" >/dev/null 2>&1; then echo "ok       $r"; else echo "MISSING  $r"; fi
             done
             echo "== every opt-in Flatpak ref exists on Flathub"

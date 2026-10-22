@@ -174,10 +174,18 @@ build_suite() {   # suite, then "pkg file" pairs on stdin
     done
     ( cd "$t" && apt-ftparchive packages pool ) > "$d/Packages"
     xz -9 -k -f "$d/Packages"
+    # Every package here is architecture "all". apt still asks for the indexes of this computer's architectures
+    # (amd64, and i386 where Steam and Wine are set up), and prints "doesn't support architecture" on every
+    # update if the repository does not list them. So list them, with empty indexes.
+    for a in amd64 i386; do
+        mkdir -p "$OUT/dists/$suite/main/binary-$a"
+        : > "$OUT/dists/$suite/main/binary-$a/Packages"
+        xz -9 -k -f "$OUT/dists/$suite/main/binary-$a/Packages"
+    done
     apt-ftparchive \
         -o "APT::FTPArchive::Release::Origin=Tind" -o "APT::FTPArchive::Release::Label=Tind" \
         -o "APT::FTPArchive::Release::Suite=$suite" -o "APT::FTPArchive::Release::Codename=$suite" \
-        -o "APT::FTPArchive::Release::Architectures=all" -o "APT::FTPArchive::Release::Components=main" \
+        -o "APT::FTPArchive::Release::Architectures=all amd64 i386" -o "APT::FTPArchive::Release::Components=main" \
         -o "APT::FTPArchive::Release::Description=Tind Linux packages ($suite)" \
         release "$OUT/dists/$suite" > "$tmp/Release.$suite"
     mv "$tmp/Release.$suite" "$OUT/dists/$suite/Release"
