@@ -707,3 +707,74 @@
 .tind-accent-slate .check-box:focus StBin { box-shadow: inset 0 0 0 2px rgba(194, 93, 89, 0.5); }
 .tind-accent-slate .calendar-today { background-color: #C25D59; color: #14110F !important; }
 .tind-accent-slate .osd-monitor-label { background-color: #C25D59; color: #14110F; }
+
+/* ======== ACCENTS, part 3: focus rings and the icon circle in Quick Settings submenus ========
+ * Found with the orange test (accent set to the middle colour, anything still orange is GNOME's own):
+ * the round icon in the header of an opened Quick Settings submenu (Bluetooth, Wired, Wi-Fi, ...), the
+ * focus ring of text entries (Super-key search, app grid search) and the focus ring of buttons (dialogs
+ * such as Power Off). The shell paints these from its built-in -st-accent-color, so each slot gets its own
+ * rule, same as part 2. Only the accent is changed here, not the greys.
+ * ====================================================================================== */
+
+.tind-accent-blue .quick-toggle-menu .header .icon { background-color: #19685F; color: #FFFFFF; }
+.tind-accent-blue StEntry:focus,
+.tind-accent-blue #searchEntry:focus { border-color: #19685F; box-shadow: inset 0 0 0 1px #19685F; }
+.tind-accent-blue .button:focus,
+.tind-accent-blue .modal-dialog-linked-button:focus,
+.tind-accent-blue .dialog-button:focus { border-color: #19685F; box-shadow: inset 0 0 0 2px #19685F; }
+
+.tind-accent-teal .quick-toggle-menu .header .icon { background-color: #21857A; color: #FFFFFF; }
+.tind-accent-teal StEntry:focus,
+.tind-accent-teal #searchEntry:focus { border-color: #21857A; box-shadow: inset 0 0 0 1px #21857A; }
+.tind-accent-teal .button:focus,
+.tind-accent-teal .modal-dialog-linked-button:focus,
+.tind-accent-teal .dialog-button:focus { border-color: #21857A; box-shadow: inset 0 0 0 2px #21857A; }
+
+.tind-accent-green .quick-toggle-menu .header .icon { background-color: #138677; color: #FFFFFF; }
+.tind-accent-green StEntry:focus,
+.tind-accent-green #searchEntry:focus { border-color: #138677; box-shadow: inset 0 0 0 1px #138677; }
+.tind-accent-green .button:focus,
+.tind-accent-green .modal-dialog-linked-button:focus,
+.tind-accent-green .dialog-button:focus { border-color: #138677; box-shadow: inset 0 0 0 2px #138677; }
+
+.tind-accent-yellow .quick-toggle-menu .header .icon { background-color: #68C4B7; color: #14110F; }
+.tind-accent-yellow StEntry:focus,
+.tind-accent-yellow #searchEntry:focus { border-color: #68C4B7; box-shadow: inset 0 0 0 1px #68C4B7; }
+.tind-accent-yellow .button:focus,
+.tind-accent-yellow .modal-dialog-linked-button:focus,
+.tind-accent-yellow .dialog-button:focus { border-color: #68C4B7; box-shadow: inset 0 0 0 2px #68C4B7; }
+
+.tind-accent-orange .quick-toggle-menu .header .icon { background-color: #A2DBD2; color: #14110F; }
+.tind-accent-orange StEntry:focus,
+.tind-accent-orange #searchEntry:focus { border-color: #A2DBD2; box-shadow: inset 0 0 0 1px #A2DBD2; }
+.tind-accent-orange .button:focus,
+.tind-accent-orange .modal-dialog-linked-button:focus,
+.tind-accent-orange .dialog-button:focus { border-color: #A2DBD2; box-shadow: inset 0 0 0 2px #A2DBD2; }
+
+.tind-accent-red .quick-toggle-menu .header .icon { background-color: #FED2CB; color: #14110F; }
+.tind-accent-red StEntry:focus,
+.tind-accent-red #searchEntry:focus { border-color: #FED2CB; box-shadow: inset 0 0 0 1px #FED2CB; }
+.tind-accent-red .button:focus,
+.tind-accent-red .modal-dialog-linked-button:focus,
+.tind-accent-red .dialog-button:focus { border-color: #FED2CB; box-shadow: inset 0 0 0 2px #FED2CB; }
+
+.tind-accent-pink .quick-toggle-menu .header .icon { background-color: #EC5179; color: #14110F; }
+.tind-accent-pink StEntry:focus,
+.tind-accent-pink #searchEntry:focus { border-color: #EC5179; box-shadow: inset 0 0 0 1px #EC5179; }
+.tind-accent-pink .button:focus,
+.tind-accent-pink .modal-dialog-linked-button:focus,
+.tind-accent-pink .dialog-button:focus { border-color: #EC5179; box-shadow: inset 0 0 0 2px #EC5179; }
+
+.tind-accent-purple .quick-toggle-menu .header .icon { background-color: #E27E75; color: #14110F; }
+.tind-accent-purple StEntry:focus,
+.tind-accent-purple #searchEntry:focus { border-color: #E27E75; box-shadow: inset 0 0 0 1px #E27E75; }
+.tind-accent-purple .button:focus,
+.tind-accent-purple .modal-dialog-linked-button:focus,
+.tind-accent-purple .dialog-button:focus { border-color: #E27E75; box-shadow: inset 0 0 0 2px #E27E75; }
+
+.tind-accent-slate .quick-toggle-menu .header .icon { background-color: #C25D59; color: #14110F; }
+.tind-accent-slate StEntry:focus,
+.tind-accent-slate #searchEntry:focus { border-color: #C25D59; box-shadow: inset 0 0 0 1px #C25D59; }
+.tind-accent-slate .button:focus,
+.tind-accent-slate .modal-dialog-linked-button:focus,
+.tind-accent-slate .dialog-button:focus { border-color: #C25D59; box-shadow: inset 0 0 0 2px #C25D59; }
