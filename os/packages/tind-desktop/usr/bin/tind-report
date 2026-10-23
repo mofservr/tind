@@ -31,15 +31,38 @@ pci_names() {
     local o; o=$(for c in "$@"; do lspci -nn -d "::$c" 2>/dev/null; done | sed -E 's/^[^ ]+ [^:]+: //' | paste -sd';' -)
     echo "${o:-none found}"
 }
+# Kernel driver in use for each GPU, from lspci (e.g. amdgpu, nvidia, nouveau, i915).
+gpu_drivers() {
+    command -v lspci >/dev/null 2>&1 || { echo "(lspci not installed)"; return 0; }
+    local o; o=$(for c in 0300 0302 0380; do lspci -nnk -d "::$c" 2>/dev/null; done | sed -n 's/^[[:space:]]*Kernel driver in use:[[:space:]]*//p' | paste -sd',' -)
+    echo "${o:-no driver loaded}"
+}
+# Bluetooth adapters: take each hci device, find its USB id, and name it with lsusb.
+bt_names() {
+    local h d p v n out=""
+    for h in /sys/class/bluetooth/hci*; do
+        [ -e "$h" ] || continue
+        d=$(readlink -f "$h/device" 2>/dev/null); p="$d"; v=""
+        for _ in 1 2 3; do
+            if [ -r "$p/idVendor" ] && [ -r "$p/idProduct" ]; then v="$(cat "$p/idVendor"):$(cat "$p/idProduct")"; break; fi
+            p=$(dirname "$p")
+        done
+        if [ -n "$v" ] && command -v lsusb >/dev/null 2>&1; then
+            n=$(lsusb -d "$v" 2>/dev/null | sed -E 's/^Bus [0-9]+ Device [0-9]+: ID //' | head -n 1)
+        fi
+        out="${out:+$out; }${n:-${h##*/} (not a USB adapter)}"
+    done
+    echo "${out:-none found}"
+}
 summary() {
     sec "Summary"
     echo "Machine:   $(cat /sys/class/dmi/id/sys_vendor 2>/dev/null) $(cat /sys/class/dmi/id/product_name 2>/dev/null)"
     echo "CPU:       $(lscpu 2>/dev/null | sed -n 's/^Model name:[[:space:]]*//p' | head -n 1)"
     echo "RAM:       $(free -h 2>/dev/null | awk '/^Mem:/ {print $2}')"
     echo "GPU:       $(pci_names 0300 0302 0380)"
-    echo "GPU driver: $(command -v tind-gpu >/dev/null && tind-gpu status 2>&1 | head -n 1 || echo '(tind-gpu not installed)')"
+    echo "GPU driver: $(gpu_drivers)"
     echo "Wi-Fi:     $(pci_names 0280)"
-    echo "Bluetooth: $(lsusb 2>/dev/null | grep -i bluetooth | sed -E 's/^Bus [0-9]+ Device [0-9]+: ID //' | paste -sd';' -)"
+    echo "Bluetooth: $(bt_names)"
     echo "Sound:     $(pci_names 0403 0401)"
     echo "Ethernet:  $(pci_names 0200)"
     echo "Boot:      $([ -d /sys/firmware/efi ] && echo UEFI || echo BIOS); Secure Boot: $(command -v mokutil >/dev/null && mokutil --sb-state 2>&1 | head -n 1 || echo unknown)"
