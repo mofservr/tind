@@ -1,6 +1,3 @@
-Unpacking libbytesize-common (2.11-2) ...
-Selecting previously unselected package libbytesize1:amd64.
-Preparing to unpack .../13-libbytesize1_2.11-2_amd64.deb ...
 Unpacking libbytesize1:amd64 (2.11-2) ...
 Selecting previously unselected package libblockdev-mdraid3:amd64.
 Preparing to unpack .../14-libblockdev-mdraid3_3.3.0-2.1_amd64.deb ...
@@ -58,7 +55,7 @@ Setting up libblockdev3:amd64 (3.3.0-2.1) ...
 Setting up libblockdev-part3:amd64 (3.3.0-2.1) ...
 Setting up gvfs-libs:amd64 (1.57.2-2+deb13u1) ...
 Setting up udisks2 (2.10.1-12.1+deb13u2) ...
-sda: Failed to write 'change' to '/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/f8b3781a-1e82-4818-a1c3-63d806ec15bb/host0/target0:0:0/0:0:0:0/block/sda/uevent': Read-only file system
+nvme0n1: Failed to write 'change' to '/sys/devices/LNXSYSTM:00/LNXSYBUS:00/ACPI0004:00/MSFT1000:00/7ad35d50-c05b-47ab-b3a0-56a9a845852b/pcic05b:00/c05b:00:00.0/nvme/nvme0/nvme0n1/uevent': Read-only file system
 Created symlink '/etc/systemd/system/graphical.target.wants/udisks2.service' → '/usr/lib/systemd/system/udisks2.service'.
 Setting up gvfs-daemons (1.57.2-2+deb13u1) ...
 Setting up gvfs:amd64 (1.57.2-2+deb13u1) ...
@@ -74,16 +71,16 @@ Recommended packages:
   gnome-keyring | plasma-workspace socat ovmf virtiofsd
 The following NEW packages will be installed:
   claude-desktop
-0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
 Need to get 170 MB of archives.
 After this operation, 612 MB of additional disk space will be used.
-Get:1 https://downloads.claude.ai/claude-desktop/apt/stable stable/main amd64 claude-desktop amd64 3.6556.1 [170 MB]
-Fetched 170 MB in 1s (152 MB/s)
+Get:1 https://downloads.claude.ai/claude-desktop/apt/stable stable/main amd64 claude-desktop amd64 3.6556.2 [170 MB]
+Fetched 170 MB in 2s (71.5 MB/s)
 Selecting previously unselected package claude-desktop.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 39383 files and directories currently installed.)
-Preparing to unpack .../claude-desktop_3.6556.1_amd64.deb ...
-Unpacking claude-desktop (3.6556.1) ...
-Setting up claude-desktop (3.6556.1) ...
+Preparing to unpack .../claude-desktop_3.6556.2_amd64.deb ...
+Unpacking claude-desktop (3.6556.2) ...
+Setting up claude-desktop (3.6556.2) ...
 Processing triggers for hicolor-icon-theme (0.18-2) ...
 Processing triggers for desktop-file-utils (0.28-1) ...
 Reading package lists...
@@ -102,7 +99,7 @@ The following NEW packages will be installed:
   libgcr-base-3-1 libgcr-ui-3-1 libgles2 libgraphene-1.0-0 libgtk-4-1
   libgtk-4-common libharfbuzz-subset0 libpam-gnome-keyring libsubid5 libwrap0
   ovmf pinentry-gnome3 socat uidmap virtiofsd
-0 upgraded, 20 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 20 newly installed, 0 to remove and 1 not upgraded.
 Need to get 16.1 MB of archives.
 After this operation, 61.5 MB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 libcairo-script-interpreter2 amd64 1.18.4-1+b1 [59.3 kB]
@@ -125,7 +122,7 @@ Get:17 http://deb.debian.org/debian trixie/main amd64 ovmf all 2025.02-8+deb13u1
 Get:18 http://deb.debian.org/debian trixie/main amd64 socat amd64 1.8.0.3-1+deb13u1 [424 kB]
 Get:19 http://deb.debian.org/debian trixie/main amd64 uidmap amd64 1:4.17.4-2 [194 kB]
 Get:20 http://deb.debian.org/debian trixie/main amd64 virtiofsd amd64 1.13.2-1+deb13u1 [1054 kB]
-Fetched 16.1 MB in 0s (84.8 MB/s)
+Fetched 16.1 MB in 0s (175 MB/s)
 Selecting previously unselected package libcairo-script-interpreter2:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 44034 files and directories currently installed.)
 Preparing to unpack .../00-libcairo-script-interpreter2_1.18.4-1+b1_amd64.deb ...
@@ -216,6 +213,9 @@ Setting up gcr4 (4.4.0.1-3) ...
 Created symlink '/etc/systemd/user/graphical-session-pre.target.wants/gcr-ssh-agent.service' → '/usr/lib/systemd/user/gcr-ssh-agent.service'.
 Created symlink '/etc/systemd/user/sockets.target.wants/gcr-ssh-agent.socket' → '/usr/lib/systemd/user/gcr-ssh-agent.socket'.
 Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Depends: libgtk-3-0, libnotify4, libnss3, xdg-utils, libatspi2.0-0, libdrm2, libgbm1, libxcb-dri3-0, libsecret-1-0, kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs, libc6 (>= 2.34), libxtst6, libuuid1, libpipewire-0.3-0, xdg-desktop-portal, xdg-desktop-portal-gtk | xdg-desktop-portal-gnome | xdg-desktop-portal-kde
+Recommends: libasound2t64 | libasound2 | pulseaudio, libayatana-appindicator3-1 | libappindicator3-1, ca-certificates, gnome-keyring | plasma-workspace, bubblewrap, socat, openssh-client, qemu-system-x86, ovmf, virtiofsd
+Suggests: gnome-keyring, lsb-release
 Depends: libgtk-3-0, libnotify4, libnss3, xdg-utils, libatspi2.0-0, libdrm2, libgbm1, libxcb-dri3-0, libsecret-1-0, kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs, libc6 (>= 2.34), libxtst6, libuuid1, libpipewire-0.3-0, xdg-desktop-portal, xdg-desktop-portal-gtk | xdg-desktop-portal-gnome | xdg-desktop-portal-kde
 Recommends: libasound2t64 | libasound2 | pulseaudio, libayatana-appindicator3-1 | libappindicator3-1, ca-certificates, gnome-keyring | plasma-workspace, bubblewrap, socat, openssh-client, qemu-system-x86, ovmf, virtiofsd
 Suggests: gnome-keyring, lsb-release

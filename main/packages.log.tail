@@ -189,7 +189,7 @@ telegram-desktop 5.7.2+ds-2~bpo13+1 ii
 virt-manager 1:5.0.0-5+deb13u1 ii 
 vlc 3.0.24-0+deb13u1 ii 
 wireshark 4.4.19-0+deb13u1 ii 
-code 1.143.0-1792533444 ii 
+code 1.143.1-1792691907 ii 
 gamemode 1.8.2-2 ii 
 gh 2.46.0-3 ii 
 git 1:2.47.3-0+deb13u1 ii 
@@ -200,8 +200,8 @@ steam-installer 1:1.0.0.83~ds-3 ii
 wine 10.0~repack-6 ii 
 wine32 10.0~repack-6 ii 
 winetricks 20250102-1 ii 
-1.143.0
-2d0b7506a36c1d6db9a466440131a8e01eab2289
+1.143.1
+e646868227c3e3a9e3f24277c8c7220be42c0be7
 bp.list
 claude-desktop.sources
 debian.sources
