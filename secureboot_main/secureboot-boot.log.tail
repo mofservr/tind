@@ -2,42 +2,42 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 4544
--rw-r--r-- 1 runner runner   7006 Oct 23 11:31 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 23 11:31 secboot-s02.png
--rw-r--r-- 1 runner runner  41926 Oct 23 11:32 secboot-s03.png
--rw-r--r-- 1 runner runner 662985 Oct 23 11:32 secboot-s04.png
--rw-r--r-- 1 runner runner 662984 Oct 23 11:33 secboot-s05.png
--rw-r--r-- 1 runner runner 645208 Oct 23 11:33 secboot-s06.png
--rw-r--r-- 1 runner runner 645314 Oct 23 11:34 secboot-s07.png
--rw-r--r-- 1 runner runner 644928 Oct 23 11:34 secboot-s08.png
--rw-r--r-- 1 runner runner 644947 Oct 23 11:35 secboot-s09.png
--rw-r--r-- 1 runner runner 644237 Oct 23 11:35 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 23 11:30 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 23 11:30 secureboot-inspect.log
--rw-r----- 1 runner runner  21797 Oct 23 11:33 serial-secboot.log
-Oct 23 13:31:51 tind systemd[1474]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1663.scope - Application launched by gnome-session-binary.
+total 3948
+-rw-r--r-- 1 runner runner   7006 Oct 23 13:01 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 23 13:02 secboot-s02.png
+-rw-r--r-- 1 runner runner 497163 Oct 23 13:02 secboot-s03.png
+-rw-r--r-- 1 runner runner 497167 Oct 23 13:03 secboot-s04.png
+-rw-r--r-- 1 runner runner 497538 Oct 23 13:03 secboot-s05.png
+-rw-r--r-- 1 runner runner 496680 Oct 23 13:04 secboot-s06.png
+-rw-r--r-- 1 runner runner 496191 Oct 23 13:04 secboot-s07.png
+-rw-r--r-- 1 runner runner 496104 Oct 23 13:05 secboot-s08.png
+-rw-r--r-- 1 runner runner 495725 Oct 23 13:05 secboot-s09.png
+-rw-r--r-- 1 runner runner 495968 Oct 23 13:06 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 23 13:01 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 23 13:01 secureboot-inspect.log
+-rw-r----- 1 runner runner  22257 Oct 23 13:04 serial-secboot.log
+Oct 23 15:02:20 tind systemd[1491]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1864.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 23 13:31:52 tind gnome-shell[1662]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Oct 23 13:31:52 tind gnome-shell[1662]: Enabling experimental feature 'scale-monitor-framebuffer'
-Oct 23 13:31:52 tind gnome-shell[1662]: Enabling experimental feature 'xwayland-native-scaling'
-Oct 23 13:31:55 tind gnome-shell[1662]: Thread 'KMS thread' will be using high priority scheduling
-Oct 23 13:31:55 tind gnome-shell[1662]: pci id for fd 12: 1234:1111, driver (null)
-Oct 23 13:31:55 tind gnome-shell[1662]: pci id for fd 13: 1234:1111, driver (null)
-Oct 23 13:31:55 tind gnome-shell[1662]: kmsro: driver missing
-Oct 23 13:31:55 tind gnome-shell[1662]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 23 13:31:55 tind gnome-shell[1662]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 23 13:31:55 tind gnome-shell[1662]: Created gbm renderer for '/dev/dri/card0'
-Oct 23 13:31:55 tind gnome-shell[1662]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 23 13:31:55 tind gnome-shell[1662]: Using public X11 display :0, (using :1 for managed services)
-Oct 23 13:31:55 tind gnome-shell[1662]: Using Wayland display name 'wayland-0'
-Oct 23 13:31:55 tind gnome-shell[1662]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 23 13:31:57 tind gnome-shell[1662]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 23 13:31:58 tind gnome-shell[1662]: Will monitor session 1
-Oct 23 13:31:59 tind gnome-shell[1662]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 23 13:32:05 tind gnome-shell[1662]: GNOME Shell started at Fri Oct 23 2026 13:31:57 GMT+0200 (Central European Summer Time)
-Oct 23 13:32:05 tind gnome-shell[1662]: Registering session with GDM
+Oct 23 15:02:16 tind gnome-shell[1682]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Oct 23 15:02:16 tind gnome-shell[1682]: Enabling experimental feature 'scale-monitor-framebuffer'
+Oct 23 15:02:16 tind gnome-shell[1682]: Enabling experimental feature 'xwayland-native-scaling'
+Oct 23 15:02:18 tind gnome-shell[1682]: Thread 'KMS thread' will be using high priority scheduling
+Oct 23 15:02:18 tind gnome-shell[1682]: pci id for fd 12: 1234:1111, driver (null)
+Oct 23 15:02:18 tind gnome-shell[1682]: pci id for fd 13: 1234:1111, driver (null)
+Oct 23 15:02:18 tind gnome-shell[1682]: kmsro: driver missing
+Oct 23 15:02:18 tind gnome-shell[1682]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 23 15:02:18 tind gnome-shell[1682]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 23 15:02:18 tind gnome-shell[1682]: Created gbm renderer for '/dev/dri/card0'
+Oct 23 15:02:18 tind gnome-shell[1682]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 23 15:02:18 tind gnome-shell[1682]: Using public X11 display :0, (using :1 for managed services)
+Oct 23 15:02:18 tind gnome-shell[1682]: Using Wayland display name 'wayland-0'
+Oct 23 15:02:18 tind gnome-shell[1682]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 23 15:02:19 tind gnome-shell[1682]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 23 15:02:20 tind gnome-shell[1682]: Will monitor session 1
+Oct 23 15:02:20 tind gnome-shell[1682]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 23 15:02:27 tind gnome-shell[1682]: GNOME Shell started at Fri Oct 23 2026 15:02:19 GMT+0200 (Central European Summer Time)
+Oct 23 15:02:27 tind gnome-shell[1682]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
