@@ -2,9 +2,9 @@
 
 One run per machine. For every test: do it, tick it, and write down what you saw in one line. When you are
 done, run `tind-report` and send the file together with this sheet. The report already contains the driver,
-boot, firmware and login-screen details, so no screenshots are needed except where a test says so.
-
-Machine: ______________________  CPU/GPU: ______________________  BIOS or UEFI: ________
+boot, firmware and login-screen details, so no screenshots are needed except where a test says so. You do not
+need to write down which computer it is: the first lines of the report list the model, CPU, graphics, Wi-Fi,
+sound and UEFI or BIOS.
 
 ## Before you start
 
