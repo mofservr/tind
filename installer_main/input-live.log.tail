@@ -1,400 +1,400 @@
- event5   POINTER_BUTTON               +177.771s	BTN_LEFT (272) pressed, seat count: 1
- event5   POINTER_BUTTON               +178.322s	BTN_LEFT (272) released, seat count: 0
-2026-10-23 - 13:37:59 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
-2026-10-23 - 13:37:59 [6]:     QML "onActivate()" is missing. 
-2026-10-23 - 13:37:59 [6]: QStringList findEssentialLVs(const QList<PartitionCoreModule::DeviceInfo*>&)
-2026-10-23 - 13:37:59 [6]:     Checking LVM use on 1 devices 
-2026-10-23 - 13:37:59 [6]: void Calamares::JobThread::finalize()
-2026-10-23 - 13:37:59 [6]:     There are 42 jobs, total weight 39 
-2026-10-23 - 13:37:59 [6]:     .. Job 1 "Managing auto-mount settings…" +wt 0.1 tot.wt 0.1 
-2026-10-23 - 13:37:59 [6]:     .. Job 2 "Clearing all temporary mounts…" +wt 0.1 tot.wt 0.2 
-2026-10-23 - 13:37:59 [6]:     .. Job 3 "Clear mounts for partitioning operations on /dev/vda" +wt 0.1 tot.wt 0.3 
-2026-10-23 - 13:37:59 [6]:     .. Job 4 "Creating new gpt partition table on /dev/vda…" +wt 0.1 tot.wt 0.4 
-2026-10-23 - 13:37:59 [6]:     .. Job 5 "Create new 300MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.5 
-2026-10-23 - 13:37:59 [6]:     .. Job 6 "Set flags on 300MiB fat32 partition" +wt 0.1 tot.wt 0.6 
-2026-10-23 - 13:37:59 [6]:     .. Job 7 "Create new 21873MiB partition on /dev/vda (vda) with entries root" +wt 0.1 tot.wt 0.7 
-2026-10-23 - 13:37:59 [6]:     .. Job 8 "Create new 8544MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.8 
-2026-10-23 - 13:37:59 [6]:     .. Job 9 "Set partition information" +wt 0.1 tot.wt 0.9 
-2026-10-23 - 13:37:59 [6]:     .. Job 10 "Managing auto-mount settings…" +wt 0.1 tot.wt 1 
-2026-10-23 - 13:37:59 [6]:     .. Job 11 "mount" +wt 1 tot.wt 2 
-2026-10-23 - 13:37:59 [6]:     .. Job 12 "unpackfs" +wt 12 tot.wt 14 
-2026-10-23 - 13:37:59 [6]:     .. Job 13 "Configuring LUKS key file." +wt 1 tot.wt 15 
-2026-10-23 - 13:37:59 [6]:     .. Job 14 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" +wt 1 tot.wt 16 
-2026-10-23 - 13:37:59 [6]:     .. Job 15 "Run command '/usr/share/calamares/helpers/calamares-sources-media'" +wt 1 tot.wt 17 
-2026-10-23 - 13:37:59 [6]:     .. Job 16 "Generate machine-id." +wt 1 tot.wt 18 
-2026-10-23 - 13:37:59 [6]:     .. Job 17 "fstab" +wt 1 tot.wt 19 
-2026-10-23 - 13:37:59 [6]:     .. Job 18 "Setting timezone to Europe/Oslo…" +wt 1 tot.wt 20 
-2026-10-23 - 13:37:59 [6]:     .. Job 19 "Setting keyboard model to pc105, layout as no-…" +wt 1 tot.wt 21 
-2026-10-23 - 13:37:59 [6]:     .. Job 20 "localecfg" +wt 1 tot.wt 22 
-2026-10-23 - 13:37:59 [6]:     .. Job 21 "Configuring <pre>sudo</pre> users…" +wt 0.166667 tot.wt 22.1667 
-2026-10-23 - 13:37:59 [6]:     .. Job 22 "Preparing groups…" +wt 0.166667 tot.wt 22.3333 
-2026-10-23 - 13:37:59 [6]:     .. Job 23 "Create user tind" +wt 0.166667 tot.wt 22.5 
-2026-10-23 - 13:37:59 [6]:     .. Job 24 "Set password for user tind" +wt 0.166667 tot.wt 22.6667 
-2026-10-23 - 13:37:59 [6]:     .. Job 25 "Set password for user root" +wt 0.166667 tot.wt 22.8333 
-2026-10-23 - 13:37:59 [6]:     .. Job 26 "Set hostname tindtest" +wt 0.166667 tot.wt 23 
-2026-10-23 - 13:37:59 [6]:     .. Job 27 "displaymanager" +wt 1 tot.wt 24 
-2026-10-23 - 13:37:59 [6]:     .. Job 28 "networkcfg" +wt 1 tot.wt 25 
-2026-10-23 - 13:37:59 [6]:     .. Job 29 "hwclock" +wt 1 tot.wt 26 
-2026-10-23 - 13:37:59 [6]:     .. Job 30 "services-systemd" +wt 1 tot.wt 27 
-2026-10-23 - 13:37:59 [6]:     .. Job 31 "Run command '/usr/lib/tind/bootloader-config'" +wt 1 tot.wt 28 
-2026-10-23 - 13:37:59 [6]:     .. Job 32 "grubcfg" +wt 1 tot.wt 29 
-2026-10-23 - 13:37:59 [6]:     .. Job 33 "bootloader" +wt 1 tot.wt 30 
-2026-10-23 - 13:37:59 [6]:     .. Job 34 "packages" +wt 1 tot.wt 31 
-2026-10-23 - 13:37:59 [6]:     .. Job 35 "tindextras" +wt 1 tot.wt 32 
-2026-10-23 - 13:37:59 [6]:     .. Job 36 "plymouthcfg" +wt 1 tot.wt 33 
-2026-10-23 - 13:37:59 [6]:     .. Job 37 "initramfscfg" +wt 1 tot.wt 34 
-2026-10-23 - 13:37:59 [6]:     .. Job 38 "Creating initramfs…" +wt 1 tot.wt 35 
-2026-10-23 - 13:37:59 [6]:     .. Job 39 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" +wt 1 tot.wt 36 
-2026-10-23 - 13:37:59 [6]:     .. Job 40 "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" +wt 1 tot.wt 37 
-2026-10-23 - 13:37:59 [6]:     .. Job 41 "Run command '/usr/share/calamares/helpers/calamares-sources-final'" +wt 1 tot.wt 38 
-2026-10-23 - 13:37:59 [6]:     .. Job 42 "Unmounting file systems…" +wt 1 tot.wt 39 
-2026-10-23 - 13:37:59 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:37:59 [6]:     Starting job "Managing auto-mount settings…" ( 1 / 42 ) 
-2026-10-23 - 13:37:59 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
-2026-10-23 - 13:37:59 [6]:     Set automount to disable 
-2026-10-23 - 13:37:59 [6]: void Calamares::Partition::querySolidAutoMount(QDBusConnection&, AutoMountInfo&)
-2026-10-23 - 13:37:59 [6]:     Solid not available: "Not connected to D-Bus server" 
-2026-10-23 - 13:37:59 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:37:59 [6]:     Starting job "Clearing all temporary mounts…" ( 2 / 42 ) 
-2026-10-23 - 13:37:59 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:37:59 [6]:     Starting job "Clear mounts for partitioning operations on /dev/vda" ( 3 / 42 ) 
-2026-10-23 - 13:37:59 [2]: QStringList getLVMVolumes()
-2026-10-23 - 13:37:59 [2]:     WARNING: this system does not seem to have LVM2 tools. 
-2026-10-23 - 13:37:59 [2]: QStringList getPVGroups(const QString&)
-2026-10-23 - 13:37:59 [2]:     WARNING: this system does not seem to have LVM2 tools. 
-2026-10-23 - 13:37:59 [6]: QStringList getPartitionsForDevice(const QString&)
-2026-10-23 - 13:37:59 [6]:     Reading from "/proc/partitions" looking for "vda" 
-2026-10-23 - 13:37:59 [6]: virtual Calamares::JobResult ClearMountsJob::exec()
-2026-10-23 - 13:37:59 [6]:     ClearMountsJob finished. Here's what was done: 
-2026-10-23 - 13:37:59 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:37:59 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:37:59 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:37:59 [6]:     Starting job "Creating new gpt partition table on /dev/vda…" ( 4 / 42 ) 
-2026-10-23 - 13:38:00 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:00 [6]:     Starting job "Create new 300MiB partition on /dev/vda (vda)" ( 5 / 42 ) 
-2026-10-23 - 13:38:01 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:01 [6]:     Starting job "Set flags on partition /dev/vda1" ( 6 / 42 ) 
-2026-10-23 - 13:38:01 [6]: virtual Calamares::JobResult SetPartFlagsJob::exec()
-2026-10-23 - 13:38:01 [6]:     Setting flags on "/dev/vda" partition "/dev/vda1" 
+ event5   POINTER_BUTTON               +177.723s	BTN_LEFT (272) pressed, seat count: 1
+ event5   POINTER_BUTTON               +178.274s	BTN_LEFT (272) released, seat count: 0
+2026-10-23 - 15:05:12 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
+2026-10-23 - 15:05:12 [6]:     QML "onActivate()" is missing. 
+2026-10-23 - 15:05:12 [6]: QStringList findEssentialLVs(const QList<PartitionCoreModule::DeviceInfo*>&)
+2026-10-23 - 15:05:12 [6]:     Checking LVM use on 1 devices 
+2026-10-23 - 15:05:12 [6]: void Calamares::JobThread::finalize()
+2026-10-23 - 15:05:12 [6]:     There are 42 jobs, total weight 39 
+2026-10-23 - 15:05:12 [6]:     .. Job 1 "Managing auto-mount settings…" +wt 0.1 tot.wt 0.1 
+2026-10-23 - 15:05:12 [6]:     .. Job 2 "Clearing all temporary mounts…" +wt 0.1 tot.wt 0.2 
+2026-10-23 - 15:05:12 [6]:     .. Job 3 "Clear mounts for partitioning operations on /dev/vda" +wt 0.1 tot.wt 0.3 
+2026-10-23 - 15:05:12 [6]:     .. Job 4 "Creating new gpt partition table on /dev/vda…" +wt 0.1 tot.wt 0.4 
+2026-10-23 - 15:05:12 [6]:     .. Job 5 "Create new 300MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.5 
+2026-10-23 - 15:05:12 [6]:     .. Job 6 "Set flags on 300MiB fat32 partition" +wt 0.1 tot.wt 0.6 
+2026-10-23 - 15:05:12 [6]:     .. Job 7 "Create new 21873MiB partition on /dev/vda (vda) with entries root" +wt 0.1 tot.wt 0.7 
+2026-10-23 - 15:05:12 [6]:     .. Job 8 "Create new 8544MiB partition on /dev/vda (vda)" +wt 0.1 tot.wt 0.8 
+2026-10-23 - 15:05:12 [6]:     .. Job 9 "Set partition information" +wt 0.1 tot.wt 0.9 
+2026-10-23 - 15:05:12 [6]:     .. Job 10 "Managing auto-mount settings…" +wt 0.1 tot.wt 1 
+2026-10-23 - 15:05:12 [6]:     .. Job 11 "mount" +wt 1 tot.wt 2 
+2026-10-23 - 15:05:12 [6]:     .. Job 12 "unpackfs" +wt 12 tot.wt 14 
+2026-10-23 - 15:05:12 [6]:     .. Job 13 "Configuring LUKS key file." +wt 1 tot.wt 15 
+2026-10-23 - 15:05:12 [6]:     .. Job 14 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" +wt 1 tot.wt 16 
+2026-10-23 - 15:05:12 [6]:     .. Job 15 "Run command '/usr/share/calamares/helpers/calamares-sources-media'" +wt 1 tot.wt 17 
+2026-10-23 - 15:05:12 [6]:     .. Job 16 "Generate machine-id." +wt 1 tot.wt 18 
+2026-10-23 - 15:05:12 [6]:     .. Job 17 "fstab" +wt 1 tot.wt 19 
+2026-10-23 - 15:05:12 [6]:     .. Job 18 "Setting timezone to Europe/Oslo…" +wt 1 tot.wt 20 
+2026-10-23 - 15:05:12 [6]:     .. Job 19 "Setting keyboard model to pc105, layout as no-…" +wt 1 tot.wt 21 
+2026-10-23 - 15:05:12 [6]:     .. Job 20 "localecfg" +wt 1 tot.wt 22 
+2026-10-23 - 15:05:12 [6]:     .. Job 21 "Configuring <pre>sudo</pre> users…" +wt 0.166667 tot.wt 22.1667 
+2026-10-23 - 15:05:12 [6]:     .. Job 22 "Preparing groups…" +wt 0.166667 tot.wt 22.3333 
+2026-10-23 - 15:05:12 [6]:     .. Job 23 "Create user tind" +wt 0.166667 tot.wt 22.5 
+2026-10-23 - 15:05:12 [6]:     .. Job 24 "Set password for user tind" +wt 0.166667 tot.wt 22.6667 
+2026-10-23 - 15:05:12 [6]:     .. Job 25 "Set password for user root" +wt 0.166667 tot.wt 22.8333 
+2026-10-23 - 15:05:12 [6]:     .. Job 26 "Set hostname tindtest" +wt 0.166667 tot.wt 23 
+2026-10-23 - 15:05:12 [6]:     .. Job 27 "displaymanager" +wt 1 tot.wt 24 
+2026-10-23 - 15:05:12 [6]:     .. Job 28 "networkcfg" +wt 1 tot.wt 25 
+2026-10-23 - 15:05:12 [6]:     .. Job 29 "hwclock" +wt 1 tot.wt 26 
+2026-10-23 - 15:05:12 [6]:     .. Job 30 "services-systemd" +wt 1 tot.wt 27 
+2026-10-23 - 15:05:12 [6]:     .. Job 31 "Run command '/usr/lib/tind/bootloader-config'" +wt 1 tot.wt 28 
+2026-10-23 - 15:05:12 [6]:     .. Job 32 "grubcfg" +wt 1 tot.wt 29 
+2026-10-23 - 15:05:12 [6]:     .. Job 33 "bootloader" +wt 1 tot.wt 30 
+2026-10-23 - 15:05:12 [6]:     .. Job 34 "packages" +wt 1 tot.wt 31 
+2026-10-23 - 15:05:12 [6]:     .. Job 35 "tindextras" +wt 1 tot.wt 32 
+2026-10-23 - 15:05:12 [6]:     .. Job 36 "plymouthcfg" +wt 1 tot.wt 33 
+2026-10-23 - 15:05:12 [6]:     .. Job 37 "initramfscfg" +wt 1 tot.wt 34 
+2026-10-23 - 15:05:12 [6]:     .. Job 38 "Creating initramfs…" +wt 1 tot.wt 35 
+2026-10-23 - 15:05:12 [6]:     .. Job 39 "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" +wt 1 tot.wt 36 
+2026-10-23 - 15:05:12 [6]:     .. Job 40 "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" +wt 1 tot.wt 37 
+2026-10-23 - 15:05:12 [6]:     .. Job 41 "Run command '/usr/share/calamares/helpers/calamares-sources-final'" +wt 1 tot.wt 38 
+2026-10-23 - 15:05:12 [6]:     .. Job 42 "Unmounting file systems…" +wt 1 tot.wt 39 
+2026-10-23 - 15:05:12 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:12 [6]:     Starting job "Managing auto-mount settings…" ( 1 / 42 ) 
+2026-10-23 - 15:05:12 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
+2026-10-23 - 15:05:12 [6]:     Set automount to disable 
+2026-10-23 - 15:05:12 [6]: void Calamares::Partition::querySolidAutoMount(QDBusConnection&, AutoMountInfo&)
+2026-10-23 - 15:05:12 [6]:     Solid not available: "Not connected to D-Bus server" 
+2026-10-23 - 15:05:12 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:12 [6]:     Starting job "Clearing all temporary mounts…" ( 2 / 42 ) 
+2026-10-23 - 15:05:12 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:12 [6]:     Starting job "Clear mounts for partitioning operations on /dev/vda" ( 3 / 42 ) 
+2026-10-23 - 15:05:12 [2]: QStringList getLVMVolumes()
+2026-10-23 - 15:05:12 [2]:     WARNING: this system does not seem to have LVM2 tools. 
+2026-10-23 - 15:05:12 [2]: QStringList getPVGroups(const QString&)
+2026-10-23 - 15:05:12 [2]:     WARNING: this system does not seem to have LVM2 tools. 
+2026-10-23 - 15:05:12 [6]: QStringList getPartitionsForDevice(const QString&)
+2026-10-23 - 15:05:12 [6]:     Reading from "/proc/partitions" looking for "vda" 
+2026-10-23 - 15:05:12 [6]: virtual Calamares::JobResult ClearMountsJob::exec()
+2026-10-23 - 15:05:12 [6]:     ClearMountsJob finished. Here's what was done: 
+2026-10-23 - 15:05:12 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:12 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:12 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:12 [6]:     Starting job "Creating new gpt partition table on /dev/vda…" ( 4 / 42 ) 
+2026-10-23 - 15:05:13 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:13 [6]:     Starting job "Create new 300MiB partition on /dev/vda (vda)" ( 5 / 42 ) 
+2026-10-23 - 15:05:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:15 [6]:     Starting job "Set flags on partition /dev/vda1" ( 6 / 42 ) 
+2026-10-23 - 15:05:15 [6]: virtual Calamares::JobResult SetPartFlagsJob::exec()
+2026-10-23 - 15:05:15 [6]:     Setting flags on "/dev/vda" partition "/dev/vda1" 
      "boot" 
-2026-10-23 - 13:38:02 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:02 [6]:     Starting job "Create new 21873MiB partition on /dev/vda (vda) with entries root" ( 7 / 42 ) 
-2026-10-23 - 13:38:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:04 [6]:     Starting job "Create new 8544MiB partition on /dev/vda (vda)" ( 8 / 42 ) 
-2026-10-23 - 13:38:06 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:06 [6]:     Starting job "Set partition information" ( 9 / 42 ) 
-2026-10-23 - 13:38:06 [6]: QVariantList FillGlobalStorageJob::createPartitionList() const
-2026-10-23 - 13:38:06 [6]:     Building partition information map 
-2026-10-23 - 13:38:06 [6]:     .. partitions on "/dev/vda" 
-2026-10-23 - 13:38:06 [6]:     ..  mapping for "" "unallocated" 
+2026-10-23 - 15:05:15 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:15 [6]:     Starting job "Create new 21873MiB partition on /dev/vda (vda) with entries root" ( 7 / 42 ) 
+2026-10-23 - 15:05:18 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:18 [6]:     Starting job "Create new 8544MiB partition on /dev/vda (vda)" ( 8 / 42 ) 
+2026-10-23 - 15:05:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:20 [6]:     Starting job "Set partition information" ( 9 / 42 ) 
+2026-10-23 - 15:05:20 [6]: QVariantList FillGlobalStorageJob::createPartitionList() const
+2026-10-23 - 15:05:20 [6]:     Building partition information map 
+2026-10-23 - 15:05:20 [6]:     .. partitions on "/dev/vda" 
+2026-10-23 - 15:05:20 [6]:     ..  mapping for "" "unallocated" 
      partlabel :   "" 
-     partition-uuid (partuuid) :   "PartUUID$f81f4e09" 
+     partition-uuid (partuuid) :   "PartUUID$f2e87f72" 
      parttype :   "" 
      partattrs :   "0" 
      mountPoint: :   "" 
      fs: :   "unknown" 
      fsName :   "unknown" 
-     filesystem-uuid (uuid) :   "FSUUID$6ac91b96" 
+     filesystem-uuid (uuid) :   "FSUUID$94ff4db5" 
      claimed :   "false" 
-2026-10-23 - 13:38:06 [6]:     ..  mapping for "/dev/vda1" "/dev/vda1" 
+2026-10-23 - 15:05:20 [6]:     ..  mapping for "/dev/vda1" "/dev/vda1" 
      partlabel :   "" 
-     partition-uuid (partuuid) :   "PartUUID$d695607a" 
+     partition-uuid (partuuid) :   "PartUUID$d2ac1384" 
      parttype :   "" 
      partattrs :   "0" 
      mountPoint: :   "/boot/efi" 
      fs: :   "fat32" 
      fsName :   "fat32" 
-     filesystem-uuid (uuid) :   "FSUUID$3df7eaf2" 
+     filesystem-uuid (uuid) :   "FSUUID$83e80f5b" 
      claimed :   "true" 
-2026-10-23 - 13:38:06 [6]:     ..  mapping for "/dev/vda2" "/dev/vda2" 
+2026-10-23 - 15:05:20 [6]:     ..  mapping for "/dev/vda2" "/dev/vda2" 
      partlabel :   "root" 
-     partition-uuid (partuuid) :   "PartUUID$ce1dd048" 
+     partition-uuid (partuuid) :   "PartUUID$ef0c96dc" 
      parttype :   "" 
      partattrs :   "0" 
      mountPoint: :   "/" 
      fs: :   "ext4" 
      fsName :   "ext4" 
-     filesystem-uuid (uuid) :   "FSUUID$848da20a" 
+     filesystem-uuid (uuid) :   "FSUUID$67e436fe" 
      claimed :   "true" 
-2026-10-23 - 13:38:06 [6]:     ..  mapping for "/dev/vda3" "/dev/vda3" 
+2026-10-23 - 15:05:20 [6]:     ..  mapping for "/dev/vda3" "/dev/vda3" 
      partlabel :   "" 
-     partition-uuid (partuuid) :   "PartUUID$2738f17a" 
+     partition-uuid (partuuid) :   "PartUUID$d7c94bfc" 
      parttype :   "" 
      partattrs :   "0" 
      mountPoint: :   "" 
      fs: :   "linuxswap" 
      fsName :   "linuxswap" 
-     filesystem-uuid (uuid) :   "FSUUID$cf410f79" 
+     filesystem-uuid (uuid) :   "FSUUID$d3862350" 
      claimed :   "true" 
-2026-10-23 - 13:38:06 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
-2026-10-23 - 13:38:06 [6]:     Saving partition information map to GlobalStorage["partitions"] 
-2026-10-23 - 13:38:06 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
-2026-10-23 - 13:38:06 [6]:     FillGlobalStorageJob writing empty bootLoader value 
-2026-10-23 - 13:38:06 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:06 [6]:     Starting job "Managing auto-mount settings…" ( 10 / 42 ) 
-2026-10-23 - 13:38:06 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
-2026-10-23 - 13:38:06 [6]:     Restore automount settings 
-2026-10-23 - 13:38:06 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:06 [6]:     Starting job "mount" ( 11 / 42 ) 
-2026-10-23 - 13:38:07 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("swapon", "/dev/vda3") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "ext4", "-o", "defaults", "/dev/vda2", "/tmp/calamares-root-g11jjdug/") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "vfat", "-o", "defaults", "/dev/vda1", "/tmp/calamares-root-g11jjdug/boot/efi") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-o", "bind", "/dev", "/tmp/calamares-root-g11jjdug/dev") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-o", "bind", "/dev/pts", "/tmp/calamares-root-g11jjdug/dev/pts") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "proc", "-o", "defaults", "proc", "/tmp/calamares-root-g11jjdug/proc") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "tmpfs", "-o", "defaults", "tmpfs", "/tmp/calamares-root-g11jjdug/run") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-o", "bind", "/run/udev", "/tmp/calamares-root-g11jjdug/run/udev") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "sysfs", "-o", "defaults", "sys", "/tmp/calamares-root-g11jjdug/sys") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "efivarfs", "-o", "defaults", "efivarfs", "/tmp/calamares-root-g11jjdug/sys/firmware/efi/efivars") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:38:07 [6]:     Starting job "unpackfs" ( 12 / 42 ) 
-2026-10-23 - 13:38:07 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("mount", "-t", "squashfs", "-o", "loop", "/run/live/medium/live/filesystem.squashfs", "/tmp/tmp5oxyr3ks/filesystem") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("unsquashfs", "-l", "/run/live/medium/live/filesystem.squashfs") 
-2026-10-23 - 13:38:07 [6]:     .. Running QList("rsync", "-aHAXSr", "--filter=-x trusted.overlay.*", "--exclude", "/proc/", "--exclude", "/sys/", "--exclude", "/dev/", "--exclude", "/run/", "--exclude", "/run/udev/", "--exclude", "/sys/firmware/efi/efivars/", "--exclude", "/dev/pts/", "--progress", "/tmp/tmp5oxyr3ks/filesystem/", "/tmp/calamares-root-g11jjdug") 
-2026-10-23 - 13:40:55 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:40:55 [6]:     Starting job "Configuring LUKS key file." ( 13 / 42 ) 
-2026-10-23 - 13:40:55 [6]: virtual Calamares::JobResult LuksBootKeyFileJob::exec()
-2026-10-23 - 13:40:55 [6]:     There are 0 LUKS partitions 
-2026-10-23 - 13:40:55 [6]:     .. Nothing to do for LUKS. 
-2026-10-23 - 13:40:55 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:40:55 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" ( 14 / 42 ) 
-2026-10-23 - 13:40:55 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io") 
-2026-10-23 - 13:40:55 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:40:55 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media'" ( 15 / 42 ) 
-2026-10-23 - 13:40:55 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media") 
-2026-10-23 - 13:41:02 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:02 [6]:     Starting job "Generate machine-id." ( 16 / 42 ) 
-2026-10-23 - 13:41:02 [2]: Calamares::JobResult createEntropy(EntropyGeneration, const QString&, const QString&)
-2026-10-23 - 13:41:02 [2]:     WARNING: Host system entropy does not exist at "/var/lib/urandom/random-seed" 
-2026-10-23 - 13:41:02 [6]:     .. Running QList("systemd-machine-id-setup", "--root=/tmp/calamares-root-g11jjdug") 
-2026-10-23 - 13:41:02 [6]:     .. Running QList("ln", "-sf", "/etc/machine-id", "/var/lib/dbus/machine-id") 
-2026-10-23 - 13:41:02 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:02 [6]:     Starting job "fstab" ( 17 / 42 ) 
-2026-10-23 - 13:41:02 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:02 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:02 [6]:     Starting job "Setting timezone to Europe/Oslo…" ( 18 / 42 ) 
-2026-10-23 - 13:41:02 [6]:     .. Running QList("rm", "-f", "/etc/localtime") 
-2026-10-23 - 13:41:02 [6]:     .. Running QList("ln", "-s", "/usr/share/zoneinfo/Europe/Oslo", "/etc/localtime") 
-2026-10-23 - 13:41:02 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:02 [6]:     Starting job "Setting keyboard model to pc105, layout as no-…" ( 19 / 42 ) 
-2026-10-23 - 13:41:02 [6]: virtual Calamares::JobResult SetKeyboardLayoutJob::exec()
-2026-10-23 - 13:41:02 [6]:     Executing SetKeyboardLayoutJob 
-2026-10-23 - 13:41:02 [6]: bool SetKeyboardLayoutJob::writeVConsoleData(const QString&, const QString&) const
-2026-10-23 - 13:41:02 [6]:     Writing vconsole data to "/tmp/calamares-root-g11jjdug/etc/vconsole.conf" 
-2026-10-23 - 13:41:02 [6]: QString SetKeyboardLayoutJob::findConvertedKeymap(const QString&) const
-2026-10-23 - 13:41:02 [6]:     Looking for converted keymap in "" 
-2026-10-23 - 13:41:02 [6]: QString findLegacyKeymap(const QString&, const QString&, const QString&)
-2026-10-23 - 13:41:02 [6]:     Looking for legacy keymap "no" "pc105" "" in QRC 
-2026-10-23 - 13:41:02 [6]:     .. Found legacy keymap "no" with score 12 
-2026-10-23 - 13:41:02 [6]:     .. Written KEYMAP= "no" to vconsole.conf 0 
-2026-10-23 - 13:41:02 [6]: bool SetKeyboardLayoutJob::writeX11Data(const QString&) const
-2026-10-23 - 13:41:02 [6]:     Writing X11 configuration to "/tmp/calamares-root-g11jjdug/etc/X11/xorg.conf.d/00-keyboard.conf" 
-2026-10-23 - 13:41:02 [6]:     .. Written XkbLayout "no" ; XkbModel "pc105" ; XkbVariant "" to X.org file "/tmp/calamares-root-g11jjdug/etc/X11/xorg.conf.d/00-keyboard.conf" 0 
-2026-10-23 - 13:41:02 [6]: bool SetKeyboardLayoutJob::writeDefaultKeyboardData(const QString&) const
-2026-10-23 - 13:41:02 [6]:     Writing default keyboard data to "/tmp/calamares-root-g11jjdug/etc/default/keyboard" 
-2026-10-23 - 13:41:02 [6]:     .. Written XKBMODEL "pc105" ; XKBLAYOUT "no" ; XKBVARIANT "" to /etc/default/keyboard file "/tmp/calamares-root-g11jjdug/etc/default/keyboard" 0 
-2026-10-23 - 13:41:03 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:03 [6]:     Starting job "localecfg" ( 20 / 42 ) 
-2026-10-23 - 13:41:03 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:03 [6]:     .. Running QList("locale-gen") 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "/tmp/calamares-root-g11jjdug/etc/locale.gen done" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "/tmp/calamares-root-g11jjdug/etc/locale.conf done" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "/tmp/calamares-root-g11jjdug/etc/default done" 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Configuring <pre>sudo</pre> users…" ( 21 / 42 ) 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Preparing groups…" ( 22 / 42 ) 
-2026-10-23 - 13:41:04 [6]:     .. Running QList("groupadd", "autologin") 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Create user tind" ( 23 / 42 ) 
-2026-10-23 - 13:41:04 [6]: virtual Calamares::JobResult CreateUserJob::exec()
-2026-10-23 - 13:41:04 [6]:     [CREATEUSER]: creating user 
-2026-10-23 - 13:41:04 [6]:     .. Running QList("useradd", "-m", "-U", "-s", "/bin/bash", "-c", "Tind Test", "tind") 
-2026-10-23 - 13:41:04 [6]:     .. Running "usermod" "-aG" "cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lpadmin,scanner,bluetooth,autologin" "tind" 
-2026-10-23 - 13:41:04 [6]:     .. Running QList("chown", "-R", "tind:tind", "/home/tind") 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Set password for user tind" ( 24 / 42 ) 
-2026-10-23 - 13:41:04 [6]:     .. Running "usermod" "-p" "$y$j9T$JgBWhdD8xFurcwIqFB1m4.$suO4dJ3Tm5ZgNhXcJ6jNs7wjDdVbKwN8eD6AZgW41F5" "tind" 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Set password for user root" ( 25 / 42 ) 
-2026-10-23 - 13:41:04 [6]:     .. Running "usermod" "-p" "!" "root" 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "Set hostname tindtest" ( 26 / 42 ) 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "displaymanager" ( 27 / 42 ) 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "slim selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "sddm selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "lightdm selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "mdm selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "lxdm selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "kdm has 0 implementation classes." 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "kdm selected but not installed" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "Using rootMountPoint '/tmp/calamares-root-g11jjdug'" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: ".. selected DE gnome" 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: "Setting up autologin for user tind." 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "networkcfg" ( 28 / 42 ) 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:04 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:04 [6]:     Starting job "hwclock" ( 29 / 42 ) 
-2026-10-23 - 13:41:04 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:04 [6]:     .. Running QList("hwclock", "--systohc", "--utc") 
-2026-10-23 - 13:41:05 [6]: [PYTHON JOB]: "Hwclock set using RTC method." 
-2026-10-23 - 13:41:05 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:05 [6]:     Starting job "services-systemd" ( 30 / 42 ) 
-2026-10-23 - 13:41:05 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:05 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:05 [6]:     Starting job "Run command '/usr/lib/tind/bootloader-config'" ( 31 / 42 ) 
-2026-10-23 - 13:41:05 [6]:     .. Running QList("/bin/sh", "-c", "/usr/lib/tind/bootloader-config") 
-2026-10-23 - 13:41:06 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:06 [6]:     Starting job "grubcfg" ( 32 / 42 ) 
-2026-10-23 - 13:41:06 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:06 [6]:     .. Running QList("sh", "-c", "which dracut") 
-2026-10-23 - 13:41:06 [6]:     .. Target cmd: QList("sh", "-c", "which dracut") Exit code: 1 (no output) 
-2026-10-23 - 13:41:06 [6]:     .. Running QList("sh", "-c", "which plymouth") 
-2026-10-23 - 13:41:06 [6]:     .. Running QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") 
-2026-10-23 - 13:41:06 [6]:     .. Target cmd: QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") Exit code: 2 output:
+2026-10-23 - 15:05:20 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
+2026-10-23 - 15:05:20 [6]:     Saving partition information map to GlobalStorage["partitions"] 
+2026-10-23 - 15:05:20 [6]: virtual Calamares::JobResult FillGlobalStorageJob::exec()
+2026-10-23 - 15:05:20 [6]:     FillGlobalStorageJob writing empty bootLoader value 
+2026-10-23 - 15:05:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:20 [6]:     Starting job "Managing auto-mount settings…" ( 10 / 42 ) 
+2026-10-23 - 15:05:20 [6]: virtual Calamares::JobResult AutoMountManagementJob::exec()
+2026-10-23 - 15:05:20 [6]:     Restore automount settings 
+2026-10-23 - 15:05:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:20 [6]:     Starting job "mount" ( 11 / 42 ) 
+2026-10-23 - 15:05:20 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("swapon", "/dev/vda3") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "ext4", "-o", "defaults", "/dev/vda2", "/tmp/calamares-root-2g2gtd7_/") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "vfat", "-o", "defaults", "/dev/vda1", "/tmp/calamares-root-2g2gtd7_/boot/efi") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-o", "bind", "/dev", "/tmp/calamares-root-2g2gtd7_/dev") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-o", "bind", "/dev/pts", "/tmp/calamares-root-2g2gtd7_/dev/pts") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "proc", "-o", "defaults", "proc", "/tmp/calamares-root-2g2gtd7_/proc") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "tmpfs", "-o", "defaults", "tmpfs", "/tmp/calamares-root-2g2gtd7_/run") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-o", "bind", "/run/udev", "/tmp/calamares-root-2g2gtd7_/run/udev") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "sysfs", "-o", "defaults", "sys", "/tmp/calamares-root-2g2gtd7_/sys") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "efivarfs", "-o", "defaults", "efivarfs", "/tmp/calamares-root-2g2gtd7_/sys/firmware/efi/efivars") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:05:20 [6]:     Starting job "unpackfs" ( 12 / 42 ) 
+2026-10-23 - 15:05:20 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("mount", "-t", "squashfs", "-o", "loop", "/run/live/medium/live/filesystem.squashfs", "/tmp/tmpcuwxy6cr/filesystem") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:05:20 [6]:     .. Running QList("unsquashfs", "-l", "/run/live/medium/live/filesystem.squashfs") 
+2026-10-23 - 15:05:21 [6]:     .. Running QList("rsync", "-aHAXSr", "--filter=-x trusted.overlay.*", "--exclude", "/proc/", "--exclude", "/sys/", "--exclude", "/dev/", "--exclude", "/run/", "--exclude", "/run/udev/", "--exclude", "/sys/firmware/efi/efivars/", "--exclude", "/dev/pts/", "--progress", "/tmp/tmpcuwxy6cr/filesystem/", "/tmp/calamares-root-2g2gtd7_") 
+2026-10-23 - 15:08:11 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:11 [6]:     Starting job "Configuring LUKS key file." ( 13 / 42 ) 
+2026-10-23 - 15:08:11 [6]: virtual Calamares::JobResult LuksBootKeyFileJob::exec()
+2026-10-23 - 15:08:11 [6]:     There are 0 LUKS partitions 
+2026-10-23 - 15:08:11 [6]:     .. Nothing to do for LUKS. 
+2026-10-23 - 15:08:11 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:11 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io'" ( 14 / 42 ) 
+2026-10-23 - 15:08:11 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io") 
+2026-10-23 - 15:08:11 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:11 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media'" ( 15 / 42 ) 
+2026-10-23 - 15:08:11 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media") 
+2026-10-23 - 15:08:19 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:19 [6]:     Starting job "Generate machine-id." ( 16 / 42 ) 
+2026-10-23 - 15:08:19 [2]: Calamares::JobResult createEntropy(EntropyGeneration, const QString&, const QString&)
+2026-10-23 - 15:08:19 [2]:     WARNING: Host system entropy does not exist at "/var/lib/urandom/random-seed" 
+2026-10-23 - 15:08:19 [6]:     .. Running QList("systemd-machine-id-setup", "--root=/tmp/calamares-root-2g2gtd7_") 
+2026-10-23 - 15:08:19 [6]:     .. Running QList("ln", "-sf", "/etc/machine-id", "/var/lib/dbus/machine-id") 
+2026-10-23 - 15:08:19 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:19 [6]:     Starting job "fstab" ( 17 / 42 ) 
+2026-10-23 - 15:08:19 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:19 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:19 [6]:     Starting job "Setting timezone to Europe/Oslo…" ( 18 / 42 ) 
+2026-10-23 - 15:08:19 [6]:     .. Running QList("rm", "-f", "/etc/localtime") 
+2026-10-23 - 15:08:19 [6]:     .. Running QList("ln", "-s", "/usr/share/zoneinfo/Europe/Oslo", "/etc/localtime") 
+2026-10-23 - 15:08:19 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:19 [6]:     Starting job "Setting keyboard model to pc105, layout as no-…" ( 19 / 42 ) 
+2026-10-23 - 15:08:19 [6]: virtual Calamares::JobResult SetKeyboardLayoutJob::exec()
+2026-10-23 - 15:08:19 [6]:     Executing SetKeyboardLayoutJob 
+2026-10-23 - 15:08:19 [6]: bool SetKeyboardLayoutJob::writeVConsoleData(const QString&, const QString&) const
+2026-10-23 - 15:08:19 [6]:     Writing vconsole data to "/tmp/calamares-root-2g2gtd7_/etc/vconsole.conf" 
+2026-10-23 - 15:08:19 [6]: QString SetKeyboardLayoutJob::findConvertedKeymap(const QString&) const
+2026-10-23 - 15:08:19 [6]:     Looking for converted keymap in "" 
+2026-10-23 - 15:08:19 [6]: QString findLegacyKeymap(const QString&, const QString&, const QString&)
+2026-10-23 - 15:08:19 [6]:     Looking for legacy keymap "no" "pc105" "" in QRC 
+2026-10-23 - 15:08:19 [6]:     .. Found legacy keymap "no" with score 12 
+2026-10-23 - 15:08:19 [6]:     .. Written KEYMAP= "no" to vconsole.conf 0 
+2026-10-23 - 15:08:19 [6]: bool SetKeyboardLayoutJob::writeX11Data(const QString&) const
+2026-10-23 - 15:08:19 [6]:     Writing X11 configuration to "/tmp/calamares-root-2g2gtd7_/etc/X11/xorg.conf.d/00-keyboard.conf" 
+2026-10-23 - 15:08:19 [6]:     .. Written XkbLayout "no" ; XkbModel "pc105" ; XkbVariant "" to X.org file "/tmp/calamares-root-2g2gtd7_/etc/X11/xorg.conf.d/00-keyboard.conf" 0 
+2026-10-23 - 15:08:19 [6]: bool SetKeyboardLayoutJob::writeDefaultKeyboardData(const QString&) const
+2026-10-23 - 15:08:19 [6]:     Writing default keyboard data to "/tmp/calamares-root-2g2gtd7_/etc/default/keyboard" 
+2026-10-23 - 15:08:19 [6]:     .. Written XKBMODEL "pc105" ; XKBLAYOUT "no" ; XKBVARIANT "" to /etc/default/keyboard file "/tmp/calamares-root-2g2gtd7_/etc/default/keyboard" 0 
+2026-10-23 - 15:08:19 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:19 [6]:     Starting job "localecfg" ( 20 / 42 ) 
+2026-10-23 - 15:08:19 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:19 [6]:     .. Running QList("locale-gen") 
+2026-10-23 - 15:08:20 [6]: [PYTHON JOB]: "/tmp/calamares-root-2g2gtd7_/etc/locale.gen done" 
+2026-10-23 - 15:08:20 [6]: [PYTHON JOB]: "/tmp/calamares-root-2g2gtd7_/etc/locale.conf done" 
+2026-10-23 - 15:08:20 [6]: [PYTHON JOB]: "/tmp/calamares-root-2g2gtd7_/etc/default done" 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Configuring <pre>sudo</pre> users…" ( 21 / 42 ) 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Preparing groups…" ( 22 / 42 ) 
+2026-10-23 - 15:08:20 [6]:     .. Running QList("groupadd", "autologin") 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Create user tind" ( 23 / 42 ) 
+2026-10-23 - 15:08:20 [6]: virtual Calamares::JobResult CreateUserJob::exec()
+2026-10-23 - 15:08:20 [6]:     [CREATEUSER]: creating user 
+2026-10-23 - 15:08:20 [6]:     .. Running QList("useradd", "-m", "-U", "-s", "/bin/bash", "-c", "Tind Test", "tind") 
+2026-10-23 - 15:08:20 [6]:     .. Running "usermod" "-aG" "cdrom,floppy,sudo,audio,dip,video,plugdev,netdev,lpadmin,scanner,bluetooth,autologin" "tind" 
+2026-10-23 - 15:08:20 [6]:     .. Running QList("chown", "-R", "tind:tind", "/home/tind") 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Set password for user tind" ( 24 / 42 ) 
+2026-10-23 - 15:08:20 [6]:     .. Running "usermod" "-p" "$y$j9T$WAelUjqE0uYd4QDZpt5hK1$VNYot0klkzPFuorZRYJZatyw0vU//k/Y.przzITqey." "tind" 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Set password for user root" ( 25 / 42 ) 
+2026-10-23 - 15:08:20 [6]:     .. Running "usermod" "-p" "!" "root" 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "Set hostname tindtest" ( 26 / 42 ) 
+2026-10-23 - 15:08:20 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:20 [6]:     Starting job "displaymanager" ( 27 / 42 ) 
+2026-10-23 - 15:08:20 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "slim selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "sddm selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "lightdm selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "mdm selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "lxdm selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "kdm has 0 implementation classes." 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "kdm selected but not installed" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "Using rootMountPoint '/tmp/calamares-root-2g2gtd7_'" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: ".. selected DE gnome" 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "Setting up autologin for user tind." 
+2026-10-23 - 15:08:21 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:21 [6]:     Starting job "networkcfg" ( 28 / 42 ) 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:21 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:21 [6]:     Starting job "hwclock" ( 29 / 42 ) 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:21 [6]:     .. Running QList("hwclock", "--systohc", "--utc") 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: "Hwclock set using RTC method." 
+2026-10-23 - 15:08:21 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:21 [6]:     Starting job "services-systemd" ( 30 / 42 ) 
+2026-10-23 - 15:08:21 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:21 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:21 [6]:     Starting job "Run command '/usr/lib/tind/bootloader-config'" ( 31 / 42 ) 
+2026-10-23 - 15:08:21 [6]:     .. Running QList("/bin/sh", "-c", "/usr/lib/tind/bootloader-config") 
+2026-10-23 - 15:08:22 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:22 [6]:     Starting job "grubcfg" ( 32 / 42 ) 
+2026-10-23 - 15:08:22 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:22 [6]:     .. Running QList("sh", "-c", "which dracut") 
+2026-10-23 - 15:08:22 [6]:     .. Target cmd: QList("sh", "-c", "which dracut") Exit code: 1 (no output) 
+2026-10-23 - 15:08:22 [6]:     .. Running QList("sh", "-c", "which plymouth") 
+2026-10-23 - 15:08:22 [6]:     .. Running QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") 
+2026-10-23 - 15:08:22 [6]:     .. Target cmd: QList("sh", "-c", "grep -q \"^HOOKS.*systemd\" /etc/mkinitcpio.conf") Exit code: 2 output:
 grep: /etc/mkinitcpio.conf: No such file or directory
-2026-10-23 - 13:41:06 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:06 [6]:     Starting job "bootloader" ( 33 / 42 ) 
-2026-10-23 - 13:41:06 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:06 [6]: [PYTHON JOB]: "Bootloader: grub (efi)" 
-2026-10-23 - 13:41:06 [6]:     .. Running QList("grub-install", "--target=x86_64-efi", "--efi-directory=/boot/efi", "--bootloader-id=Tind", "--force") 
-2026-10-23 - 13:41:07 [6]: [PYTHON JOB]: "UEFI Fallback: True" 
-2026-10-23 - 13:41:07 [6]: [PYTHON JOB]: "  .. installing 'bootx64.efi' fallback firmware" 
-2026-10-23 - 13:41:07 [6]:     .. Running QList("grub-mkconfig", "-o", "/boot/grub/grub.cfg") 
-2026-10-23 - 13:41:08 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:08 [6]:     Starting job "packages" ( 34 / 42 ) 
-2026-10-23 - 13:41:08 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:08 [6]: [PYTHON JOB]: "Install packages." 
-2026-10-23 - 13:41:08 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot") 
-2026-10-23 - 13:41:09 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
-2026-10-23 - 13:41:14 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") 
-2026-10-23 - 13:41:14 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") Exit code: 100 output:
+2026-10-23 - 15:08:22 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:22 [6]:     Starting job "bootloader" ( 33 / 42 ) 
+2026-10-23 - 15:08:22 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:22 [6]: [PYTHON JOB]: "Bootloader: grub (efi)" 
+2026-10-23 - 15:08:22 [6]:     .. Running QList("grub-install", "--target=x86_64-efi", "--efi-directory=/boot/efi", "--bootloader-id=Tind", "--force") 
+2026-10-23 - 15:08:23 [6]: [PYTHON JOB]: "UEFI Fallback: True" 
+2026-10-23 - 15:08:23 [6]: [PYTHON JOB]: "  .. installing 'bootx64.efi' fallback firmware" 
+2026-10-23 - 15:08:23 [6]:     .. Running QList("grub-mkconfig", "-o", "/boot/grub/grub.cfg") 
+2026-10-23 - 15:08:24 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:24 [6]:     Starting job "packages" ( 34 / 42 ) 
+2026-10-23 - 15:08:24 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:24 [6]: [PYTHON JOB]: "Install packages." 
+2026-10-23 - 15:08:24 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot") 
+2026-10-23 - 15:08:25 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-23 - 15:08:31 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") 
+2026-10-23 - 15:08:31 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-boot-doc") Exit code: 100 output:
 Reading package lists...
 Building dependency tree...
 Reading state information...
 E: Unable to locate package live-boot-doc
-2026-10-23 - 13:41:14 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-boot-doc" 
-2026-10-23 - 13:41:14 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config") 
-2026-10-23 - 13:41:15 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
-2026-10-23 - 13:41:17 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") 
-2026-10-23 - 13:41:17 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") Exit code: 100 output:
+2026-10-23 - 15:08:31 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-boot-doc" 
+2026-10-23 - 15:08:31 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config") 
+2026-10-23 - 15:08:32 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-23 - 15:08:34 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") 
+2026-10-23 - 15:08:34 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-doc") Exit code: 100 output:
 Reading package lists...
 Building dependency tree...
 Reading state information...
 E: Unable to locate package live-config-doc
-2026-10-23 - 13:41:17 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-config-doc" 
-2026-10-23 - 13:41:17 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-systemd") 
-2026-10-23 - 13:41:18 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
-2026-10-23 - 13:41:18 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") 
-2026-10-23 - 13:41:18 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") Exit code: 100 output:
+2026-10-23 - 15:08:34 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-config-doc" 
+2026-10-23 - 15:08:34 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-config-systemd") 
+2026-10-23 - 15:08:34 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-23 - 15:08:34 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") 
+2026-10-23 - 15:08:34 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "live-tools") Exit code: 100 output:
 Reading package lists...
 Building dependency tree...
 Reading state information...
 E: Unable to locate package live-tools
-2026-10-23 - 13:41:18 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-tools" 
-2026-10-23 - 13:41:18 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "tind-installer") 
-2026-10-23 - 13:41:19 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
-2026-10-23 - 13:41:26 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") 
-2026-10-23 - 13:41:26 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") Exit code: 100 output:
+2026-10-23 - 15:08:34 [2]: WARNING: [PYTHON JOB]: "Could not remove package live-tools" 
+2026-10-23 - 15:08:34 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "tind-installer") 
+2026-10-23 - 15:08:35 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "autoremove") 
+2026-10-23 - 15:08:44 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") 
+2026-10-23 - 15:08:44 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares-settings-debian") Exit code: 100 output:
 Reading package lists...
 Building dependency tree...
 Reading state information...
 E: Unable to locate package calamares-settings-debian
-2026-10-23 - 13:41:26 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares-settings-debian" 
-2026-10-23 - 13:41:26 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") 
-2026-10-23 - 13:41:26 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") Exit code: 100 output:
+2026-10-23 - 15:08:44 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares-settings-debian" 
+2026-10-23 - 15:08:44 [6]:     .. Running QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") 
+2026-10-23 - 15:08:44 [6]:     .. Target cmd: QList("apt-get", "--purge", "-q", "-y", "remove", "calamares") Exit code: 100 output:
 Reading package lists...
 Building dependency tree...
 Reading state information...
 E: Unable to locate package calamares
-2026-10-23 - 13:41:26 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares" 
-2026-10-23 - 13:41:26 [6]: [PYTHON JOB]: "Pretty name: Install packages., setting progress.." 
-2026-10-23 - 13:41:26 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:26 [6]:     Starting job "tindextras" ( 35 / 42 ) 
-2026-10-23 - 13:41:26 [6]: [PYTHON JOB]: "tindextras: file=/tmp/tind-extras-choice chosen=['productivity'] wanted=['productivity']" 
-2026-10-23 - 13:41:27 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:27 [6]:     Starting job "plymouthcfg" ( 36 / 42 ) 
-2026-10-23 - 13:41:27 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:27 [6]:     .. Running QList("sh", "-c", "which plymouth") 
-2026-10-23 - 13:41:27 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:27 [6]:     Starting job "initramfscfg" ( 37 / 42 ) 
-2026-10-23 - 13:41:27 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
-2026-10-23 - 13:41:27 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:27 [6]:     Starting job "Creating initramfs…" ( 38 / 42 ) 
-2026-10-23 - 13:41:27 [6]: virtual Calamares::JobResult InitramfsJob::exec()
-2026-10-23 - 13:41:27 [6]:     Updating initramfs with kernel "all" 
-2026-10-23 - 13:41:27 [6]:     .. Running QList("update-initramfs", "-k", "all", "-c", "-t") 
-2026-10-23 - 13:41:45 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:45 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" ( 39 / 42 ) 
-2026-10-23 - 13:41:45 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u") 
-2026-10-23 - 13:41:45 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:45 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" ( 40 / 42 ) 
-2026-10-23 - 13:41:45 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media -u") 
-2026-10-23 - 13:41:52 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:52 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-final'" ( 41 / 42 ) 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-final") 
-2026-10-23 - 13:41:52 [6]: virtual void Calamares::JobThread::run()
-2026-10-23 - 13:41:52 [6]:     Starting job "Unmounting file systems…" ( 42 / 42 ) 
-2026-10-23 - 13:41:52 [6]: Calamares::JobResult unmountTargetMounts(const QString&)
-2026-10-23 - 13:41:52 [6]:     Read 9 entries from "/tmp/calamares-root-g11jjdug/" 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/sys/firmware/efi/efivars") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/sys") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/run/udev") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/run/live/medium") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/run") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/proc") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/dev/pts") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/dev") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug/boot/efi") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:52 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-g11jjdug") 
-2026-10-23 - 13:41:53 [6]:     .. Running QList("udevadm", "settle") 
-2026-10-23 - 13:41:53 [6]:     .. Running QList("sync") 
-2026-10-23 - 13:41:53 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
-2026-10-23 - 13:41:53 [6]:     QML "onLeave()" is missing. 
-2026-10-23 - 13:41:53 [6]: void Config::doNotify(bool, bool)
-2026-10-23 - 13:41:53 [6]:     Notification not sent; completion: succeeded 
-2026-10-23 - 13:41:53 [6]: void {anonymous}::PowerManagementInterface::uninhibitSleep()
-2026-10-23 - 13:41:53 [6]:     Sleep was never inhibited. 
+2026-10-23 - 15:08:44 [2]: WARNING: [PYTHON JOB]: "Could not remove package calamares" 
+2026-10-23 - 15:08:44 [6]: [PYTHON JOB]: "Pretty name: Install packages., setting progress.." 
+2026-10-23 - 15:08:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:44 [6]:     Starting job "tindextras" ( 35 / 42 ) 
+2026-10-23 - 15:08:44 [6]: [PYTHON JOB]: "tindextras: file=/tmp/tind-extras-choice chosen=['productivity'] wanted=['productivity']" 
+2026-10-23 - 15:08:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:44 [6]:     Starting job "plymouthcfg" ( 36 / 42 ) 
+2026-10-23 - 15:08:44 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:44 [6]:     .. Running QList("sh", "-c", "which plymouth") 
+2026-10-23 - 15:08:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:44 [6]:     Starting job "initramfscfg" ( 37 / 42 ) 
+2026-10-23 - 15:08:44 [6]: [PYTHON JOB]: Found gettext "en_US" in "/usr/share/locale/en_US" 
+2026-10-23 - 15:08:44 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:08:44 [6]:     Starting job "Creating initramfs…" ( 38 / 42 ) 
+2026-10-23 - 15:08:44 [6]: virtual Calamares::JobResult InitramfsJob::exec()
+2026-10-23 - 15:08:44 [6]:     Updating initramfs with kernel "all" 
+2026-10-23 - 15:08:44 [6]:     .. Running QList("update-initramfs", "-k", "all", "-c", "-t") 
+2026-10-23 - 15:09:01 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:09:01 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u'" ( 39 / 42 ) 
+2026-10-23 - 15:09:01 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-dpkg-unsafe-io -u") 
+2026-10-23 - 15:09:02 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:09:02 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-media -u'" ( 40 / 42 ) 
+2026-10-23 - 15:09:02 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-media -u") 
+2026-10-23 - 15:09:09 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:09:09 [6]:     Starting job "Run command '/usr/share/calamares/helpers/calamares-sources-final'" ( 41 / 42 ) 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("/bin/sh", "-c", "/usr/share/calamares/helpers/calamares-sources-final") 
+2026-10-23 - 15:09:09 [6]: virtual void Calamares::JobThread::run()
+2026-10-23 - 15:09:09 [6]:     Starting job "Unmounting file systems…" ( 42 / 42 ) 
+2026-10-23 - 15:09:09 [6]: Calamares::JobResult unmountTargetMounts(const QString&)
+2026-10-23 - 15:09:09 [6]:     Read 9 entries from "/tmp/calamares-root-2g2gtd7_/" 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/sys/firmware/efi/efivars") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/sys") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/run/udev") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/run/live/medium") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/run") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/proc") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/dev/pts") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/dev") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_/boot/efi") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("umount", "-lv", "/tmp/calamares-root-2g2gtd7_") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("udevadm", "settle") 
+2026-10-23 - 15:09:09 [6]:     .. Running QList("sync") 
+2026-10-23 - 15:09:09 [6]: void Calamares::callQmlFunction(QQuickItem*, const char*)
+2026-10-23 - 15:09:09 [6]:     QML "onLeave()" is missing. 
+2026-10-23 - 15:09:09 [6]: void Config::doNotify(bool, bool)
+2026-10-23 - 15:09:09 [6]:     Notification not sent; completion: succeeded 
+2026-10-23 - 15:09:09 [6]: void {anonymous}::PowerManagementInterface::uninhibitSleep()
+2026-10-23 - 15:09:09 [6]:     Sleep was never inhibited. 
