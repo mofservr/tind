@@ -1,6 +1,3 @@
-app/com.bitwarden.desktop/x86_64/stable
-app/com.github.Matoking.protontricks/x86_64/stable
-app/com.spotify.Client/x86_64/stable
 app/com.valvesoftware.Steam/x86_64/stable
 app/com.valvesoftware.SteamLink/x86_64/stable
 app/io.github.benjamimgois.goverlay/x86_64/stable
@@ -348,11 +345,14 @@ ok       firefox-esr-l10n-nb-no
 ok       firefox-esr-l10n-nn-no
 ok       firmware-atheros
 ok       firmware-brcm80211
+ok       firmware-intel-graphics
+ok       firmware-intel-misc
 ok       firmware-iwlwifi
 ok       firmware-linux
 ok       firmware-mediatek
 ok       firmware-misc-nonfree
 ok       firmware-realtek
+ok       firmware-sof-signed
 ok       fonts-noto-cjk
 ok       fonts-noto-color-emoji
 ok       fonts-noto-core
