@@ -82,11 +82,9 @@ summary() {
     command -v vulkaninfo >/dev/null && { printf '$ vulkaninfo --summary\n'; vulkaninfo --summary 2>&1 | head -40; }
     command -v glxinfo >/dev/null && { printf '$ glxinfo -B\n'; glxinfo -B 2>&1 | head -25; }
     run dkms status
-    sec "NVIDIA driver switch and fallback"
-    echo "switch state: $(cat /var/lib/tind/nvidia-upgrade.done 2>/dev/null || echo 'not run')  tries: $(cat /var/lib/tind/nvidia-upgrade.tries 2>/dev/null || echo 0)"
-    ls /etc/apt/sources.list.d/tind-nvidia.sources /etc/apt/preferences.d/tind-nvidia 2>&1
+    sec "NVIDIA driver and fallback"
     run apt-cache policy nvidia-driver; run lsmod; run ls /etc/modprobe.d
-    jctl -t tind-nvidia -t tind-gpu-check -b --no-pager | tail -n 30
+    jctl -t tind-gpu-check -b --no-pager | tail -n 30
     command -v mokutil >/dev/null && run mokutil --list-enrolled
     sec "Firmware updates"; run fwupdmgr get-devices --no-unreported-check; run fwupdmgr get-updates --no-unreported-check
     printf '$ journalctl -u fwupd-refresh.service (all boots)\n'; jctl -u fwupd-refresh.service --no-pager | tail -n 25

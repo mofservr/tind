@@ -162,10 +162,10 @@ modinfo -F version nvidia-current 2>&1 | head -1; ls /lib/modules/*/updates/dkms
 ls /etc/modprobe.d | tr '\n' ' '; echo
 ls /usr/lib/udev/rules.d/*steam* /lib/udev/rules.d/*steam* 2>/dev/null | head -3
 systemctl is-enabled tind-gpu-check.service nvidia-persistenced.service 2>&1
-systemctl is-enabled tind-nvidia-upgrade.service 2>&1
 echo "login logo: $(cmp -s /usr/share/tind/login-logo-64.png /usr/share/images/vendor-logos/logo-text-version-64.png && echo Tind || echo NOT-TIND) $(ls /usr/share/images/vendor-logos/ 2>&1 | tr '\n' ' ')"
 echo "login background alternative: $(update-alternatives --query desktop-login-background 2>&1 | grep -E '^Value:|^Status:' | tr '\n' ' ')"
-test -x /usr/lib/tind/nvidia-upgrade && echo "nvidia-upgrade: present" || echo "nvidia-upgrade: MISSING"
+test -e /usr/lib/tind/nvidia-upgrade && echo "nvidia-upgrade: FAIL still shipped" || echo "nvidia-upgrade: removed"
+dpkg-query -W firmware-intel-graphics firmware-sof-signed firmware-misc-nonfree 2>&1
 ls /var/lib/dkms/mok.key 2>&1
 vulkaninfo --summary 2>&1 | grep -E 'deviceName|driverName|apiVersion' | head -6
 sec "time sync"
@@ -221,6 +221,9 @@ aptout="$(apt-get update 2>&1)"; aptmsg="$(echo "$aptout" | grep -E '^(W|E|N):' 
 [ -z "$aptmsg" ] && daily apt-update-quiet ok || daily apt-update-quiet "FAIL $aptmsg"
 bad="$(grep -nE 'command not found|Traceback|: line [0-9]+:|Permission denied' /tmp/tind-report-test.txt 2>/dev/null | head -3 | tr '\n' '|')"
 [ -s /tmp/tind-report-test.txt ] && [ -z "$bad" ] && daily tind-report-clean ok || daily tind-report-clean "FAIL ${bad:-empty report}"
+fw="$(dpkg-query -W -f='${Recommends}\n' tind-desktop 2>/dev/null | tr ',' '\n' | sed 's/([^)]*)//; s/ //g' | grep -E '^(firmware-|amd64-microcode|intel-microcode)')"
+fwmiss=""; for p in $fw; do dpkg-query -W -f='${db:Status-Abbrev}' "$p" 2>/dev/null | grep -q '^ii' || fwmiss="$fwmiss $p"; done
+[ -n "$fw" ] && [ -z "$fwmiss" ] && daily firmware-installed ok || daily firmware-installed "FAIL missing:${fwmiss:- none listed}"
 nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
 echo "DAILY info autostart-update-entries: ${nag:-none}"
 echo "=====TIND-SELFTEST-END====="

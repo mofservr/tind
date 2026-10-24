@@ -1,5 +1,5 @@
 Package: tind-graphics
-Version: 0.1.7
+Version: 0.1.8
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: metapackages
@@ -12,6 +12,4 @@ Description: Tind graphics: NVIDIA, Mesa, Vulkan and video drivers
  Mesa Vulkan and VA-API for AMD and Intel, AMD graphics firmware.
  Games and developer tools are separate: see tind-extras. A boot-time check falls back to the open nouveau driver
  when an NVIDIA card is too old for the packaged driver.
- On the first boot of an installed system with internet, a card of the RTX 20 / GTX 16 generation or newer is
- moved to NVIDIA's own Debian repository (current driver branch); older cards stay on Debian's driver. Any failure
- leaves the packaged driver in place.
+ Every NVIDIA card uses Debian's packaged driver.

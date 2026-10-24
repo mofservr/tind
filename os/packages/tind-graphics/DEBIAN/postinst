@@ -1,7 +1,11 @@
 #!/bin/sh
 set -e
 systemctl enable tind-gpu-check.service >/dev/null 2>&1 || true
-systemctl enable tind-nvidia-upgrade.service >/dev/null 2>&1 || true
 # not needed for gaming; fails on machines without an NVIDIA card
 systemctl mask nvidia-persistenced.service >/dev/null 2>&1 || true
+# 0.1.8 dropped the NVIDIA repository upgrade: remove its leftovers (never the repository itself,
+# in case a machine already runs NVIDIA's driver from it)
+rm -f /etc/systemd/system/multi-user.target.wants/tind-nvidia-upgrade.service
+rm -f /var/lib/tind/nvidia-upgrade.done /var/lib/tind/nvidia-upgrade.tries
+systemctl daemon-reload >/dev/null 2>&1 || true
 exit 0

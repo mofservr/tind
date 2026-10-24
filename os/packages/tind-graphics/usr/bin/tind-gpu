@@ -1,7 +1,6 @@
 #!/bin/bash
 # tind-gpu: show graphics hardware and driver state.
 #   tind-gpu            status
-#   tind-gpu nvidia     move a Turing-or-newer card to NVIDIA's own driver repository (normally automatic)
 #   tind-gpu secureboot enroll the key that signs NVIDIA modules (Secure Boot)
 case "${1:-status}" in
     status)
@@ -12,7 +11,7 @@ case "${1:-status}" in
             nvidia-detect 2>&1 | tail -4
             lsmod | grep -E '^nvidia|^nouveau' || echo "no NVIDIA or nouveau module loaded"
             dkms status 2>/dev/null | grep -i nvidia || true
-            echo "driver source: $(apt-cache policy nvidia-driver 2>/dev/null | sed -n 's/^ *Installed: //p') ($(cat /var/lib/tind/nvidia-upgrade.done 2>/dev/null || echo 'upgrade check has not run'))"
+            echo "driver: $(apt-cache policy nvidia-driver 2>/dev/null | sed -n 's/^ *Installed: //p')"
         else
             echo "no NVIDIA GPU"
         fi
@@ -25,9 +24,5 @@ case "${1:-status}" in
         mod="$(dkms status 2>/dev/null | sed -n 's#^\(nvidia-current/[^,:]*\)[,:].*#\1#p' | head -1)"
         if [ -n "$mod" ]; then dkms remove "$mod" --all >/dev/null 2>&1 || true; dkms autoinstall; fi
         echo "Reboot, and in the blue MOK screen choose Enroll MOK with the password you set." ;;
-    nvidia)
-        [ "$(id -u)" -eq 0 ] || exec pkexec "$0" nvidia
-        rm -f /var/lib/tind/nvidia-upgrade.done /var/lib/tind/nvidia-upgrade.tries
-        /usr/lib/tind/nvidia-upgrade ; cat /var/lib/tind/nvidia-upgrade.done 2>/dev/null ;;
-    *) echo "usage: tind-gpu [status|nvidia|secureboot]" >&2; exit 1 ;;
+    *) echo "usage: tind-gpu [status|secureboot]" >&2; exit 1 ;;
 esac

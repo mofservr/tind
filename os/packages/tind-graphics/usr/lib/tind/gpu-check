@@ -11,7 +11,8 @@ if echo "$rec" | grep -qE '^\s+nvidia-driver\s*$'; then
     exit 0
 fi
 changed=0
-for f in /etc/modprobe.d/*.conf; do
+MODPROBE_DIR="${TIND_MODPROBE_DIR:-/etc/modprobe.d}"
+for f in "$MODPROBE_DIR"/*.conf; do
     [ -f "$f" ] || continue
     if grep -q '^blacklist nouveau' "$f" || grep -q '^alias nouveau off' "$f"; then
         mv "$f" "$f.tind-disabled"; changed=1

@@ -36,18 +36,18 @@ jobs:
             os/packages/build-debs.sh || rc=1
             echo "== apt repository publisher: promotion rules, signing, real apt against the result"
             os/scripts/test-publish-apt.sh || rc=1
-            echo "== NVIDIA GPU rule (0x1e00 and up), table and pci.ids sweep"
-            os/scripts/test-nvidia-rule.sh || rc=1
+            echo "== GPU fallback for old NVIDIA cards"
+            os/scripts/test-gpu-check.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
             done
             apt-get update >/dev/null
             os/scripts/check-packages.sh || rc=1
-            echo "== NVIDIA repository dry run (informational): key, apt update, versions, simulated install"
-            os/packages/tind-graphics/usr/lib/tind/nvidia-upgrade --dry-run || echo "nvidia dry run exited $?"
-            echo "-- cuda-keyring key info"
-            (cd /tmp && curl -fsS -o ck.deb https://developer.download.nvidia.com/compute/cuda/repos/debian13/x86_64/cuda-keyring_1.1-1_all.deb && dpkg-deb -x ck.deb ck && gpg --show-keys --with-colons ck/usr/share/keyrings/*.gpg | grep -E '^(pub|fpr|uid)') 2>&1 | head -8 || true
+            echo "== firmware in trixie that Tind does not list (informational)"
+            listed="$(os/scripts/check-packages.sh --list | grep -E '^firmware-' | sort -u)"
+            apt-cache search --names-only '^firmware-' | awk '{print $1}' | sort -u | comm -23 - <(echo "$listed") || true
+            echo "-- firmware-misc-nonfree depends on:"; apt-cache depends firmware-misc-nonfree 2>&1 | grep -E 'Depends|Recommends' || true
             echo "== login screen: how Debian builds it (informational)"
             (mkdir -p /tmp/gdmx && cd /tmp/gdmx && apt-get download gdm3 desktop-base gnome-shell >/dev/null 2>&1
              for d in gdm3_*.deb desktop-base_*.deb gnome-shell_*.deb; do echo "-- $d"; dpkg-deb -c "$d" | awk '{print $6}' | grep -iE "gdm|login|greeter|gresource|desktop-base/(active|.*theme)/(login|gnome)" | head -40; done
