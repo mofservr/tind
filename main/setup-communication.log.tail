@@ -9,13 +9,13 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
 Hit:1 http://deb.debian.org/debian trixie-backports InRelease
 Hit:2 http://deb.debian.org/debian trixie InRelease
-Hit:3 http://deb.debian.org/debian trixie-updates InRelease
-Hit:4 http://deb.debian.org/debian-security trixie-security InRelease
-Hit:5 https://packages.microsoft.com/repos/code stable InRelease
-Hit:6 https://downloads.claude.ai/claude-desktop/apt/stable stable InRelease
-Get:7 https://updates.signal.org/desktop/apt xenial InRelease [5963 B]
-Get:8 https://updates.signal.org/desktop/apt xenial/main amd64 Packages [102 kB]
-Fetched 108 kB in 0s (541 kB/s)
+Hit:3 https://packages.microsoft.com/repos/code stable InRelease
+Hit:4 http://deb.debian.org/debian trixie-updates InRelease
+Hit:5 http://deb.debian.org/debian-security trixie-security InRelease
+Get:6 https://updates.signal.org/desktop/apt xenial InRelease [5963 B]
+Get:7 https://updates.signal.org/desktop/apt xenial/main amd64 Packages [102 kB]
+Hit:8 https://downloads.claude.ai/claude-desktop/apt/stable stable InRelease
+Fetched 108 kB in 0s (461 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -26,9 +26,9 @@ The following NEW packages will be installed:
 Need to get 121 MB of archives.
 After this operation, 385 MB of additional disk space will be used.
 Get:1 https://updates.signal.org/desktop/apt xenial/main amd64 signal-desktop amd64 8.32.0 [121 MB]
-Fetched 121 MB in 1s (134 MB/s)
+Fetched 121 MB in 1s (89.1 MB/s)
 Selecting previously unselected package signal-desktop.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 51515 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 51514 files and directories currently installed.)
 Preparing to unpack .../signal-desktop_8.32.0_amd64.deb ...
 Unpacking signal-desktop (8.32.0) ...
 Setting up signal-desktop (8.32.0) ...
@@ -69,9 +69,9 @@ Get:11 http://deb.debian.org/debian trixie/main amd64 librlottie0-1 amd64 0.1+df
 Get:12 http://deb.debian.org/debian trixie/main amd64 libxcb-record0 amd64 1.17.0-2+b1 [107 kB]
 Get:13 http://deb.debian.org/debian trixie/main amd64 libxcb-screensaver0 amd64 1.17.0-2+b1 [106 kB]
 Get:14 http://deb.debian.org/debian trixie-backports/main amd64 telegram-desktop amd64 5.7.2+ds-2~bpo13+1 [37.6 MB]
-Fetched 42.2 MB in 0s (290 MB/s)
+Fetched 42.2 MB in 0s (105 MB/s)
 Selecting previously unselected package libmng1:amd64.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 51666 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 51665 files and directories currently installed.)
 Preparing to unpack .../00-libmng1_1.0.10+dfsg-3.1+b6_amd64.deb ...
 Unpacking libmng1:amd64 (1.0.10+dfsg-3.1+b6) ...
 Selecting previously unselected package qt5-image-formats-plugins:amd64.

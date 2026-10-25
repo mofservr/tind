@@ -1,3 +1,10 @@
+ |Suggests: nvidia-kernel-dkms
+ |Suggests: nvidia-kernel-source
+  Suggests: nvidia-open-kernel-source
+== flathub refs
+app/com.bitwarden.desktop/x86_64/stable
+app/com.github.Matoking.protontricks/x86_64/stable
+app/com.spotify.Client/x86_64/stable
 app/com.valvesoftware.Steam/x86_64/stable
 app/com.valvesoftware.SteamLink/x86_64/stable
 app/io.github.benjamimgois.goverlay/x86_64/stable
@@ -130,13 +137,6 @@ lutris
     xdg-desktop-portal-kde:i386
   Recommends: gamemode
   Recommends: gamescope
-== newer kernel: dry run
-Inst linux-image-7.2.9+deb13-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-headers-7.2.9+deb13-common (7.2.9-1~bpo13+1 Debian Backports:stable-backports [all])
-Inst linux-headers-7.2.9+deb13-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-headers-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
-Inst linux-image-amd64 (7.2.9-1~bpo13+1 Debian Backports:stable-backports [amd64])
-== Tind: newer kernel setup done. Restart to use it; the old kernel stays in the boot menu.
 == tind-extras: real run of the setup scripts
 setup-dev: OK
 setup-gaming: OK
