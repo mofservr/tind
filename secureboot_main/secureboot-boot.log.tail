@@ -2,41 +2,35 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 5152
--rw-r--r-- 1 runner runner   7006 Oct 24 20:11 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 24 20:11 secboot-s02.png
--rw-r--r-- 1 runner runner 663260 Oct 24 20:12 secboot-s03.png
--rw-r--r-- 1 runner runner 663260 Oct 24 20:12 secboot-s04.png
--rw-r--r-- 1 runner runner 664177 Oct 24 20:13 secboot-s05.png
--rw-r--r-- 1 runner runner 645823 Oct 24 20:13 secboot-s06.png
--rw-r--r-- 1 runner runner 645120 Oct 24 20:14 secboot-s07.png
--rw-r--r-- 1 runner runner 645120 Oct 24 20:14 secboot-s08.png
--rw-r--r-- 1 runner runner 644489 Oct 24 20:15 secboot-s09.png
--rw-r--r-- 1 runner runner 644489 Oct 24 20:15 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 24 20:11 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 24 20:11 secureboot-inspect.log
--rw-r----- 1 runner runner  22215 Oct 24 20:13 serial-secboot.log
-
-##### gnome-shell journal
-Oct 24 22:12:04 tind gnome-shell[1679]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Oct 24 22:12:04 tind gnome-shell[1679]: Enabling experimental feature 'scale-monitor-framebuffer'
-Oct 24 22:12:04 tind gnome-shell[1679]: Enabling experimental feature 'xwayland-native-scaling'
-Oct 24 22:12:06 tind gnome-shell[1679]: pci id for fd 12: 1234:1111, driver (null)
-Oct 24 22:12:06 tind gnome-shell[1679]: Thread 'KMS thread' will be using high priority scheduling
-Oct 24 22:12:06 tind gnome-shell[1679]: pci id for fd 13: 1234:1111, driver (null)
-Oct 24 22:12:06 tind gnome-shell[1679]: kmsro: driver missing
-Oct 24 22:12:07 tind gnome-shell[1679]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 24 22:12:07 tind gnome-shell[1679]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 24 22:12:07 tind gnome-shell[1679]: Created gbm renderer for '/dev/dri/card0'
-Oct 24 22:12:07 tind gnome-shell[1679]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 24 22:12:07 tind gnome-shell[1679]: Using public X11 display :0, (using :1 for managed services)
-Oct 24 22:12:07 tind gnome-shell[1679]: Using Wayland display name 'wayland-0'
-Oct 24 22:12:07 tind gnome-shell[1679]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 24 22:12:07 tind gnome-shell[1679]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 24 22:12:08 tind gnome-shell[1679]: Will monitor session 1
-Oct 24 22:12:09 tind gnome-shell[1679]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 24 22:12:13 tind gnome-shell[1679]: GNOME Shell started at Sat Oct 24 2026 22:12:08 GMT+0200 (Central European Summer Time)
-Oct 24 22:12:13 tind gnome-shell[1679]: Registering session with GDM
+total 6568
+-rw-r--r-- 1 runner runner   7006 Oct 25 21:12 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 25 21:13 secboot-s02.png
+-rw-r--r-- 1 runner runner 844456 Oct 25 21:13 secboot-s03.png
+-rw-r--r-- 1 runner runner 844372 Oct 25 21:14 secboot-s04.png
+-rw-r--r-- 1 runner runner 845079 Oct 25 21:14 secboot-s05.png
+-rw-r--r-- 1 runner runner 824513 Oct 25 21:15 secboot-s06.png
+-rw-r--r-- 1 runner runner 824053 Oct 25 21:15 secboot-s07.png
+-rw-r--r-- 1 runner runner 824252 Oct 25 21:16 secboot-s08.png
+-rw-r--r-- 1 runner runner 823675 Oct 25 21:16 secboot-s09.png
+-rw-r--r-- 1 runner runner 823599 Oct 25 21:17 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 25 21:12 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 25 21:12 secureboot-inspect.log
+-rw-r----- 1 runner runner  22863 Oct 25 21:15 serial-secboot.log
+Oct 25 22:13:18 tind gnome-shell[1701]: Thread 'KMS thread' will be using high priority scheduling
+Oct 25 22:13:18 tind gnome-shell[1701]: pci id for fd 13: 1234:1111, driver (null)
+Oct 25 22:13:18 tind gnome-shell[1701]: kmsro: driver missing
+Oct 25 22:13:18 tind gnome-shell[1701]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 25 22:13:18 tind gnome-shell[1701]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 25 22:13:18 tind gnome-shell[1701]: Created gbm renderer for '/dev/dri/card0'
+Oct 25 22:13:18 tind gnome-shell[1701]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 25 22:13:18 tind gnome-shell[1701]: Using public X11 display :0, (using :1 for managed services)
+Oct 25 22:13:18 tind gnome-shell[1701]: Using Wayland display name 'wayland-0'
+Oct 25 22:13:18 tind gnome-shell[1701]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 25 22:13:19 tind gnome-shell[1701]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 25 22:13:21 tind gnome-shell[1701]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 25 22:13:21 tind gnome-shell[1701]: Will monitor session 1
+Oct 25 22:13:25 tind gnome-shell[1701]: GNOME Shell started at Sun Oct 25 2026 22:13:19 GMT+0100 (Central European Standard Time)
+Oct 25 22:13:25 tind gnome-shell[1701]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -44,7 +38,13 @@ DAILY silent-updates-configured ok
 DAILY apt-update-quiet ok
 DAILY tind-report-clean ok
 DAILY firmware-installed ok
+sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie main contrib non-free non-free-firmware
+sources /etc/apt/sources.list: deb http://security.debian.org/ trixie-security main contrib non-free non-free-firmware
+sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-updates main contrib non-free non-free-firmware
+sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-backports main contrib non-free non-free-firmware
+DAILY debian-non-free ok
 DAILY info autostart-update-entries: none
+INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====
 =====TIND-SELFTEST-BEGIN=====
 == Secure Boot
