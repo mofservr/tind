@@ -49,7 +49,7 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 ## Known gaps
 
 - The live ISO boot menu is stock live-build (Debian title, hard-hat splash); branding it needs artwork, which is waiting on the design work.
-- All visuals in `tind-branding` (wallpapers, icons, Plymouth, GRUB art, Ice colours) are placeholders pending the redesign.
+- The visuals in `tind-branding` follow `docs/DESIGN-PINNED.md`; the default wallpaper pair is Stetind.
 - ext4 for now (decided): no btrfs, no snapshots.
 - Thunderbird policy is minimal.
 
@@ -72,7 +72,6 @@ Status after CI runs on GitHub Actions (Debian 13 container build, then a UEFI b
 - Proven (installer run 38614079926, BIOS/SeaBIOS): install completes, installed system boots via BIOS, GRUB in /boot/grub/i386-pc, ext4 root, no failed units. The image carries both grub-efi-amd64-bin and grub-pc-bin; Tind's own bootloader step (`/usr/lib/tind/bootloader-config`, module `tindbootloader`) replaces Debian's helper because that one runs apt (needs network, and grub-pc conflicts with grub-efi-amd64).
 - Image has os-prober and ntfs-3g; `GRUB_DISABLE_OS_PROBER=false` in `/etc/default/grub.d/90-tind.cfg`. Unproven: an actual second OS being detected and offered by Calamares ("install alongside") and by the GRUB menu.
 - BIOS note: the BIOS install has grub-pc-bin but not the grub-pc package, so grub upgrades do not re-run grub-install on the disk. Acceptable for now.
-- Newer kernel (no Tind Apps entry any more; run `sudo /usr/lib/tind/setup-newer-kernel`): adds trixie-backports, installs linux-image-amd64 and headers (7.2.6 at test time) and, if present, nvidia-kernel-dkms from backports. Dry run resolves in CI. Unproven: a real install, NVIDIA module building on 7.x, boot into the new kernel.
 - Installer test is now selectable: `os/ci/installer-test/FIRMWARE` (uefi|bios) and `EXTRAS` (yes|no).
 
 ## Secure Boot, updates, hardware basics (2026-10-15)

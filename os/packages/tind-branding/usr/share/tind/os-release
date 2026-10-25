@@ -1,7 +1,7 @@
-PRETTY_NAME="Tind 0.4 (Debian 13 trixie)"
+PRETTY_NAME="Tind 1 (Stetind)"
 NAME="Tind"
-VERSION_ID="0.4"
-VERSION="0.4"
+VERSION_ID="1"
+VERSION="1 (Stetind)"
 VERSION_CODENAME=trixie
 ID=tind
 ID_LIKE=debian

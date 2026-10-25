@@ -2,6 +2,15 @@
 <!DOCTYPE wallpapers SYSTEM "gnome-wp-list.dtd">
 <wallpapers>
   <wallpaper deleted="false">
+    <name>Stetind</name>
+    <filename>/usr/share/backgrounds/tind/stetind-light.png</filename>
+    <filename-dark>/usr/share/backgrounds/tind/stetind-dark.png</filename-dark>
+    <options>zoom</options>
+    <shade_type>solid</shade_type>
+    <pcolor>#9DBBDB</pcolor>
+    <scolor>#0C1523</scolor>
+  </wallpaper>
+  <wallpaper deleted="false">
     <name>Segla</name>
     <filename>/usr/share/backgrounds/tind/segla-light.png</filename>
     <filename-dark>/usr/share/backgrounds/tind/segla-dark.png</filename-dark>

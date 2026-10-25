@@ -1,15 +1,53 @@
 #!/bin/bash
-# If an NVIDIA GPU is present but nvidia-detect does not recommend the packaged
-# driver (card too old), stop blacklisting nouveau so the open driver can run.
-# Does nothing on AMD/Intel-only machines or when the packaged driver fits.
+# Runs every boot before the display manager.
+# 1. Vulkan: hide NVIDIA's Vulkan ICD file when the machine has no NVIDIA GPU that the packaged driver
+#    supports. Debian's nvidia-vulkan-icd is installed on every Tind machine, and its ICD file makes
+#    vulkaninfo print a loader error ("libGLX_nvidia.so.0") on AMD and Intel machines. The file is hidden with
+#    a local dpkg diversion (survives package upgrades) and put back when a supported NVIDIA GPU is present.
+# 2. If an NVIDIA GPU is present but nvidia-detect does not recommend the packaged driver (card too old),
+#    stop blacklisting nouveau so the open driver can run.
+# Does nothing else on AMD/Intel-only machines or when the packaged driver fits. Never fails the boot.
 set -u
 command -v lspci >/dev/null 2>&1 || exit 0
-lspci -nn | grep -qiE '(vga|3d|display).*\[10de:' || exit 0
+
+ICD_DIRS="${TIND_ICD_DIRS:-/usr/share/vulkan/icd.d /etc/vulkan/icd.d}"
+ICD_SUFFIX=".tind-no-nvidia"
+
+# icd_sync hide|restore
+icd_sync() {
+    command -v dpkg-divert >/dev/null 2>&1 || return 0
+    local dir f p n
+    if [ "$1" = hide ]; then
+        for dir in $ICD_DIRS; do
+            for f in "$dir"/nvidia*.json; do
+                { [ -e "$f" ] || [ -L "$f" ]; } || continue
+                if dpkg-divert --local --rename --divert "$f$ICD_SUFFIX" --add "$f" >/dev/null 2>&1; then
+                    logger -t tind-gpu-check "no usable NVIDIA GPU: hid the Vulkan ICD file $f"
+                fi
+            done
+        done
+    else
+        n="$(dpkg-divert --list 2>/dev/null | awk -v s="$ICD_SUFFIX" '$1 == "local" && $2 == "diversion" && substr($6, length($6) - length(s) + 1) == s {print $4}')"
+        for p in $n; do
+            if dpkg-divert --local --rename --remove "$p" >/dev/null 2>&1; then
+                logger -t tind-gpu-check "NVIDIA GPU present: restored the Vulkan ICD file $p"
+            fi
+        done
+    fi
+    return 0
+}
+
+if ! lspci -nn | grep -qiE '(vga|3d|display).*\[10de:'; then
+    icd_sync hide
+    exit 0
+fi
 command -v nvidia-detect >/dev/null 2>&1 || exit 0
 rec="$(nvidia-detect 2>/dev/null || true)"
 if echo "$rec" | grep -qE '^\s+nvidia-driver\s*$'; then
+    icd_sync restore
     exit 0
 fi
+icd_sync hide
 changed=0
 MODPROBE_DIR="${TIND_MODPROBE_DIR:-/etc/modprobe.d}"
 for f in "$MODPROBE_DIR"/*.conf; do

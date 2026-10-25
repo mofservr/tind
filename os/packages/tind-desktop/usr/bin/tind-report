@@ -112,7 +112,10 @@ summary() {
     sec "Journal, errors this boot"; jctl -b -p err --no-pager | tail -n 100
     sec "Journal, previous boot errors"; jctl -b -1 -p err --no-pager | tail -n 60
     sec "Extras"; cat /var/lib/tind/extras-status 2>&1; tail -n 40 /var/log/tind-extras.log 2>&1
-    sec "Updates"; ls -l /var/lib/tind/apt-refreshed 2>&1; run apt-get -s upgrade -qq
+    sec "Updates"; ls -l /var/lib/tind/apt-refreshed 2>&1
+    printf '$ apt sources (channel and Debian components)\n'
+    grep -hE '^[[:space:]]*(deb|URIs|Suites|Components)' /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources 2>/dev/null
+    run apt-get -s upgrade -qq
 } 2>&1 | scrub > "$out"
 echo "Report written to: $out"
 echo "Attach that file when you ask for help."

@@ -224,6 +224,21 @@ bad="$(grep -nE 'command not found|Traceback|: line [0-9]+:|Permission denied' /
 fw="$(dpkg-query -W -f='${Recommends}\n' tind-desktop 2>/dev/null | tr ',' '\n' | sed 's/([^)]*)//; s/ //g' | grep -E '^(firmware-|amd64-microcode|intel-microcode)')"
 fwmiss=""; for p in $fw; do dpkg-query -W -f='${db:Status-Abbrev}' "$p" 2>/dev/null | grep -q '^ii' || fwmiss="$fwmiss $p"; done
 [ -n "$fw" ] && [ -z "$fwmiss" ] && daily firmware-installed ok || daily firmware-installed "FAIL missing:${fwmiss:- none listed}"
+# Debian's sources must carry non-free, or Debian's NVIDIA driver never updates (tind-debian-components)
+nf=ok; seen=0
+for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+    [ -f "$f" ] || continue
+    case "$f" in
+        *.sources) grep -qiE '^URIs:.*debian\.org' "$f" || continue; lines="$(grep -E '^Components:' "$f")" ;;
+        *) lines="$(grep -E '^deb[[:space:]].*debian\.org' "$f")" ;;
+    esac
+    [ -n "$lines" ] || continue
+    seen=1; echo "$lines" | sed "s|^|sources $f: |"
+    echo "$lines" | grep -vqE '[[:space:]]non-free([[:space:]]|$)' && nf="FAIL ($f lacks non-free)"
+done
+[ "$seen" = 1 ] || echo "WARN no debian.org apt source found in sources.list, *.list or *.sources"
+daily debian-non-free "$nf"
 nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
 echo "DAILY info autostart-update-entries: ${nag:-none}"
+echo "INFO vulkan-nvidia-icd: tind diversions=$(dpkg-divert --list 2>/dev/null | grep -c 'tind-no-nvidia' || true) nvidia icd files=$(find /usr/share/vulkan/icd.d /etc/vulkan/icd.d -maxdepth 1 -name 'nvidia*' 2>/dev/null | tr '\n' ' ') vulkaninfo loader errors=$(vulkaninfo --summary 2>&1 | grep -c "Could not get 'vkCreateInstance'" || true)"
 echo "=====TIND-SELFTEST-END====="

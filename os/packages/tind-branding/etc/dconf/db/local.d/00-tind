@@ -35,13 +35,13 @@ binding='<Primary><Alt>t'
 sources=[('xkb', 'no')]
 
 [org/gnome/desktop/background]
-picture-uri='file:///usr/share/backgrounds/tind/tranquil-light.png'
-picture-uri-dark='file:///usr/share/backgrounds/tind/tranquil-dark.png'
+picture-uri='file:///usr/share/backgrounds/tind/stetind-light.png'
+picture-uri-dark='file:///usr/share/backgrounds/tind/stetind-dark.png'
 picture-options='zoom'
 primary-color='#0C1523'
 
 [org/gnome/desktop/screensaver]
-picture-uri='file:///usr/share/backgrounds/tind/tranquil-dark.png'
+picture-uri='file:///usr/share/backgrounds/tind/stetind-dark.png'
 picture-options='zoom'
 primary-color='#0C1523'
 

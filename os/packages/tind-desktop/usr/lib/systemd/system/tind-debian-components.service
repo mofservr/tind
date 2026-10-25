@@ -1,0 +1,11 @@
+[Unit]
+Description=Tind first boot: enable Debian's contrib, non-free and non-free-firmware
+ConditionPathExists=!/var/lib/tind/debian-components
+Before=tind-apt-refresh.service apt-daily.service apt-daily-upgrade.service packagekit.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/debian-components
+
+[Install]
+WantedBy=multi-user.target

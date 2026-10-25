@@ -1,0 +1,30 @@
+#!/bin/sh
+# Enable Debian's contrib, non-free and non-free-firmware in the installed system's apt sources.
+# The installer writes Debian's sources without non-free, so Debian's NVIDIA driver (non-free,
+# installed on every Tind machine) would never get updates. Only adds missing components to lines
+# for debian.org; Tind's own source and other repositories are left alone. Safe to run again.
+set -u
+
+fix_list() { # one-line-style sources.list: deb [opts] URI suite components...
+    for c in contrib non-free non-free-firmware; do
+        sed -i -E "/^deb[[:space:]].*debian\.org/{/[[:space:]]${c}([[:space:]]|\$)/! s/[[:space:]]*\$/ ${c}/}" "$1"
+    done
+}
+fix_deb822() { # *.sources: Components: line in a file with a debian.org URI
+    grep -qiE '^URIs:.*debian\.org' "$1" || return 0
+    for c in contrib non-free non-free-firmware; do
+        sed -i -E "/^Components:/{/[[:space:]]${c}([[:space:]]|\$)/! s/[[:space:]]*\$/ ${c}/}" "$1"
+    done
+}
+
+changed=""
+for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do
+    [ -f "$f" ] || continue
+    tmp="$(mktemp)" || exit 0
+    cp -p "$f" "$tmp"
+    case "$f" in *.sources) fix_deb822 "$tmp" ;; *) fix_list "$tmp" ;; esac
+    if cmp -s "$f" "$tmp"; then rm -f "$tmp"; else cat "$tmp" > "$f"; rm -f "$tmp"; changed="$changed $f"; fi
+done
+[ -n "$changed" ] && echo "tind-debian-components: enabled contrib, non-free and non-free-firmware in:$changed"
+mkdir -p /var/lib/tind && touch /var/lib/tind/debian-components
+exit 0

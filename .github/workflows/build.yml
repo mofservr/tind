@@ -123,9 +123,6 @@ jobs:
             done
             echo "== lutris depends/recommends"
             apt-cache depends lutris || true
-            echo "== newer kernel: dry run"
-            apt-get install -y ./os/dist/tind-extras_*_all.deb >/dev/null 2>&1 || true
-            TIND_DRYRUN=1 /usr/lib/tind/setup-newer-kernel 2>&1 | grep -E "^Inst (linux-image|linux-headers|nvidia)|^E:|setup done|Remv" | head -12 || true
             echo "== tind-extras: real run of the setup scripts"
             apt-get install -y ./os/dist/tind-extras_*_all.deb >/dev/null 2>&1 || { echo "tind-extras install FAILED"; rc=1; }
             /usr/lib/tind/setup-dev > logs/setup-dev.log 2>&1 && echo "setup-dev: OK" || { echo "setup-dev: FAILED"; tail -25 logs/setup-dev.log; rc=1; }

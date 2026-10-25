@@ -28,9 +28,6 @@ Eight boxes: Games, Developer tools, Entertainment, Creative, Communication, Pro
 ## Flatpak
 Used for small apps only: Discord, ProtonUp-Qt, Spotify, Bitwarden, Upscayl (and Telegram or Strawberry if Debian lacks them), plus the GNOME everyday apps and utilities opt-ins.
 
-## Newer kernel (opt-in)
-The newer kernel (no longer a Tind Apps entry; run `sudo /usr/lib/tind/setup-newer-kernel` by hand) is `/usr/lib/tind/setup-newer-kernel`: adds Debian trixie-backports, installs the backports kernel and headers, and the NVIDIA DKMS module from backports when the NVIDIA driver is installed. The current kernel stays installed and in the boot menu as a fallback. Needs internet and a restart.
-
 ## Flatpak steps are non-fatal
 Each Flatpak app in the boxes (Spotify, Discord, ProtonUp-Qt, Bitwarden, Upscayl) is installed through `optional`, so one that fails (Spotify's `apply_extra` download failed in CI) is logged as a warning and the rest of the box still installs.
 
