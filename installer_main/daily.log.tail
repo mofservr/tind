@@ -3,4 +3,5 @@ DAILY silent-updates-configured ok
 DAILY apt-update-quiet ok
 DAILY tind-report-clean ok
 DAILY firmware-installed ok
+DAILY debian-non-free ok
 DAILY info autostart-update-entries: none
