@@ -106,16 +106,14 @@ export default class TindIce extends Extension {
             this._wsLabels = [];
             this._wsWindowSigs = new Map();
             const activities = Main.panel.statusArea.activities;
-            // GNOME's own dot indicator is a child of the Activities button; hide it and add ours next to it
+            // GNOME's own dot indicator is the Activities button's only child (a WorkspaceIndicators, itself a
+            // BoxLayout): hide it and put our box next to it, in the button, so it keeps the button's padding and hover.
             this._wsHidden = [];
             for (const child of activities.get_children()) {
-                if (child.constructor?.name === 'WorkspaceIndicators' || child.style_class?.includes('workspace-dot')) {
-                    this._wsHidden.push([child, child.visible]);
-                    child.hide();
-                }
+                this._wsHidden.push([child, child.visible]);
+                child.hide();
             }
-            const box = activities.get_child_at_index(0) instanceof St.BoxLayout ? activities.get_child_at_index(0) : null;
-            (box ?? activities).add_child(this._wsBox);
+            activities.add_child(this._wsBox);
             this._wsSigs = [
                 [wm, wm.connect('notify::n-workspaces', () => this._rebuildWorkspaceNumbers())],
                 [wm, wm.connect('active-workspace-changed', () => this._updateWorkspaceNumbers())],
@@ -213,13 +211,8 @@ export default class TindIce extends Extension {
             const ext = Main.extensionManager.lookup(D2D_UUID);
             if (!ext || !ext.dir)
                 return;
-            const schemaDir = ext.dir.get_child('schemas');
-            const src = Gio.SettingsSchemaSource.new_from_directory(schemaDir.get_path(),
-                Gio.SettingsSchemaSource.get_default(), false);
-            const schema = src.lookup('org.gnome.shell.extensions.dash-to-dock', true);
-            if (!schema)
-                return;
-            const d2dSettings = new Gio.Settings({ settings_schema: schema });
+            // Debian's package installs the schema system-wide (no schemas/ folder inside the extension)
+            const d2dSettings = new Gio.Settings({ schema_id: 'org.gnome.shell.extensions.dash-to-dock' });
             this._d2dSettings = d2dSettings;
             if (d2dSettings.get_boolean('hot-keys')) {
                 console.warn('tind-ice: dash-to-dock hot-keys are on; Tind leaves the number keys to it');
@@ -302,13 +295,16 @@ export default class TindIce extends Extension {
                 } else {
                     icon._numberOverlayBin.hide();
                 }
-                const area = icon._indicator?._area;
-                if (area) {
-                    if (icon._tindArea !== area) {
-                        icon._tindArea = area;
-                        icon._tindRot = area.rotation_angle_z;
-                    }
-                    area.rotation_angle_z = 0; // dots under the icon (the dock sits on the left edge)
+                // the running dots: Dash to Dock draws them for a bottom dock and rotates them 90 degrees for a left dock
+                for (const ind of icon._indicator?._indicators ?? []) {
+                    const area = ind._area;
+                    if (!area)
+                        continue;
+                    if (area._tindRot === undefined)
+                        area._tindRot = area.rotation_angle_z;
+                    area.rotation_angle_z = 0;
+                    icon._tindAreas = icon._tindAreas ?? new Set();
+                    icon._tindAreas.add(area);
                 }
             } catch (e) {
                 console.warn(`tind-ice: dock icon style: ${e.message}`);
@@ -330,8 +326,9 @@ export default class TindIce extends Extension {
                     for (const icon of dash.getAppIcons()) {
                         icon._numberOverlayBin?.hide();
                         icon._numberOverlayLabel?.remove_style_class_name('tind-dock-num');
-                        if (icon._tindArea && icon._tindRot !== undefined)
-                            icon._tindArea.rotation_angle_z = icon._tindRot;
+                        for (const area of icon._tindAreas ?? [])
+                            if (area._tindRot !== undefined)
+                                area.rotation_angle_z = area._tindRot;
                     }
                 }
             }
