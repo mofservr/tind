@@ -3,5 +3,5 @@
   "name": "Tind Ice",
   "description": "Tind's ice-glass styling for the top bar, dock, menus and Quick Settings. Pure CSS overlay on top of the stock GNOME Shell theme.",
   "shell-version": ["47", "48", "49"],
-  "version": 6
+  "version": 7
 }

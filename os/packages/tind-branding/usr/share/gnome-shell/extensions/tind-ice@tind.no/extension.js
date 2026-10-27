@@ -290,7 +290,7 @@ export default class TindIce extends Extension {
             try {
                 if (icon._numberOverlayOrder > -1) {
                     icon._numberOverlayLabel.set_style('font-size: 9px; font-weight: normal; width: 12px; height: 12px; ' +
-                        'border-radius: 0; background-color: transparent; color: #F2F2F2; text-align: center;');
+                        'border-radius: 0; background-color: transparent; text-align: center;');
                     icon._numberOverlayLabel.add_style_class_name('tind-dock-num');
                     icon._numberOverlayBin.set({ x_align: Clutter.ActorAlign.START, y_align: Clutter.ActorAlign.CENTER });
                     icon._numberOverlayBin.show();
