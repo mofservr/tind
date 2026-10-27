@@ -18,23 +18,23 @@ automatic-timezone=false
 [org/gnome/system/location]
 enabled=false
 
-# Four fixed workspaces (not GNOME's dynamic ones): a workspace in the middle never disappears and renumbers the
-# rest, and the numbered top bar always shows the same four numbers. Users can change both in Settings > Multitasking.
+# Nine fixed workspaces, one per number key (not GNOME's dynamic ones): a workspace in the middle never disappears
+# and renumbers the rest, and the numbered top bar always shows the same numbers 1-9. Users can change both in Settings > Multitasking.
 [org/gnome/mutter]
 dynamic-workspaces=false
 
 # window buttons: minimize and close
 [org/gnome/desktop/wm/preferences]
 button-layout=':minimize,close'
-num-workspaces=4
+num-workspaces=9
 
 # Tind hotkeys (decided 27 Oct 2026; the full list and the reasoning are in claude/tind-hotkeys.md in the project).
 # The modifier says what a key acts on, and no combination does two things:
 #   Super          the wall: workspaces (Super+1..9, Super+Left/Right)
-#   Super+Alt      the paper: the current window (send to workspace, monitor, maximize, minimize)
-#   Super+Alt+Shift  the paper's size: tile to a half
+#   Super+Alt      the paper: the current window (send to workspace, tile to a half, maximize, minimize)
+#   Super+Alt+Shift  the paper to the other monitor
 #   Super+Ctrl     apps: Super+Ctrl+1..9,0 the dock apps, Super+Ctrl+letter an app variant
-#   Super+letter   direct commands (Terminal, browser, Files, Settings, Hotkeys help, ...)
+#   Super+letter   direct commands (Terminal, browser, Files, Settings, Super+H the hotkey overview, ...)
 # Alt and not Shift with the numbers: Shift+number types a symbol on the Norwegian layout. Alt means the left Alt.
 # Users can change every one of these in Settings > Keyboard > Keyboard Shortcuts; whoever changes a key owns it.
 
@@ -63,8 +63,8 @@ move-to-workspace-8=['<Super><Alt>8']
 move-to-workspace-9=['<Super><Alt>9']
 move-to-workspace-left=['<Super><Shift>Page_Up', '<Control><Shift><Alt>Left']
 move-to-workspace-right=['<Super><Shift>Page_Down', '<Control><Shift><Alt>Right']
-move-to-monitor-left=['<Super><Alt>Left']
-move-to-monitor-right=['<Super><Alt>Right']
+move-to-monitor-left=['<Super><Alt><Shift>Left']
+move-to-monitor-right=['<Super><Alt><Shift>Right']
 move-to-monitor-up=@as []
 move-to-monitor-down=@as []
 toggle-maximized=['<Super><Alt>Up', '<Alt>F10']
@@ -74,8 +74,8 @@ minimize=['<Super><Alt>Down']
 show-desktop=['<Super>d']
 
 [org/gnome/mutter/keybindings]
-toggle-tiled-left=['<Super><Alt><Shift>Left']
-toggle-tiled-right=['<Super><Alt><Shift>Right']
+toggle-tiled-left=['<Super><Alt>Left']
+toggle-tiled-right=['<Super><Alt>Right']
 
 [org/gnome/shell/keybindings]
 # GNOME's own app number keys (Super+1..9, Ctrl+Super+1..9) are off: the workspaces use Super+#, and the dock apps
@@ -154,7 +154,7 @@ command='/usr/games/steam'
 binding='<Super>g'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help]
-name='Hotkeys'
+name='Hotkey overview'
 command='tind-hotkeys'
 binding='<Super>h'
 

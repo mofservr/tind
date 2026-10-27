@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Hotkeys
-Comment=Quick reference of the keyboard shortcuts
+Name=Hotkey overview
+Comment=One-page overview of the keyboard shortcuts
 Exec=tind-hotkeys
 Icon=preferences-desktop-keyboard-shortcuts
 Terminal=false

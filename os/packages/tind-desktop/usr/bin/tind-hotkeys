@@ -1,7 +1,8 @@
 #!/usr/bin/python3
-# tind-hotkeys: Tind's hotkey quick reference (Super+H), plus two command line modes used by the CI self-test.
+# tind-hotkeys: Tind's hotkey overview (Super+H), plus two command line modes used by the CI self-test.
 #
-#   tind-hotkeys          open the window; running it again while it is open closes it (so Super+H toggles)
+#   tind-hotkeys          open the one-page overview; running it again while it is open closes it (Super+H toggles);
+#                         its "All shortcuts" button opens the full list
 #   tind-hotkeys --list   print every hotkey that is bound right now, one per line (no window)
 #   tind-hotkeys --check  exit 1 and print the clashes if one key combination is bound to two actions
 #
@@ -318,10 +319,226 @@ def window_rows(bindings):
     return sorted((g, label, '   '.join(dict.fromkeys(keys))) for (g, label), keys in merged.items())
 
 
+# ---------------------------------------------------------------------------------------- the one-page overview
+
+WM = 'org.gnome.desktop.wm.keybindings'
+SH = 'org.gnome.shell.keybindings'
+MK = 'org.gnome.settings-daemon.plugins.media-keys'
+MU = 'org.gnome.mutter.keybindings'
+CUSTOM = 'custom'
+TAP = 'tap'
+
+# The overview shows the keys people use, in boxes, on one page; "All shortcuts" opens the full list. Only the
+# choice of actions and their order is fixed here: the keys themselves are read live, so a changed key shows its new
+# value and a removed one shows "not set". Columns of (title, family, rows); a row is (label, [(schema, key)], filter)
+# where filter 'super' keeps only the Super combinations of a key and 'nosuper' only the others. A key ending in
+# '-#' is folded over its numbers (1 to the number of workspaces, or 1-9 and 0 for the dock).
+SHEET = [
+    [('Workspaces', 'Super', [
+        ('Go to workspace', [(WM, 'switch-to-workspace-#')], 'super'),
+        ('Previous / next workspace', [(WM, 'switch-to-workspace-left'), (WM, 'switch-to-workspace-right')], 'super'),
+        ('Overview', [(TAP, ''), (SH, 'toggle-overview')], None),
+     ]),
+     ('Windows', 'Super+Alt', [
+        ('Send to workspace', [(WM, 'move-to-workspace-#')], 'super'),
+        ('Tile to left / right half', [(MU, 'toggle-tiled-left'), (MU, 'toggle-tiled-right')], None),
+        ('Move to other monitor', [(WM, 'move-to-monitor-left'), (WM, 'move-to-monitor-right')], None),
+        ('Maximize / restore', [(WM, 'toggle-maximized')], 'super'),
+        ('Minimize', [(WM, 'minimize')], None),
+        ('Close', [(WM, 'close')], None),
+     ]),
+     ('Apps', 'Super+Ctrl', [
+        ('Dock app', [(DOCK_SCHEMA, 'app-hotkey-#')], None),
+        ('Private browser window', [(CUSTOM, 'tind-browser-private')], None),
+     ])],
+    [('Commands', 'Super+letter', 'LETTERS')],
+    [('Switching', None, [
+        ('Switch apps', [(WM, 'switch-applications')], 'nosuper'),
+        ('Switch windows of an app', [(WM, 'switch-group')], 'nosuper'),
+        ('Keyboard layout', [(WM, 'switch-input-source')], None),
+        ('Monitor layout', [(MU, 'switch-monitor')], 'super'),
+     ]),
+     ('Screenshots and system', None, [
+        ('Screenshot', [(SH, 'show-screenshot-ui')], None),
+        ('Screenshot of the screen', [(SH, 'screenshot')], None),
+        ('Screenshot of a window', [(SH, 'screenshot-window')], None),
+        ('System Monitor', [(CUSTOM, 'tind-system-monitor')], None),
+        ('Run a command', [(WM, 'panel-run-dialog')], None),
+        ('Log out', [(MK, 'logout')], None),
+     ]),
+     ('Accessibility', None, [
+        ('Magnifier on / off', [(MK, 'magnifier')], None),
+        ('Zoom in / out', [(MK, 'magnifier-zoom-in'), (MK, 'magnifier-zoom-out')], None),
+        ('Screen reader', [(MK, 'screenreader')], None),
+     ])],
+]
+# Super+letter commands, listed in the order of the key each one has now.
+LETTERS = [
+    (SH, 'toggle-application-view', 'Show apps'), (CUSTOM, 'tind-browser', 'Browser'),
+    (MK, 'calculator', 'Calculator'), (WM, 'show-desktop', 'Show desktop'),
+    (CUSTOM, 'tind-editor', 'Writer / Text Editor'), (CUSTOM, 'tind-files', 'Files'), (CUSTOM, 'tind-steam', 'Steam'),
+    (CUSTOM, 'tind-help', 'Hotkey overview'), (MK, 'screensaver', 'Lock screen'), (MK, 'mic-mute', 'Microphone mute'),
+    (SH, 'toggle-message-tray', 'Notifications'), (SH, 'toggle-quick-settings', 'Quick Settings'),
+    (SH, 'show-screen-recording-ui', 'Screen recording'), (MK, 'control-center', 'Settings'),
+    (CUSTOM, 'tind-terminal-super', 'Terminal'), (CUSTOM, 'tind-software', 'Software'),
+]
+ARROWS = {'Left': '←', 'Right': '→', 'Up': '↑', 'Down': '↓'}
+SUBTITLE = 'Super is the wall · Super+Alt the window · Super+Ctrl the apps · Super+letter a command'
+CSS = b"""
+.tind-hk-card { padding: 12px 14px; }
+.tind-hk-key { font-size: 0.85em; font-weight: 600; padding: 1px 7px; min-width: 14px; border-radius: 6px;
+               border: 1px solid alpha(currentColor, 0.25); border-bottom-width: 2px;
+               background: alpha(currentColor, 0.06); }
+.tind-hk-key.letter { min-width: 18px; }
+.tind-hk-footer { font-size: 0.9em; }
+"""
+
+
+def sheet_accels(schema, key):
+    """The normalised accelerators of one key, for the overview."""
+    if schema == TAP:
+        if _lookup('org.gnome.mutter') is None:
+            return []
+        tap = Gio.Settings.new('org.gnome.mutter').get_string('overlay-key')
+        return [(frozenset(), tap.split('_')[0].lower())] if tap else []
+    if schema == CUSTOM:
+        if _lookup(CUSTOM_SCHEMA) is None:
+            return []
+        path = '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/%s/' % key
+        media = _lookup(MK) and Gio.Settings.new(MK).get_strv('custom-keybindings')
+        if not media or path not in media:
+            return []
+        norm = normalise(Gio.Settings.new_with_path(CUSTOM_SCHEMA, path).get_string('binding'))
+        return [norm] if norm else []
+    probe = key[:-2] + '-1' if key.endswith('-#') else key
+    found = None
+    for sid in [schema] + [x for x in SCHEMAS if x != schema]:
+        obj = _lookup(sid)
+        if obj is not None and obj.get_path() is not None and obj.has_key(probe):
+            found = sid
+            break
+    if found is None:
+        return []
+    settings = Gio.Settings.new(found)
+    if not key.endswith('-#'):
+        return [n for n in (normalise(a) for a in settings.get_strv(key)) if n]
+    stem = key[:-2]
+    if found == DOCK_SCHEMA:
+        count, last = 10, '0'
+    else:
+        count = Gio.Settings.new('org.gnome.desktop.wm.preferences').get_int('num-workspaces') \
+            if _lookup('org.gnome.desktop.wm.preferences') else 4
+        count = max(1, min(count, 12))
+        last = str(count)
+    per = []
+    for i in range(1, count + 1):
+        name = '%s-%d' % (stem, i)
+        if not _lookup(found).has_key(name):
+            break
+        per.append([n for n in (normalise(a) for a in settings.get_strv(name)) if n])
+    # fold only when every number has a key with the same modifiers and the number itself as the key
+    for mods in {n[0] for n in (per[0] if per else [])}:
+        if all(any(n[0] == mods and n[1] == str((i + 1) % 10 if found == DOCK_SCHEMA else i + 1) for n in keys)
+               for i, keys in enumerate(per)):
+            return [(mods, '1–%s' % last if len(per) > 1 else '1')]
+    return []
+
+
+def key_parts(norm):
+    mods, base = norm
+    parts = [MOD_LABEL.get(m, m.title()) for m in MOD_ORDER if m in mods]
+    if base == 'super':
+        parts.append('Super')
+    elif re.fullmatch(r'1(–\d+)?', base):
+        parts.append(base)
+    else:
+        label = accel_label((frozenset(), base))
+        parts.append(ARROWS.get(label, label))
+    return parts
+
+
+def pick(accels, filt):
+    if filt == 'super':
+        return [a for a in accels if 'super' in a[0]] or accels
+    if filt == 'nosuper':
+        return [a for a in accels if 'super' not in a[0]] or accels
+    return accels
+
+
 def run_window():
     gi.require_version('Gtk', '4.0')
     gi.require_version('Adw', '1')
-    from gi.repository import Adw, Gtk
+    from gi.repository import Adw, Gdk, Gtk
+
+    def keycaps(Gtk, parts, extra=None):
+        box = Gtk.Box(spacing=3, valign=Gtk.Align.CENTER)
+        for p in parts:
+            lab = Gtk.Label(label=p)
+            lab.add_css_class('tind-hk-key')
+            if extra:
+                lab.add_css_class(extra)
+            box.append(lab)
+        return box
+
+    def keys_widget(entries, filt):
+        found = []
+        for schema, key in entries:
+            accels = pick(sheet_accels(schema, key), filt)
+            if accels:
+                found.append(accels[0])
+        box = Gtk.Box(spacing=3, halign=Gtk.Align.END, valign=Gtk.Align.CENTER)
+        if not found:
+            box.append(Gtk.Label(label='not set', css_classes=['dim-label', 'caption']))
+            return box
+        same = len(found) > 1 and len({f[0] for f in found}) == 1
+        for i, norm in enumerate(found):
+            parts = key_parts(norm)
+            if same and i > 0:
+                parts = parts[-1:]
+            if i > 0:
+                box.append(Gtk.Label(label='/' if same else 'or', css_classes=['dim-label', 'caption']))
+            box.append(keycaps(Gtk, parts))
+        return box
+
+    def card(title, family, rows):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, css_classes=['card', 'tind-hk-card'])
+        head = Gtk.Box(spacing=8)
+        head.append(Gtk.Label(label=title, xalign=0, hexpand=True, css_classes=['heading']))
+        if family:
+            head.append(Gtk.Label(label=family, css_classes=['dim-label', 'caption']))
+        box.append(head)
+        grid = Gtk.Grid(column_spacing=16, row_spacing=5)
+        if rows == 'LETTERS':
+            items = []
+            for schema, key, label in LETTERS:
+                accels = pick(sheet_accels(schema, key), 'super')
+                norm = accels[0] if accels else None
+                items.append((accel_label(norm) if norm else '~', label, norm))
+            for i, (_sort, label, norm) in enumerate(sorted(items)):
+                if norm is None:
+                    grid.attach(Gtk.Label(label='not set', css_classes=['dim-label', 'caption'], xalign=0), 0, i, 1, 1)
+                else:
+                    parts = key_parts(norm)
+                    grid.attach(keycaps(Gtk, parts[1:] if norm[0] == {'super'} else parts, 'letter'), 0, i, 1, 1)
+                grid.attach(Gtk.Label(label=label, xalign=0, hexpand=True), 1, i, 1, 1)
+        else:
+            for i, (label, entries, filt) in enumerate(rows):
+                grid.attach(Gtk.Label(label=label, xalign=0, hexpand=True), 0, i, 1, 1)
+                grid.attach(keys_widget(entries, filt), 1, i, 1, 1)
+        box.append(grid)
+        return box
+
+    def close_on_esc(win):
+        keys = Gtk.EventControllerKey()
+
+        def on_key(_controller, keyval, _keycode, _state):
+            if keyval == Gdk.KEY_Escape:
+                win.close()
+                return True
+            return False
+
+        keys.connect('key-pressed', on_key)
+        win.add_controller(keys)
 
     class App(Adw.Application):
         def __init__(self):
@@ -333,12 +550,44 @@ def run_window():
             if self.win is not None and self.win.get_visible():
                 self.win.close()
                 return
-            self.win = self.build()
+            css = Gtk.CssProvider()
+            css.load_from_data(CSS)
+            Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
+                                                      Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            self.win = self.build_overview()
             self.win.present()
 
-        def build(self):
+        def build_overview(self):
+            win = Adw.ApplicationWindow(application=self, title='Hotkey overview', resizable=False)
+            view = Adw.ToolbarView()
+            header = Adw.HeaderBar()
+            header.set_title_widget(Adw.WindowTitle(title='Hotkey overview', subtitle=SUBTITLE))
+            view.add_top_bar(header)
+            columns = Gtk.Box(spacing=12, homogeneous=True, margin_start=12, margin_end=12, margin_top=6)
+            for column in SHEET:
+                col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+                for title, family, rows in column:
+                    col.append(card(title, family, rows))
+                columns.append(col)
+            outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin_bottom=12)
+            outer.append(columns)
+            foot = Gtk.Box(spacing=12, margin_start=16, margin_end=12)
+            foot.append(Gtk.Label(label='Volume, brightness and media keys work as printed on the key. '
+                                        'Change any hotkey in Settings › Keyboard › View and Customise Shortcuts.',
+                                  xalign=0, hexpand=True, wrap=True, css_classes=['dim-label', 'tind-hk-footer']))
+            button = Gtk.Button(label='All shortcuts…')
+            button.connect('clicked', lambda _b: self.build_full(win).present())
+            foot.append(button)
+            outer.append(foot)
+            view.set_content(outer)
+            win.set_content(view)
+            close_on_esc(win)
+            return win
+
+        def build_full(self, parent):
             rows = window_rows(read_bindings())
-            win = Adw.ApplicationWindow(application=self, title='Hotkeys', default_width=560, default_height=740)
+            win = Adw.Window(title='All shortcuts', transient_for=parent, modal=True,
+                             default_width=560, default_height=700)
             view = Adw.ToolbarView()
             view.add_top_bar(Adw.HeaderBar())
             page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18, margin_top=12, margin_bottom=18,
@@ -351,33 +600,23 @@ def run_window():
                     group = Adw.PreferencesGroup()
                     expander = Adw.ExpanderRow(title='%s (%d)' % (title, len(items)))
                     for label, key in items:
-                        expander.add_row(self._row(Adw, Gtk, label, key))
+                        expander.add_row(self._row(label, key))
                     group.add(expander)
                 else:
                     group = Adw.PreferencesGroup(title=title)
                     if desc:
                         group.set_description(desc)
                     for label, key in items:
-                        group.add(self._row(Adw, Gtk, label, key))
+                        group.add(self._row(label, key))
                 page.append(group)
             clamp = Adw.Clamp(maximum_size=620, child=page)
-            scroll = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, child=clamp)
-            view.set_content(scroll)
+            view.set_content(Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, child=clamp))
             win.set_content(view)
-            keys = Gtk.EventControllerKey()
-
-            def on_key(_controller, keyval, _keycode, _state):
-                if keyval == 0xff1b:  # Escape
-                    win.close()
-                    return True
-                return False
-
-            keys.connect('key-pressed', on_key)
-            win.add_controller(keys)
+            close_on_esc(win)
             return win
 
         @staticmethod
-        def _row(Adw, Gtk, label, key):
+        def _row(label, key):
             row = Adw.ActionRow(title=GLib.markup_escape_text(label))
             lab = Gtk.Label(label=key, valign=Gtk.Align.CENTER, selectable=False)
             lab.add_css_class('monospace')

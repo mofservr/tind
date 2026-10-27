@@ -249,17 +249,25 @@ jobs:
               sleep 0.5
               [ -f "shots/e$(printf %02d "$j").ppm" ] && convert "shots/e$(printf %02d "$j").ppm" -resize 800x "logs/early-$(printf %02d "$j").png"
             done
-            # Quick Settings panel, dark then light (Super+S). Timed from the self-test marker on the
+            # Quick Settings panel (Super+Q) and the hotkey overview (Super+H), dark then light. Timed from the self-test marker on the
             # serial log: the guest flips to the light scheme 200 s after it prints it.
             for _ in $(seq 1 180); do grep -q 'TIND-SELFTEST-BEGIN' logs/serial.log 2>/dev/null && break; sleep 2; done
             T0=$(date +%s)
             qs_shot() {
               echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 3
-              echo "sendkey meta_l-s" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 4
+              echo "sendkey meta_l-q" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 4
               echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
               sleep 1
               [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
               echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
+            }
+            hk_shot() {
+              # Super+H opens the hotkey overview; pressing it again closes it
+              echo "sendkey meta_l-h" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 6
+              echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
+              sleep 1
+              [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
+              echo "sendkey meta_l-h" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             }
             settings_shot() {
               # Settings > Appearance is opened by the guest itself (tind-selftest); wait until $2 s after the marker
@@ -275,11 +283,13 @@ jobs:
             echo "screendump $PWD/shots/desktop-dark.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-dark)"
             sleep 1; [ -f shots/desktop-dark.ppm ] && convert shots/desktop-dark.ppm logs/desktop-dark.png
             qs_shot quickpanel-dark
+            hk_shot hotkeys-dark
             settings_shot settings-dark 85
             sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
             echo "screendump $PWD/shots/desktop-light.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-light)"
             sleep 1; [ -f shots/desktop-light.ppm ] && convert shots/desktop-light.ppm logs/desktop-light.png
             qs_shot quickpanel-light
+            hk_shot hotkeys-light
             settings_shot settings-light 268
             for i in $(seq 1 14); do
               sleep 45
