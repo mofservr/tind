@@ -3,33 +3,33 @@
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
 total 6576
--rw-r--r-- 1 runner runner   7006 Oct 27 15:56 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 27 15:56 secboot-s02.png
--rw-r--r-- 1 runner runner 844991 Oct 27 15:57 secboot-s03.png
--rw-r--r-- 1 runner runner 844991 Oct 27 15:57 secboot-s04.png
--rw-r--r-- 1 runner runner 845727 Oct 27 15:58 secboot-s05.png
--rw-r--r-- 1 runner runner 825116 Oct 27 15:59 secboot-s06.png
--rw-r--r-- 1 runner runner 824826 Oct 27 15:59 secboot-s07.png
--rw-r--r-- 1 runner runner 824826 Oct 27 16:00 secboot-s08.png
--rw-r--r-- 1 runner runner 824239 Oct 27 16:00 secboot-s09.png
--rw-r--r-- 1 runner runner 824215 Oct 27 16:01 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 27 15:56 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 27 15:56 secureboot-inspect.log
--rw-r----- 1 runner runner  32715 Oct 27 15:59 serial-secboot.log
-Oct 27 16:57:24 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:57:24 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:57:24 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:57:24 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:57:24 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [StBoxLayout] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [StLabel] is on because it needs an allocation.
-Oct 27 16:58:23 tind gnome-shell[1706]: Can't update stage views actor unnamed [ClutterText] is on because it needs an allocation.
+-rw-r--r-- 1 runner runner   7006 Oct 27 16:40 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 27 16:41 secboot-s02.png
+-rw-r--r-- 1 runner runner 845288 Oct 27 16:41 secboot-s03.png
+-rw-r--r-- 1 runner runner 845304 Oct 27 16:42 secboot-s04.png
+-rw-r--r-- 1 runner runner 845536 Oct 27 16:42 secboot-s05.png
+-rw-r--r-- 1 runner runner 825196 Oct 27 16:43 secboot-s06.png
+-rw-r--r-- 1 runner runner 824837 Oct 27 16:43 secboot-s07.png
+-rw-r--r-- 1 runner runner 824613 Oct 27 16:44 secboot-s08.png
+-rw-r--r-- 1 runner runner 824214 Oct 27 16:44 secboot-s09.png
+-rw-r--r-- 1 runner runner 824375 Oct 27 16:45 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 27 16:40 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 27 16:40 secureboot-inspect.log
+-rw-r----- 1 runner runner  31656 Oct 27 16:43 serial-secboot.log
+Oct 27 17:41:24 tind gnome-shell[1712]: pci id for fd 12: 1234:1111, driver (null)
+Oct 27 17:41:24 tind gnome-shell[1712]: kmsro: driver missing
+Oct 27 17:41:24 tind gnome-shell[1712]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 27 17:41:24 tind gnome-shell[1712]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 27 17:41:24 tind gnome-shell[1712]: Created gbm renderer for '/dev/dri/card0'
+Oct 27 17:41:24 tind gnome-shell[1712]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 27 17:41:24 tind gnome-shell[1712]: Using public X11 display :0, (using :1 for managed services)
+Oct 27 17:41:24 tind gnome-shell[1712]: Using Wayland display name 'wayland-0'
+Oct 27 17:41:24 tind gnome-shell[1712]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 27 17:41:25 tind gnome-shell[1712]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 27 17:41:26 tind gnome-shell[1712]: Will monitor session 1
+Oct 27 17:41:28 tind gnome-shell[1712]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 27 17:41:31 tind gnome-shell[1712]: GNOME Shell started at Tue Oct 27 2026 17:41:26 GMT+0100 (Central European Standard Time)
+Oct 27 17:41:31 tind gnome-shell[1712]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
