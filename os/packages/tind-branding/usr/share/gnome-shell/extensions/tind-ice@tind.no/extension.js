@@ -106,13 +106,13 @@ export default class TindIce extends Extension {
             this._wsLabels = [];
             this._wsWindowSigs = new Map();
             const activities = Main.panel.statusArea.activities;
-            // GNOME's own dot indicator is the Activities button's only child (a WorkspaceIndicators, itself a
-            // BoxLayout): hide it and put our box next to it, in the button, so it keeps the button's padding and hover.
-            this._wsHidden = [];
-            for (const child of activities.get_children()) {
-                this._wsHidden.push([child, child.visible]);
-                child.hide();
-            }
+            // GNOME's own dot indicator (a WorkspaceIndicators) is the Activities button's only child, and a panel
+            // button sizes and allocates only its first child, so ours must take its place: take it out (kept, not
+            // destroyed) and put it back in disable().
+            this._wsActivities = activities;
+            this._wsOriginal = activities.get_first_child();
+            if (this._wsOriginal)
+                activities.remove_child(this._wsOriginal);
             activities.add_child(this._wsBox);
             this._wsSigs = [
                 [wm, wm.connect('notify::n-workspaces', () => this._rebuildWorkspaceNumbers())],
@@ -183,13 +183,15 @@ export default class TindIce extends Extension {
                 obj.disconnect(id);
             for (const [ws, ids] of this._wsWindowSigs ?? [])
                 for (const sid of ids) ws.disconnect(sid);
+            if (this._wsBox && this._wsActivities?.contains(this._wsBox))
+                this._wsActivities.remove_child(this._wsBox);
             this._wsBox?.destroy();
-            for (const [child, vis] of this._wsHidden ?? [])
-                if (vis) child.show();
+            if (this._wsOriginal && this._wsActivities)
+                this._wsActivities.insert_child_at_index(this._wsOriginal, 0);
         } catch (e) {
             console.warn(`tind-ice: workspace numbers cleanup: ${e.message}`);
         }
-        this._wsSigs = this._wsWindowSigs = this._wsBox = this._wsLabels = this._wsHidden = null;
+        this._wsSigs = this._wsWindowSigs = this._wsBox = this._wsLabels = this._wsActivities = this._wsOriginal = null;
     }
 
     // ---- Dash to Dock: Super+Ctrl+# and permanent numbers ----------------------------------------------
