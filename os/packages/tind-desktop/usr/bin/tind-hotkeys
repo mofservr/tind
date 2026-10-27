@@ -1,0 +1,403 @@
+#!/usr/bin/python3
+# tind-hotkeys: Tind's hotkey quick reference (Super+H), plus two command line modes used by the CI self-test.
+#
+#   tind-hotkeys          open the window; running it again while it is open closes it (so Super+H toggles)
+#   tind-hotkeys --list   print every hotkey that is bound right now, one per line (no window)
+#   tind-hotkeys --check  exit 1 and print the clashes if one key combination is bound to two actions
+#
+# Everything is read live from the settings (GNOME Shell, mutter, gnome-settings-daemon, Dash to Dock, Caffeine and
+# the custom keybindings), so the window is right even after a user has changed a key in Settings. Nothing in here is
+# a fixed list of keys. The only fixed things are a few friendlier action names and the window's group order.
+import re
+import sys
+
+import gi
+from gi.repository import Gio, GLib
+
+# Settings schemas that hold key bindings. A schema that is not installed is skipped.
+SCHEMAS = [
+    'org.gnome.desktop.wm.keybindings',
+    'org.gnome.mutter.keybindings',
+    'org.gnome.mutter.wayland.keybindings',
+    'org.gnome.shell.keybindings',
+    'org.gnome.settings-daemon.plugins.media-keys',
+    'org.gnome.shell.extensions.dash-to-dock',
+    'org.gnome.shell.extensions.caffeine',
+]
+CUSTOM_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys.custom-keybinding'
+DOCK_SCHEMA = 'org.gnome.shell.extensions.dash-to-dock'
+# Dash to Dock binds these itself only while its own hot-keys switch is on; the app-hotkey keys are always
+# listed because Tind's shell extension (tind-ice) binds them when the switch is off.
+DOCK_ONLY_WITH_HOTKEYS = ('app-shift-hotkey-', 'app-ctrl-hotkey-', 'shortcut')
+
+# Keys of type "as" in those schemas that are not key bindings, or that mean nothing to a user.
+SKIP_KEYS = {'custom-keybindings', 'xwayland-grab-access-rules', 'panel-main-menu', 'set-spew-mark'}
+
+ACCEL_RE = re.compile(r'^(<[A-Za-z0-9_]+>)*[A-Za-z0-9_]+$')
+
+# Friendlier names than the schema summaries, for the keys Tind cares about. Anything not here uses its summary.
+LABELS = {
+    'switch-to-workspace': 'Go to workspace #',
+    'move-to-workspace': 'Send window to workspace #',
+    'switch-to-workspace-left': 'Previous workspace',
+    'switch-to-workspace-right': 'Next workspace',
+    'switch-to-workspace-up': 'Workspace above',
+    'switch-to-workspace-down': 'Workspace below',
+    'switch-to-workspace-last': 'Last workspace',
+    'move-to-workspace-left': 'Send window to previous workspace',
+    'move-to-workspace-right': 'Send window to next workspace',
+    'move-to-workspace-up': 'Send window to workspace above',
+    'move-to-workspace-down': 'Send window to workspace below',
+    'move-to-workspace-last': 'Send window to last workspace',
+    'move-to-monitor-left': 'Move window to the left monitor',
+    'move-to-monitor-right': 'Move window to the right monitor',
+    'move-to-monitor-up': 'Move window to the monitor above',
+    'move-to-monitor-down': 'Move window to the monitor below',
+    'toggle-maximized': 'Maximize / restore window',
+    'maximize': 'Maximize window',
+    'unmaximize': 'Restore window',
+    'minimize': 'Minimize window',
+    'close': 'Close window',
+    'show-desktop': 'Show desktop',
+    'toggle-tiled-left': 'Tile window to the left half',
+    'toggle-tiled-right': 'Tile window to the right half',
+    'toggle-overview': 'Overview',
+    'toggle-application-view': 'Show applications',
+    'toggle-quick-settings': 'Quick Settings',
+    'toggle-message-tray': 'Notifications',
+    'focus-active-notification': 'Focus the active notification',
+    'show-screenshot-ui': 'Screenshot',
+    'screenshot': 'Screenshot of the screen',
+    'screenshot-window': 'Screenshot of a window',
+    'show-screen-recording-ui': 'Screen recording',
+    'switch-applications': 'Switch application',
+    'switch-applications-backward': 'Switch application (backwards)',
+    'switch-group': 'Switch windows of the app',
+    'switch-group-backward': 'Switch windows of the app (backwards)',
+    'switch-input-source': 'Switch keyboard layout',
+    'switch-input-source-backward': 'Switch keyboard layout (backwards)',
+    'switch-monitor': 'Switch monitor layout',
+    'screensaver': 'Lock screen',
+    'logout': 'Log out',
+    'control-center': 'Settings',
+    'calculator': 'Calculator',
+    'mic-mute': 'Microphone mute',
+    'magnifier': 'Magnifier on / off',
+    'magnifier-zoom-in': 'Magnifier zoom in',
+    'magnifier-zoom-out': 'Magnifier zoom out',
+    'screenreader': 'Screen reader on / off',
+    'help': 'GNOME help',
+    'panel-run-dialog': 'Run a command',
+    'switch-to-application': 'Switch to application #',
+    'open-new-window-application': 'New window of application #',
+    'app-hotkey': 'Dock app #',
+    'app-shift-hotkey': 'Dock app # (shift behaviour)',
+    'app-ctrl-hotkey': 'Dock app # (ctrl behaviour)',
+    'shortcut': 'Show dock numbers',
+    'toggle-shortcut': 'Caffeine on / off',
+    'switch-to-session': 'Switch to text console #',
+    'touchpad-toggle-static': 'Touchpad on / off',
+}
+
+MODS = {'primary': 'ctrl', 'ctrl': 'ctrl', 'control': 'ctrl', 'alt': 'alt', 'mod1': 'alt',
+        'super': 'super', 'mod4': 'super', 'shift': 'shift', 'meta': 'meta', 'hyper': 'hyper'}
+MOD_ORDER = ['super', 'ctrl', 'alt', 'shift', 'meta', 'hyper']
+MOD_LABEL = {'super': 'Super', 'ctrl': 'Ctrl', 'alt': 'Alt', 'shift': 'Shift', 'meta': 'Meta', 'hyper': 'Hyper'}
+BASE_LABEL = {'page_up': 'PgUp', 'page_down': 'PgDn', 'escape': 'Esc', 'above_tab': 'Above Tab', 'space': 'Space',
+              'equal': '=', 'minus': '-', 'grave': '`', 'return': 'Enter', 'backspace': 'Backspace'}
+BASE_SHOWN = {}  # lower-case key name -> the spelling it had in the settings (XF86AudioMute, Print, ...)
+
+
+def normalise(accel):
+    """('<Primary><Alt>t') -> (frozenset({'ctrl', 'alt'}), 't'), or None when it is not an accelerator."""
+    if not accel or not ACCEL_RE.match(accel):
+        return None
+    mods = set()
+    for m in re.findall(r'<([A-Za-z0-9_]+)>', accel):
+        mods.add(MODS.get(m.lower(), m.lower()))
+    shown = re.sub(r'<[A-Za-z0-9_]+>', '', accel)
+    base = shown.lower()
+    BASE_SHOWN.setdefault(base, shown)
+    return frozenset(mods), base
+
+
+def accel_label(norm):
+    mods, base = norm
+    parts = [MOD_LABEL.get(m, m.title()) for m in MOD_ORDER if m in mods]
+    parts += [m.title() for m in sorted(mods) if m not in MOD_ORDER]
+    shown = BASE_SHOWN.get(base) or (base.upper() if re.fullmatch(r'f?#', base) else base)
+    parts.append(BASE_LABEL.get(base, shown.upper() if len(shown) == 1 else shown.replace('_', ' ')))
+    return '+'.join(parts)
+
+
+def _lookup(schema_id):
+    source = Gio.SettingsSchemaSource.get_default()
+    return source.lookup(schema_id, True) if source else None
+
+
+class Binding:
+    def __init__(self, schema, key, label, accels):
+        self.schema = schema
+        self.key = key
+        self.label = label
+        self.accels = accels  # list of (raw, normalised)
+
+
+def _label_for(schema_obj, key_name):
+    stem = re.sub(r'-\d+$', '', key_name)
+    if key_name in LABELS:
+        return LABELS[key_name]
+    if stem in LABELS and stem != key_name:
+        return LABELS[stem].replace('#', key_name[len(stem) + 1:])
+    summary = schema_obj.get_key(key_name).get_summary()
+    return summary.strip().rstrip('.') if summary else key_name
+
+
+def read_bindings():
+    out = []
+    for schema_id in SCHEMAS:
+        schema = _lookup(schema_id)
+        if schema is None:
+            continue
+        if schema.get_path() is None:  # relocatable: Gio.Settings.new() would abort; none of these should be
+            continue
+        settings = Gio.Settings.new(schema_id)
+        dock_hotkeys_on = False
+        if schema_id == DOCK_SCHEMA and schema.has_key('hot-keys'):
+            dock_hotkeys_on = settings.get_boolean('hot-keys')
+        for key in schema.list_keys():
+            if key in SKIP_KEYS:
+                continue
+            if schema_id == DOCK_SCHEMA and key.startswith(DOCK_ONLY_WITH_HOTKEYS) and not dock_hotkeys_on:
+                continue
+            if schema_id == DOCK_SCHEMA and not (key.startswith('app-') and 'hotkey' in key or key == 'shortcut'):
+                continue
+            if schema_id == 'org.gnome.shell.extensions.caffeine' and key != 'toggle-shortcut':
+                continue
+            if schema.get_key(key).get_value_type().dup_string() != 'as':
+                continue
+            summary = schema.get_key(key).get_summary() or ''
+            if summary.upper().startswith('DEPRECATED'):
+                continue
+            accels = []
+            for raw in settings.get_strv(key):
+                norm = normalise(raw)
+                if norm:
+                    accels.append((raw, norm))
+            if accels:
+                out.append(Binding(schema_id, key, _label_for(schema, key), accels))
+    # custom keybindings
+    media = _lookup('org.gnome.settings-daemon.plugins.media-keys')
+    if media is not None and _lookup(CUSTOM_SCHEMA) is not None:
+        for path in Gio.Settings.new('org.gnome.settings-daemon.plugins.media-keys').get_strv('custom-keybindings'):
+            c = Gio.Settings.new_with_path(CUSTOM_SCHEMA, path)
+            norm = normalise(c.get_string('binding'))
+            if norm:
+                out.append(Binding(CUSTOM_SCHEMA, path.rstrip('/').rsplit('/', 1)[-1],
+                                   c.get_string('name') or c.get_string('command'),
+                                   [(c.get_string('binding'), norm)]))
+    return out
+
+
+def clashes(bindings):
+    by = {}
+    for b in bindings:
+        seen = set()
+        for _raw, norm in b.accels:
+            if norm in seen:
+                continue
+            seen.add(norm)
+            by.setdefault(norm, []).append(b)
+    return {n: bs for n, bs in by.items() if len({(b.schema, b.key) for b in bs}) > 1}
+
+
+def cmd_list():
+    rows = []
+    for b in read_bindings():
+        for _raw, norm in b.accels:
+            rows.append((accel_label(norm), '%s %s' % (b.schema, b.key), b.label))
+    for r in sorted(rows):
+        print('\t'.join(r))
+    return 0
+
+
+def cmd_check():
+    bad = clashes(read_bindings())
+    if not bad:
+        print('hotkeys unique')
+        return 0
+    for norm, bs in sorted(bad.items(), key=lambda kv: accel_label(kv[0])):
+        print('%s: %s' % (accel_label(norm), ', '.join('%s %s' % (b.schema.replace('org.gnome.', ''), b.key) for b in bs)))
+    return 1
+
+
+# ---------------------------------------------------------------------------------------------------- the window
+
+GROUPS = [
+    ('workspaces', 'Workspaces', 'Super: the wall'),
+    ('windows', 'Windows', 'Super+Alt: the paper'),
+    ('apps', 'Apps', 'Super+Ctrl: the dock apps and app variants'),
+    ('commands', 'Commands', 'Super+letter'),
+    ('other', 'Other', None),
+    ('access', 'Accessibility', None),
+    ('hardware', 'Hardware keys', None),
+]
+ACCESS_KEYS = {'magnifier', 'magnifier-zoom-in', 'magnifier-zoom-out', 'screenreader'}
+WS_BASES = set('1234567890') | {'left', 'right', 'up', 'down', 'page_up', 'page_down', 'home', 'end'}
+
+
+def group_of(norm):
+    mods, base = norm
+    if base.startswith('xf86'):
+        return 'hardware'
+    if 'super' in mods and 'alt' in mods:
+        return 'windows'
+    if mods == {'super', 'shift'} and base in WS_BASES:
+        return 'windows'  # Super+Shift+PgUp and friends send the window to another workspace
+    if 'super' in mods and 'ctrl' in mods:
+        return 'apps'
+    if mods == {'super'} and base in WS_BASES:
+        return 'workspaces'
+    if 'super' in mods:
+        return 'commands'
+    return 'other'
+
+
+def window_rows(bindings):
+    """[(group, action label, key label)], numbered keys (workspace 1..9) folded into one row with a '#'."""
+    rows = []
+    numbered = {}
+    for b in bindings:
+        m = re.match(r'^(.*)-(\d+)$', b.key)
+        if m and b.schema != CUSTOM_SCHEMA:
+            numbered.setdefault((b.schema, m.group(1)), []).append((int(m.group(2)), b))
+        else:
+            for _raw, norm in b.accels:
+                g = 'access' if b.key in ACCESS_KEYS else 'commands' if b.schema == CUSTOM_SCHEMA else group_of(norm)
+                rows.append((g, b.label, accel_label(norm)))
+    for (_schema, stem), items in numbered.items():
+        items.sort(key=lambda it: it[0])
+        first = items[0][1]
+        pattern = first.accels[0][1]
+        folded = len(items) >= 3
+        base = pattern[1]
+        tail = re.search(r'(\d+)$', base)
+        if folded and tail:
+            head = base[:tail.start()]
+            for n, b in items:
+                ok = any(norm[0] == pattern[0] and norm[1] in (head + str(n), head + str(n % 10))
+                         for _r, norm in b.accels)
+                if not ok:
+                    folded = False
+        else:
+            folded = False
+        if folded:
+            label = LABELS.get(stem, first.label)
+            if '#' not in label:
+                label = re.sub(r'\d+$', '#', label.strip()) if re.search(r'\d+$', label.strip()) else label + ' #'
+            key = accel_label((pattern[0], head + '#'))
+            rows.append((group_of(pattern), label, key))
+            # keys that are not part of the pattern (workspace 1 also on Super+Home, for example)
+            for n, b in items:
+                for _r, norm in b.accels:
+                    if norm[0] == pattern[0] and norm[1] in (head + str(n), head + str(n % 10)):
+                        continue
+                    rows.append((group_of(norm), b.label, accel_label(norm)))
+        else:
+            for _n, b in items:
+                for _r, norm in b.accels:
+                    rows.append((group_of(norm), b.label, accel_label(norm)))
+    # the Super tap, a single-key setting rather than an accelerator
+    if _lookup('org.gnome.mutter') is not None:
+        tap = Gio.Settings.new('org.gnome.mutter').get_string('overlay-key')
+        if tap:
+            rows.append(('commands', 'Overview (tap)', MOD_LABEL.get(tap.split('_')[0].lower(), tap)))
+    merged = {}
+    for g, label, key in rows:
+        merged.setdefault((g, label), []).append(key)
+    return sorted((g, label, '   '.join(dict.fromkeys(keys))) for (g, label), keys in merged.items())
+
+
+def run_window():
+    gi.require_version('Gtk', '4.0')
+    gi.require_version('Adw', '1')
+    from gi.repository import Adw, Gtk
+
+    class App(Adw.Application):
+        def __init__(self):
+            super().__init__(application_id='no.servr.TindHotkeys')
+            self.win = None
+
+        def do_activate(self):
+            # a second start while the window is open closes it, so the same key opens and closes the window
+            if self.win is not None and self.win.get_visible():
+                self.win.close()
+                return
+            self.win = self.build()
+            self.win.present()
+
+        def build(self):
+            rows = window_rows(read_bindings())
+            win = Adw.ApplicationWindow(application=self, title='Hotkeys', default_width=560, default_height=740)
+            view = Adw.ToolbarView()
+            view.add_top_bar(Adw.HeaderBar())
+            page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18, margin_top=12, margin_bottom=18,
+                           margin_start=12, margin_end=12)
+            for gid, title, desc in GROUPS:
+                items = [(label, key) for g, label, key in rows if g == gid]
+                if not items:
+                    continue
+                if gid == 'hardware':
+                    group = Adw.PreferencesGroup()
+                    expander = Adw.ExpanderRow(title='%s (%d)' % (title, len(items)))
+                    for label, key in items:
+                        expander.add_row(self._row(Adw, Gtk, label, key))
+                    group.add(expander)
+                else:
+                    group = Adw.PreferencesGroup(title=title)
+                    if desc:
+                        group.set_description(desc)
+                    for label, key in items:
+                        group.add(self._row(Adw, Gtk, label, key))
+                page.append(group)
+            clamp = Adw.Clamp(maximum_size=620, child=page)
+            scroll = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, child=clamp)
+            view.set_content(scroll)
+            win.set_content(view)
+            keys = Gtk.EventControllerKey()
+
+            def on_key(_controller, keyval, _keycode, _state):
+                if keyval == 0xff1b:  # Escape
+                    win.close()
+                    return True
+                return False
+
+            keys.connect('key-pressed', on_key)
+            win.add_controller(keys)
+            return win
+
+        @staticmethod
+        def _row(Adw, Gtk, label, key):
+            row = Adw.ActionRow(title=GLib.markup_escape_text(label))
+            lab = Gtk.Label(label=key, valign=Gtk.Align.CENTER, selectable=False)
+            lab.add_css_class('monospace')
+            lab.add_css_class('dim-label')
+            row.add_suffix(lab)
+            return row
+
+    return App().run(None)
+
+
+def main(argv):
+    if '--list' in argv:
+        return cmd_list()
+    if '--check' in argv:
+        return cmd_check()
+    if any(a in ('-h', '--help') for a in argv):
+        print(__doc__ or '')
+        return 0
+    return run_window()
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv[1:]))

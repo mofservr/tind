@@ -26,6 +26,10 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   NVIDIA needs.
 - **A fresh install on a legacy-BIOS machine** from the finished installer.
 - **The optional app boxes on a fresh install on real hardware.**
+- **The hotkey set and its shell parts** (27 Oct): the top bar's numbered workspaces, Super+Ctrl+1..0 on the dock, the
+  small permanent numbers left of the dock icons and the running dots under the icons. They reach into Dash to Dock's
+  private code (Debian ships 100-2) and were checked against its source, not on a running shell. If Dash to Dock's own
+  "keyboard shortcuts" are switched on in its settings, log out and in again so the two do not fight over the keys.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".

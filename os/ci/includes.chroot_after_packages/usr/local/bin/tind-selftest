@@ -46,6 +46,9 @@ for k in "org.gnome.desktop.interface color-scheme" "org.gnome.desktop.interface
          "org.gnome.shell.extensions.dash-to-dock autohide" "org.gnome.shell.extensions.dash-to-dock extend-height" \
          "org.gnome.desktop.interface clock-format" "org.gnome.desktop.datetime automatic-timezone" \
          "org.gnome.system.location enabled" "org.gnome.desktop.wm.preferences button-layout" \
+         "org.gnome.mutter dynamic-workspaces" "org.gnome.desktop.wm.preferences num-workspaces" \
+         "org.gnome.shell.app-switcher current-workspace-only" \
+         "org.gnome.shell.extensions.dash-to-dock hot-keys" "org.gnome.shell.extensions.dash-to-dock app-hotkey-1" \
          "org.gnome.settings-daemon.plugins.media-keys custom-keybindings" \
          "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/ binding" \
          "org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/ command"; do
@@ -71,6 +74,10 @@ sec "keyboard (what Calamares preselects)"
 echo "input-sources = $(asuser gsettings get org.gnome.desktop.input-sources sources 2>&1)"
 echo "setxkbmap: $(asuser env DISPLAY=:0 setxkbmap -print 2>&1 | grep -E 'symbols' | head -1)"
 cat /etc/default/keyboard 2>&1 | grep -E '^XKB(LAYOUT|MODEL)'
+sec hotkeys
+echo "dash-to-dock version: $(jq -r '.version // "?"' /usr/share/gnome-shell/extensions/dash-to-dock@micxgx.gmail.com/metadata.json 2>&1)"
+asuser tind-hotkeys --list 2>&1 | head -80
+asuser tind-hotkeys --check 2>&1
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
 echo "extension dirs: $(ls /usr/share/gnome-shell/extensions | tr '\n' ' ')"
 for u in ubuntu-appindicators@ubuntu.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
@@ -217,6 +224,8 @@ if echo "$ua" | grep -q 'Unattended-Upgrade "1"' && systemctl is-enabled apt-dai
 else
     daily silent-updates-configured "FAIL (auto-upgrades file, apt-daily-upgrade.timer or the Tind origin is missing)"
 fi
+hk="$(asuser tind-hotkeys --check 2>&1)"
+[ "$hk" = "hotkeys unique" ] && daily hotkeys-unique ok || daily hotkeys-unique "FAIL $(echo "$hk" | head -3 | tr '\n' '|')"
 aptout="$(apt-get update 2>&1)"; aptmsg="$(echo "$aptout" | grep -E '^(W|E|N):' | head -3 | tr '\n' '|')"
 [ -z "$aptmsg" ] && daily apt-update-quiet ok || daily apt-update-quiet "FAIL $aptmsg"
 bad="$(grep -nE 'command not found|Traceback|: line [0-9]+:|Permission denied' /tmp/tind-report-test.txt 2>/dev/null | head -3 | tr '\n' '|')"

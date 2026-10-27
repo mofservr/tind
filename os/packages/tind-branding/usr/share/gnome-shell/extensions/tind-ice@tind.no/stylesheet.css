@@ -1,4 +1,4 @@
-/* Tind Ice v5: one colour for the whole frame, the window header colour.
+/* Tind Ice v6: one colour for the whole frame, the window header colour.
  *
  * The top bar, the dock, menus, Quick Settings and notification cards all use the same solid
  * colour, a notch darker than the window header bar (2026-10-19: #121314, the code editor black Morten picked,
@@ -778,3 +778,15 @@
 .tind-accent-slate .button:focus,
 .tind-accent-slate .modal-dialog-button:focus,
 .tind-accent-slate .dialog-button:focus { border-color: #C25D59; box-shadow: inset 0 0 0 2px #C25D59; }
+
+/* ---- numbered workspaces in the top bar (extension.js) ------------------- */
+.tind-ws { spacing: 0; }
+.tind-ws-num { min-width: 18px; padding: 0 3px; text-align: center; color: #F2F2F2; font-weight: normal; }
+.tind-ws-empty { color: rgba(242, 242, 242, 0.5); }
+.tind-ws-active { font-weight: bold; }
+.tind-light .tind-ws-num { color: #2E2A27; }
+.tind-light .tind-ws-empty { color: rgba(46, 42, 39, 0.5); }
+
+/* ---- permanent numbers left of the dock icons ----------------------------- */
+.tind-dock-num { color: #F2F2F2; }
+.tind-light .tind-dock-num { color: #2E2A27; }

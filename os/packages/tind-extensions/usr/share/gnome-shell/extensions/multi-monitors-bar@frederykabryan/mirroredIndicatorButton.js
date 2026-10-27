@@ -174,16 +174,20 @@ export const MirroredIndicatorButton = GObject.registerClass(
             const activeIndex = this._workspaceManager.get_active_workspace_index();
             const vertical = this._workspaceVertical ?? !!this._panel?._vertical;
 
+            // Tind: numbers instead of dots, like the primary top bar (tind-ice). The active one is bold in the accent
+            // colour (tind-ice publishes it as global._tindAccentText), empty workspaces are dimmed.
             for (let i = 0; i < nWorkspaces; i++) {
                 const isActive = (i === activeIndex);
-                const dot = new St.Widget({
-                    style_class: isActive ? 'workspace-dot active' : 'workspace-dot',
-                    width: vertical ? 44 : (isActive ? 34 : 7),
-                    height: vertical ? (isActive ? 12 : 8) : (isActive ? 8 : 7),
-                    style: `border-radius: ${vertical ? 4 : 6}px; background-color: rgba(255, 255, 255, ${isActive ? '1' : '0.5'}); margin: ${vertical ? '2px 0' : '0 2px'};`,
+                const ws = this._workspaceManager.get_workspace_by_index(i);
+                const empty = !ws || ws.list_windows().filter(w => !w.is_on_all_workspaces()).length === 0;
+                const label = new St.Label({
+                    text: `${i + 1}`,
+                    style_class: 'tind-ws-num' + (isActive ? ' tind-ws-active' : (empty ? ' tind-ws-empty' : '')),
                     y_align: Clutter.ActorAlign.CENTER,
                 });
-                this._workspaceDotsBox.add_child(dot);
+                if (isActive && global._tindAccentText)
+                    label.set_style(`color: ${global._tindAccentText};`);
+                this._workspaceDotsBox.add_child(label);
             }
         }
 

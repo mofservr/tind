@@ -18,18 +18,155 @@ automatic-timezone=false
 [org/gnome/system/location]
 enabled=false
 
+# Four fixed workspaces (not GNOME's dynamic ones): a workspace in the middle never disappears and renumbers the
+# rest, and the numbered top bar always shows the same four numbers. Users can change both in Settings > Multitasking.
+[org/gnome/mutter]
+dynamic-workspaces=false
+
 # window buttons: minimize and close
 [org/gnome/desktop/wm/preferences]
 button-layout=':minimize,close'
+num-workspaces=4
 
-# Ctrl+Alt+T opens the Terminal (GNOME 48 has no built-in terminal shortcut key, so it is a custom one)
+# Tind hotkeys (decided 27 Oct 2026; the full list and the reasoning are in claude/tind-hotkeys.md in the project).
+# The modifier says what a key acts on, and no combination does two things:
+#   Super          the wall: workspaces (Super+1..9, Super+Left/Right)
+#   Super+Alt      the paper: the current window (send to workspace, monitor, maximize, minimize)
+#   Super+Alt+Shift  the paper's size: tile to a half
+#   Super+Ctrl     apps: Super+Ctrl+1..9,0 the dock apps, Super+Ctrl+letter an app variant
+#   Super+letter   direct commands (Terminal, browser, Files, Settings, Hotkeys help, ...)
+# Alt and not Shift with the numbers: Shift+number types a symbol on the Norwegian layout. Alt means the left Alt.
+# Users can change every one of these in Settings > Keyboard > Keyboard Shortcuts; whoever changes a key owns it.
+
+[org/gnome/desktop/wm/keybindings]
+# Wall: go to workspace N (workspace 1 keeps its stock Super+Home too)
+switch-to-workspace-1=['<Super>1', '<Super>Home']
+switch-to-workspace-2=['<Super>2']
+switch-to-workspace-3=['<Super>3']
+switch-to-workspace-4=['<Super>4']
+switch-to-workspace-5=['<Super>5']
+switch-to-workspace-6=['<Super>6']
+switch-to-workspace-7=['<Super>7']
+switch-to-workspace-8=['<Super>8']
+switch-to-workspace-9=['<Super>9']
+switch-to-workspace-left=['<Super>Left', '<Super>Page_Up', '<Control><Alt>Left']
+switch-to-workspace-right=['<Super>Right', '<Super>Page_Down', '<Control><Alt>Right']
+# Paper: send the window to workspace N
+move-to-workspace-1=['<Super><Alt>1', '<Super><Shift>Home']
+move-to-workspace-2=['<Super><Alt>2']
+move-to-workspace-3=['<Super><Alt>3']
+move-to-workspace-4=['<Super><Alt>4']
+move-to-workspace-5=['<Super><Alt>5']
+move-to-workspace-6=['<Super><Alt>6']
+move-to-workspace-7=['<Super><Alt>7']
+move-to-workspace-8=['<Super><Alt>8']
+move-to-workspace-9=['<Super><Alt>9']
+move-to-workspace-left=['<Super><Shift>Page_Up', '<Control><Shift><Alt>Left']
+move-to-workspace-right=['<Super><Shift>Page_Down', '<Control><Shift><Alt>Right']
+move-to-monitor-left=['<Super><Alt>Left']
+move-to-monitor-right=['<Super><Alt>Right']
+move-to-monitor-up=@as []
+move-to-monitor-down=@as []
+toggle-maximized=['<Super><Alt>Up', '<Alt>F10']
+maximize=@as []
+unmaximize=['<Alt>F5']
+minimize=['<Super><Alt>Down']
+show-desktop=['<Super>d']
+
+[org/gnome/mutter/keybindings]
+toggle-tiled-left=['<Super><Alt><Shift>Left']
+toggle-tiled-right=['<Super><Alt><Shift>Right']
+
+[org/gnome/shell/keybindings]
+# GNOME's own app number keys (Super+1..9, Ctrl+Super+1..9) are off: the workspaces use Super+#, and the dock apps
+# use Super+Ctrl+# through Dash to Dock (bound by tind-ice, see the dash-to-dock group below).
+switch-to-application-1=@as []
+switch-to-application-2=@as []
+switch-to-application-3=@as []
+switch-to-application-4=@as []
+switch-to-application-5=@as []
+switch-to-application-6=@as []
+switch-to-application-7=@as []
+switch-to-application-8=@as []
+switch-to-application-9=@as []
+open-new-window-application-1=@as []
+open-new-window-application-2=@as []
+open-new-window-application-3=@as []
+open-new-window-application-4=@as []
+open-new-window-application-5=@as []
+open-new-window-application-6=@as []
+open-new-window-application-7=@as []
+open-new-window-application-8=@as []
+open-new-window-application-9=@as []
+toggle-overview=['<Super>Up']
+shift-overview-up=@as []
+shift-overview-down=@as []
+toggle-quick-settings=['<Super>q']
+toggle-message-tray=['<Super>n']
+focus-active-notification=@as []
+show-screen-recording-ui=['<Ctrl><Shift><Alt>R', '<Super>r']
+
+# Alt+Tab shows only the apps of the current workspace (Settings > Multitasking > App Switching), and so does the
+# dock, which follows this setting (pinned apps always show). Otherwise the number keys would be chaos.
+[org/gnome/shell/app-switcher]
+current-workspace-only=true
+
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/']
+control-center=['<Super>s']
+calculator=['<Super>c']
+mic-mute=['<Super>m']
+magnifier=['<Alt><Super>m']
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal]
 name='Terminal'
 command='gnome-terminal'
 binding='<Primary><Alt>t'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super]
+name='Terminal'
+command='gnome-terminal'
+binding='<Super>t'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser]
+name='Browser'
+command='firefox-esr --new-window'
+binding='<Super>b'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private]
+name='Private browser window'
+command='firefox-esr --private-window'
+binding='<Super><Control>b'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor]
+name='Writer or Text Editor'
+command='/usr/lib/tind/open-editor'
+binding='<Super>e'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files]
+name='Files'
+command='nautilus --new-window'
+binding='<Super>f'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam]
+name='Steam'
+command='/usr/games/steam'
+binding='<Super>g'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help]
+name='Hotkeys'
+command='tind-hotkeys'
+binding='<Super>h'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software]
+name='Software'
+command='gnome-software'
+binding='<Super>u'
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor]
+name='System Monitor'
+command='gnome-system-monitor'
+binding='<Primary><Shift>Escape'
 
 [org/gnome/desktop/input-sources]
 sources=[('xkb', 'no')]
@@ -72,14 +209,48 @@ always-center-icons=false
 show-favorites=true
 show-running=true
 show-windows-preview=true
-isolate-workspaces=false
+# isolate-workspaces is not set here on purpose: Dash to Dock then follows GNOME's App Switching setting (above)
 isolate-monitors=false
 workspace-agnostic-urgent-windows=true
 scroll-to-focused-application=true
 show-show-apps-button=true
 show-apps-at-top=false
 show-apps-always-in-the-edge=true
+# Dash to Dock's own key handling stays off; tind-ice binds the app keys below itself (Super+Ctrl+1..9,0), so that a
+# press acts like a plain click on the icon (Dash to Dock would pass the held Ctrl on and open a new window).
+# The other two key sets and its Super+Q badge key are emptied, so turning Dash to Dock's hotkeys on clashes with nothing.
 hot-keys=false
+app-hotkey-1=['<Super><Control>1']
+app-hotkey-2=['<Super><Control>2']
+app-hotkey-3=['<Super><Control>3']
+app-hotkey-4=['<Super><Control>4']
+app-hotkey-5=['<Super><Control>5']
+app-hotkey-6=['<Super><Control>6']
+app-hotkey-7=['<Super><Control>7']
+app-hotkey-8=['<Super><Control>8']
+app-hotkey-9=['<Super><Control>9']
+app-hotkey-10=['<Super><Control>0']
+app-shift-hotkey-1=@as []
+app-shift-hotkey-2=@as []
+app-shift-hotkey-3=@as []
+app-shift-hotkey-4=@as []
+app-shift-hotkey-5=@as []
+app-shift-hotkey-6=@as []
+app-shift-hotkey-7=@as []
+app-shift-hotkey-8=@as []
+app-shift-hotkey-9=@as []
+app-shift-hotkey-10=@as []
+app-ctrl-hotkey-1=@as []
+app-ctrl-hotkey-2=@as []
+app-ctrl-hotkey-3=@as []
+app-ctrl-hotkey-4=@as []
+app-ctrl-hotkey-5=@as []
+app-ctrl-hotkey-6=@as []
+app-ctrl-hotkey-7=@as []
+app-ctrl-hotkey-8=@as []
+app-ctrl-hotkey-9=@as []
+app-ctrl-hotkey-10=@as []
+shortcut=@as []
 click-action='previews'
 scroll-action='cycle-windows'
 custom-theme-shrink=true

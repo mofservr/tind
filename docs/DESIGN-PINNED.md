@@ -12,6 +12,7 @@ The UI should draw no attention to itself: it is there, looks pleasant, and help
   - Dark: `#121314`, text `#F2F2F2`
   - Light: `#DFDBD8`, text `#2E2A27`
 - Dock on the left, fixed and always visible. Dock and top bar form one square frame; menus, Quick Settings and cards are rounded with a soft window shadow.
+- Top bar shows the four workspaces as numbers (active one bold in the accent colour, empty ones dimmed) instead of dots. Dock icons carry a small permanent number to the left and the running dots sit under the icon.
 - Dock "Show apps" button: the plain Tind peak in the theme colour, no tile, no glow.
 - Login screen: flat dark background and the Tind logo.
 - Icons: Papirus. UI font: Nunito Sans.
