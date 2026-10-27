@@ -96,6 +96,7 @@ export default class TindIce extends Extension {
         this._accentText = this._dark() ? this._lighten(ACCENT_HEX[slot], 0.35) : this._darken(ACCENT_HEX[slot], 0.25);
         global._tindAccentText = this._accentText;
         this._updateWorkspaceNumbers();
+        this._styleDocks?.(); // dock numbers follow the theme's text colour
     }
 
     // ---- numbered workspaces in the top bar ---------------------------------------------------------
@@ -289,8 +290,10 @@ export default class TindIce extends Extension {
         for (const icon of dash.getAppIcons()) {
             try {
                 if (icon._numberOverlayOrder > -1) {
+                    // the colour is set here too: Dash to Dock's own .number-overlay rule is more specific than ours
+                    const text = this._settings && !this._dark() ? '#2E2A27' : '#F2F2F2';
                     icon._numberOverlayLabel.set_style('font-size: 9px; font-weight: normal; width: 12px; height: 12px; ' +
-                        'border-radius: 0; background-color: transparent; text-align: center;');
+                        `border-radius: 0; background-color: transparent; text-align: center; color: ${text};`);
                     icon._numberOverlayLabel.add_style_class_name('tind-dock-num');
                     icon._numberOverlayBin.set({ x_align: Clutter.ActorAlign.START, y_align: Clutter.ActorAlign.CENTER });
                     icon._numberOverlayBin.show();
