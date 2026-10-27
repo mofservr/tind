@@ -1,5 +1,6 @@
 DAILY failed-units ok
 DAILY silent-updates-configured ok
+DAILY hotkeys-unique ok
 DAILY apt-update-quiet ok
 DAILY tind-report-clean ok
 DAILY firmware-installed ok
