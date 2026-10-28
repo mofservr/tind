@@ -2,34 +2,34 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 5792
--rw-r--r-- 1 runner runner   7006 Oct 27 21:58 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Oct 27 21:59 secboot-s02.png
--rw-r--r-- 1 runner runner  41955 Oct 27 21:59 secboot-s03.png
--rw-r--r-- 1 runner runner 846600 Oct 27 22:00 secboot-s04.png
--rw-r--r-- 1 runner runner 847431 Oct 27 22:00 secboot-s05.png
--rw-r--r-- 1 runner runner 826596 Oct 27 22:01 secboot-s06.png
--rw-r--r-- 1 runner runner 826271 Oct 27 22:01 secboot-s07.png
--rw-r--r-- 1 runner runner 826220 Oct 27 22:02 secboot-s08.png
--rw-r--r-- 1 runner runner 825637 Oct 27 22:02 secboot-s09.png
--rw-r--r-- 1 runner runner 825633 Oct 27 22:03 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Oct 27 21:58 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Oct 27 21:58 secureboot-inspect.log
--rw-r----- 1 runner runner  31801 Oct 27 22:01 serial-secboot.log
-Oct 27 22:59:25 tind gnome-shell[1714]: pci id for fd 13: 1234:1111, driver (null)
-Oct 27 22:59:25 tind gnome-shell[1714]: kmsro: driver missing
-Oct 27 22:59:26 tind gnome-shell[1714]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 27 22:59:26 tind gnome-shell[1714]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 27 22:59:26 tind gnome-shell[1714]: Created gbm renderer for '/dev/dri/card0'
-Oct 27 22:59:26 tind gnome-shell[1714]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 27 22:59:26 tind gnome-shell[1714]: Using public X11 display :0, (using :1 for managed services)
-Oct 27 22:59:26 tind gnome-shell[1714]: Using Wayland display name 'wayland-0'
-Oct 27 22:59:26 tind gnome-shell[1714]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 27 22:59:27 tind gnome-shell[1714]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 27 22:59:29 tind gnome-shell[1714]: Will monitor session 1
-Oct 27 22:59:29 tind gnome-shell[1714]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 27 22:59:34 tind gnome-shell[1714]: GNOME Shell started at Tue Oct 27 2026 22:59:28 GMT+0100 (Central European Standard Time)
-Oct 27 22:59:34 tind gnome-shell[1714]: Registering session with GDM
+total 6580
+-rw-r--r-- 1 runner runner   7006 Oct 28 16:33 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Oct 28 16:34 secboot-s02.png
+-rw-r--r-- 1 runner runner 847005 Oct 28 16:34 secboot-s03.png
+-rw-r--r-- 1 runner runner 847044 Oct 28 16:35 secboot-s04.png
+-rw-r--r-- 1 runner runner 847917 Oct 28 16:35 secboot-s05.png
+-rw-r--r-- 1 runner runner 827028 Oct 28 16:36 secboot-s06.png
+-rw-r--r-- 1 runner runner 826848 Oct 28 16:36 secboot-s07.png
+-rw-r--r-- 1 runner runner 826602 Oct 28 16:37 secboot-s08.png
+-rw-r--r-- 1 runner runner 825770 Oct 28 16:37 secboot-s09.png
+-rw-r--r-- 1 runner runner 825778 Oct 28 16:38 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Oct 28 16:33 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Oct 28 16:33 secureboot-inspect.log
+-rw-r----- 1 runner runner  31491 Oct 28 16:36 serial-secboot.log
+Oct 28 17:34:34 tind gnome-shell[1725]: pci id for fd 13: 1234:1111, driver (null)
+Oct 28 17:34:34 tind gnome-shell[1725]: kmsro: driver missing
+Oct 28 17:34:34 tind gnome-shell[1725]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 28 17:34:34 tind gnome-shell[1725]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 28 17:34:34 tind gnome-shell[1725]: Created gbm renderer for '/dev/dri/card0'
+Oct 28 17:34:34 tind gnome-shell[1725]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 28 17:34:34 tind gnome-shell[1725]: Using public X11 display :0, (using :1 for managed services)
+Oct 28 17:34:34 tind gnome-shell[1725]: Using Wayland display name 'wayland-0'
+Oct 28 17:34:34 tind gnome-shell[1725]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 28 17:34:35 tind gnome-shell[1725]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 28 17:34:36 tind gnome-shell[1725]: Will monitor session 1
+Oct 28 17:34:37 tind gnome-shell[1725]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 28 17:34:42 tind gnome-shell[1725]: GNOME Shell started at Wed Oct 28 2026 17:34:36 GMT+0100 (Central European Standard Time)
+Oct 28 17:34:42 tind gnome-shell[1725]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
