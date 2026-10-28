@@ -1,3 +1,17 @@
+runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-61/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-63/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-65/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-67/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-70/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-71/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-75/x86_64/1.4
+runtime/org.freedesktop.Platform.GL32.nvidia-550-40-76/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-79/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-80/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-81/x86_64/1.4
@@ -174,37 +188,23 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/microsoft.gpg
 vm.max_map_count = 2147483642
 == AI box: the packages install in a plain trixie (users, folders, units), without the window
-AI packages install: FAILED
-Unpacking tind-ai-users (0.1.0~test1) ...
-Selecting previously unselected package tind-ai-local.
-Preparing to unpack .../tind-ai-local_0.1.0~test1_all.deb ...
-Unpacking tind-ai-local (0.1.0~test1) ...
-Selecting previously unselected package tind-ai-remote.
-Preparing to unpack .../tind-ai-remote_0.1.0~test1_all.deb ...
-Unpacking tind-ai-remote (0.1.0~test1) ...
-Setting up nftables (1.1.3-1) ...
-Setting up tind-ai-users (0.1.0~test1) ...
-/usr/lib/sysusers.d/tind-ai.conf:2: 'Tind AI, local: reads and redacts, no network' is not a valid GECOS field.
-/usr/lib/sysusers.d/tind-ai.conf:3: 'Tind AI, remote: sends briefings, reads nothing else' is not a valid GECOS field.
-dpkg: error processing package tind-ai-users (--configure):
- installed tind-ai-users package post-installation script subprocess returned error exit status 1
-dpkg: dependency problems prevent configuration of tind-ai-remote:
- tind-ai-remote depends on tind-ai-users; however:
-  Package tind-ai-users is not configured yet.
-
-dpkg: error processing package tind-ai-remote (--configure):
- dependency problems - leaving unconfigured
-dpkg: dependency problems prevent configuration of tind-ai-local:
- tind-ai-local depends on tind-ai-users; however:
-  Package tind-ai-users is not configured yet.
-
-dpkg: error processing package tind-ai-local (--configure):
- dependency problems - leaving unconfigured
-Errors were encountered while processing:
- tind-ai-users
- tind-ai-remote
- tind-ai-local
-E: Sub-process /usr/bin/dpkg returned an error code (1)
+uid=989(tind-ai-local) gid=989(tind-ai-local) groups=989(tind-ai-local)
+uid=988(tind-ai-remote) gid=988(tind-ai-remote) groups=988(tind-ai-remote)
+755 root:root /var/lib/tind-ai
+711 tind-ai-local:tind-ai-local /var/lib/tind-ai/briefing
+700 tind-ai-local:tind-ai-local /var/lib/tind-ai/local
+711 tind-ai-remote:tind-ai-remote /var/lib/tind-ai/outbox
+755 root:root /etc/tind-ai
+700 root:root /etc/tind-ai/keys
+tind-ai-local.socket
+tind-ai-remote@anthropic.socket
+tind-ai-remote@custom.socket
+tind-ai-remote@ionos.socket
+tind-ai-remote@mistral.socket
+tind-ai-remote@openai.socket
+tind-ai-remote@scaleway.socket
+netlink: Error: cache initialization failed: Operation not permitted
+firewall table: not checkable in this container (checked in the booted ISO)
 == verify-on-debian (informational)
 == release
 Debian GNU/Linux 13 (trixie)
@@ -397,4 +397,4 @@ ok       thunderbird-l10n-nn-no
 ok       util-linux-extra
 ok       vulkan-tools
 ok       xdg-desktop-portal-gnome
-== exit status: 1
+== exit status: 0

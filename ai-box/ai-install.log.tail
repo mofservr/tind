@@ -10,7 +10,7 @@ The following NEW packages will be installed:
 0 upgraded, 4 newly installed, 0 to remove and 1 not upgraded.
 Need to get 75.9 kB/96.2 kB of archives.
 After this operation, 402 kB of additional disk space will be used.
-Get:1 /__w/tind/tind/os/dist/tind-ai-users_0.1.0~test1_all.deb tind-ai-users all 0.1.0~test1 [6452 B]
+Get:1 /__w/tind/tind/os/dist/tind-ai-users_0.1.0~test2_all.deb tind-ai-users all 0.1.0~test2 [6448 B]
 Get:2 /__w/tind/tind/os/dist/tind-ai-local_0.1.0~test1_all.deb tind-ai-local all 0.1.0~test1 [6992 B]
 Get:3 /__w/tind/tind/os/dist/tind-ai-remote_0.1.0~test1_all.deb tind-ai-remote all 0.1.0~test1 [6940 B]
 Get:4 http://deb.debian.org/debian trixie/main amd64 nftables amd64 1.1.3-1 [75.9 kB]
@@ -23,14 +23,14 @@ debconf: falling back to frontend: Teletype
 debconf: unable to initialize frontend: Teletype
 debconf: (This frontend requires a controlling tty.)
 debconf: falling back to frontend: Noninteractive
-Fetched 75.9 kB in 0s (1612 kB/s)
+Fetched 75.9 kB in 0s (1489 kB/s)
 Selecting previously unselected package nftables.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 78243 files and directories currently installed.)
 Preparing to unpack .../nftables_1.1.3-1_amd64.deb ...
 Unpacking nftables (1.1.3-1) ...
 Selecting previously unselected package tind-ai-users.
-Preparing to unpack .../tind-ai-users_0.1.0~test1_all.deb ...
-Unpacking tind-ai-users (0.1.0~test1) ...
+Preparing to unpack .../tind-ai-users_0.1.0~test2_all.deb ...
+Unpacking tind-ai-users (0.1.0~test2) ...
 Selecting previously unselected package tind-ai-local.
 Preparing to unpack .../tind-ai-local_0.1.0~test1_all.deb ...
 Unpacking tind-ai-local (0.1.0~test1) ...
@@ -38,25 +38,10 @@ Selecting previously unselected package tind-ai-remote.
 Preparing to unpack .../tind-ai-remote_0.1.0~test1_all.deb ...
 Unpacking tind-ai-remote (0.1.0~test1) ...
 Setting up nftables (1.1.3-1) ...
-Setting up tind-ai-users (0.1.0~test1) ...
-/usr/lib/sysusers.d/tind-ai.conf:2: 'Tind AI, local: reads and redacts, no network' is not a valid GECOS field.
-/usr/lib/sysusers.d/tind-ai.conf:3: 'Tind AI, remote: sends briefings, reads nothing else' is not a valid GECOS field.
-dpkg: error processing package tind-ai-users (--configure):
- installed tind-ai-users package post-installation script subprocess returned error exit status 1
-dpkg: dependency problems prevent configuration of tind-ai-remote:
- tind-ai-remote depends on tind-ai-users; however:
-  Package tind-ai-users is not configured yet.
-
-dpkg: error processing package tind-ai-remote (--configure):
- dependency problems - leaving unconfigured
-dpkg: dependency problems prevent configuration of tind-ai-local:
- tind-ai-local depends on tind-ai-users; however:
-  Package tind-ai-users is not configured yet.
-
-dpkg: error processing package tind-ai-local (--configure):
- dependency problems - leaving unconfigured
-Errors were encountered while processing:
- tind-ai-users
- tind-ai-remote
- tind-ai-local
-E: Sub-process /usr/bin/dpkg returned an error code (1)
+Setting up tind-ai-users (0.1.0~test2) ...
+Creating group 'tind-ai-local' with GID 989.
+Creating user 'tind-ai-local' (Tind AI local service (reads and redacts, no network)) with UID 989 and GID 989.
+Creating group 'tind-ai-remote' with GID 988.
+Creating user 'tind-ai-remote' (Tind AI remote service (sends approved briefings only)) with UID 988 and GID 988.
+Setting up tind-ai-remote (0.1.0~test1) ...
+Setting up tind-ai-local (0.1.0~test1) ...
