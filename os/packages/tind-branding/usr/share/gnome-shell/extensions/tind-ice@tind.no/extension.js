@@ -14,6 +14,8 @@
 // icons (Dash to Dock's own hotkeys stay off, so we register the keys ourselves and call the dock's own
 // activate from an idle callback, where the held Ctrl is no longer in the current event, so it focuses instead of
 // opening a new window). (3) Small permanent numbers left of each dock icon, and the running dots under the icon.
+// 2026-10-28: the running dots take the accent shade of the active workspace number (lightened on dark, darkened on
+// light); before, they fell back to white because the stylesheet targeted a dot class GNOME 48 no longer uses.
 // All of (2) and (3) reach into Dash to Dock's private code, so everything is in try/catch and logs "tind-ice:".
 //
 // 2026-10-19: the GTK accent file is now written for GTK 3 as well (~/.config/gtk-3.0), and the shell
@@ -300,7 +302,12 @@ export default class TindIce extends Extension {
                 } else {
                     icon._numberOverlayBin.hide();
                 }
-                // the running dots: Dash to Dock draws them for a bottom dock and rotates them 90 degrees for a left dock
+                // the running dots take their colour from GNOME's own (hidden) dot; give it the same accent shade as
+                // the active workspace number. The stylesheet's .app-well-app-running-dot rules never matched: GNOME 48
+                // calls the dot .app-grid-running-dot.
+                if (icon._dot && this._accentText)
+                    icon._dot.set_style(`background-color: ${this._accentText};`);
+                // Dash to Dock draws the dots for a bottom dock and rotates them 90 degrees for a left dock
                 for (const ind of icon._indicator?._indicators ?? []) {
                     const area = ind._area;
                     if (!area)
@@ -310,6 +317,7 @@ export default class TindIce extends Extension {
                     area.rotation_angle_z = 0;
                     icon._tindAreas = icon._tindAreas ?? new Set();
                     icon._tindAreas.add(area);
+                    area.queue_repaint();
                 }
             } catch (e) {
                 console.warn(`tind-ice: dock icon style: ${e.message}`);
@@ -331,6 +339,7 @@ export default class TindIce extends Extension {
                     for (const icon of dash.getAppIcons()) {
                         icon._numberOverlayBin?.hide();
                         icon._numberOverlayLabel?.remove_style_class_name('tind-dock-num');
+                        icon._dot?.set_style(null);
                         for (const area of icon._tindAreas ?? [])
                             if (area._tindRot !== undefined)
                                 area.rotation_angle_z = area._tindRot;
