@@ -75,7 +75,7 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/24.08
 runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
 == flatpak runtimes of game apps
 -- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
--- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/49 
+-- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/51 
 == Flatpak refs used by the app-box scripts exist on Flathub
 ok       com.discordapp.Discord
 ok       net.davidotek.pupgui2
@@ -213,7 +213,7 @@ vm.max_map_count = 2147483642
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   71G   74G  49% /__w
+/dev/root       145G   71G   74G  50% /__w
 
 == KVM
 not available (VM tests will be slow)
