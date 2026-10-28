@@ -86,6 +86,10 @@ check('6.12.113' in out and '21:15:03' in out and '127.0.0.1:8080' in out,
       'redact: versions, clock times and loopback stay readable')
 check('api_key=[token-1]' in out and 'Bearer [secret-' in out and 'password="[secret-' in out,
       'redact: secrets keep their key, lose their value, and are not replaced twice')
+r3 = Redactor(extra_names=['tind'])
+kept = r3.text('tind-ai-local.service started by user tind on Debian Live')
+check(kept == 'tind-ai-local.service started by user tind on Debian Live',
+      'redact: system words (the live user "tind", "user", "Debian Live") are not replaced: %s' % kept)
 r2 = Redactor()
 r2.load(r.state())
 check(r2.text('again ' + PLANTED['ip']) == 'again [ip-1]', 'redact: numbers stay the same across a conversation')

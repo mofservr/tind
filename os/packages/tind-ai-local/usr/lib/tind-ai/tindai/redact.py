@@ -36,6 +36,10 @@ LONG_HEX = re.compile(r'\b[0-9a-fA-F]{40,}\b')
 LONG_B64 = re.compile(r'(?<![A-Za-z0-9+/=])(?=[A-Za-z0-9+/]*[0-9])(?=[A-Za-z0-9+/]*[a-z])(?=[A-Za-z0-9+/]*[A-Z])[A-Za-z0-9+/]{40,}={0,2}')
 
 KEEP_IPS = {'127.0.0.1', '0.0.0.0', '255.255.255.255', '127.0.0.53'}
+# words that name the system, not a person: a login or real-name part from this list is never replaced (the live
+# session's user is "tind", "Debian Live user"; replacing those would blank every tind-* package and "user" in a log)
+STOP = {'tind', 'debian', 'live', 'user', 'users', 'root', 'admin', 'guest', 'steam', 'gnome', 'linux', 'test',
+        'home', 'default', 'system', 'local', 'desktop', 'laptop', 'computer', 'owner'}
 
 
 class Redactor:
@@ -50,13 +54,14 @@ class Redactor:
         words = {}
         for p in pwd.getpwall():
             if 1000 <= p.pw_uid < 60000 and not p.pw_name.startswith('tind-ai-'):
-                words[p.pw_name] = 'user'
+                if p.pw_name.lower() not in STOP:
+                    words[p.pw_name] = 'user'
                 real = p.pw_gecos.split(',')[0].strip()
-                if len(real) >= 3:
+                parts = [w for w in real.split() if len(w) >= 3 and w.lower() not in STOP]
+                if parts and len(real) >= 3:
                     words[real] = 'name'
-                    for part in real.split():
-                        if len(part) >= 3:
-                            words.setdefault(part, 'name')
+                    for part in parts:
+                        words.setdefault(part, 'name')
         for h in {socket.gethostname(), socket.gethostname().split('.')[0]}:
             if h and h not in ('localhost', 'debian', 'tind'):
                 words[h] = 'host'
@@ -78,7 +83,7 @@ class Redactor:
         except OSError:
             pass
         for w in extra:
-            if w and len(w) >= 3:
+            if w and len(w) >= 3 and w.lower() not in STOP:
                 words[w] = 'name'
         return words
 

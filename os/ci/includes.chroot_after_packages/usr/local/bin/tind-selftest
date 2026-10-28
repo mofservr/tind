@@ -292,7 +292,7 @@ echo "$out" | grep -q '"brief_ok": true' && ai brief ok || ai brief "FAIL $(echo
 echo "$out" | grep -q '"send_ok": true' && echo "$out" | grep -q 'Fake answer' && ai send-and-answer ok \
     || ai send-and-answer "FAIL $(echo "$out" | tail -1)"
 grep -q 'planted for the AI test' /tmp/tind-ci-brief.txt && ai journal-in-briefing ok || ai journal-in-briefing "FAIL the planted journal line is not in the briefing"
-sed -n '/^## System journal/,/^```$/p' /tmp/tind-ci-brief.txt | head -8
+grep -A7 '^## System journal' /tmp/tind-ci-brief.txt | cut -c1-160
 leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
     grep -q "$v" /tmp/tind-ci-brief.txt /run/tind-ci-fakeai-got.json 2>/dev/null && leak="$leak $v"
 done
