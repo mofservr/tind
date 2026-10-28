@@ -112,7 +112,7 @@ show-screen-recording-ui=['<Ctrl><Shift><Alt>R', '<Super>r']
 current-workspace-only=true
 
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai/']
 control-center=['<Super>s']
 calculator=['<Super>c']
 mic-mute=['<Super>m']
@@ -167,6 +167,12 @@ binding='<Super>u'
 name='System Monitor'
 command='gnome-system-monitor'
 binding='<Primary><Shift>Escape'
+
+# Super+K (KI): the AI assistant's Ask window; without the AI box installed it opens Tind Apps, where the box is
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai]
+name='AI assistant'
+command='sh -c "command -v tind-ai-ask >/dev/null && exec tind-ai-ask || exec tind-optins"'
+binding='<Super>k'
 
 [org/gnome/desktop/input-sources]
 sources=[('xkb', 'no')]

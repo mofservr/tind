@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=AI assistant
+Comment=Ask an AI service about this computer; you see exactly what is sent first
+Exec=tind-ai-ask
+Icon=dialog-question
+Terminal=false
+Categories=Utility;
+Keywords=AI;KI;assistant;help;chat;
+StartupNotify=true

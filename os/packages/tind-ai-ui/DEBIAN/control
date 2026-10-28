@@ -1,0 +1,12 @@
+Package: tind-ai-ui
+Version: 0.1.0~test1
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: utils
+Priority: optional
+Depends: tind-ai-users, tind-ai-local, tind-ai-remote, python3, python3-gi, gir1.2-gtk-4.0, gir1.2-adw-1, pkexec
+Installed-Size: 52
+Description: Tind AI box: the Ask window (Super+K)
+ Write a request, choose what to share (system log, Tind report, Steam and
+ Proton logs, files), see the exact redacted text and the provider before it is
+ sent, and read the answer. Nothing in an answer runs by itself.

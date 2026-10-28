@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+"""netallow PROVIDER: run as root before a provider's service starts (ExecStartPre=+). Resolves the provider's API
+host, writes the addresses to /run/tind-ai/hosts-PROVIDER.json and lets tind-ai-remote reach exactly those
+addresses and that port for the next hour (the allow4/allow6 sets of the tind_ai firewall table)."""
+import json
+import os
+import subprocess
+import sys
+
+sys.path.insert(0, '/usr/lib/tind-ai')
+import tindai  # noqa: E402
+from tindai import endpoint  # noqa: E402
+
+pid = sys.argv[1] if len(sys.argv) > 1 else ''
+p = tindai.provider(pid)
+if not p.get('base_url'):
+    sys.exit('netallow: %s has no endpoint set yet' % pid)
+scheme, host, port, path = endpoint.parse(p['base_url'])
+addrs = endpoint.resolve(host, port)
+v4 = [a for a in addrs if ':' not in a]
+v6 = [a for a in addrs if ':' in a]
+for setname, items in (('allow4', v4), ('allow6', v6)):
+    if items:
+        elems = ', '.join('%s . %d timeout 1h' % (a, port) for a in items)
+        subprocess.run(['nft', 'add element inet tind_ai %s { %s }' % (setname, elems)], check=True)
+os.makedirs(endpoint.RUN_DIR, exist_ok=True)
+tmp = endpoint.hosts_file(pid) + '.tmp'
+with open(tmp, 'w', encoding='utf-8') as f:
+    json.dump({'provider': pid, 'scheme': scheme, 'host': host, 'port': port, 'path': path, 'addresses': addrs}, f)
+os.chmod(tmp, 0o644)
+os.rename(tmp, endpoint.hosts_file(pid))
+print('netallow: %s -> %s port %d: %s' % (pid, host, port, ' '.join(addrs)))

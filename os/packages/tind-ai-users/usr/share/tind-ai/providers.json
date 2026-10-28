@@ -1,0 +1,44 @@
+{
+ "_comment": "Tind AI box providers. 'default' is preselected in the Ask window. 'eu' false marks a provider outside the EU/EEA in the window. Model ids can be changed per user in the window's settings; these are the suggestions.",
+ "default": "scaleway",
+ "providers": [
+  {"id": "scaleway", "name": "Scaleway", "country": "France", "eu": true,
+   "adapter": "openai", "base_url": "https://api.scaleway.ai/v1",
+   "key_help": "Scaleway console > Identity and Access Management > API keys",
+   "models": [
+     {"id": "gpt-oss-120b", "label": "gpt-oss-120b (everyday)", "use": "everyday"},
+     {"id": "mistral-medium-3.5-128b", "label": "Mistral Medium 3.5 (coding and troubleshooting)", "use": "coding"}
+   ]},
+  {"id": "ionos", "name": "IONOS", "country": "Germany", "eu": true,
+   "adapter": "openai", "base_url": "https://openai.inference.de-txl.ionos.com/v1",
+   "key_help": "IONOS Data Center Designer > Management > Token Manager",
+   "models": [
+     {"id": "openai/gpt-oss-120b", "label": "gpt-oss-120b (everyday)", "use": "everyday"},
+     {"id": "meta-llama/Llama-3.3-70B-Instruct", "label": "Llama 3.3 70B", "use": "everyday"}
+   ]},
+  {"id": "mistral", "name": "Mistral", "country": "France", "eu": true,
+   "adapter": "openai", "base_url": "https://api.mistral.ai/v1",
+   "key_help": "console.mistral.ai > API keys",
+   "models": [
+     {"id": "mistral-medium-latest", "label": "Mistral Medium (everyday and coding)", "use": "coding"},
+     {"id": "mistral-small-latest", "label": "Mistral Small (quick)", "use": "everyday"}
+   ]},
+  {"id": "anthropic", "name": "Anthropic (Claude)", "country": "USA", "eu": false,
+   "adapter": "anthropic", "base_url": "https://api.anthropic.com/v1",
+   "key_help": "console.anthropic.com > API keys (billed separately from a Claude subscription)",
+   "models": [
+     {"id": "claude-sonnet-5-5", "label": "Claude Sonnet 5.5", "use": "coding"},
+     {"id": "claude-haiku-5-5", "label": "Claude Haiku 5.5 (quick)", "use": "everyday"}
+   ]},
+  {"id": "openai", "name": "OpenAI (ChatGPT)", "country": "USA", "eu": false,
+   "adapter": "openai", "base_url": "https://api.openai.com/v1",
+   "key_help": "platform.openai.com > API keys (billed separately from a ChatGPT subscription)",
+   "models": [
+     {"id": "gpt-5.5", "label": "GPT-5.5", "use": "coding"}
+   ]},
+  {"id": "custom", "name": "Custom endpoint", "country": "you choose", "eu": null,
+   "adapter": "openai", "base_url": "",
+   "key_help": "Any OpenAI-compatible server. Plain http is only allowed to this computer (127.0.0.1), for a local model server.",
+   "models": []}
+ ]
+}

@@ -28,6 +28,11 @@ for at in 60 240; do
         sh -c "sleep $at; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus WAYLAND_DISPLAY=wayland-0 timeout 40 gnome-control-center background" \
         >/dev/null 2>&1 || true
 done
+# CI only: the boot job opens the AI assistant with Super+K at ~108 s (first use: the guide) and at ~288 s; accept the
+# guide in between, so the second screenshot shows the Ask page
+systemd-run --unit=tind-ci-ai-accept --collect \
+    sh -c "sleep 150; runuser -u tind -- sh -c 'mkdir -p /home/tind/.config/tind-ai && touch /home/tind/.config/tind-ai/accepted'" \
+    >/dev/null 2>&1 || true
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
@@ -211,6 +216,92 @@ sec "largest installed packages"; dpkg-query -Wf '${Installed-Size}\t${Package}\
 echo "installed packages: $(dpkg-query -f '.\n' -W | wc -l)"
 sec "journal errors (this boot)"; journalctl -p err -b --no-pager 2>&1 | tail -40
 sec gnome-shell journal; journalctl -b --no-pager _COMM=gnome-shell 2>&1 | grep -iE 'error|tind|stylesheet|extension' | tail -25
+# AI box (only when it is installed): the walls, then one request end to end against a fake provider on this computer.
+# One "AI <check> ok|FAIL <why>" line per check.
+if dpkg-query -W -f='${db:Status-Abbrev}' tind-ai-users 2>/dev/null | grep -q '^ii'; then
+sec "ai box"
+ai() { echo "AI $1 $2"; }
+probe() {   # probe USER ADDRESS PORT -> "connected", or the errno name the kernel gave back
+    runuser -u "$1" -- python3 -c 'import errno, socket, sys
+s = socket.socket(socket.AF_INET6 if ":" in sys.argv[1] else socket.AF_INET); s.settimeout(6)
+try:
+    s.connect((sys.argv[1], int(sys.argv[2]))); print("connected")
+except OSError as e:
+    print(errno.errorcode.get(e.errno, str(e)) if e.errno else type(e).__name__)' "$2" "$3" 2>&1 | tail -1
+}
+denied() {  # denied USER CMD... -> ok when the command fails with "Permission denied"
+    local u="$1"; shift
+    if out="$(runuser -u "$u" -- "$@" 2>&1)"; then echo "FAIL allowed: $(echo "$out" | head -1)"
+    elif echo "$out" | grep -q 'Permission denied'; then echo ok
+    else echo "FAIL $(echo "$out" | head -1)"; fi
+}
+id tind-ai-local >/dev/null 2>&1 && id tind-ai-remote >/dev/null 2>&1 && ai users ok || ai users FAIL
+nft list table inet tind_ai >/dev/null 2>&1 && ai firewall-loaded ok \
+    || ai firewall-loaded "FAIL $(systemctl status tind-ai-firewall --no-pager 2>&1 | tail -3 | tr '\n' '|')"
+r="$(probe tind-ai-local 1.1.1.1 443)"; [ "$r" = EPERM ] && ai local-no-network ok || ai local-no-network "FAIL $r"
+r="$(probe tind-ai-local 127.0.0.1 22)"; [ "$r" = EPERM ] && ai local-no-loopback ok || ai local-no-loopback "FAIL $r"
+r="$(probe tind-ai-remote 1.1.1.1 443)"; [ "$r" = EPERM ] && ai remote-closed-by-default ok || ai remote-closed-by-default "FAIL $r"
+for u in tind-ai-local tind-ai-remote; do
+    p="$(systemctl show "$( [ $u = tind-ai-local ] && echo tind-ai-local.service || echo tind-ai-remote@custom.service)" \
+         -p User -p ProtectHome -p ProtectSystem -p NoNewPrivileges -p PrivateNetwork 2>&1 | tr '\n' ' ')"
+    echo "$p" | grep -q "User=$u" && echo "$p" | grep -q 'ProtectHome=yes' && echo "$p" | grep -q 'ProtectSystem=strict' \
+        && echo "$p" | grep -q 'NoNewPrivileges=yes' && ai "$u-sandbox" ok || ai "$u-sandbox" "FAIL $p"
+done
+systemctl show tind-ai-local.service -p PrivateNetwork | grep -q yes && ai local-private-network ok || ai local-private-network FAIL
+echo "socket units: $(systemctl is-active tind-ai-local.socket tind-ai-remote@scaleway.socket tind-ai-remote@custom.socket | tr '\n' ' ')"
+
+# a fake OpenAI-compatible provider on 127.0.0.1:8099, set up as the custom endpoint; it keeps what it received
+cat > /run/tind-ci-fakeai.py <<'PY'
+import http.server, json
+class H(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        body = self.rfile.read(int(self.headers['Content-Length']))
+        open('/run/tind-ci-fakeai-got.json', 'wb').write(body)
+        data = json.dumps({'choices': [{'message': {'content': 'Fake answer from the CI provider.\n```bash\necho hello\n```'}}],
+                           'usage': {'total_tokens': 1}}).encode()
+        self.send_response(200); self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(data))); self.end_headers(); self.wfile.write(data)
+    def log_message(self, *a): pass
+http.server.HTTPServer(('127.0.0.1', 8099), H).serve_forever()
+PY
+systemd-run --unit=tind-ci-fakeai --collect python3 /run/tind-ci-fakeai.py >/dev/null 2>&1 || true
+sleep 2
+echo "" | /usr/lib/tind-ai/setkey custom http://127.0.0.1:8099/v1 ci-model 2>&1 | tail -1
+logger -p user.warning -t tind-ci "planted for the AI test: password=hunter22ci token ghp_cicicicicicicicicicicicicicicicicici99 from 10.11.12.13 by ola.ci@example.no"
+sleep 1
+cat > /run/tind-ci-aiclient.py <<'PY'
+import json, sys
+sys.path.insert(0, '/usr/lib/tind-ai')
+import tindai
+b = tindai.call(tindai.LOCAL_SOCKET, {'op': 'brief', 'request': 'CI test: why does Steam not start?', 'provider': 'custom',
+                                      'model': 'ci-model', 'journal': True, 'conversation': 'ci0001'})
+print(json.dumps({'brief_ok': b.get('ok'), 'error': b.get('error'), 'id': b.get('id'), 'redactions': b.get('redactions')}))
+open('/tmp/tind-ci-brief.txt', 'w').write(b.get('text', ''))
+if b.get('ok'):
+    r = tindai.call(tindai.remote_socket('custom'), {'op': 'send', 'id': b['id'], 'model': 'ci-model'})
+    print(json.dumps({'send_ok': r.get('ok'), 'error': r.get('error'), 'answer': (r.get('answer') or '')[:60]}))
+PY
+out="$(asuser python3 /run/tind-ci-aiclient.py 2>&1)"; echo "$out"
+echo "$out" | grep -q '"brief_ok": true' && ai brief ok || ai brief "FAIL $(echo "$out" | tail -2 | tr '\n' '|')"
+echo "$out" | grep -q '"send_ok": true' && echo "$out" | grep -q 'Fake answer' && ai send-and-answer ok \
+    || ai send-and-answer "FAIL $(echo "$out" | tail -1)"
+grep -q 'planted for the AI test' /tmp/tind-ci-brief.txt && ai journal-in-briefing ok || ai journal-in-briefing "FAIL the planted journal line is not in the briefing"
+leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
+    grep -q "$v" /tmp/tind-ci-brief.txt /run/tind-ci-fakeai-got.json 2>/dev/null && leak="$leak $v"
+done
+[ -s /run/tind-ci-fakeai-got.json ] && [ -z "$leak" ] && ai nothing-planted-left-the-computer ok \
+    || ai nothing-planted-left-the-computer "FAIL ${leak:-the fake provider received nothing}"
+r="$(probe tind-ai-remote 127.0.0.1 8098)"; [ "$r" = EPERM ] && ai remote-only-its-host-and-port ok || ai remote-only-its-host-and-port "FAIL $r"
+ai local-cannot-read-outbox "$(denied tind-ai-local ls /var/lib/tind-ai/outbox/$UIDN)"
+ai remote-cannot-read-local-state "$(denied tind-ai-remote ls /var/lib/tind-ai/local)"
+ai remote-cannot-read-keys "$(denied tind-ai-remote cat /etc/tind-ai/keys/custom)"
+ai ai-users-cannot-read-home "$(denied tind-ai-local ls /home/tind/.config)"
+f="$(ls /var/lib/tind-ai/outbox/$UIDN/*.json 2>/dev/null | head -1)"
+[ -n "$f" ] && asuser cat "$f" >/dev/null 2>&1 && ai human-reads-own-answer ok || ai human-reads-own-answer "FAIL ${f:-no answer saved}"
+stat -c '%a %U %n' /var/lib/tind-ai/* /var/lib/tind-ai/*/* 2>&1 | head -12
+asuser tind-ai-ask --check 2>&1 | head -10
+systemctl stop tind-ci-fakeai >/dev/null 2>&1 || true
+fi
 # daily-machine checks (roadmap d1): one DAILY line per check, "ok" or "FAIL <why>". The installer test prints them
 # as warnings for now; they become failures once a few runs show the baseline.
 sec "daily machine checks"

@@ -1,0 +1,14 @@
+Package: tind-ai-remote
+Version: 0.1.0~test1
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: admin
+Priority: optional
+Depends: tind-ai-users, python3, systemd, nftables, ca-certificates, pkexec
+Installed-Size: 72
+Description: Tind AI box: the remote service (sends approved briefings to one provider)
+ One service per provider (Scaleway, IONOS, Mistral, Anthropic, OpenAI or a
+ custom OpenAI-compatible endpoint), each with only its own API key. Runs as
+ tind-ai-remote: it can read the briefings, write the answers and reach only the
+ selected provider's API host. Two adapters: OpenAI-compatible and the native
+ Claude API.

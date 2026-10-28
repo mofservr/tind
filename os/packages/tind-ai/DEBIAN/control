@@ -1,0 +1,13 @@
+Package: tind-ai
+Version: 0.1.0~test1
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: metapackages
+Priority: optional
+Depends: tind-ai-users, tind-ai-local, tind-ai-remote, tind-ai-ui
+Installed-Size: 24
+Description: Tind AI box (installed from the AI assistant box in Tind Apps)
+ An AI assistant built into the desktop, behind walls: a local service that
+ reads and redacts but has no network, a remote service per provider that sends
+ only what the human approved and reads nothing else, and the Ask window on
+ Super+K. European providers are the default; Claude and ChatGPT are options.

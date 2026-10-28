@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+PROVIDERS="scaleway ionos mistral anthropic openai custom"
+if [ "$1" = configure ]; then
+    install -d -m 0755 /etc/tind-ai/ready
+    systemctl daemon-reload >/dev/null 2>&1 || true
+    for p in $PROVIDERS; do systemctl enable "tind-ai-remote@$p.socket" >/dev/null 2>&1 || true; done
+    if [ -d /run/systemd/system ]; then
+        for p in $PROVIDERS; do
+            systemctl try-restart "tind-ai-remote@$p.service" >/dev/null 2>&1 || true
+            systemctl restart "tind-ai-remote@$p.socket" || true
+        done
+    fi
+fi
+exit 0

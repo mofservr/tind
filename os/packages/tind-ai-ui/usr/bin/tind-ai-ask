@@ -1,0 +1,585 @@
+#!/usr/bin/python3
+"""tind-ai-ask: the Ask window of the Tind AI box (Super+K). Runs as the human.
+
+  tind-ai-ask           open the window (a second start brings the open window to the front)
+  tind-ai-ask --check   print whether the services answer and which providers have a key (no window)
+
+What happens, in order:
+  1. The first time, a short guide and the "I accept the responsibility and risk of using AI" box.
+  2. The human writes the request and picks what to share. This window, running as the human, reads those things
+     itself (tind-report, Steam and Proton logs, chosen files); the system journal is added by the local service.
+  3. The local service (tind-ai-local, no network) redacts it all and saves the briefing; this window shows the exact
+     text that would leave the computer, with the provider and its country on the Send button.
+  4. Only on Send does that provider's remote service (tind-ai-remote@PROVIDER) send the saved briefing. The answer is
+     shown here. Nothing in it runs by itself: commands and file changes can only be copied or saved by the human.
+"""
+import glob
+import json
+import os
+import re
+import secrets
+import subprocess
+import sys
+import tempfile
+import threading
+
+sys.path.insert(0, '/usr/lib/tind-ai')
+import tindai  # noqa: E402
+
+CONFIG_DIR = os.path.join(os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config'), 'tind-ai')
+ACCEPTED = os.path.join(CONFIG_DIR, 'accepted')
+SETTINGS = os.path.join(CONFIG_DIR, 'settings.json')
+MAX_FILE = 200_000
+
+GUIDE = (
+    "This window lets an AI service help you with your computer: a setting, an error message, a program that will "
+    "not start, a script.\n\n"
+    "How it keeps you in control:\n"
+    "• You choose what to share. Before anything is sent you see the exact text, with names, addresses, keys and "
+    "passwords replaced by placeholders such as [user-1] or [ip-1].\n"
+    "• Only that text is sent, to the provider named on the Send button. European providers are the default; "
+    "providers outside the EU are marked.\n"
+    "• The AI cannot run anything on this computer. Its suggestions are shown to you; you decide what to copy and run.\n\n"
+    "AI answers can be wrong. Read a command before you run it, and keep backups of what matters.")
+
+
+def load_settings():
+    try:
+        with open(SETTINGS, encoding='utf-8') as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def save_settings(s):
+    os.makedirs(CONFIG_DIR, exist_ok=True)
+    with open(SETTINGS + '.tmp', 'w', encoding='utf-8') as f:
+        json.dump(s, f, indent=1)
+    os.rename(SETTINGS + '.tmp', SETTINGS)
+
+
+def provider_ready(pid):
+    return os.path.exists(os.path.join(tindai.READY_DIR, pid))
+
+
+def provider_label(p):
+    where = p['country'] + (' · EU' if p.get('eu') is True else ' · outside the EU' if p.get('eu') is False else '')
+    return '%s (%s)' % (p['name'], where)
+
+
+def tail_file(path, limit=MAX_FILE):
+    with open(path, 'rb') as f:
+        f.seek(0, os.SEEK_END)
+        size = f.tell()
+        f.seek(max(0, size - limit))
+        data = f.read()
+    if b'\0' in data[:4096]:
+        raise ValueError('%s is not a text file' % os.path.basename(path))
+    return data.decode('utf-8', 'replace')
+
+
+def collect_report():
+    fd, path = tempfile.mkstemp(prefix='tind-report-', suffix='.txt')
+    os.close(fd)
+    try:
+        subprocess.run(['tind-report', path], capture_output=True, timeout=120, check=False)
+        return tail_file(path)
+    finally:
+        os.unlink(path)
+
+
+def collect_steam():
+    home = os.path.expanduser('~')
+    found = []
+    for pattern in ('.steam/steam/logs/console_log.txt', '.local/share/Steam/logs/console_log.txt',
+                    '.steam/steam/logs/stderr.txt', 'steam-*.log'):
+        found += glob.glob(os.path.join(home, pattern))
+    found = sorted(set(os.path.realpath(f) for f in found), key=os.path.getmtime, reverse=True)[:3]
+    return [(os.path.basename(f), tail_file(f, 80_000)) for f in found]
+
+
+def check():
+    rc = 0
+    try:
+        print('local service:', 'ok' if tindai.call(tindai.LOCAL_SOCKET, {'op': 'ping'}, timeout=30).get('ok') else 'no')
+    except OSError as e:
+        print('local service: not answering (%s)' % e)
+        rc = 1
+    for p in tindai.providers():
+        print('%-10s %-24s key: %s' % (p['id'], provider_label(p), 'set' if provider_ready(p['id']) else 'not set'))
+    return rc
+
+
+def main():
+    import gi
+    gi.require_version('Gtk', '4.0')
+    gi.require_version('Adw', '1')
+    from gi.repository import Adw, Gdk, Gio, GLib, Gtk
+
+    CSS = b"""
+    .tind-ai-text { font-family: monospace; font-size: 0.92em; }
+    .tind-ai-answer { padding: 6px; }
+    textview.tind-ai-request, textview.tind-ai-request text { background: transparent; }
+    """
+
+    def bg(work, done):
+        """Run work() in a thread, then done(result, error) on the main loop."""
+        def run():
+            try:
+                res, err = work(), None
+            except Exception as e:  # noqa: BLE001 - shown to the user as text
+                res, err = None, e
+            GLib.idle_add(lambda: (done(res, err), False)[1])
+        threading.Thread(target=run, daemon=True).start()
+
+    def scrolled(child, min_h=120):
+        sw = Gtk.ScrolledWindow(vexpand=True, hexpand=True, min_content_height=min_h)
+        sw.set_child(child)
+        sw.add_css_class('card')
+        return sw
+
+    def textview(editable, css=None):
+        tv = Gtk.TextView(editable=editable, cursor_visible=editable, wrap_mode=Gtk.WrapMode.WORD_CHAR,
+                          top_margin=10, bottom_margin=10, left_margin=12, right_margin=12)
+        if css:
+            tv.add_css_class(css)
+        return tv
+
+    class Win(Adw.ApplicationWindow):
+        def __init__(self, app):
+            super().__init__(application=app, title='AI assistant', default_width=760, default_height=640)
+            self.settings = load_settings()
+            self.providers = tindai.providers()
+            pids = [p['id'] for p in self.providers]
+            default = json.load(open(tindai.PROVIDERS_FILE, encoding='utf-8')).get('default', pids[0])
+            self.pid = self.settings.get('provider') if self.settings.get('provider') in pids else default
+            self.history = []
+            self.conversation = secrets.token_hex(8)
+            self.files = []
+            self.brief = None
+
+            self.toasts = Adw.ToastOverlay()
+            view = Adw.ToolbarView()
+            header = Adw.HeaderBar()
+            self.wtitle = Adw.WindowTitle(title='AI assistant')
+            header.set_title_widget(self.wtitle)
+            self.newbtn = Gtk.Button(icon_name='document-new-symbolic', tooltip_text='New question')
+            self.newbtn.connect('clicked', lambda *_: self.new_question())
+            header.pack_start(self.newbtn)
+            keybtn = Gtk.Button(icon_name='dialog-password-symbolic', tooltip_text='API key for this provider')
+            keybtn.connect('clicked', lambda *_: self.show_key_page())
+            header.pack_end(keybtn)
+            view.add_top_bar(header)
+            self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
+            view.set_content(self.stack)
+            self.toasts.set_child(view)
+            self.set_content(self.toasts)
+
+            self.stack.add_named(self.build_guide(), 'guide')
+            self.stack.add_named(self.build_ask(), 'ask')
+            self.stack.add_named(self.build_preview(), 'preview')
+            self.stack.add_named(self.build_answer(), 'answer')
+            self.stack.add_named(self.build_key(), 'key')
+            self.stack.add_named(self.build_busy(), 'busy')
+
+            esc = Gtk.EventControllerKey()
+            esc.connect('key-pressed', self.on_key)
+            self.add_controller(esc)
+            self.update_title()
+            if os.path.exists(ACCEPTED):
+                self.go_ask()
+            else:
+                self.stack.set_visible_child_name('guide')
+
+        # ---- pages --------------------------------------------------------------------------------------------
+        def page(self, child, width=720):
+            clamp = Adw.Clamp(maximum_size=width, child=child, margin_top=12, margin_bottom=12,
+                              margin_start=12, margin_end=12)
+            return clamp
+
+        def build_guide(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+            box.append(Gtk.Label(label='Before you start', xalign=0, css_classes=['title-2']))
+            box.append(Gtk.Label(label=GUIDE, xalign=0, wrap=True))
+            self.accept = Gtk.CheckButton(label='I accept the responsibility and risk of using AI')
+            box.append(self.accept)
+            go = Gtk.Button(label='Continue', halign=Gtk.Align.END, sensitive=False, css_classes=['suggested-action', 'pill'])
+            self.accept.connect('toggled', lambda b: go.set_sensitive(b.get_active()))
+            go.connect('clicked', self.on_accept)
+            box.append(go)
+            return self.page(box, 620)
+
+        def build_ask(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+            grp = Adw.PreferencesGroup()
+            self.prow = Adw.ComboRow(title='Provider', model=Gtk.StringList.new([provider_label(p) for p in self.providers]))
+            self.prow.set_selected([p['id'] for p in self.providers].index(self.pid))
+            self.prow.connect('notify::selected', self.on_provider)
+            grp.add(self.prow)
+            self.mrow = Adw.ComboRow(title='Model')
+            grp.add(self.mrow)
+            box.append(grp)
+
+            box.append(Gtk.Label(label='What do you need help with?', xalign=0, css_classes=['heading']))
+            self.req = textview(True, 'tind-ai-request')
+            box.append(scrolled(self.req, 110))
+
+            share = Adw.PreferencesGroup(title='Share with the request',
+                                         description='Everything is redacted on this computer and shown to you before it is sent.')
+            self.sw_journal = Adw.SwitchRow(title='System log', subtitle='This boot, warnings and errors')
+            self.sw_report = Adw.SwitchRow(title='Tind report', subtitle='Hardware, drivers and setup')
+            self.sw_steam = Adw.SwitchRow(title='Steam and Proton logs', subtitle='The newest ones in your home folder')
+            for row in (self.sw_journal, self.sw_report, self.sw_steam):
+                share.add(row)
+            self.filerow = Adw.ActionRow(title='Files', subtitle='None chosen')
+            addf = Gtk.Button(icon_name='list-add-symbolic', valign=Gtk.Align.CENTER, tooltip_text='Add files',
+                              css_classes=['flat'])
+            addf.connect('clicked', self.on_add_files)
+            clr = Gtk.Button(icon_name='edit-clear-symbolic', valign=Gtk.Align.CENTER, tooltip_text='Remove the files',
+                             css_classes=['flat'])
+            clr.connect('clicked', lambda *_: self.set_files([]))
+            self.filerow.add_suffix(addf)
+            self.filerow.add_suffix(clr)
+            share.add(self.filerow)
+            box.append(share)
+
+            self.histlabel = Gtk.Label(xalign=0, css_classes=['dim-label', 'caption'], visible=False)
+            box.append(self.histlabel)
+            self.prepare = Gtk.Button(label='Show what will be sent', halign=Gtk.Align.END,
+                                      css_classes=['suggested-action', 'pill'])
+            self.prepare.connect('clicked', self.on_prepare)
+            box.append(self.prepare)
+            self.fill_models()
+            return self.page(box)
+
+        def build_preview(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+            self.ptitle = Gtk.Label(xalign=0, wrap=True, css_classes=['heading'])
+            self.psub = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label'])
+            box.append(self.ptitle)
+            box.append(self.psub)
+            self.ptext = textview(False, 'tind-ai-text')
+            box.append(scrolled(self.ptext, 280))
+            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
+            back = Gtk.Button(label='Back', css_classes=['pill'])
+            back.connect('clicked', lambda *_: self.go_ask())
+            self.send = Gtk.Button(css_classes=['suggested-action', 'pill'])
+            self.send.connect('clicked', self.on_send)
+            row.append(back)
+            row.append(self.send)
+            box.append(row)
+            return self.page(box)
+
+        def build_answer(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+            self.atitle = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label', 'caption'])
+            box.append(self.atitle)
+            self.atext = textview(False, 'tind-ai-answer')
+            self.abuf = self.atext.get_buffer()
+            self.abuf.create_tag('code', family='monospace', paragraph_background='rgba(127,127,127,0.12)')
+            self.abuf.create_tag('head', weight=700)
+            box.append(scrolled(self.atext, 300))
+            box.append(Gtk.Label(label='Nothing here runs by itself. Read a command before you copy and run it.',
+                                 xalign=0, wrap=True, css_classes=['dim-label', 'caption']))
+            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
+            copy = Gtk.Button(label='Copy', css_classes=['pill'])
+            copy.connect('clicked', self.on_copy)
+            save = Gtk.Button(label='Save…', css_classes=['pill'])
+            save.connect('clicked', self.on_save)
+            more = Gtk.Button(label='Ask a follow-up', css_classes=['suggested-action', 'pill'])
+            more.connect('clicked', lambda *_: self.go_ask(keep=True))
+            for b in (copy, save, more):
+                row.append(b)
+            box.append(row)
+            return self.page(box)
+
+        def build_key(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+            self.ktitle = Gtk.Label(xalign=0, wrap=True, css_classes=['title-3'])
+            self.khelp = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label'])
+            box.append(self.ktitle)
+            box.append(self.khelp)
+            grp = Adw.PreferencesGroup()
+            self.kurl = Adw.EntryRow(title='Endpoint (https://…/v1, or http://127.0.0.1:…/v1 for a model on this computer)')
+            self.kmodel = Adw.EntryRow(title='Model name')
+            self.kkey = Adw.PasswordEntryRow(title='API key')
+            for r in (self.kurl, self.kmodel, self.kkey):
+                grp.add(r)
+            box.append(grp)
+            box.append(Gtk.Label(label='The key is stored for this computer, readable only by the service that talks to '
+                                 'this provider. Saving asks for your password.', xalign=0, wrap=True,
+                                 css_classes=['dim-label', 'caption']))
+            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
+            back = Gtk.Button(label='Back', css_classes=['pill'])
+            back.connect('clicked', lambda *_: self.go_ask(keep=True))
+            self.ksave = Gtk.Button(label='Save key', css_classes=['suggested-action', 'pill'])
+            self.ksave.connect('clicked', self.on_save_key)
+            row.append(back)
+            row.append(self.ksave)
+            box.append(row)
+            return self.page(box, 620)
+
+        def build_busy(self):
+            self.busy = Adw.StatusPage(title='Working…')
+            spin = Gtk.Spinner(spinning=True, width_request=32, height_request=32, halign=Gtk.Align.CENTER)
+            self.busy.set_child(spin)
+            return self.busy
+
+        # ---- state --------------------------------------------------------------------------------------------
+        def prov(self):
+            return next(p for p in self.providers if p['id'] == self.pid)
+
+        def update_title(self):
+            p = self.prov()
+            self.wtitle.set_subtitle(provider_label(p))
+
+        def fill_models(self):
+            p = self.prov()
+            models = p['models'] or [{'id': 'custom', 'label': 'set by the endpoint'}]
+            self.mrow.set_model(Gtk.StringList.new([m['label'] for m in models]))
+            want = self.settings.get('models', {}).get(self.pid)
+            ids = [m['id'] for m in models]
+            self.mrow.set_selected(ids.index(want) if want in ids else 0)
+            self.mrow.set_sensitive(bool(p['models']))
+
+        def model(self):
+            p = self.prov()
+            if not p['models']:
+                return ''
+            return p['models'][self.mrow.get_selected()]['id']
+
+        def toast(self, text):
+            self.toasts.add_toast(Adw.Toast(title=GLib.markup_escape_text(text), timeout=6))
+
+        def go_ask(self, keep=False):
+            if not keep:
+                self.history, self.conversation = [], secrets.token_hex(8)
+                self.req.get_buffer().set_text('')
+                self.set_files([])
+            n = len(self.history) // 2
+            self.histlabel.set_label('Follow-up: the earlier %d question%s and answer%s in this conversation are sent too.'
+                                     % (n, '' if n == 1 else 's', '' if n == 1 else 's'))
+            self.histlabel.set_visible(bool(self.history))
+            self.stack.set_visible_child_name('ask')
+            self.req.grab_focus()
+
+        def new_question(self):
+            if os.path.exists(ACCEPTED):
+                self.go_ask()
+
+        def set_files(self, files):
+            self.files = files
+            self.filerow.set_subtitle(', '.join(os.path.basename(f) for f in files) if files else 'None chosen')
+
+        def show_key_page(self):
+            if not os.path.exists(ACCEPTED):
+                return
+            p = self.prov()
+            custom = p['id'] == 'custom'
+            self.ktitle.set_label('API key for %s' % provider_label(p))
+            self.khelp.set_label(p.get('key_help', ''))
+            self.kurl.set_visible(custom)
+            self.kmodel.set_visible(custom)
+            self.kkey.set_title('API key (leave empty if the endpoint needs none)' if custom else 'API key')
+            if custom:
+                self.kurl.set_text(p.get('base_url') or '')
+                self.kmodel.set_text(p['models'][0]['id'] if p['models'] else '')
+            self.kkey.set_text('')
+            self.stack.set_visible_child_name('key')
+
+        # ---- events -------------------------------------------------------------------------------------------
+        def on_key(self, _ctl, keyval, _code, state):
+            if keyval == Gdk.KEY_Escape:
+                self.close()
+                return True
+            return False
+
+        def on_accept(self, *_):
+            os.makedirs(CONFIG_DIR, exist_ok=True)
+            open(ACCEPTED, 'w').close()
+            self.go_ask()
+
+        def on_provider(self, *_):
+            self.pid = self.providers[self.prow.get_selected()]['id']
+            self.settings['provider'] = self.pid
+            save_settings(self.settings)
+            self.fill_models()
+            self.update_title()
+
+        def on_add_files(self, *_):
+            dlg = Gtk.FileDialog(title='Files to share')
+
+            def done(d, res):
+                try:
+                    files = d.open_multiple_finish(res)
+                except GLib.Error:
+                    return
+                paths = [files.get_item(i).get_path() for i in range(files.get_n_items())]
+                self.set_files(self.files + [p for p in paths if p and p not in self.files])
+            dlg.open_multiple(self, None, done)
+
+        def on_prepare(self, *_):
+            buf = self.req.get_buffer()
+            text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).strip()
+            if not text:
+                self.toast('Write what you need help with first.')
+                return
+            if not provider_ready(self.pid):
+                self.toast('Set the API key for %s first.' % self.prov()['name'])
+                self.show_key_page()
+                return
+            models = self.settings.setdefault('models', {})
+            if self.model():
+                models[self.pid] = self.model()
+            save_settings(self.settings)
+            want_report, want_steam, want_journal = (self.sw_report.get_active(), self.sw_steam.get_active(),
+                                                     self.sw_journal.get_active())
+            files = list(self.files)
+
+            def work():
+                items = []
+                if want_report:
+                    items.append({'name': 'Tind report', 'text': collect_report()})
+                if want_steam:
+                    for name, body in collect_steam():
+                        items.append({'name': 'Steam log ' + name, 'text': body})
+                for f in files:
+                    items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
+                return tindai.call(tindai.LOCAL_SOCKET, {
+                    'op': 'brief', 'request': text, 'provider': self.pid, 'model': self.model(),
+                    'journal': want_journal, 'items': items, 'history': self.history,
+                    'conversation': self.conversation}, timeout=180)
+
+            self.busy.set_title('Preparing and redacting on this computer…')
+            self.stack.set_visible_child_name('busy')
+            bg(work, self.prepared)
+
+        def prepared(self, res, err):
+            if err or not res.get('ok'):
+                self.toast('Could not prepare: %s' % (err or res.get('error')))
+                self.stack.set_visible_child_name('ask')
+                return
+            self.brief = res
+            p = self.prov()
+            red = res.get('redactions') or {}
+            what = ', '.join('%d %s' % (n, k) for k, n in red.items()) or 'nothing'
+            self.ptitle.set_label('This exact text goes to %s, and nothing else.' % provider_label(p))
+            self.psub.set_label('Replaced on this computer: %s.%s' % (
+                what, '' if p.get('eu') is not False else ' This provider is outside the EU.'))
+            shown = res['text']
+            if res.get('history'):
+                shown = '(the earlier messages of this conversation are sent too)\n\n' + shown
+            self.ptext.get_buffer().set_text(shown)
+            self.send.set_label('Send to %s' % p['name'])
+            self.stack.set_visible_child_name('preview')
+
+        def on_send(self, *_):
+            bid, pid, model = self.brief['id'], self.pid, self.model()
+
+            def work():
+                return tindai.call(tindai.remote_socket(pid), {'op': 'send', 'id': bid, 'model': model}, timeout=300)
+
+            self.busy.set_title('Waiting for %s…' % self.prov()['name'])
+            self.stack.set_visible_child_name('busy')
+            bg(work, self.answered)
+
+        def answered(self, res, err):
+            if err or not res.get('ok'):
+                self.toast('No answer: %s' % (err or res.get('error')))
+                self.stack.set_visible_child_name('preview')
+                return
+            self.history += [{'role': 'user', 'text': self.brief['text']}, {'role': 'assistant', 'text': res['answer']}]
+            self.answer = res['answer']
+            self.atitle.set_label('%s · %s · %s s' % (res.get('provider_name', ''), res.get('model', ''),
+                                                       res.get('seconds', '')))
+            self.show_answer(res['answer'])
+            self.req.get_buffer().set_text('')
+            self.set_files([])
+            self.stack.set_visible_child_name('answer')
+
+        def show_answer(self, text):
+            buf = self.abuf
+            buf.set_text('')
+            code = False
+            for line in text.split('\n'):
+                if line.strip().startswith('```'):
+                    code = not code
+                    continue
+                end = buf.get_end_iter()
+                if code:
+                    buf.insert_with_tags_by_name(end, line + '\n', 'code')
+                elif re.match(r'^#{1,4} ', line):
+                    buf.insert_with_tags_by_name(end, re.sub(r'^#{1,4} ', '', line) + '\n', 'head')
+                else:
+                    buf.insert(end, line.replace('**', '') + '\n')
+
+        def on_copy(self, *_):
+            self.get_clipboard().set(self.answer)
+            self.toast('Copied.')
+
+        def on_save(self, *_):
+            dlg = Gtk.FileDialog(title='Save the answer', initial_name='ai-answer.md')
+
+            def done(d, res):
+                try:
+                    f = d.save_finish(res)
+                except GLib.Error:
+                    return
+                with open(f.get_path(), 'w', encoding='utf-8') as out:
+                    out.write(self.answer)
+                self.toast('Saved.')
+            dlg.save(self, None, done)
+
+        def on_save_key(self, *_):
+            p = self.prov()
+            key = self.kkey.get_text().strip()
+            args = ['pkexec', '/usr/lib/tind-ai/setkey', p['id']]
+            if p['id'] == 'custom':
+                args += [self.kurl.get_text().strip(), self.kmodel.get_text().strip()]
+            elif not key:
+                self.toast('Paste the API key first.')
+                return
+
+            def work():
+                r = subprocess.run(args, input=key + '\n', capture_output=True, text=True, timeout=300)
+                if r.returncode != 0:
+                    raise RuntimeError((r.stderr or r.stdout).strip() or 'cancelled')
+                return r.stdout
+
+            self.ksave.set_sensitive(False)
+
+            def done(_res, err):
+                self.ksave.set_sensitive(True)
+                if err:
+                    self.toast('Key not saved: %s' % err)
+                    return
+                self.providers = tindai.providers()
+                self.fill_models()
+                self.toast('Key saved for %s.' % p['name'])
+                self.go_ask(keep=True)
+            bg(work, done)
+
+    class App(Adw.Application):
+        def __init__(self):
+            super().__init__(application_id='no.servr.TindAI', flags=Gio.ApplicationFlags.DEFAULT_FLAGS)
+            self.win = None
+
+        def do_startup(self):
+            Adw.Application.do_startup(self)
+            css = Gtk.CssProvider()
+            css.load_from_data(CSS)
+            Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
+                                                      Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+
+        def do_activate(self):
+            if not self.win:
+                self.win = Win(self)
+            self.win.present()
+
+    return App().run([sys.argv[0]])
+
+
+if __name__ == '__main__':
+    if '--check' in sys.argv:
+        sys.exit(check())
+    sys.exit(main())

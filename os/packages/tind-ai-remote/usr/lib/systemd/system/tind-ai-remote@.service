@@ -1,0 +1,45 @@
+[Unit]
+Description=Tind AI, remote service for %i (sends approved briefings to that provider only)
+Documentation=file:///usr/share/doc/tind-ai-users/README
+Requires=tind-ai-remote@%i.socket tind-ai-firewall.service
+After=tind-ai-firewall.service network-online.target
+Wants=network-online.target
+# only once a key has been set for this provider (tind-ai-setkey)
+ConditionPathExists=/etc/tind-ai/keys/%i
+
+[Service]
+Type=simple
+User=tind-ai-remote
+Group=tind-ai-remote
+# as root: resolve this provider's API host and open the firewall for exactly those addresses, for an hour
+ExecStartPre=+/usr/lib/tind-ai/netallow %i
+ExecStart=/usr/lib/tind-ai/remote %i
+# this provider's key only, readable by this service only
+LoadCredential=key:/etc/tind-ai/keys/%i
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/tind-ai/outbox
+InaccessiblePaths=-/var/lib/tind-ai/local -/etc/tind-ai/keys
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectProc=invisible
+ProcSubset=pid
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+UMask=0077

@@ -1,0 +1,16 @@
+[Unit]
+Description=Tind AI box firewall (no network for tind-ai-local, one host for tind-ai-remote)
+Documentation=file:///usr/share/doc/tind-ai-users/README
+DefaultDependencies=no
+After=sysinit.target systemd-sysusers.service
+Before=network-pre.target
+Wants=network-pre.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /usr/lib/tind-ai/firewall.nft
+ExecStop=/usr/sbin/nft delete table inet tind_ai
+
+[Install]
+WantedBy=multi-user.target

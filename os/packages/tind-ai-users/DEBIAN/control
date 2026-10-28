@@ -1,0 +1,16 @@
+Package: tind-ai-users
+Version: 0.1.0~test1
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: admin
+Priority: optional
+Depends: systemd, nftables, passwd, python3
+Installed-Size: 84
+Description: Tind AI box: the walls (two system users, folders, firewall)
+ Two system users that never log in. tind-ai-local reads the journal and the
+ request, redacts it into a briefing and has no network at all. tind-ai-remote
+ reads only the briefings and talks only to the selected provider's API host.
+ Briefings live in /var/lib/tind-ai/briefing/<uid> (written by the local user,
+ read by the remote user and that human), answers in /var/lib/tind-ai/outbox/<uid>
+ (written by the remote user, read by that human only). The firewall is its own
+ nftables table (inet tind_ai); it never touches ufw's rules.

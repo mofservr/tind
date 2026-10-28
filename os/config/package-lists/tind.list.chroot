@@ -4,6 +4,9 @@ tind-apps
 tind-installer
 tind-graphics
 tind-extras
+# ai-box branch only, so the boot test can exercise the AI box. Remove before merging: on main it comes from
+# the AI assistant box in Tind Apps (apt.servr.no), like every other box.
+tind-ai
 
 # live session and boot
 gdm3

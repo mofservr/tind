@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+if [ "$1" = configure ]; then
+    systemd-sysusers tind-ai.conf
+    systemd-tmpfiles --create tind-ai.conf
+    systemctl daemon-reload >/dev/null 2>&1 || true
+    systemctl enable tind-ai-firewall.service >/dev/null 2>&1 || true
+    # not while the image is built (no running systemd there); on a running system load the table now
+    if [ -d /run/systemd/system ]; then systemctl restart tind-ai-firewall.service || true; fi
+fi
+exit 0

@@ -1,0 +1,20 @@
+#!/usr/sbin/nft -f
+# Tind AI box firewall (tind-ai-users). Its own table: loading or removing it never touches ufw's rules, and a drop
+# here drops the packet whatever other tables say.
+#   tind-ai-local   no network at all (its service also runs with PrivateNetwork=yes)
+#   tind-ai-remote  only the address and port pairs in @allow4/@allow6. /usr/lib/tind-ai/netallow (root) puts the
+#                   selected provider's API host there when that provider's service starts; entries expire after an
+#                   hour. No DNS either: the service connects to the addresses netallow resolved.
+table inet tind_ai
+delete table inet tind_ai
+table inet tind_ai {
+    set allow4 { type ipv4_addr . inet_service; flags timeout; }
+    set allow6 { type ipv6_addr . inet_service; flags timeout; }
+    chain output {
+        type filter hook output priority filter; policy accept;
+        meta skuid "tind-ai-local" counter drop
+        meta skuid "tind-ai-remote" ip daddr . tcp dport @allow4 accept
+        meta skuid "tind-ai-remote" ip6 daddr . tcp dport @allow6 accept
+        meta skuid "tind-ai-remote" counter drop
+    }
+}

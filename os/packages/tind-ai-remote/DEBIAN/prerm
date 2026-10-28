@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+if [ "$1" = remove ] && [ -d /run/systemd/system ]; then
+    for p in scaleway ionos mistral anthropic openai custom; do
+        systemctl stop "tind-ai-remote@$p.socket" "tind-ai-remote@$p.service" >/dev/null 2>&1 || true
+    done
+fi
+exit 0

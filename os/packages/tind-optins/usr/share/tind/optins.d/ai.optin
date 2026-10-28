@@ -1,0 +1,4 @@
+NAME="AI assistant"
+DESC="Ask an AI service about this computer on Super+K. You see exactly what is sent; European providers by default, Claude and ChatGPT optional. Needs an API key from the provider (needs internet)"
+STATUS="ready"
+APT_PACKAGES="tind-ai"

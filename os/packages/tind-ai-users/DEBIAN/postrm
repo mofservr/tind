@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+case "$1" in
+    remove)
+        systemctl disable tind-ai-firewall.service >/dev/null 2>&1 || true ;;
+    purge)
+        systemctl disable tind-ai-firewall.service >/dev/null 2>&1 || true
+        # briefings, answers and API keys go; the two system users stay (Debian keeps system users)
+        rm -rf /var/lib/tind-ai /etc/tind-ai /run/tind-ai ;;
+esac
+exit 0

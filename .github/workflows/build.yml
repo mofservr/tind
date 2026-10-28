@@ -17,7 +17,7 @@ jobs:
       - name: Install tools
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev apt-utils gnupg shellcheck libxml2-utils jq xz-utils sudo curl pciutils pci.ids
+          apt-get install -y --no-install-recommends git ca-certificates dpkg-dev apt-utils gnupg shellcheck libxml2-utils jq xz-utils sudo curl pciutils pci.ids python3
       - uses: actions/checkout@v4
       - name: Lint, build packages, check package names
         run: |
@@ -38,6 +38,13 @@ jobs:
             os/scripts/test-publish-apt.sh || rc=1
             echo "== GPU fallback for old NVIDIA cards"
             os/scripts/test-gpu-check.sh || rc=1
+            echo "== AI box: redaction on a planted log, the local service, both remote adapters against a fake provider"
+            python3 -B os/scripts/test-ai.py || rc=1
+            echo "== AI box: Python syntax"
+            for f in $(grep -rlE '^#!/usr/bin/python3' os/packages/tind-ai-* 2>/dev/null) $(find os/packages/tind-ai-* -name '*.py' 2>/dev/null); do
+              python3 -m py_compile "$f" || rc=1
+            done
+            find os/packages -name __pycache__ -type d -prune -exec rm -r {} + || true
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
@@ -147,6 +154,15 @@ jobs:
             code --version --no-sandbox --user-data-dir /tmp/codetest 2>&1 | head -2 || true
             ls /etc/apt/sources.list.d/ ; cat /etc/apt/sources.list.d/vscode.sources
             cat /etc/sysctl.d/99-tind-gaming.conf
+            echo "== AI box: the packages install in a plain trixie (users, folders, units), without the window"
+            if apt-get install -y ./os/dist/tind-ai-users_*_all.deb ./os/dist/tind-ai-local_*_all.deb ./os/dist/tind-ai-remote_*_all.deb > logs/ai-install.log 2>&1; then
+              id tind-ai-local; id tind-ai-remote
+              stat -c '%a %U:%G %n' /var/lib/tind-ai /var/lib/tind-ai/* /etc/tind-ai /etc/tind-ai/keys 2>&1
+              ls /etc/systemd/system/sockets.target.wants/ 2>&1 | grep tind-ai || { echo "AI sockets not enabled"; rc=1; }
+              nft -c -f /usr/lib/tind-ai/firewall.nft 2>&1 && echo "firewall table: syntax ok" || echo "firewall table: not checkable in this container (checked in the booted ISO)"
+            else
+              echo "AI packages install: FAILED"; tail -30 logs/ai-install.log; rc=1
+            fi
             echo "== verify-on-debian (informational)"
             os/scripts/verify-on-debian.sh || true
             echo "== exit status: $rc"
@@ -269,6 +285,14 @@ jobs:
               [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
               echo "sendkey meta_l-h" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             }
+            ai_shot() {
+              # Super+K opens the AI assistant's Ask window (the guide on first use); Escape closes it
+              echo "sendkey meta_l-k" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 8
+              echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
+              sleep 1
+              [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
+              echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
+            }
             settings_shot() {
               # Settings > Appearance is opened by the guest itself (tind-selftest); wait until $2 s after the marker
               sleep $(( $2 - ( $(date +%s) - T0 ) )) || true
@@ -285,12 +309,16 @@ jobs:
             qs_shot quickpanel-dark
             hk_shot hotkeys-dark
             settings_shot settings-dark 85
+            sleep $(( 108 - ( $(date +%s) - T0 ) )) || true
+            ai_shot ai-guide-dark
             sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
             echo "screendump $PWD/shots/desktop-light.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-light)"
             sleep 1; [ -f shots/desktop-light.ppm ] && convert shots/desktop-light.ppm logs/desktop-light.png
             qs_shot quickpanel-light
             hk_shot hotkeys-light
             settings_shot settings-light 268
+            sleep $(( 288 - ( $(date +%s) - T0 ) )) || true
+            ai_shot ai-ask-light
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop

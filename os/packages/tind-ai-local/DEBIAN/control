@@ -1,0 +1,14 @@
+Package: tind-ai-local
+Version: 0.1.0~test1
+Architecture: all
+Maintainer: Morten <morten@servr.no>
+Section: admin
+Priority: optional
+Depends: tind-ai-users, python3, systemd
+Installed-Size: 52
+Description: Tind AI box: the local briefing service (reads and redacts, no network)
+ Builds the briefing for one request from what the human chose to share and,
+ when asked, the system journal, then redacts it with fixed rules: user and host
+ names, IP and MAC addresses, e-mail addresses, keys, tokens, passwords and
+ other secrets become numbered placeholders. Runs as tind-ai-local with no
+ network, no access to /home and one writable folder.

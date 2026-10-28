@@ -1,0 +1,43 @@
+[Unit]
+Description=Tind AI, local briefing service (reads and redacts, no network)
+Documentation=file:///usr/share/doc/tind-ai-users/README
+Requires=tind-ai-local.socket tind-ai-firewall.service
+After=tind-ai-firewall.service
+
+[Service]
+Type=simple
+User=tind-ai-local
+Group=tind-ai-local
+# the journal, for this service only (the account itself is in no extra group)
+SupplementaryGroups=systemd-journal
+ExecStart=/usr/lib/tind-ai/local
+# no network at all, on top of the firewall's drop for this user
+PrivateNetwork=yes
+RestrictAddressFamilies=AF_UNIX
+IPAddressDeny=any
+# no homes, a read-only system, one writable folder
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/tind-ai/briefing /var/lib/tind-ai/local
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectProc=invisible
+ProcSubset=pid
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallFilter=~@privileged @resources
+UMask=0077
