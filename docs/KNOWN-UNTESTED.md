@@ -30,6 +30,10 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   small permanent numbers left of the dock icons and the running dots under the icons. They reach into Dash to Dock's
   private code (Debian ships 100-2) and were checked against its source, not on a running shell. If Dash to Dock's own
   "keyboard shortcuts" are switched on in its settings, log out and in again so the two do not fight over the keys.
+- **The AI assistant box** (test channel, `ai-box` branch, from 28 Oct): the walls (two system users, the `tind_ai`
+  firewall table, the sandboxed services), redaction and one request end to end are checked in the build's virtual
+  machine against a fake provider. Not yet run against a real provider (Scaleway, IONOS, Mistral, Claude, OpenAI) or on
+  real hardware.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".

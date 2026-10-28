@@ -182,7 +182,7 @@ def main():
             self.stack.add_named(self.build_key(), 'key')
             self.stack.add_named(self.build_busy(), 'busy')
 
-            esc = Gtk.EventControllerKey()
+            esc = Gtk.EventControllerKey(propagation_phase=Gtk.PropagationPhase.CAPTURE)
             esc.connect('key-pressed', self.on_key)
             self.add_controller(esc)
             self.update_title()
@@ -195,7 +195,9 @@ def main():
         def page(self, child, width=720):
             clamp = Adw.Clamp(maximum_size=width, child=child, margin_top=12, margin_bottom=12,
                               margin_start=12, margin_end=12)
-            return clamp
+            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, propagate_natural_height=True)
+            sw.set_child(clamp)
+            return sw
 
         def build_guide(self):
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
@@ -262,7 +264,7 @@ def main():
             box.append(scrolled(self.ptext, 280))
             row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
             back = Gtk.Button(label='Back', css_classes=['pill'])
-            back.connect('clicked', lambda *_: self.go_ask())
+            back.connect('clicked', lambda *_: self.go_ask(keep=True))
             self.send = Gtk.Button(css_classes=['suggested-action', 'pill'])
             self.send.connect('clicked', self.on_send)
             row.append(back)
@@ -278,9 +280,13 @@ def main():
             self.abuf = self.atext.get_buffer()
             self.abuf.create_tag('code', family='monospace', paragraph_background='rgba(127,127,127,0.12)')
             self.abuf.create_tag('head', weight=700)
-            box.append(scrolled(self.atext, 300))
-            box.append(Gtk.Label(label='Nothing here runs by itself. Read a command before you copy and run it.',
-                                 xalign=0, wrap=True, css_classes=['dim-label', 'caption']))
+            box.append(scrolled(self.atext, 260))
+            self.blocks = Adw.PreferencesGroup(title='Commands and file changes in the answer',
+                                               description='Nothing here runs by itself. Run in Terminal shows the '
+                                               'script first and runs it as you only if you answer yes.')
+            self.block_rows = []
+            self.blocks.set_visible(False)
+            box.append(self.blocks)
             row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
             copy = Gtk.Button(label='Copy', css_classes=['pill'])
             copy.connect('clicked', self.on_copy)
@@ -435,6 +441,7 @@ def main():
             want_report, want_steam, want_journal = (self.sw_report.get_active(), self.sw_steam.get_active(),
                                                      self.sw_journal.get_active())
             files = list(self.files)
+            pid, model, history, conv = self.pid, self.model(), list(self.history), self.conversation
 
             def work():
                 items = []
@@ -446,9 +453,9 @@ def main():
                 for f in files:
                     items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
                 return tindai.call(tindai.LOCAL_SOCKET, {
-                    'op': 'brief', 'request': text, 'provider': self.pid, 'model': self.model(),
-                    'journal': want_journal, 'items': items, 'history': self.history,
-                    'conversation': self.conversation}, timeout=180)
+                    'op': 'brief', 'request': text, 'provider': pid, 'model': model,
+                    'journal': want_journal, 'items': items, 'history': history,
+                    'conversation': conv}, timeout=180)
 
             self.busy.set_title('Preparing and redacting on this computer…')
             self.stack.set_visible_child_name('busy')
@@ -493,6 +500,7 @@ def main():
             self.atitle.set_label('%s · %s · %s s' % (res.get('provider_name', ''), res.get('model', ''),
                                                        res.get('seconds', '')))
             self.show_answer(res['answer'])
+            self.show_blocks(res['answer'])
             self.req.get_buffer().set_text('')
             self.set_files([])
             self.stack.set_visible_child_name('answer')
@@ -512,6 +520,62 @@ def main():
                     buf.insert_with_tags_by_name(end, re.sub(r'^#{1,4} ', '', line) + '\n', 'head')
                 else:
                     buf.insert(end, line.replace('**', '') + '\n')
+
+        def show_blocks(self, text):
+            for row in self.block_rows:
+                self.blocks.remove(row)
+            self.block_rows = []
+            blocks = re.findall(r'```([A-Za-z0-9_+-]*)[^\n]*\n(.*?)```', text, re.S)
+            self.blocks.set_visible(bool(blocks))
+            for i, (lang, body) in enumerate(blocks, 1):
+                lang = (lang or 'text').lower()
+                first = next((ln.strip() for ln in body.splitlines() if ln.strip()), '')
+                row = Adw.ActionRow(title=GLib.markup_escape_text('%d. %s' % (i, lang)),
+                                    subtitle=GLib.markup_escape_text(first[:90]))
+                for label, fn in (('Copy', self.block_copy), ('Save…', self.block_save)):
+                    btn = Gtk.Button(label=label, valign=Gtk.Align.CENTER, css_classes=['flat'])
+                    btn.connect('clicked', lambda _b, f=fn, t=body, lg=lang: f(t, lg))
+                    row.add_suffix(btn)
+                if lang in ('bash', 'sh', 'shell', 'console'):
+                    run = Gtk.Button(label='Run in Terminal', valign=Gtk.Align.CENTER, css_classes=['flat'])
+                    run.connect('clicked', lambda _b, t=body: self.block_run(t))
+                    row.add_suffix(run)
+                self.blocks.add(row)
+                self.block_rows.append(row)
+
+        def block_copy(self, text, _lang):
+            self.get_clipboard().set(text)
+            self.toast('Copied.')
+
+        def block_save(self, text, lang):
+            ext = {'diff': 'patch', 'patch': 'patch', 'bash': 'sh', 'sh': 'sh', 'shell': 'sh', 'python': 'py',
+                   'json': 'json', 'ini': 'conf', 'conf': 'conf', 'yaml': 'yaml', 'html': 'html'}.get(lang, 'txt')
+            dlg = Gtk.FileDialog(title='Save', initial_name='ai-%s.%s' % ('change' if ext == 'patch' else 'file', ext))
+
+            def done(d, res):
+                try:
+                    f = d.save_finish(res)
+                except GLib.Error:
+                    return
+                with open(f.get_path(), 'w', encoding='utf-8') as out:
+                    out.write(text)
+                self.toast('Saved.')
+            dlg.save(self, None, done)
+
+        def block_run(self, text):
+            # the script goes to a file only this user can read; the terminal shows it in full and asks first
+            fd, path = tempfile.mkstemp(prefix='tind-ai-', suffix='.sh')
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
+                f.write(text if text.endswith('\n') else text + '\n')
+            shown = ('clear; echo "This script came from the AI answer. Read it before you answer."; echo; '
+                     'cat -n "$0"; echo; read -r -p "Run it now, as you? [y/N] " a; '
+                     'if [ "$a" = y ] || [ "$a" = Y ]; then bash "$0"; echo; echo "Finished (exit $?)."; '
+                     'else echo "Not run."; fi; rm -f "$0"; read -r -p "Press Enter to close. " _')
+            try:
+                subprocess.Popen(['gnome-terminal', '--', 'bash', '-c', shown, path])
+            except OSError as e:
+                os.unlink(path)
+                self.toast('Could not open a terminal: %s' % e)
 
         def on_copy(self, *_):
             self.get_clipboard().set(self.answer)
