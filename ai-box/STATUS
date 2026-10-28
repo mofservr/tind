@@ -1,4 +1,4 @@
 ref: ai-box
-sha: 021fc97ee7433979dc874e651c2b993885767341
-run: 40758777223
-results: packages=success iso=skipped boot=skipped
+sha: 5f32ad29b75f6ae63f80a001b1cdf56802cf6f68
+run: 40762215072
+results: packages=failure iso=skipped boot=skipped
