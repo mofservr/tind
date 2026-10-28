@@ -377,7 +377,7 @@ LETTERS = [
     (SH, 'toggle-application-view', 'Show apps'), (CUSTOM, 'tind-browser', 'Browser'),
     (MK, 'calculator', 'Calculator'), (WM, 'show-desktop', 'Show desktop'),
     (CUSTOM, 'tind-editor', 'Writer / Text Editor'), (CUSTOM, 'tind-files', 'Files'), (CUSTOM, 'tind-steam', 'Steam'),
-    (CUSTOM, 'tind-help', 'Hotkey overview'), (MK, 'screensaver', 'Lock screen'), (MK, 'mic-mute', 'Microphone mute'),
+    (CUSTOM, 'tind-help', 'Hotkey overview'), (CUSTOM, 'tind-ai', 'AI assistant'), (MK, 'screensaver', 'Lock screen'), (MK, 'mic-mute', 'Microphone mute'),
     (SH, 'toggle-message-tray', 'Notifications'), (SH, 'toggle-quick-settings', 'Quick Settings'),
     (SH, 'show-screen-recording-ui', 'Screen recording'), (MK, 'control-center', 'Settings'),
     (CUSTOM, 'tind-terminal-super', 'Terminal'), (CUSTOM, 'tind-software', 'Software'),
