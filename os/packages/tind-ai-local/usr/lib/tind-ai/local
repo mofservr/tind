@@ -47,6 +47,8 @@ def journal():
         out = subprocess.run(['journalctl', '-b', '-p', 'warning', '-n', str(JOURNAL_LINES), '--no-pager', '-q',
                               '-o', 'short-iso'], capture_output=True, text=True, timeout=30)
         text = out.stdout.strip()
+        if not text and out.stderr.strip():
+            return '(the journal could not be read: %s)' % out.stderr.strip()[:300]
         return text or '(no warnings or errors in this boot\'s journal)'
     except (OSError, subprocess.SubprocessError) as e:
         return '(journal not readable: %s)' % e

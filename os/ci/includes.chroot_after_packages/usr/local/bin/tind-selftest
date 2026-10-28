@@ -226,8 +226,11 @@ probe() {   # probe USER ADDRESS PORT -> "connected", or the errno name the kern
 s = socket.socket(socket.AF_INET6 if ":" in sys.argv[1] else socket.AF_INET); s.settimeout(6)
 try:
     s.connect((sys.argv[1], int(sys.argv[2]))); print("connected")
+except (TimeoutError, socket.timeout):
+    print("blocked")          # the firewall drops the packets
 except OSError as e:
-    print(errno.errorcode.get(e.errno, str(e)) if e.errno else type(e).__name__)' "$2" "$3" 2>&1 | tail -1
+    n = errno.errorcode.get(e.errno, str(e)) if e.errno else type(e).__name__
+    print("blocked" if n == "EPERM" else n)' "$2" "$3" 2>&1 | tail -1
 }
 denied() {  # denied USER CMD... -> ok when the command fails with "Permission denied"
     local u="$1"; shift
@@ -236,11 +239,14 @@ denied() {  # denied USER CMD... -> ok when the command fails with "Permission d
     else echo "FAIL $(echo "$out" | head -1)"; fi
 }
 id tind-ai-local >/dev/null 2>&1 && id tind-ai-remote >/dev/null 2>&1 && ai users ok || ai users FAIL
+# control: the same probe as the human gets "refused" at once from a closed local port, so "blocked" below is the firewall
+r="$(probe tind 127.0.0.1 22)"; [ "$r" = ECONNREFUSED ] && ai probe-control ok || ai probe-control "FAIL $r"
+
 nft list table inet tind_ai >/dev/null 2>&1 && ai firewall-loaded ok \
     || ai firewall-loaded "FAIL $(systemctl status tind-ai-firewall --no-pager 2>&1 | tail -3 | tr '\n' '|')"
-r="$(probe tind-ai-local 1.1.1.1 443)"; [ "$r" = EPERM ] && ai local-no-network ok || ai local-no-network "FAIL $r"
-r="$(probe tind-ai-local 127.0.0.1 22)"; [ "$r" = EPERM ] && ai local-no-loopback ok || ai local-no-loopback "FAIL $r"
-r="$(probe tind-ai-remote 1.1.1.1 443)"; [ "$r" = EPERM ] && ai remote-closed-by-default ok || ai remote-closed-by-default "FAIL $r"
+r="$(probe tind-ai-local 1.1.1.1 443)"; [ "$r" = blocked ] && ai local-no-network ok || ai local-no-network "FAIL $r"
+r="$(probe tind-ai-local 127.0.0.1 22)"; [ "$r" = blocked ] && ai local-no-loopback ok || ai local-no-loopback "FAIL $r"
+r="$(probe tind-ai-remote 1.1.1.1 443)"; [ "$r" = blocked ] && ai remote-closed-by-default ok || ai remote-closed-by-default "FAIL $r"
 for u in tind-ai-local tind-ai-remote; do
     p="$(systemctl show "$( [ $u = tind-ai-local ] && echo tind-ai-local.service || echo tind-ai-remote@custom.service)" \
          -p User -p ProtectHome -p ProtectSystem -p NoNewPrivileges -p PrivateNetwork 2>&1 | tr '\n' ' ')"
@@ -286,12 +292,13 @@ echo "$out" | grep -q '"brief_ok": true' && ai brief ok || ai brief "FAIL $(echo
 echo "$out" | grep -q '"send_ok": true' && echo "$out" | grep -q 'Fake answer' && ai send-and-answer ok \
     || ai send-and-answer "FAIL $(echo "$out" | tail -1)"
 grep -q 'planted for the AI test' /tmp/tind-ci-brief.txt && ai journal-in-briefing ok || ai journal-in-briefing "FAIL the planted journal line is not in the briefing"
+sed -n '/^## System journal/,/^```$/p' /tmp/tind-ci-brief.txt | head -8
 leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
     grep -q "$v" /tmp/tind-ci-brief.txt /run/tind-ci-fakeai-got.json 2>/dev/null && leak="$leak $v"
 done
 [ -s /run/tind-ci-fakeai-got.json ] && [ -z "$leak" ] && ai nothing-planted-left-the-computer ok \
     || ai nothing-planted-left-the-computer "FAIL ${leak:-the fake provider received nothing}"
-r="$(probe tind-ai-remote 127.0.0.1 8098)"; [ "$r" = EPERM ] && ai remote-only-its-host-and-port ok || ai remote-only-its-host-and-port "FAIL $r"
+r="$(probe tind-ai-remote 127.0.0.1 8098)"; [ "$r" = blocked ] && ai remote-only-its-host-and-port ok || ai remote-only-its-host-and-port "FAIL $r"
 ai local-cannot-read-outbox "$(denied tind-ai-local ls /var/lib/tind-ai/outbox/$UIDN)"
 ai remote-cannot-read-local-state "$(denied tind-ai-remote ls /var/lib/tind-ai/local)"
 ai remote-cannot-read-keys "$(denied tind-ai-remote cat /etc/tind-ai/keys/custom)"

@@ -147,7 +147,7 @@ def main():
 
     class Win(Adw.ApplicationWindow):
         def __init__(self, app):
-            super().__init__(application=app, title='AI assistant', default_width=760, default_height=640)
+            super().__init__(application=app, title='AI assistant', default_width=760, default_height=720)
             self.settings = load_settings()
             self.providers = tindai.providers()
             pids = [p['id'] for p in self.providers]
@@ -224,7 +224,7 @@ def main():
 
             box.append(Gtk.Label(label='What do you need help with?', xalign=0, css_classes=['heading']))
             self.req = textview(True, 'tind-ai-request')
-            box.append(scrolled(self.req, 110))
+            box.append(scrolled(self.req, 90))
 
             share = Adw.PreferencesGroup(title='Share with the request',
                                          description='Everything is redacted on this computer and shown to you before it is sent.')
