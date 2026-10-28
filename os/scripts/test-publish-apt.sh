@@ -139,7 +139,7 @@ run t4 3 "$t/debs1" t2 TIND_APT_TEST_CLEAR=1
 expect "$(suite_ver t4 test tind-zz-test)"    ""        "test: clearing empties the test channel"
 
 mkdir -p "$t/tbad"; cp "$t"/debs1/tind-*.deb "$t/tbad/"; br="$(ls "$t"/tbad/tind-branding_*_all.deb)"
-reversion "$br" "${oldver}.9" "$t/tbad"; rm "$br"
+reversion "$br" "99.0.0" "$t/tbad"; rm "$br"   # a plain version, whatever the branch's own one is
 if TIND_APT_OUT="$t/tbad-out" TIND_APT_DEBS="$t/debs1" TIND_APT_TEST_DEBS="$t/tbad" TIND_APT_NOW=$((T0 + DAY)) TIND_APT_PREV_DIR="$t/s1" TIND_APT_WITHDRAWN="$t/WITHDRAWN" bash "$PUB" > "$t/tbad.log" 2>&1; then fail "a branch version without ~test was accepted"; fi
 grep -q "no ~test" "$t/tbad.log" || fail "the ~test message is missing"
 echo "ok: a branch version without ~test is refused"
