@@ -4,6 +4,7 @@
 #   tind-channel                 show the current channel
 #   sudo tind-channel stable     the default: a package version arrives 14 days after it first appeared on next
 #   sudo tind-channel next       packages arrive immediately (for testing)
+#   sudo tind-channel test       next, plus the test branch's packages on top (Morten's test machine)
 set -euo pipefail
 SRC=/etc/apt/sources.list.d/tind.sources
 die() { echo "tind-channel: $*" >&2; exit 1; }
@@ -11,7 +12,15 @@ die() { echo "tind-channel: $*" >&2; exit 1; }
 current="$(sed -n 's/^Suites:[[:space:]]*//p' "$SRC" | head -1)"
 case "${1:-}" in
     "")
-        echo "Tind update channel: ${current:-unknown}" ;;
+        case "$current" in
+            "next test") echo "Tind update channel: test (next, plus the test branch's packages)" ;;
+            *) echo "Tind update channel: ${current:-unknown}" ;;
+        esac ;;
+    test)
+        [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-channel test"
+        sed -i "s/^Suites:.*/Suites: next test/" "$SRC"
+        echo "Tind update channel: test (next, plus the test branch's packages). Run 'sudo apt update' to refresh."
+        echo "Back with 'sudo tind-channel next'; packages installed from test stay until next has newer ones." ;;
     stable|next)
         [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-channel $1"
         sed -i "s/^Suites:.*/Suites: $1/" "$SRC"

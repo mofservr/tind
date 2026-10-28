@@ -1,5 +1,5 @@
 Package: tind-archive-keyring
-Version: 0.1.0
+Version: 0.1.1
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: misc
@@ -11,6 +11,7 @@ Description: Tind update repository: signing key and apt source
  tind-* packages update like everything else. The key fingerprint is
  0F04 FB12 B3F9 7F21 F377 2F7F FE16 2F9E 34C4 D769.
  .
- Two channels: "stable" (the default; a package version arrives 14 days after it first appeared on
- "next") and "next" (immediately). Switch with: sudo tind-channel next|stable.
+ Channels: "stable" (the default; a package version arrives 14 days after it first appeared on
+ "next"), "next" (immediately) and "test" (next plus a test branch's packages, for Morten's test
+ machine). Switch with: sudo tind-channel next|stable|test.
  Updates install silently through unattended-upgrades.

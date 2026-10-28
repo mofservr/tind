@@ -4,6 +4,8 @@ name: publish-apt
 #
 # When it runs:
 #   - after every successful "build" on main (all jobs green, ISO boot test included),
+#   - after every successful "build" on a test branch (TEST_BRANCHES below): that branch's changed packages are put on
+#     the "test" channel, next and stable are rebuilt from main as usual,
 #   - once a day: this is what promotes a package version from "next" to "stable" after 14 days,
 #   - by hand (Actions > publish-apt > Run workflow), optionally with fast-track or first-run.
 # Automatic runs publish the newest main commit whose "build" run succeeded, never a commit that failed.
@@ -13,7 +15,7 @@ on:
   workflow_run:
     workflows: [build]
     types: [completed]
-    branches: [main]
+    branches: [main, ai-box]   # main, then the test branches (keep in step with TEST_BRANCHES)
   schedule:
     - cron: '17 3 * * *'
   workflow_dispatch:
@@ -24,6 +26,10 @@ on:
         default: false
       first_run:
         description: 'First publish: there is no live site to read yet'
+        type: boolean
+        default: false
+      clear_test:
+        description: 'Empty the test channel'
         type: boolean
         default: false
 
@@ -38,6 +44,9 @@ concurrency:
   group: apt-publish
   cancel-in-progress: false
 
+env:
+  TEST_BRANCHES: ' ai-box '   # branches whose green builds refresh the test channel, space separated
+
 jobs:
   site:
     if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
@@ -48,7 +57,17 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT: ${{ github.event_name }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
+          if [ "$EVENT" = workflow_run ] && [ "$RUN_BRANCH" != main ]; then
+            case "$TEST_BRANCHES" in
+              *" $RUN_BRANCH "*) echo "test channel: $RUN_BRANCH at $RUN_SHA"
+                                 echo "test_sha=$RUN_SHA" >> "$GITHUB_OUTPUT"
+                                 echo "test_ref=$RUN_BRANCH@${RUN_SHA:0:7}" >> "$GITHUB_OUTPUT" ;;
+              *) echo "$RUN_BRANCH is not a test branch: nothing to publish" >&2; exit 1 ;;
+            esac
+          fi
           if [ "$EVENT" = workflow_dispatch ]; then
             # a manual run publishes the commit it was started on (needed for the very first publish)
             echo "manual run: publishing commit $GITHUB_SHA"
@@ -62,17 +81,26 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ steps.sha.outputs.sha }}
+      - uses: actions/checkout@v4
+        if: ${{ steps.sha.outputs.test_sha != '' }}
+        with:
+          ref: ${{ steps.sha.outputs.test_sha }}
+          path: test-src
       - name: Install tools
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends apt-utils gnupg jq xz-utils curl dpkg-dev
       - name: Build the packages and test the publisher
         run: |
           os/packages/build-debs.sh
           os/scripts/test-publish-apt.sh
+          if [ -d test-src ]; then test-src/os/packages/build-debs.sh; fi
       - name: Build the signed repository
         env:
           TIND_APT_SIGNING_KEY: ${{ secrets.TIND_APT_SIGNING_KEY }}
           TIND_APT_FAST_TRACK: ${{ inputs.fast_track && '1' || '0' }}
           TIND_APT_FIRST_RUN: ${{ inputs.first_run && '1' || '0' }}
+          TIND_APT_TEST_CLEAR: ${{ inputs.clear_test && '1' || '0' }}
+          TIND_APT_TEST_DEBS: ${{ steps.sha.outputs.test_sha != '' && format('{0}/test-src/os/dist', github.workspace) || '' }}
+          TIND_APT_TEST_REF: ${{ steps.sha.outputs.test_ref }}
           TIND_APT_URL: https://apt.servr.no
           TIND_APT_OUT: ${{ github.workspace }}/site
         run: os/scripts/publish-apt.sh

@@ -106,6 +106,47 @@ rm "$t"/bad/tind-branding_*.deb
 if TIND_APT_OUT="$t/bad-out" TIND_APT_DEBS="$t/bad" TIND_APT_FIRST_RUN=1 bash "$PUB" >/dev/null 2>&1; then fail "a non tind-* package was accepted"; fi
 echo "ok: non tind-* package refused"
 
+# ---- the test channel: a branch's packages on top of next ------------------------------------------------
+reversion() {   # source.deb new-version dest-dir
+    local w; w="$(mktemp -d -p "$t")"; dpkg-deb -R "$1" "$w"
+    sed -i "s/^Version: .*/Version: $2/" "$w/DEBIAN/control"
+    dpkg-deb --root-owner-group -Zxz --build "$w" "$3/$(dpkg-deb -f "$1" Package)_${2}_all.deb" >/dev/null
+}
+mkdir -p "$t/tdebs"; cp "$t"/debs1/tind-*.deb "$t/tdebs/"
+br="$(ls "$t"/tdebs/tind-branding_*_all.deb)"; tver="${oldver}.1~test1"; reversion "$br" "$tver" "$t/tdebs"; rm "$br"
+mkdir -p "$t/zz/DEBIAN" "$t/zz/usr/share/tind-zz-test"; echo marker > "$t/zz/usr/share/tind-zz-test/marker"
+printf 'Package: tind-zz-test\nVersion: 0.1.0~test1\nArchitecture: all\nMaintainer: Test <test@example.invalid>\nDescription: test channel package\n' > "$t/zz/DEBIAN/control"
+dpkg-deb --root-owner-group -Zxz --build "$t/zz" "$t/tdebs/tind-zz-test_0.1.0~test1_all.deb" >/dev/null
+
+run t1 1 "$t/debs1" s1 TIND_APT_TEST_DEBS="$t/tdebs" TIND_APT_TEST_REF="ai-box@abc1234"
+expect "$(suite_ver t1 next tind-branding)"   "$oldver" "test: a branch publish leaves next alone"
+expect "$(suite_ver t1 stable tind-branding)" ""        "test: a branch publish leaves stable alone"
+expect "$(suite_ver t1 test tind-branding)"   "$tver"   "test: the branch's changed package is on test"
+expect "$(suite_ver t1 test tind-zz-test)"    "0.1.0~test1" "test: a new branch package is on test"
+expect "$(suite_ver t1 test tind-desktop)"    ""        "test: packages the branch did not change stay on next only"
+expect "$(jq -r .test_ref "$t/t1/state/first-seen.json")" "ai-box@abc1234" "test: the branch is recorded in the state"
+
+run t2 2 "$t/debs1" t1
+expect "$(suite_ver t2 test tind-branding)"   "$tver"   "test: a main publish keeps the test channel"
+expect "$(suite_ver t2 test tind-zz-test)"    "0.1.0~test1" "test: a main publish keeps new test packages"
+[ -f "$t/t2/pool/main/tind-zz-test/tind-zz-test_0.1.0~test1_all.deb" ] || fail "test file was not carried over"
+
+run t3 3 "$t/debs2" t2
+expect "$(suite_ver t3 test tind-branding)"   ""        "test: a package next has caught up with leaves test"
+expect "$(suite_ver t3 test tind-zz-test)"    "0.1.0~test1" "test: the rest of test stays"
+
+run t4 3 "$t/debs1" t2 TIND_APT_TEST_CLEAR=1
+expect "$(suite_ver t4 test tind-zz-test)"    ""        "test: clearing empties the test channel"
+
+mkdir -p "$t/tbad"; cp "$t"/debs1/tind-*.deb "$t/tbad/"; br="$(ls "$t"/tbad/tind-branding_*_all.deb)"
+reversion "$br" "${oldver}.9" "$t/tbad"; rm "$br"
+if TIND_APT_OUT="$t/tbad-out" TIND_APT_DEBS="$t/debs1" TIND_APT_TEST_DEBS="$t/tbad" TIND_APT_NOW=$((T0 + DAY)) TIND_APT_PREV_DIR="$t/s1" TIND_APT_WITHDRAWN="$t/WITHDRAWN" bash "$PUB" > "$t/tbad.log" 2>&1; then fail "a branch version without ~test was accepted"; fi
+grep -q "no ~test" "$t/tbad.log" || fail "the ~test message is missing"
+echo "ok: a branch version without ~test is refused"
+if TIND_APT_OUT="$t/tsame-out" TIND_APT_DEBS="$t/debs1" TIND_APT_TEST_DEBS="$t/same" TIND_APT_NOW=$((T0 + DAY)) TIND_APT_PREV_DIR="$t/s1" TIND_APT_WITHDRAWN="$t/WITHDRAWN" bash "$PUB" > "$t/tsame.log" 2>&1; then fail "a branch package with next's version but other contents was accepted"; fi
+grep -q "differs from the same version on next" "$t/tsame.log" || fail "the same-version message is missing"
+echo "ok: a branch package with next's version but other contents is refused"
+
 # real apt against the day-34 site: signature check, then install
 mkdir -p "$t/apt/state/lists/partial" "$t/apt/cache/archives/partial" "$t/apt/etc"
 cat > "$t/apt/etc/tind.sources" <<EOF
@@ -132,4 +173,20 @@ grep -q '^Label: Evil' "$t/s6-bad/dists/stable/InRelease" || fail "tamper step d
 sed -i "s#file://$t/s6#file://$t/s6-bad#" "$t/apt/etc/tind.sources"; rm -rf "$t/apt/state/lists"; mkdir -p "$t/apt/state/lists/partial"
 apt-get "${APT[@]}" update > "$t/tamper.log" 2>&1 || true; cat "$t/tamper.log"
 if grep -qE "BADSIG|is not signed" "$t/tamper.log"; then echo "ok: tampered InRelease rejected"; else fail "tampered InRelease was not rejected"; fi
+
+# real apt on the test channel: "Suites: next test" sees the branch version on top of next
+mkdir -p "$t/apt2/state/lists/partial" "$t/apt2/cache/archives/partial" "$t/apt2/etc"
+cat > "$t/apt2/etc/tind.sources" <<EOF
+Types: deb
+URIs: file://$t/t1
+Suites: next test
+Components: main
+Signed-By: $t/test-keyring.gpg
+EOF
+APT2=(-o "Dir::Etc::sourcelist=/dev/null" -o "Dir::Etc::sourceparts=$t/apt2/etc" -o "Dir::State=$t/apt2/state"
+     -o "Dir::State::status=/var/lib/dpkg/status" -o "Dir::Cache=$t/apt2/cache" -o "Debug::NoLocking=1" -o "APT::Sandbox::User="
+     -o "APT::Architectures::=amd64" -o "APT::Architectures::=i386")
+apt-get "${APT2[@]}" update > "$t/update2.log" 2>&1 || { cat "$t/update2.log"; fail "apt-get update on next + test failed"; }
+expect "$(apt-cache "${APT2[@]}" policy tind-branding | sed -n 's/^  Candidate: //p')" "$tver" "real apt: next + test offers the branch version"
+expect "$(apt-cache "${APT2[@]}" policy tind-desktop | sed -n 's/^  Candidate: //p')" "$(dpkg-deb -f "$(ls "$t"/debs1/tind-desktop_*_all.deb)" Version)" "real apt: next + test still offers next's other packages"
 echo "ALL PUBLISH TESTS PASSED"
