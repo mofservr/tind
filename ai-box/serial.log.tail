@@ -1,4 +1,3 @@
-formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
 newtab@mozilla.org active=true location=app-builtin-addons
 pictureinpicture@mozilla.org active=true location=app-builtin-addons
@@ -13,8 +12,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "7be1fd72-0cbb-4f86-a321-2824366f2e94");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "8f9766d2-9fc4-42a2-bc75-b3737266416f");
+user_pref("toolkit.telemetry.cachedClientID", "441cf8fd-661d-495f-8bb0-4a5fe93133f1");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "5a650837-0fae-4814-a7f6-8f74a8decf03");
 user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -53,7 +52,7 @@ tind-enroll apply: no shell errors
 tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (2f1b3a14-01b4-4b14-82b7-9401ef6e1beb) successfully deleted.
+Connection 'tind-servr' (4879bcd3-ed07-4e6b-9dd5-7802bcdee0d4) successfully deleted.
 Removed this device's private key.
 
 ##### wireguard watchdog
@@ -72,7 +71,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 227 Oct 29 06:23 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 227 Oct 29 15:17 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=/usr/lib/tind/install-launcher
 Icon=tind-logo
@@ -84,8 +83,8 @@ NoDisplay=true
 ai.optin	     developer.optin	  hardware.optin
 communication.optin  entertainment.optin  productivity.optin
 creative.optin	     gaming.optin	  security.optin
--rwxr-xr-x 1 root root 2927 Oct 29 06:23 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 1246 Oct 29 06:23 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 2927 Oct 29 15:17 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Oct 29 15:17 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -190,7 +189,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Oct 29 06:42 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Oct 29 15:45 /var/lib/tind/apt-refreshed
 56
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -213,7 +212,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Thu 2026-10-29 06:41:48 CET; 1min 50s ago
+  Condition: start condition unmet at Thu 2026-10-29 15:44:53 CET; 1min 51s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -232,12 +231,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:38105
+udp 0.0.0.0:42309
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
 udp [::]:5353
-udp [::]:59531
+udp [::]:56049
 
 ##### hardware basics
 active
@@ -254,7 +253,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-456 /tmp/tind-report-test.txt
+457 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -307,35 +306,34 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 installed packages: 1655
 
 ##### journal errors (this boot)
-Oct 29 06:41:51 tind adduser[1062]: The group `powerdev' does not exist.
-Oct 29 06:41:51 tind adduser[1078]: The group `debian-tor' does not exist.
-Oct 29 06:41:57 tind gdm-autologin][1480]: gkr-pam: couldn't unlock the login keyring.
-Oct 29 06:41:58 tind systemd[1489]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1661.scope - Application launched by gnome-session-binary.
-Oct 29 06:41:58 tind systemd[1489]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1679.scope - Application launched by gnome-session-binary.
-Oct 29 06:42:05 tind systemd[1489]: Failed to start app-gnome-tind\x2dlive\x2ddock-1843.scope - Application launched by gnome-session-binary.
-Oct 29 06:42:05 tind systemd[1489]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1847.scope - Application launched by gnome-session-binary.
+Oct 29 15:44:52 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+Oct 29 15:44:56 tind adduser[1092]: The group `powerdev' does not exist.
+Oct 29 15:44:56 tind adduser[1108]: The group `debian-tor' does not exist.
+Oct 29 15:45:02 tind gdm-autologin][1511]: gkr-pam: couldn't unlock the login keyring.
+Oct 29 15:45:03 tind systemd[1519]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1691.scope - Application launched by gnome-session-binary.
+Oct 29 15:45:03 tind systemd[1519]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1709.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 29 06:41:59 tind gnome-shell[1678]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Oct 29 06:41:59 tind gnome-shell[1678]: Enabling experimental feature 'scale-monitor-framebuffer'
-Oct 29 06:41:59 tind gnome-shell[1678]: Enabling experimental feature 'xwayland-native-scaling'
-Oct 29 06:42:02 tind gnome-shell[1678]: Thread 'KMS thread' will be using high priority scheduling
-Oct 29 06:42:02 tind gnome-shell[1678]: pci id for fd 15: 1234:1111, driver (null)
-Oct 29 06:42:02 tind gnome-shell[1678]: pci id for fd 12: 1234:1111, driver (null)
-Oct 29 06:42:02 tind gnome-shell[1678]: kmsro: driver missing
-Oct 29 06:42:02 tind gnome-shell[1678]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 29 06:42:02 tind gnome-shell[1678]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 29 06:42:02 tind gnome-shell[1678]: Created gbm renderer for '/dev/dri/card0'
-Oct 29 06:42:02 tind gnome-shell[1678]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 29 06:42:02 tind gnome-shell[1678]: Using public X11 display :0, (using :1 for managed services)
-Oct 29 06:42:02 tind gnome-shell[1678]: Using Wayland display name 'wayland-0'
-Oct 29 06:42:02 tind gnome-shell[1678]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 29 06:42:04 tind gnome-shell[1678]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 29 06:42:05 tind gnome-shell[1678]: Will monitor session 1
-Oct 29 06:42:06 tind gnome-shell[1678]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 29 06:42:12 tind gnome-shell[1678]: GNOME Shell started at Thu Oct 29 2026 06:42:04 GMT+0100 (Central European Standard Time)
-Oct 29 06:42:12 tind gnome-shell[1678]: Registering session with GDM
-Oct 29 06:43:31 tind gnome-shell[1678]: Invalid sequence for VSYNC frame info
+Oct 29 15:45:03 tind gnome-shell[1708]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Oct 29 15:45:03 tind gnome-shell[1708]: Enabling experimental feature 'scale-monitor-framebuffer'
+Oct 29 15:45:03 tind gnome-shell[1708]: Enabling experimental feature 'xwayland-native-scaling'
+Oct 29 15:45:06 tind gnome-shell[1708]: Thread 'KMS thread' will be using high priority scheduling
+Oct 29 15:45:06 tind gnome-shell[1708]: pci id for fd 12: 1234:1111, driver (null)
+Oct 29 15:45:06 tind gnome-shell[1708]: pci id for fd 13: 1234:1111, driver (null)
+Oct 29 15:45:06 tind gnome-shell[1708]: kmsro: driver missing
+Oct 29 15:45:07 tind gnome-shell[1708]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Oct 29 15:45:07 tind gnome-shell[1708]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Oct 29 15:45:07 tind gnome-shell[1708]: Created gbm renderer for '/dev/dri/card0'
+Oct 29 15:45:07 tind gnome-shell[1708]: Boot VGA GPU /dev/dri/card0 selected as primary
+Oct 29 15:45:07 tind gnome-shell[1708]: Using public X11 display :0, (using :1 for managed services)
+Oct 29 15:45:07 tind gnome-shell[1708]: Using Wayland display name 'wayland-0'
+Oct 29 15:45:07 tind gnome-shell[1708]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Oct 29 15:45:08 tind gnome-shell[1708]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Oct 29 15:45:09 tind gnome-shell[1708]: Will monitor session 1
+Oct 29 15:45:10 tind gnome-shell[1708]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Oct 29 15:45:16 tind gnome-shell[1708]: GNOME Shell started at Thu Oct 29 2026 15:45:08 GMT+0100 (Central European Standard Time)
+Oct 29 15:45:16 tind gnome-shell[1708]: Registering session with GDM
+Oct 29 15:46:35 tind gnome-shell[1708]: Invalid sequence for VSYNC frame info
 
 ##### ai box
 AI users ok
@@ -349,19 +347,19 @@ AI tind-ai-remote-sandbox ok
 AI local-private-network ok
 socket units: active active active 
 setkey: key stored for custom
-{"brief_ok": true, "error": null, "id": "20261029-064410-00ea687e", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
+{"brief_ok": true, "error": null, "id": "20261029-154717-48c4e2e8", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
 {"send_ok": true, "error": null, "answer": "Fake answer from the CI provider.\n```bash\necho hello\n```"}
 AI brief ok
 AI send-and-answer ok
 AI journal-in-briefing ok
 ## System journal, this boot, warnings and errors (last 300 lines)
 ```
-2026-10-29T06:41:47+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
-2026-10-29T06:41:47+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/s
-2026-10-29T06:41:47+01:00 localhost.localdomain kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
-2026-10-29T06:41:47+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
-2026-10-29T06:41:47+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
-2026-10-29T06:41:51+01:00 tind adduser[1062]: The group `powerdev' does not exist.
+2026-10-29T15:44:52+01:00 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+2026-10-29T15:44:52+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-10-29T15:44:52+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-10-29T15:44:56+01:00 tind adduser[1092]: The group `powerdev' does not exist.
+2026-10-29T15:44:56+01:00 tind adduser[1108]: The group `debian-tor' does not exist.
+2026-10-29T15:45:00+01:00 tind udisksd[1391]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data return
 AI nothing-planted-left-the-computer ok
 AI remote-only-its-host-and-port ok
 AI local-cannot-read-outbox ok
@@ -376,12 +374,14 @@ AI human-reads-own-answer ok
 700 tind-ai-local /var/lib/tind-ai/local/1000
 750 tind-ai-remote /var/lib/tind-ai/outbox/1000
 local service: ok
-scaleway   Scaleway (France · EU)   key: not set
-ionos      IONOS (Germany · EU)     key: not set
-mistral    Mistral (France · EU)    key: not set
-anthropic  Anthropic (Claude) (USA · outside the EU) key: not set
-openai     OpenAI (ChatGPT) (USA · outside the EU) key: not set
-custom     Custom endpoint (you choose) key: set
+scaleway   Scaleway - France              no key yet
+ionos      IONOS - Germany                no key yet
+mistral    Mistral - France               no key yet
+anthropic  Anthropic - USA                no key yet
+openai     OpenAI - USA                   no key yet
+local      This computer - local          No local model is installed on this computer yet
+custom     Custom server - your choice    key set
+saved chats: 1
 
 ##### daily machine checks
 DAILY failed-units ok
