@@ -318,7 +318,7 @@ jobs:
             hk_shot hotkeys-light
             settings_shot settings-light 268
             sleep $(( 288 - ( $(date +%s) - T0 ) )) || true
-            ai_shot ai-ask-light
+            ai_shot ai-chat-light
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop

@@ -1,17 +1,18 @@
 #!/usr/bin/python3
-"""tind-ai-ask: the Ask window of the Tind AI box (Super+K). Runs as the human.
+"""tind-ai-ask: the AI assistant's chat window (Super+K). Runs as the human.
 
-  tind-ai-ask           open the window (a second start brings the open window to the front)
-  tind-ai-ask --check   print whether the services answer and which providers have a key (no window)
+  tind-ai-ask              open the window (a second start brings the open window to the front)
+  tind-ai-ask --open last  open the most recent chat (used by the CI self-test)
+  tind-ai-ask --check      print whether the services answer and which providers have a key (no window)
 
-What happens, in order:
-  1. The first time, a short guide and the "I accept the responsibility and risk of using AI" box.
-  2. The human writes the request and picks what to share. This window, running as the human, reads those things
-     itself (tind-report, Steam and Proton logs, chosen files); the system journal is added by the local service.
-  3. The local service (tind-ai-local, no network) redacts it all and saves the briefing; this window shows the exact
-     text that would leave the computer, with the provider and its country on the Send button.
-  4. Only on Send does that provider's remote service (tind-ai-remote@PROVIDER) send the saved briefing. The answer is
-     shown here. Nothing in it runs by itself: commands and file changes can only be copied or saved by the human.
+How a message travels (see /usr/share/doc/tind-ai-users/README):
+  1. You type (Direct). Attaching system data (system log, Tind report, Steam logs, files) makes it Checked: the exact
+     text is shown before it is sent. This window reads your own files; the system log is added by the local service.
+  2. The local service (tind-ai-local, no network) hides names, addresses, keys and other secrets with fixed rules and
+     saves the briefing. "Unredacted" skips the rules for one message.
+  3. The provider's remote service (tind-ai-remote@PROVIDER) sends that saved briefing and writes the answer to your
+     outbox. Nothing in an answer runs by itself.
+Chats are kept in ~/.local/share/tind-ai/chats/<provider>/ (readable by you only) until you delete them.
 """
 import glob
 import json
@@ -22,49 +23,55 @@ import subprocess
 import sys
 import tempfile
 import threading
+import time
 
 sys.path.insert(0, '/usr/lib/tind-ai')
 import tindai  # noqa: E402
 
 CONFIG_DIR = os.path.join(os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config'), 'tind-ai')
+DATA_DIR = os.path.join(os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share'), 'tind-ai')
+CHATS_DIR = os.path.join(DATA_DIR, 'chats')
 ACCEPTED = os.path.join(CONFIG_DIR, 'accepted')
 SETTINGS = os.path.join(CONFIG_DIR, 'settings.json')
 MAX_FILE = 200_000
+SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
 
 GUIDE = (
     "This window lets an AI service help you with your computer: a setting, an error message, a program that will "
     "not start, a script.\n\n"
     "How it keeps you in control:\n"
-    "• You choose what to share. Before anything is sent you see the exact text, with names, addresses, keys and "
-    "passwords replaced by placeholders such as [user-1] or [ip-1].\n"
-    "• Only that text is sent, to the provider named on the Send button. European providers are the default; "
-    "providers outside the EU are marked.\n"
+    "• What you type is sent with names, addresses, keys and passwords replaced by placeholders such as [user-1] or "
+    "[ip-1]. Each message shows what was hidden.\n"
+    "• When you attach system data (logs, the Tind report, files) you see the exact text before it is sent.\n"
+    "• Only that text goes to the provider named at the top. European providers are the default.\n"
     "• The AI cannot run anything on this computer. Its suggestions are shown to you; you decide what to copy and run.\n\n"
     "AI answers can be wrong. Read a command before you run it, and keep backups of what matters.")
 
 
-def load_settings():
+# ---- small helpers (no GTK) -----------------------------------------------------------------------------------------
+def load_json(path, default):
     try:
-        with open(SETTINGS, encoding='utf-8') as f:
+        with open(path, encoding='utf-8') as f:
             return json.load(f)
     except (OSError, ValueError):
-        return {}
+        return default
 
 
-def save_settings(s):
-    os.makedirs(CONFIG_DIR, exist_ok=True)
-    with open(SETTINGS + '.tmp', 'w', encoding='utf-8') as f:
-        json.dump(s, f, indent=1)
-    os.rename(SETTINGS + '.tmp', SETTINGS)
+def save_json(path, obj, mode=0o600):
+    os.makedirs(os.path.dirname(path), mode=0o700, exist_ok=True)
+    tmp = path + '.tmp'
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, mode)
+    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+        json.dump(obj, f, ensure_ascii=False, indent=1)
+    os.rename(tmp, path)
 
 
-def provider_ready(pid):
-    return os.path.exists(os.path.join(tindai.READY_DIR, pid))
-
-
-def provider_label(p):
-    where = p['country'] + (' · EU' if p.get('eu') is True else ' · outside the EU' if p.get('eu') is False else '')
-    return '%s (%s)' % (p['name'], where)
+def provider_ready(p):
+    if p.get('unavailable'):
+        return False
+    if p.get('service') == 'local':
+        return True
+    return os.path.exists(os.path.join(tindai.READY_DIR, p['id']))
 
 
 def tail_file(path, limit=MAX_FILE):
@@ -98,28 +105,79 @@ def collect_steam():
     return [(os.path.basename(f), tail_file(f, 80_000)) for f in found]
 
 
+def all_chats():
+    """Every saved chat, newest first: list of (path, chat dict)."""
+    out = []
+    for path in glob.glob(os.path.join(CHATS_DIR, '*', '*.json')):
+        chat = load_json(path, None)
+        if isinstance(chat, dict) and chat.get('id'):
+            out.append((path, chat))
+    out.sort(key=lambda pc: pc[1].get('updated', 0), reverse=True)
+    return out
+
+
+def chat_path(chat):
+    return os.path.join(CHATS_DIR, chat['provider'], chat['id'] + '.json')
+
+
+def split_blocks(text):
+    """[('text', str) | ('code', lang, str)] from an answer with ``` fenced blocks."""
+    out, pos = [], 0
+    for m in re.finditer(r'```([A-Za-z0-9_+.-]*)[^\n]*\n(.*?)(?:```|\Z)', text, re.S):
+        if m.start() > pos:
+            out.append(('text', text[pos:m.start()]))
+        out.append(('code', (m.group(1) or 'text').lower(), m.group(2).rstrip('\n')))
+        pos = m.end()
+    if pos < len(text):
+        out.append(('text', text[pos:]))
+    return [b for b in out if b[0] == 'code' or b[1].strip()]
+
+
+def to_markup(text, escape):
+    """A little Markdown to Pango markup: headings, bold, inline code, bullets."""
+    lines = []
+    for line in text.strip('\n').split('\n'):
+        head = re.match(r'^(#{1,4})\s+(.*)$', line)
+        body = escape(head.group(2) if head else line)
+        body = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', body)
+        body = re.sub(r'`([^`]+)`', r'<tt>\1</tt>', body)
+        body = re.sub(r'^(\s*)[-*] ', r'\1• ', body)
+        lines.append('<b>%s</b>' % body if head else body)
+    return '\n'.join(lines)
+
+
 def check():
     rc = 0
     try:
-        print('local service:', 'ok' if tindai.call(tindai.LOCAL_SOCKET, {'op': 'ping'}, timeout=30).get('ok') else 'no')
+        ok = tindai.call(tindai.LOCAL_SOCKET, {'op': 'ping'}, timeout=30).get('ok')
+        print('local service:', 'ok' if ok else 'no')
     except OSError as e:
         print('local service: not answering (%s)' % e)
         rc = 1
     for p in tindai.providers():
-        print('%-10s %-24s key: %s' % (p['id'], provider_label(p), 'set' if provider_ready(p['id']) else 'not set'))
+        state = p.get('unavailable') or ('key set' if provider_ready(p) else 'no key yet')
+        print('%-10s %-30s %s' % (p['id'], tindai.provider_label(p), state))
+    print('saved chats: %d' % len(all_chats()))
     return rc
 
 
-def main():
+# ---- the window ---------------------------------------------------------------------------------------------------
+def main(open_target=None):
     import gi
     gi.require_version('Gtk', '4.0')
     gi.require_version('Adw', '1')
     from gi.repository import Adw, Gdk, Gio, GLib, Gtk
 
-    CSS = b"""
-    .tind-ai-text { font-family: monospace; font-size: 0.92em; }
-    .tind-ai-answer { padding: 6px; }
-    textview.tind-ai-request, textview.tind-ai-request text { background: transparent; }
+    CSS = """
+    .tind-me { background: alpha(@accent_bg_color, 0.16); border-radius: 14px; padding: 9px 14px; }
+    .tind-ai { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 9px 14px; }
+    .tind-code { background: alpha(currentColor, 0.07); border-radius: 8px; padding: 4px 10px 8px 10px; }
+    .tind-code label.tind-code-text { font-family: monospace; font-size: 0.93em; }
+    .tind-meta { font-size: 0.85em; }
+    .tind-sent { font-family: monospace; font-size: 0.88em; }
+    .tind-composer { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 6px; }
+    .tind-composer textview, .tind-composer textview text { background: transparent; }
+    .tind-chip { font-size: 0.9em; padding: 0 4px; }
     """
 
     def bg(work, done):
@@ -132,422 +190,370 @@ def main():
             GLib.idle_add(lambda: (done(res, err), False)[1])
         threading.Thread(target=run, daemon=True).start()
 
-    def scrolled(child, min_h=120):
-        sw = Gtk.ScrolledWindow(vexpand=True, hexpand=True, min_content_height=min_h)
-        sw.set_child(child)
-        sw.add_css_class('card')
-        return sw
-
-    def textview(editable, css=None):
-        tv = Gtk.TextView(editable=editable, cursor_visible=editable, wrap_mode=Gtk.WrapMode.WORD_CHAR,
-                          top_margin=10, bottom_margin=10, left_margin=12, right_margin=12)
-        if css:
-            tv.add_css_class(css)
-        return tv
+    def label(text='', classes=(), **kw):
+        lab = Gtk.Label(label=text, xalign=0, wrap=True, css_classes=list(classes), **kw)
+        lab.set_wrap_mode(2)  # Pango WORD_CHAR
+        return lab
 
     class Win(Adw.ApplicationWindow):
-        def __init__(self, app):
-            super().__init__(application=app, title='AI assistant', default_width=760, default_height=720)
-            self.settings = load_settings()
+        def __init__(self, app, open_target):
+            super().__init__(application=app, title='AI assistant', default_width=1040, default_height=740)
+            self.settings = load_json(SETTINGS, {})
             self.providers = tindai.providers()
-            pids = [p['id'] for p in self.providers]
-            default = json.load(open(tindai.PROVIDERS_FILE, encoding='utf-8')).get('default', pids[0])
-            self.pid = self.settings.get('provider') if self.settings.get('provider') in pids else default
-            self.history = []
-            self.conversation = secrets.token_hex(8)
-            self.files = []
-            self.brief = None
+            self.default_pid = load_json(tindai.PROVIDERS_FILE, {}).get('default', self.providers[0]['id'])
+            self.chat = None
+            self.attach = {'journal': False, 'report': False, 'steam': False, 'files': []}
+            self.busy = False
 
             self.toasts = Adw.ToastOverlay()
-            view = Adw.ToolbarView()
-            header = Adw.HeaderBar()
-            self.wtitle = Adw.WindowTitle(title='AI assistant')
-            header.set_title_widget(self.wtitle)
-            self.newbtn = Gtk.Button(icon_name='document-new-symbolic', tooltip_text='New question')
-            self.newbtn.connect('clicked', lambda *_: self.new_question())
-            header.pack_start(self.newbtn)
-            keybtn = Gtk.Button(icon_name='dialog-password-symbolic', tooltip_text='API key for this provider')
-            keybtn.connect('clicked', lambda *_: self.show_key_page())
-            header.pack_end(keybtn)
-            view.add_top_bar(header)
-            self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE)
-            view.set_content(self.stack)
-            self.toasts.set_child(view)
+            self.split = Adw.NavigationSplitView(min_sidebar_width=230, max_sidebar_width=300)
+            self.toasts.set_child(self.split)
             self.set_content(self.toasts)
+            self.split.set_sidebar(self.build_sidebar())
+            self.split.set_content(self.build_content())
 
-            self.stack.add_named(self.build_guide(), 'guide')
-            self.stack.add_named(self.build_ask(), 'ask')
-            self.stack.add_named(self.build_preview(), 'preview')
-            self.stack.add_named(self.build_answer(), 'answer')
-            self.stack.add_named(self.build_key(), 'key')
-            self.stack.add_named(self.build_busy(), 'busy')
+            keys = Gtk.EventControllerKey(propagation_phase=Gtk.PropagationPhase.CAPTURE)
+            keys.connect('key-pressed', self.on_window_key)
+            self.add_controller(keys)
 
-            esc = Gtk.EventControllerKey(propagation_phase=Gtk.PropagationPhase.CAPTURE)
-            esc.connect('key-pressed', self.on_key)
-            self.add_controller(esc)
-            self.update_title()
-            if os.path.exists(ACCEPTED):
-                self.go_ask()
+            self.refresh_sidebar()
+            if not os.path.exists(ACCEPTED):
+                self.show_guide()
+            elif open_target == 'last' and all_chats():
+                self.open_chat(all_chats()[0][1])
             else:
-                self.stack.set_visible_child_name('guide')
+                self.new_chat()
 
-        # ---- pages --------------------------------------------------------------------------------------------
-        def page(self, child, width=720):
-            clamp = Adw.Clamp(maximum_size=width, child=child, margin_top=12, margin_bottom=12,
-                              margin_start=12, margin_end=12)
-            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, propagate_natural_height=True)
-            sw.set_child(clamp)
-            return sw
+        # ---- sidebar ----------------------------------------------------------------------------------------------
+        def build_sidebar(self):
+            view = Adw.ToolbarView()
+            head = Adw.HeaderBar()
+            head.set_title_widget(Adw.WindowTitle(title='Chats'))
+            new = Gtk.Button(icon_name='document-new-symbolic', tooltip_text='New chat (Ctrl+N)')
+            new.connect('clicked', lambda *_: self.new_chat())
+            head.pack_start(new)
+            view.add_top_bar(head)
+            self.list = Gtk.ListBox(css_classes=['navigation-sidebar'], selection_mode=Gtk.SelectionMode.SINGLE)
+            self.list.set_header_func(self.list_header)
+            self.list.connect('row-activated', lambda _l, row: self.open_chat(load_json(row.path, None)))
+            self.list.set_placeholder(label('No saved chats yet.', ['dim-label'], margin_top=12, margin_start=12))
+            sw = Gtk.ScrolledWindow(vexpand=True, hscrollbar_policy=Gtk.PolicyType.NEVER)
+            sw.set_child(self.list)
+            view.set_content(sw)
+            delall = Gtk.Button(label='Delete all chats', css_classes=['flat'], margin_top=6, margin_bottom=6,
+                                margin_start=6, margin_end=6)
+            delall.connect('clicked', lambda *_: self.confirm_delete_all())
+            view.add_bottom_bar(delall)
+            return Adw.NavigationPage(title='Chats', child=view)
+
+        def list_header(self, row, before):
+            if before is not None and before.pid == row.pid:
+                row.set_header(None)
+                return
+            p = next((x for x in self.providers if x['id'] == row.pid), {'name': row.pid, 'country': ''})
+            row.set_header(label(tindai.provider_label(p), ['heading'], margin_top=10, margin_start=10,
+                                 margin_bottom=2))
+
+        def refresh_sidebar(self):
+            order = {p['id']: i for i, p in enumerate(self.providers)}
+            chats = sorted(all_chats(), key=lambda pc: (order.get(pc[1]['provider'], 99), -pc[1].get('updated', 0)))
+            while (row := self.list.get_row_at_index(0)) is not None:
+                self.list.remove(row)
+            for path, chat in chats:
+                row = Gtk.ListBoxRow()
+                row.path, row.pid, row.cid = path, chat['provider'], chat['id']
+                box = Gtk.Box(spacing=6)
+                texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True)
+                texts.append(Gtk.Label(label=chat.get('title') or 'New chat', xalign=0, ellipsize=3))
+                texts.append(Gtk.Label(label=time.strftime('%d %b %H:%M', time.localtime(chat.get('updated', 0))),
+                                       xalign=0, css_classes=['dim-label', 'caption']))
+                box.append(texts)
+                trash = Gtk.Button(icon_name='user-trash-symbolic', css_classes=['flat'], valign=Gtk.Align.CENTER,
+                                   tooltip_text='Delete this chat')
+                trash.connect('clicked', lambda _b, c=chat: self.confirm_delete(c))
+                box.append(trash)
+                row.set_child(box)
+                self.list.append(row)
+                if self.chat and chat['id'] == self.chat['id']:
+                    self.list.select_row(row)
+
+        # ---- content ----------------------------------------------------------------------------------------------
+        def build_content(self):
+            view = Adw.ToolbarView()
+            head = Adw.HeaderBar()
+            self.wtitle = Adw.WindowTitle(title='AI assistant')
+            head.set_title_widget(self.wtitle)
+            self.pbtn = Gtk.MenuButton(tooltip_text='Provider (a chat stays with its provider)')
+            self.pbtn.set_popover(self.build_provider_popover())
+            head.pack_start(self.pbtn)
+            keybtn = Gtk.Button(icon_name='dialog-password-symbolic', tooltip_text='API key for this provider')
+            keybtn.connect('clicked', lambda *_: self.key_dialog())
+            head.pack_end(keybtn)
+            self.mbtn = Gtk.MenuButton(tooltip_text='Model')
+            head.pack_end(self.mbtn)
+            view.add_top_bar(head)
+
+            self.stack = Gtk.Stack(transition_type=Gtk.StackTransitionType.CROSSFADE, vexpand=True)
+            self.scroll = Gtk.ScrolledWindow(vexpand=True, hscrollbar_policy=Gtk.PolicyType.NEVER)
+            self.msgbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14, margin_top=16, margin_bottom=16,
+                                  margin_start=16, margin_end=16)
+            self.scroll.set_child(Adw.Clamp(maximum_size=780, child=self.msgbox))
+            self.stack.add_named(self.scroll, 'chat')
+            self.stack.add_named(self.build_guide(), 'guide')
+            view.set_content(self.stack)
+            self.composer = self.build_composer()
+            view.add_bottom_bar(self.composer)
+            return Adw.NavigationPage(title='AI assistant', child=view)
+
+        def build_provider_popover(self):
+            pop = Gtk.Popover()
+            lb = Gtk.ListBox(css_classes=['boxed-list'], selection_mode=Gtk.SelectionMode.NONE, margin_top=6,
+                             margin_bottom=6, margin_start=6, margin_end=6)
+            for p in self.providers:
+                row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.provider_label(p)), activatable=True)
+                if p.get('unavailable'):
+                    row.set_subtitle(GLib.markup_escape_text(p['unavailable']))
+                    row.set_sensitive(False)          # grayed: this computer cannot do it (yet)
+                elif not provider_ready(p):
+                    row.set_subtitle('No API key yet')
+                row.connect('activated', lambda _r, pid=p['id']: (pop.popdown(), self.pick_provider(pid)))
+                lb.append(row)
+            pop.set_child(lb)
+            return pop
+
+        def build_model_popover(self, p):
+            pop = Gtk.Popover()
+            lb = Gtk.ListBox(css_classes=['boxed-list'], selection_mode=Gtk.SelectionMode.NONE, margin_top=6,
+                             margin_bottom=6, margin_start=6, margin_end=6)
+            for m in p['models']:
+                row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.model_label(m)), activatable=True)
+                row.connect('activated', lambda _r, mid=m['id']: (pop.popdown(), self.pick_model(mid)))
+                lb.append(row)
+            pop.set_child(lb)
+            return pop
 
         def build_guide(self):
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
-            box.append(Gtk.Label(label='Before you start', xalign=0, css_classes=['title-2']))
-            box.append(Gtk.Label(label=GUIDE, xalign=0, wrap=True))
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14, margin_top=24, margin_bottom=24,
+                          margin_start=24, margin_end=24)
+            box.append(label('Before you start', ['title-2']))
+            box.append(label(GUIDE))
             self.accept = Gtk.CheckButton(label='I accept the responsibility and risk of using AI')
             box.append(self.accept)
-            go = Gtk.Button(label='Continue', halign=Gtk.Align.END, sensitive=False, css_classes=['suggested-action', 'pill'])
+            go = Gtk.Button(label='Continue', halign=Gtk.Align.END, sensitive=False,
+                            css_classes=['suggested-action', 'pill'])
             self.accept.connect('toggled', lambda b: go.set_sensitive(b.get_active()))
             go.connect('clicked', self.on_accept)
             box.append(go)
-            return self.page(box, 620)
+            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER)
+            sw.set_child(Adw.Clamp(maximum_size=640, child=box))
+            return sw
 
-        def build_ask(self):
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            grp = Adw.PreferencesGroup()
-            self.prow = Adw.ComboRow(title='Provider', model=Gtk.StringList.new([provider_label(p) for p in self.providers]))
-            self.prow.set_selected([p['id'] for p in self.providers].index(self.pid))
-            self.prow.connect('notify::selected', self.on_provider)
-            grp.add(self.prow)
-            self.mrow = Adw.ComboRow(title='Model')
-            grp.add(self.mrow)
-            box.append(grp)
+        def build_composer(self):
+            outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, margin_top=6, margin_bottom=10,
+                            margin_start=16, margin_end=16)
+            self.chips = Gtk.Box(spacing=6, visible=False)
+            self.rawnote = label('Unredacted: the next message is sent exactly as typed, nothing is hidden.',
+                                 ['error', 'caption'], visible=False)
+            box = Gtk.Box(spacing=6, css_classes=['tind-composer'])
+            add = Gtk.MenuButton(icon_name='list-add-symbolic', tooltip_text='Attach system data or files',
+                                 valign=Gtk.Align.END, css_classes=['flat', 'circular'])
+            add.set_popover(self.build_attach_popover())
+            self.input = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, top_margin=8, bottom_margin=8,
+                                      left_margin=6, right_margin=6, hexpand=True, accepts_tab=False)
+            keys = Gtk.EventControllerKey()
+            keys.connect('key-pressed', self.on_input_key)
+            self.input.add_controller(keys)
+            isw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, propagate_natural_height=True,
+                                     max_content_height=180, hexpand=True)
+            isw.set_child(self.input)
+            self.rawbtn = Gtk.ToggleButton(label='Unredacted', valign=Gtk.Align.END, css_classes=['flat'],
+                                           tooltip_text='Send the next message exactly as typed (nothing hidden)')
+            self.rawbtn.connect('toggled', lambda b: self.rawnote.set_visible(b.get_active()))
+            self.sendbtn = Gtk.Button(icon_name='go-up-symbolic', valign=Gtk.Align.END, tooltip_text='Send (Enter)',
+                                      css_classes=['suggested-action', 'circular'])
+            self.sendbtn.connect('clicked', lambda *_: self.on_send())
+            for w in (add, isw, self.rawbtn, self.sendbtn):
+                box.append(w)
+            for w in (self.chips, self.rawnote, box):
+                outer.append(w)
+            hint = label('Enter sends, Shift+Enter adds a line. Attaching system data shows you the text first.',
+                         ['dim-label', 'caption'])
+            outer.append(hint)
+            return Adw.Clamp(maximum_size=812, child=outer)
 
-            box.append(Gtk.Label(label='What do you need help with?', xalign=0, css_classes=['heading']))
-            self.req = textview(True, 'tind-ai-request')
-            box.append(scrolled(self.req, 90))
+        def build_attach_popover(self):
+            pop = Gtk.Popover()
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, margin_top=4, margin_bottom=4)
+            for key, text in (('journal', 'System log (this boot, warnings and errors)'),
+                              ('report', 'Tind report (hardware, drivers, setup)'),
+                              ('steam', 'Steam and Proton logs')):
+                b = Gtk.Button(label=text, css_classes=['flat'])
+                b.get_child().set_xalign(0)
+                b.connect('clicked', lambda _b, k=key: (pop.popdown(), self.set_attach(k, True)))
+                box.append(b)
+            f = Gtk.Button(label='Files…', css_classes=['flat'])
+            f.get_child().set_xalign(0)
+            f.connect('clicked', lambda *_: (pop.popdown(), self.pick_files()))
+            box.append(f)
+            pop.set_child(box)
+            return pop
 
-            share = Adw.PreferencesGroup(title='Share with the request',
-                                         description='Everything is redacted on this computer and shown to you before it is sent.')
-            self.sw_journal = Adw.SwitchRow(title='System log', subtitle='This boot, warnings and errors')
-            self.sw_report = Adw.SwitchRow(title='Tind report', subtitle='Hardware, drivers and setup')
-            self.sw_steam = Adw.SwitchRow(title='Steam and Proton logs', subtitle='The newest ones in your home folder')
-            for row in (self.sw_journal, self.sw_report, self.sw_steam):
-                share.add(row)
-            self.filerow = Adw.ActionRow(title='Files', subtitle='None chosen')
-            addf = Gtk.Button(icon_name='list-add-symbolic', valign=Gtk.Align.CENTER, tooltip_text='Add files',
-                              css_classes=['flat'])
-            addf.connect('clicked', self.on_add_files)
-            clr = Gtk.Button(icon_name='edit-clear-symbolic', valign=Gtk.Align.CENTER, tooltip_text='Remove the files',
-                             css_classes=['flat'])
-            clr.connect('clicked', lambda *_: self.set_files([]))
-            self.filerow.add_suffix(addf)
-            self.filerow.add_suffix(clr)
-            share.add(self.filerow)
-            box.append(share)
-
-            self.histlabel = Gtk.Label(xalign=0, css_classes=['dim-label', 'caption'], visible=False)
-            box.append(self.histlabel)
-            self.prepare = Gtk.Button(label='Show what will be sent', halign=Gtk.Align.END,
-                                      css_classes=['suggested-action', 'pill'])
-            self.prepare.connect('clicked', self.on_prepare)
-            box.append(self.prepare)
-            self.fill_models()
-            return self.page(box)
-
-        def build_preview(self):
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-            self.ptitle = Gtk.Label(xalign=0, wrap=True, css_classes=['heading'])
-            self.psub = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label'])
-            box.append(self.ptitle)
-            box.append(self.psub)
-            self.ptext = textview(False, 'tind-ai-text')
-            box.append(scrolled(self.ptext, 280))
-            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
-            back = Gtk.Button(label='Back', css_classes=['pill'])
-            back.connect('clicked', lambda *_: self.go_ask(keep=True))
-            self.send = Gtk.Button(css_classes=['suggested-action', 'pill'])
-            self.send.connect('clicked', self.on_send)
-            row.append(back)
-            row.append(self.send)
-            box.append(row)
-            return self.page(box)
-
-        def build_answer(self):
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-            self.atitle = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label', 'caption'])
-            box.append(self.atitle)
-            self.atext = textview(False, 'tind-ai-answer')
-            self.abuf = self.atext.get_buffer()
-            self.abuf.create_tag('code', family='monospace', paragraph_background='rgba(127,127,127,0.12)')
-            self.abuf.create_tag('head', weight=700)
-            box.append(scrolled(self.atext, 260))
-            self.blocks = Adw.PreferencesGroup(title='Commands and file changes in the answer',
-                                               description='Nothing here runs by itself. Run in Terminal shows the '
-                                               'script first and runs it as you only if you answer yes.')
-            self.block_rows = []
-            self.blocks.set_visible(False)
-            box.append(self.blocks)
-            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
-            copy = Gtk.Button(label='Copy', css_classes=['pill'])
-            copy.connect('clicked', self.on_copy)
-            save = Gtk.Button(label='Save…', css_classes=['pill'])
-            save.connect('clicked', self.on_save)
-            more = Gtk.Button(label='Ask a follow-up', css_classes=['suggested-action', 'pill'])
-            more.connect('clicked', lambda *_: self.go_ask(keep=True))
-            for b in (copy, save, more):
-                row.append(b)
-            box.append(row)
-            return self.page(box)
-
-        def build_key(self):
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            self.ktitle = Gtk.Label(xalign=0, wrap=True, css_classes=['title-3'])
-            self.khelp = Gtk.Label(xalign=0, wrap=True, css_classes=['dim-label'])
-            box.append(self.ktitle)
-            box.append(self.khelp)
-            grp = Adw.PreferencesGroup()
-            self.kurl = Adw.EntryRow(title='Endpoint (https://…/v1, or http://127.0.0.1:…/v1 for a model on this computer)')
-            self.kmodel = Adw.EntryRow(title='Model name')
-            self.kkey = Adw.PasswordEntryRow(title='API key')
-            for r in (self.kurl, self.kmodel, self.kkey):
-                grp.add(r)
-            box.append(grp)
-            box.append(Gtk.Label(label='The key is stored for this computer, readable only by the service that talks to '
-                                 'this provider. Saving asks for your password.', xalign=0, wrap=True,
-                                 css_classes=['dim-label', 'caption']))
-            row = Gtk.Box(spacing=8, halign=Gtk.Align.END)
-            back = Gtk.Button(label='Back', css_classes=['pill'])
-            back.connect('clicked', lambda *_: self.go_ask(keep=True))
-            self.ksave = Gtk.Button(label='Save key', css_classes=['suggested-action', 'pill'])
-            self.ksave.connect('clicked', self.on_save_key)
-            row.append(back)
-            row.append(self.ksave)
-            box.append(row)
-            return self.page(box, 620)
-
-        def build_busy(self):
-            self.busy = Adw.StatusPage(title='Working…')
-            spin = Gtk.Spinner(spinning=True, width_request=32, height_request=32, halign=Gtk.Align.CENTER)
-            self.busy.set_child(spin)
-            return self.busy
-
-        # ---- state --------------------------------------------------------------------------------------------
+        # ---- state ------------------------------------------------------------------------------------------------
         def prov(self):
-            return next(p for p in self.providers if p['id'] == self.pid)
-
-        def update_title(self):
-            p = self.prov()
-            self.wtitle.set_subtitle(provider_label(p))
-
-        def fill_models(self):
-            p = self.prov()
-            models = p['models'] or [{'id': 'custom', 'label': 'set by the endpoint'}]
-            self.mrow.set_model(Gtk.StringList.new([m['label'] for m in models]))
-            want = self.settings.get('models', {}).get(self.pid)
-            ids = [m['id'] for m in models]
-            self.mrow.set_selected(ids.index(want) if want in ids else 0)
-            self.mrow.set_sensitive(bool(p['models']))
+            pid = self.chat['provider'] if self.chat else self.default_pid
+            return next((p for p in self.providers if p['id'] == pid), self.providers[0])
 
         def model(self):
             p = self.prov()
-            if not p['models']:
-                return ''
-            return p['models'][self.mrow.get_selected()]['id']
+            ids = [m['id'] for m in p['models']]
+            want = (self.chat or {}).get('model') or self.settings.get('models', {}).get(p['id'])
+            return want if want in ids else (ids[0] if ids else '')
+
+        def update_header(self):
+            p = self.prov()
+            self.pbtn.set_label(tindai.provider_label(p))
+            mid = self.model()
+            m = next((x for x in p['models'] if x['id'] == mid), None)
+            self.mbtn.set_visible(bool(m))
+            if m:
+                self.mbtn.set_label(tindai.model_label(m))
+                self.mbtn.set_popover(self.build_model_popover(p))
+            self.wtitle.set_title((self.chat or {}).get('title') or 'New chat')
+            self.wtitle.set_subtitle(tindai.provider_label(p))
 
         def toast(self, text):
-            self.toasts.add_toast(Adw.Toast(title=GLib.markup_escape_text(text), timeout=6))
+            self.toasts.add_toast(Adw.Toast(title=GLib.markup_escape_text(str(text)), timeout=6))
 
-        def go_ask(self, keep=False):
-            if not keep:
-                self.history, self.conversation = [], secrets.token_hex(8)
-                self.req.get_buffer().set_text('')
-                self.set_files([])
-            n = len(self.history) // 2
-            self.histlabel.set_label('Follow-up: the earlier %d question%s and answer%s in this conversation are sent too.'
-                                     % (n, '' if n == 1 else 's', '' if n == 1 else 's'))
-            self.histlabel.set_visible(bool(self.history))
-            self.stack.set_visible_child_name('ask')
-            self.req.grab_focus()
+        def show_guide(self):
+            self.chat = None
+            self.update_header()
+            self.stack.set_visible_child_name('guide')
+            self.composer.set_sensitive(False)
 
-        def new_question(self):
-            if os.path.exists(ACCEPTED):
-                self.go_ask()
-
-        def set_files(self, files):
-            self.files = files
-            self.filerow.set_subtitle(', '.join(os.path.basename(f) for f in files) if files else 'None chosen')
-
-        def show_key_page(self):
+        def new_chat(self, pid=None):
             if not os.path.exists(ACCEPTED):
-                return
-            p = self.prov()
-            custom = p['id'] == 'custom'
-            self.ktitle.set_label('API key for %s' % provider_label(p))
-            self.khelp.set_label(p.get('key_help', ''))
-            self.kurl.set_visible(custom)
-            self.kmodel.set_visible(custom)
-            self.kkey.set_title('API key (leave empty if the endpoint needs none)' if custom else 'API key')
-            if custom:
-                self.kurl.set_text(p.get('base_url') or '')
-                self.kmodel.set_text(p['models'][0]['id'] if p['models'] else '')
-            self.kkey.set_text('')
-            self.stack.set_visible_child_name('key')
+                return self.show_guide()
+            pid = pid or self.settings.get('provider') or self.default_pid
+            if not any(p['id'] == pid and not p.get('unavailable') for p in self.providers):
+                pid = self.default_pid
+            self.chat = {'id': secrets.token_hex(8), 'provider': pid, 'model': '', 'title': '',
+                         'created': int(time.time()), 'updated': int(time.time()), 'messages': []}
+            self.chat['model'] = self.model()
+            self.list.unselect_all()
+            self.render()
+            self.input.grab_focus()
+            return None
 
-        # ---- events -------------------------------------------------------------------------------------------
-        def on_key(self, _ctl, keyval, _code, state):
-            if keyval == Gdk.KEY_Escape:
-                self.close()
-                return True
+        def open_chat(self, chat):
+            if not chat or self.busy or not os.path.exists(ACCEPTED):
+                return
+            self.chat = chat
+            self.render()
+            self.refresh_sidebar()
+
+        def save_chat(self):
+            if self.chat and self.chat['messages']:
+                self.chat['updated'] = int(time.time())
+                save_json(chat_path(self.chat), self.chat)
+                self.refresh_sidebar()
+
+        def render(self):
+            self.stack.set_visible_child_name('chat')
+            self.composer.set_sensitive(True)
+            self.update_header()
+            while (child := self.msgbox.get_first_child()) is not None:
+                self.msgbox.remove(child)
+            msgs = self.chat['messages']
+            if not msgs:
+                p = self.prov()
+                where = ('Nothing leaves this computer.' if p.get('service') == 'local' else
+                         'Messages go to %s.' % tindai.provider_label(p))
+                self.msgbox.append(Adw.StatusPage(
+                    title='Ask about this computer', icon_name='dialog-question-symbolic',
+                    description='%s Names, addresses and keys are hidden before anything is sent.' % where))
+            for m in msgs:
+                self.msgbox.append(self.bubble(m))
+            GLib.idle_add(self.scroll_end)
+
+        def scroll_end(self):
+            adj = self.scroll.get_vadjustment()
+            adj.set_value(adj.get_upper())
             return False
 
-        def on_accept(self, *_):
-            os.makedirs(CONFIG_DIR, exist_ok=True)
-            open(ACCEPTED, 'w').close()
-            self.go_ask()
+        # ---- message widgets --------------------------------------------------------------------------------------
+        def bubble(self, m):
+            mine = m['role'] == 'user'
+            col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4,
+                          halign=Gtk.Align.END if mine else Gtk.Align.FILL)
+            card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8,
+                           css_classes=['tind-me' if mine else 'tind-ai'])
+            if mine:
+                card.append(label(m['text'], selectable=True, max_width_chars=70))
+                if m.get('items'):
+                    card.append(label('Attached: ' + ', '.join(m['items']), ['dim-label', 'caption']))
+            elif m.get('text'):
+                for b in split_blocks(m['text']):
+                    card.append(self.text_block(b[1]) if b[0] == 'text' else self.code_block(b[1], b[2]))
+            if mine or m.get('text'):
+                col.append(card)
+            meta = self.meta_line(m)
+            if meta:
+                col.append(meta)
+            return col
 
-        def on_provider(self, *_):
-            self.pid = self.providers[self.prow.get_selected()]['id']
-            self.settings['provider'] = self.pid
-            save_settings(self.settings)
-            self.fill_models()
-            self.update_title()
+        def text_block(self, text):
+            lab = label('', selectable=True)
+            try:
+                lab.set_markup(to_markup(text, GLib.markup_escape_text))
+            except GLib.Error:
+                lab.set_text(text)
+            return lab
 
-        def on_add_files(self, *_):
-            dlg = Gtk.FileDialog(title='Files to share')
+        def code_block(self, lang, code):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, css_classes=['tind-code'])
+            head = Gtk.Box(spacing=2)
+            head.append(Gtk.Label(label=lang, xalign=0, hexpand=True, css_classes=['dim-label', 'caption']))
+            for text, fn in (('Copy', self.copy_text), ('Save…', self.save_text)):
+                b = Gtk.Button(label=text, css_classes=['flat'])
+                b.connect('clicked', lambda _b, f=fn: f(code, lang))
+                head.append(b)
+            if lang in SHELLS:
+                b = Gtk.Button(label='Run in Terminal', css_classes=['flat'],
+                               tooltip_text='Shows the script and runs it as you, only if you answer yes')
+                b.connect('clicked', lambda *_: self.run_in_terminal(code))
+                head.append(b)
+            box.append(head)
+            box.append(label(code, ['tind-code-text'], selectable=True))
+            return box
 
-            def done(d, res):
-                try:
-                    files = d.open_multiple_finish(res)
-                except GLib.Error:
-                    return
-                paths = [files.get_item(i).get_path() for i in range(files.get_n_items())]
-                self.set_files(self.files + [p for p in paths if p and p not in self.files])
-            dlg.open_multiple(self, None, done)
+        def meta_line(self, m):
+            if m.get('pending'):
+                row = Gtk.Box(spacing=6, halign=Gtk.Align.END if m['role'] == 'user' else Gtk.Align.START)
+                row.append(Gtk.Spinner(spinning=True))
+                row.append(label(m['pending'], ['dim-label', 'caption']))
+                return row
+            if m['role'] == 'user':
+                if m.get('raw'):
+                    return label('Sent unredacted', ['error', 'caption'], halign=Gtk.Align.END)
+                red = m.get('redactions') or {}
+                if not red:
+                    return None
+                what = ', '.join('%d %s' % (n, k) for k, n in sorted(red.items()))
+                exp = Gtk.Expander(label='Hidden before sending: %s' % what, halign=Gtk.Align.END,
+                                   css_classes=['tind-meta', 'dim-label'])
+                exp.set_child(label(m.get('sent', ''), ['tind-sent'], selectable=True, max_width_chars=80))
+                return exp
+            bits = [m.get('provider_name', ''), m.get('model_name', '') or m.get('model', '')]
+            if m.get('seconds'):
+                bits.append('%s s' % m['seconds'])
+            return label(' · '.join(b for b in bits if b), ['dim-label', 'caption'])
 
-        def on_prepare(self, *_):
-            buf = self.req.get_buffer()
-            text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).strip()
-            if not text:
-                self.toast('Write what you need help with first.')
-                return
-            if not provider_ready(self.pid):
-                self.toast('Set the API key for %s first.' % self.prov()['name'])
-                self.show_key_page()
-                return
-            models = self.settings.setdefault('models', {})
-            if self.model():
-                models[self.pid] = self.model()
-            save_settings(self.settings)
-            want_report, want_steam, want_journal = (self.sw_report.get_active(), self.sw_steam.get_active(),
-                                                     self.sw_journal.get_active())
-            files = list(self.files)
-            pid, model, history, conv = self.pid, self.model(), list(self.history), self.conversation
-
-            def work():
-                items = []
-                if want_report:
-                    items.append({'name': 'Tind report', 'text': collect_report()})
-                if want_steam:
-                    for name, body in collect_steam():
-                        items.append({'name': 'Steam log ' + name, 'text': body})
-                for f in files:
-                    items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
-                return tindai.call(tindai.LOCAL_SOCKET, {
-                    'op': 'brief', 'request': text, 'provider': pid, 'model': model,
-                    'journal': want_journal, 'items': items, 'history': history,
-                    'conversation': conv}, timeout=180)
-
-            self.busy.set_title('Preparing and redacting on this computer…')
-            self.stack.set_visible_child_name('busy')
-            bg(work, self.prepared)
-
-        def prepared(self, res, err):
-            if err or not res.get('ok'):
-                self.toast('Could not prepare: %s' % (err or res.get('error')))
-                self.stack.set_visible_child_name('ask')
-                return
-            self.brief = res
-            p = self.prov()
-            red = res.get('redactions') or {}
-            what = ', '.join('%d %s' % (n, k) for k, n in red.items()) or 'nothing'
-            self.ptitle.set_label('This exact text goes to %s, and nothing else.' % provider_label(p))
-            self.psub.set_label('Replaced on this computer: %s.%s' % (
-                what, '' if p.get('eu') is not False else ' This provider is outside the EU.'))
-            shown = res['text']
-            if res.get('history'):
-                shown = '(the earlier messages of this conversation are sent too)\n\n' + shown
-            self.ptext.get_buffer().set_text(shown)
-            self.send.set_label('Send to %s' % p['name'])
-            self.stack.set_visible_child_name('preview')
-
-        def on_send(self, *_):
-            bid, pid, model = self.brief['id'], self.pid, self.model()
-
-            def work():
-                return tindai.call(tindai.remote_socket(pid), {'op': 'send', 'id': bid, 'model': model}, timeout=300)
-
-            self.busy.set_title('Waiting for %s…' % self.prov()['name'])
-            self.stack.set_visible_child_name('busy')
-            bg(work, self.answered)
-
-        def answered(self, res, err):
-            if err or not res.get('ok'):
-                self.toast('No answer: %s' % (err or res.get('error')))
-                self.stack.set_visible_child_name('preview')
-                return
-            self.history += [{'role': 'user', 'text': self.brief['text']}, {'role': 'assistant', 'text': res['answer']}]
-            self.answer = res['answer']
-            self.atitle.set_label('%s · %s · %s s' % (res.get('provider_name', ''), res.get('model', ''),
-                                                       res.get('seconds', '')))
-            self.show_answer(res['answer'])
-            self.show_blocks(res['answer'])
-            self.req.get_buffer().set_text('')
-            self.set_files([])
-            self.stack.set_visible_child_name('answer')
-
-        def show_answer(self, text):
-            buf = self.abuf
-            buf.set_text('')
-            code = False
-            for line in text.split('\n'):
-                if line.strip().startswith('```'):
-                    code = not code
-                    continue
-                end = buf.get_end_iter()
-                if code:
-                    buf.insert_with_tags_by_name(end, line + '\n', 'code')
-                elif re.match(r'^#{1,4} ', line):
-                    buf.insert_with_tags_by_name(end, re.sub(r'^#{1,4} ', '', line) + '\n', 'head')
-                else:
-                    buf.insert(end, line.replace('**', '') + '\n')
-
-        def show_blocks(self, text):
-            for row in self.block_rows:
-                self.blocks.remove(row)
-            self.block_rows = []
-            blocks = re.findall(r'```([A-Za-z0-9_+-]*)[^\n]*\n(.*?)```', text, re.S)
-            self.blocks.set_visible(bool(blocks))
-            for i, (lang, body) in enumerate(blocks, 1):
-                lang = (lang or 'text').lower()
-                first = next((ln.strip() for ln in body.splitlines() if ln.strip()), '')
-                row = Adw.ActionRow(title=GLib.markup_escape_text('%d. %s' % (i, lang)),
-                                    subtitle=GLib.markup_escape_text(first[:90]))
-                for label, fn in (('Copy', self.block_copy), ('Save…', self.block_save)):
-                    btn = Gtk.Button(label=label, valign=Gtk.Align.CENTER, css_classes=['flat'])
-                    btn.connect('clicked', lambda _b, f=fn, t=body, lg=lang: f(t, lg))
-                    row.add_suffix(btn)
-                if lang in ('bash', 'sh', 'shell', 'console'):
-                    run = Gtk.Button(label='Run in Terminal', valign=Gtk.Align.CENTER, css_classes=['flat'])
-                    run.connect('clicked', lambda _b, t=body: self.block_run(t))
-                    row.add_suffix(run)
-                self.blocks.add(row)
-                self.block_rows.append(row)
-
-        def block_copy(self, text, _lang):
+        # ---- actions on answers -----------------------------------------------------------------------------------
+        def copy_text(self, text, _lang=None):
             self.get_clipboard().set(text)
             self.toast('Copied.')
 
-        def block_save(self, text, lang):
+        def save_text(self, text, lang='text'):
             ext = {'diff': 'patch', 'patch': 'patch', 'bash': 'sh', 'sh': 'sh', 'shell': 'sh', 'python': 'py',
                    'json': 'json', 'ini': 'conf', 'conf': 'conf', 'yaml': 'yaml', 'html': 'html'}.get(lang, 'txt')
             dlg = Gtk.FileDialog(title='Save', initial_name='ai-%s.%s' % ('change' if ext == 'patch' else 'file', ext))
@@ -558,12 +564,11 @@ def main():
                 except GLib.Error:
                     return
                 with open(f.get_path(), 'w', encoding='utf-8') as out:
-                    out.write(text)
+                    out.write(text if text.endswith('\n') else text + '\n')
                 self.toast('Saved.')
             dlg.save(self, None, done)
 
-        def block_run(self, text):
-            # the script goes to a file only this user can read; the terminal shows it in full and asks first
+        def run_in_terminal(self, text):
             fd, path = tempfile.mkstemp(prefix='tind-ai-', suffix='.sh')
             with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 f.write(text if text.endswith('\n') else text + '\n')
@@ -577,51 +582,316 @@ def main():
                 os.unlink(path)
                 self.toast('Could not open a terminal: %s' % e)
 
-        def on_copy(self, *_):
-            self.get_clipboard().set(self.answer)
-            self.toast('Copied.')
+        # ---- picking --------------------------------------------------------------------------------------------
+        def pick_provider(self, pid):
+            if self.busy:
+                return
+            self.settings['provider'] = pid
+            save_json(SETTINGS, self.settings, 0o644)
+            if self.chat is None:
+                self.new_chat(pid)
+                return
+            if self.chat['messages'] and self.chat['provider'] != pid:
+                p = next(x for x in self.providers if x['id'] == pid)
+                self.new_chat(pid)
+                self.toast('New chat with %s' % tindai.provider_label(p))
+                return
+            self.chat['provider'] = pid
+            self.chat['model'] = ''
+            self.chat['model'] = self.model()
+            self.render()
 
-        def on_save(self, *_):
-            dlg = Gtk.FileDialog(title='Save the answer', initial_name='ai-answer.md')
+        def pick_model(self, mid):
+            self.chat['model'] = mid
+            self.settings.setdefault('models', {})[self.chat['provider']] = mid
+            save_json(SETTINGS, self.settings, 0o644)
+            self.update_header()
+            self.save_chat()
+
+        def set_attach(self, key, on):
+            self.attach[key] = on
+            self.draw_chips()
+
+        def pick_files(self):
+            dlg = Gtk.FileDialog(title='Files to share')
 
             def done(d, res):
                 try:
-                    f = d.save_finish(res)
+                    files = d.open_multiple_finish(res)
                 except GLib.Error:
                     return
-                with open(f.get_path(), 'w', encoding='utf-8') as out:
-                    out.write(self.answer)
-                self.toast('Saved.')
-            dlg.save(self, None, done)
+                for i in range(files.get_n_items()):
+                    path = files.get_item(i).get_path()
+                    if path and path not in self.attach['files']:
+                        self.attach['files'].append(path)
+                self.draw_chips()
+            dlg.open_multiple(self, None, done)
 
-        def on_save_key(self, *_):
-            p = self.prov()
-            key = self.kkey.get_text().strip()
-            args = ['pkexec', '/usr/lib/tind-ai/setkey', p['id']]
-            if p['id'] == 'custom':
-                args += [self.kurl.get_text().strip(), self.kmodel.get_text().strip()]
-            elif not key:
-                self.toast('Paste the API key first.')
+        def draw_chips(self):
+            while (child := self.chips.get_first_child()) is not None:
+                self.chips.remove(child)
+            names = {'journal': 'System log', 'report': 'Tind report', 'steam': 'Steam logs'}
+            items = [(k, names[k]) for k in ('journal', 'report', 'steam') if self.attach[k]]
+            items += [('file:' + f, os.path.basename(f)) for f in self.attach['files']]
+            for key, text in items:
+                b = Gtk.Button(css_classes=['pill', 'tind-chip'], tooltip_text='Remove')
+                inner = Gtk.Box(spacing=4)
+                inner.append(Gtk.Label(label=text))
+                inner.append(Gtk.Image(icon_name='window-close-symbolic'))
+                b.set_child(inner)
+                b.connect('clicked', lambda _b, k=key: self.drop_chip(k))
+                self.chips.append(b)
+            self.chips.set_visible(bool(items))
+
+        def drop_chip(self, key):
+            if key.startswith('file:'):
+                self.attach['files'].remove(key[5:])
+            else:
+                self.attach[key] = False
+            self.draw_chips()
+
+        # ---- sending ----------------------------------------------------------------------------------------------
+        def on_input_key(self, _ctl, keyval, _code, state):
+            if keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter) and not state & Gdk.ModifierType.SHIFT_MASK:
+                self.on_send()
+                return True
+            return False
+
+        def on_window_key(self, _ctl, keyval, _code, state):
+            ctrl = state & Gdk.ModifierType.CONTROL_MASK
+            if keyval == Gdk.KEY_Escape:
+                self.close()
+                return True
+            if ctrl and keyval in (Gdk.KEY_w, Gdk.KEY_q):
+                self.close()
+                return True
+            if ctrl and keyval == Gdk.KEY_n:
+                self.new_chat()
+                return True
+            return False
+
+        def on_send(self):
+            if self.busy or self.chat is None:
                 return
+            buf = self.input.get_buffer()
+            text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).strip()
+            if not text:
+                return
+            p = self.prov()
+            if not provider_ready(p):
+                if p.get('unavailable'):
+                    self.toast(p['unavailable'])
+                else:
+                    self.toast('Set the API key for %s first.' % tindai.provider_label(p))
+                    self.key_dialog()
+                return
+            att = {'journal': self.attach['journal'], 'report': self.attach['report'],
+                   'steam': self.attach['steam'], 'files': list(self.attach['files'])}
+            checked = any([att['journal'], att['report'], att['steam'], att['files']])
+            raw = self.rawbtn.get_active()
+            names = ([n for k, n in (('journal', 'System log'), ('report', 'Tind report'), ('steam', 'Steam logs'))
+                      if att[k]] + [os.path.basename(f) for f in att['files']])
+            history = [{'role': m['role'], 'text': m.get('sent') or m['text'], 'raw': bool(m.get('raw'))}
+                       for m in self.chat['messages'] if m.get('text') and not m.get('pending')]
+            msg = {'role': 'user', 'text': text, 'raw': raw, 'items': names, 'pending': 'Preparing on this computer…',
+                   'time': int(time.time())}
+            if not self.chat['title']:
+                self.chat['title'] = text.split('\n')[0][:60]
+            self.chat['messages'].append(msg)
+            buf.set_text('')
+            self.rawbtn.set_active(False)
+            self.attach = {'journal': False, 'report': False, 'steam': False, 'files': []}
+            self.draw_chips()
+            self.busy = True
+            self.render()
+            pid, model, conv = p['id'], self.model(), self.chat['id']
 
             def work():
-                r = subprocess.run(args, input=key + '\n', capture_output=True, text=True, timeout=300)
-                if r.returncode != 0:
-                    raise RuntimeError((r.stderr or r.stdout).strip() or 'cancelled')
-                return r.stdout
+                items = []
+                if att['report']:
+                    items.append({'name': 'Tind report', 'text': collect_report()})
+                if att['steam']:
+                    for name, body in collect_steam():
+                        items.append({'name': 'Steam log ' + name, 'text': body})
+                for f in att['files']:
+                    items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
+                return tindai.call(tindai.LOCAL_SOCKET, {
+                    'op': 'brief', 'request': text, 'provider': pid, 'model': model, 'journal': att['journal'],
+                    'raw': raw, 'items': items, 'history': history, 'conversation': conv}, timeout=180)
 
-            self.ksave.set_sensitive(False)
-
-            def done(_res, err):
-                self.ksave.set_sensitive(True)
-                if err:
-                    self.toast('Key not saved: %s' % err)
+            def prepared(res, err):
+                if err or not res.get('ok'):
+                    self.fail(msg, 'Could not prepare: %s' % (err or res.get('error')))
                     return
-                self.providers = tindai.providers()
-                self.fill_models()
-                self.toast('Key saved for %s.' % p['name'])
-                self.go_ask(keep=True)
-            bg(work, done)
+                msg['sent'] = res['text']
+                msg['redactions'] = res.get('redactions') or {}
+                if checked:
+                    msg['pending'] = 'Waiting for you to check the text…'
+                    self.render()
+                    self.preview(res, lambda: self.send_brief(msg, res['id'], pid, model),
+                                 lambda: self.fail(msg, 'Not sent.'))
+                else:
+                    self.send_brief(msg, res['id'], pid, model)
+            bg(work, prepared)
+
+        def preview(self, res, on_send, on_cancel):
+            p = self.prov()
+            red = res.get('redactions') or {}
+            what = ', '.join('%d %s' % (n, k) for k, n in sorted(red.items())) or 'nothing'
+            body = 'This exact text goes to %s, and nothing else.\nHidden on this computer: %s.' % (
+                tindai.provider_label(p), 'nothing (sent unredacted)' if res.get('raw') else what)
+            if res.get('history'):
+                body += '\nThe earlier messages of this chat are sent too.'
+            dlg = Adw.AlertDialog(heading='Check before sending', body=body)
+            if hasattr(dlg, 'set_prefer_wide_layout'):      # libadwaita 1.6+ (trixie has 1.7)
+                dlg.set_prefer_wide_layout(True)
+            tv = Gtk.TextView(editable=False, cursor_visible=False, wrap_mode=Gtk.WrapMode.WORD_CHAR, monospace=True,
+                              top_margin=8, bottom_margin=8, left_margin=8, right_margin=8)
+            tv.get_buffer().set_text(res['text'])
+            sw = Gtk.ScrolledWindow(min_content_height=320, min_content_width=560, css_classes=['card'])
+            sw.set_child(tv)
+            dlg.set_extra_child(sw)
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('send', 'Send to %s' % p['name'])
+            dlg.set_response_appearance('send', Adw.ResponseAppearance.SUGGESTED)
+            dlg.set_default_response('send')
+            dlg.set_close_response('cancel')
+            dlg.connect('response', lambda _d, r: on_send() if r == 'send' else on_cancel())
+            dlg.present(self)
+
+        def send_brief(self, msg, bid, pid, model):
+            p = next(x for x in self.providers if x['id'] == pid)
+            msg['pending'] = None
+            reply = {'role': 'assistant', 'text': '', 'pending': 'Waiting for %s…' % tindai.provider_label(p)}
+            self.chat['messages'].append(reply)
+            self.render()
+            sock = tindai.LOCAL_SOCKET if p.get('service') == 'local' else tindai.remote_socket(pid)
+
+            def work():
+                return tindai.call(sock, {'op': 'send', 'id': bid, 'model': model}, timeout=300)
+
+            def answered(res, err):
+                if reply in self.chat['messages']:
+                    self.chat['messages'].remove(reply)
+                if err or not res.get('ok'):
+                    self.fail(msg, 'No answer: %s' % (err or res.get('error')))
+                    return
+                m = next((x for x in p['models'] if x['id'] == res.get('model')), None)
+                self.chat['messages'].append({
+                    'role': 'assistant', 'text': res['answer'], 'provider_name': tindai.provider_label(p),
+                    'model': res.get('model', ''), 'model_name': tindai.model_label(m) if m else res.get('model', ''),
+                    'seconds': res.get('seconds'), 'time': int(time.time())})
+                self.busy = False
+                self.save_chat()
+                self.render()
+            bg(work, answered)
+
+        def fail(self, msg, why):
+            """The message did not go out: take it back off the chat and put its text back in the box."""
+            self.busy = False
+            if msg in self.chat['messages']:
+                self.chat['messages'].remove(msg)
+            if not self.chat['messages']:
+                self.chat['title'] = ''
+            self.render()
+            self.input.get_buffer().set_text(msg['text'])
+            self.toast(why)
+
+        # ---- keys, guide, deleting --------------------------------------------------------------------------------
+        def on_accept(self, *_):
+            os.makedirs(CONFIG_DIR, exist_ok=True)
+            open(ACCEPTED, 'w').close()
+            self.new_chat()
+
+        def key_dialog(self):
+            p = self.prov()
+            if p.get('service') == 'local':
+                self.toast('This computer needs no key.')
+                return
+            custom = p['id'] == 'custom'
+            dlg = Adw.AlertDialog(heading='API key for %s' % tindai.provider_label(p),
+                                  body='%s\n\nThe key is stored for this computer, readable only by the service that '
+                                  'talks to this provider. Saving asks for your password.' % p.get('key_help', ''))
+            grp = Adw.PreferencesGroup()
+            url = Adw.EntryRow(title='Server address (https://…/v1, or http://127.0.0.1:…/v1)')
+            mod = Adw.EntryRow(title='Model name')
+            key = Adw.PasswordEntryRow(title='API key (leave empty if the server needs none)' if custom else 'API key')
+            if custom:
+                url.set_text(p.get('base_url') or '')
+                mod.set_text(p['models'][0]['id'] if p['models'] else '')
+                grp.add(url)
+                grp.add(mod)
+            grp.add(key)
+            dlg.set_extra_child(grp)
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('save', 'Save key')
+            dlg.set_response_appearance('save', Adw.ResponseAppearance.SUGGESTED)
+            dlg.set_close_response('cancel')
+
+            def respond(_d, r):
+                if r != 'save':
+                    return
+                secret = key.get_text().strip()
+                args = ['pkexec', '/usr/lib/tind-ai/setkey', p['id']]
+                if custom:
+                    args += [url.get_text().strip(), mod.get_text().strip()]
+                elif not secret:
+                    self.toast('Paste the API key first.')
+                    return
+
+                def work():
+                    r2 = subprocess.run(args, input=secret + '\n', capture_output=True, text=True, timeout=300)
+                    if r2.returncode != 0:
+                        raise RuntimeError((r2.stderr or r2.stdout).strip() or 'cancelled')
+
+                def done(_res, err):
+                    if err:
+                        self.toast('Key not saved: %s' % err)
+                        return
+                    self.providers = tindai.providers()
+                    self.pbtn.set_popover(self.build_provider_popover())
+                    self.update_header()
+                    self.toast('Key saved for %s.' % tindai.provider_label(p))
+                bg(work, done)
+            dlg.connect('response', respond)
+            dlg.present(self)
+
+        def confirm_delete(self, chat):
+            dlg = Adw.AlertDialog(heading='Delete this chat?', body=chat.get('title') or 'New chat')
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('delete', 'Delete')
+            dlg.set_response_appearance('delete', Adw.ResponseAppearance.DESTRUCTIVE)
+            dlg.set_close_response('cancel')
+            dlg.connect('response', lambda _d, r: r == 'delete' and self.delete_chats([chat]))
+            dlg.present(self)
+
+        def confirm_delete_all(self):
+            chats = [c for _p, c in all_chats()]
+            if not chats:
+                return
+            dlg = Adw.AlertDialog(heading='Delete all %d chats?' % len(chats), body='This cannot be undone.')
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('delete', 'Delete all')
+            dlg.set_response_appearance('delete', Adw.ResponseAppearance.DESTRUCTIVE)
+            dlg.set_close_response('cancel')
+            dlg.connect('response', lambda _d, r: r == 'delete' and self.delete_chats(chats))
+            dlg.present(self)
+
+        def delete_chats(self, chats):
+            ids = [c['id'] for c in chats]
+            for c in chats:
+                try:
+                    os.unlink(chat_path(c))
+                except OSError:
+                    pass
+
+            def work():
+                for cid in ids:     # the local service forgets the placeholder maps (they hold the real values)
+                    tindai.call(tindai.LOCAL_SOCKET, {'op': 'forget', 'conversation': cid}, timeout=30)
+            bg(work, lambda _r, _e: None)
+            if self.chat and self.chat['id'] in ids:
+                self.new_chat()
+            self.refresh_sidebar()
 
     class App(Adw.Application):
         def __init__(self):
@@ -631,13 +901,13 @@ def main():
         def do_startup(self):
             Adw.Application.do_startup(self)
             css = Gtk.CssProvider()
-            css.load_from_data(CSS)
+            css.load_from_string(CSS)
             Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
                                                       Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         def do_activate(self):
             if not self.win:
-                self.win = Win(self)
+                self.win = Win(self, open_target)
             self.win.present()
 
     return App().run([sys.argv[0]])
@@ -646,4 +916,5 @@ def main():
 if __name__ == '__main__':
     if '--check' in sys.argv:
         sys.exit(check())
-    sys.exit(main())
+    target = sys.argv[sys.argv.index('--open') + 1] if '--open' in sys.argv[:-1] else None
+    sys.exit(main(target))

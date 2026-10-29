@@ -1,10 +1,13 @@
 Tind AI box
 ===========
 
-Super+K opens the Ask window (tind-ai-ask). The pieces, and who can do what:
+Super+K opens the chat window (tind-ai-ask). The pieces, and who can do what:
 
-  human            writes the request, chooses what to share, sees the exact text before it is sent, presses Send,
-                   reads the answer. Nothing in an answer runs by itself.
+  human            chats in the window. Typed messages go straight out (Direct) after the fixed rules have hidden names,
+                   addresses, keys and secrets; each message shows what was hidden. Attaching system data (system log,
+                   Tind report, Steam logs, files) makes a message Checked: the exact text is shown before it is sent.
+                   "Unredacted" sends one message exactly as typed. Nothing in an answer runs by itself. Chats are kept
+                   in ~/.local/share/tind-ai/chats/<provider>/ (0600) until deleted in the window.
   tind-ai-local    system user, never logs in. Its service (tind-ai-local.socket/.service) adds the system journal
                    when asked and redacts everything into a briefing. No network at all, no /home, writes only
                    /var/lib/tind-ai/briefing/<uid> and /var/lib/tind-ai/local (placeholder maps).
@@ -18,6 +21,9 @@ credential), set from the Ask window through pkexec (/usr/lib/tind-ai/setkey).
 
 Firewall: nftables table "inet tind_ai" (/usr/lib/tind-ai/firewall.nft, loaded by tind-ai-firewall.service). It is
 separate from ufw and only ever drops traffic of the two AI users.
+
+Local models (later): "This computer" in the provider list is served by tind-ai-local, so a model on this
+computer runs with no network at all. It is grayed out until a local model is installed and the hardware allows it.
 
 Providers: /usr/share/tind-ai/providers.json (Scaleway is the default; Anthropic and OpenAI are marked as outside the
 EU). The custom endpoint (any OpenAI-compatible server; plain http only to 127.0.0.1) is kept in /etc/tind-ai/custom.json.

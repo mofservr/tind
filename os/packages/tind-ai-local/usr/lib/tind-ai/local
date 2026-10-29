@@ -6,8 +6,11 @@ the tind_ai firewall table), cannot see /home (ProtectHome=yes) and can write on
 the human wants to share from their own files (tind-report, Steam logs, a file) is read by the Ask window, which
 runs as that human, and sent here as text; this service adds the system journal when asked and then redacts it all.
 
-Request:  {"op": "brief", "request": "...", "provider": "scaleway", "model": "...", "journal": true,
-           "items": [{"name": "tind-report", "text": "..."}], "history": [{"role": "user"|"assistant", "text": "..."}]}
+Request:  {"op": "brief", "request": "...", "provider": "scaleway", "model": "...", "journal": true, "raw": false,
+           "items": [{"name": "tind-report", "text": "..."}],
+           "history": [{"role": "user"|"assistant", "text": "...", "raw": false}]}
+          "raw": true sends this message as typed (the human's per-message choice); history items keep their own flag.
+          {"op": "forget", "conversation": "<id>"} deletes that conversation's placeholder map (a deleted chat).
           "conversation": "<hex id from the window, keeps placeholder numbers the same across a conversation>"
 Answer:   {"ok": true, "id": "...", "text": "<the exact text that would be sent>", "redactions": {"ip": 2, ...}}
 The briefing is saved as /var/lib/tind-ai/briefing/<uid>/<id>.json, readable by that human and tind-ai-remote only.
@@ -60,8 +63,22 @@ def cut(text, limit):
     return '[... %d characters cut from the start ...]\n' % (len(text) - limit) + text[-limit:]
 
 
+def map_path(uid, conv):
+    if not (conv.isalnum() and len(conv) <= 64):
+        return None
+    mapdir = os.path.join(MAP_DIR, str(uid))
+    os.makedirs(mapdir, mode=0o700, exist_ok=True)
+    return os.path.join(mapdir, conv + '.json')
+
+
 def handle(uid, req):
     if req.get('op') == 'ping':
+        return {'ok': True}
+    if req.get('op') == 'forget':
+        # the human deleted a chat: its placeholder map (which holds the real values) goes too
+        path = map_path(uid, str(req.get('conversation', '')))
+        if path and os.path.exists(path):
+            os.unlink(path)
         return {'ok': True}
     if req.get('op') != 'brief':
         raise ValueError('unknown op')
@@ -71,37 +88,40 @@ def handle(uid, req):
     provider = tindai.provider(str(req.get('provider', '')))
     human = pwd.getpwuid(uid)
     r = Redactor(extra_names=[human.pw_name])
-    conv = str(req.get('conversation', ''))
-    mapfile = None
-    if conv.isalnum() and len(conv) <= 64:
-        mapdir = os.path.join(MAP_DIR, str(uid))
-        os.makedirs(mapdir, mode=0o700, exist_ok=True)
-        mapfile = os.path.join(mapdir, conv + '.json')
+    mapfile = map_path(uid, str(req.get('conversation', '')))
+    if mapfile:
         try:
             with open(mapfile, encoding='utf-8') as f:
                 r.load(json.load(f))
         except (OSError, ValueError):
             pass
 
-    parts = ['## Request\n' + r.text(cut(request, 20_000))]
+    # "send unredacted" (the human's choice for this one message): the fixed rules are skipped for it
+    raw = bool(req.get('raw'))
+    red = (lambda t: t) if raw else r.text
+    items = req.get('items') or []
+    parts = [red(cut(request, 20_000))]
     total = 0
-    for item in req.get('items') or []:
-        name = r.text(str(item.get('name', 'file'))[:200])
+    for item in items:
+        name = red(str(item.get('name', 'file'))[:200])
         text = cut(str(item.get('text', '')), MAX_ITEM)
         total += len(text)
         if total > MAX_TOTAL:
             parts.append('## %s\n(left out: the shared material is over the size limit)' % name)
             continue
-        parts.append('## %s\n```\n%s\n```' % (name, r.text(text)))
+        parts.append('## %s\n```\n%s\n```' % (name, red(text)))
     if req.get('journal'):
         parts.append('## System journal, this boot, warnings and errors (last %d lines)\n```\n%s\n```'
-                     % (JOURNAL_LINES, r.text(journal())))
+                     % (JOURNAL_LINES, red(journal())))
     text = '\n\n'.join(parts)
+    summary = {} if raw else r.summary()   # what was hidden in this message (not in the history below)
 
+    # earlier turns: each keeps the choice made when it was sent (raw ones stay as they were)
     history = []
-    for h in (req.get('history') or [])[-12:]:
+    for h in (req.get('history') or [])[-24:]:
         role = 'assistant' if h.get('role') == 'assistant' else 'user'
-        history.append({'role': role, 'text': r.text(cut(str(h.get('text', '')), 40_000))})
+        body = cut(str(h.get('text', '')), 40_000)
+        history.append({'role': role, 'text': body if h.get('raw') else r.text(body)})
 
     bid = time.strftime('%Y%m%d-%H%M%S') + '-' + secrets.token_hex(4)
     remote_uid = pwd.getpwnam('tind-ai-remote').pw_uid
@@ -109,7 +129,7 @@ def handle(uid, req):
     tindai.write_json(os.path.join(folder, bid + '.json'), {
         'id': bid, 'uid': uid, 'created': int(time.time()), 'provider': provider['id'],
         'model': str(req.get('model', ''))[:120], 'system': SYSTEM_PROMPT, 'history': history, 'text': text,
-        'redactions': r.summary(),
+        'redactions': summary, 'raw': raw,
     })
     tindai.prune(folder)
     if mapfile:
@@ -117,9 +137,9 @@ def handle(uid, req):
         with os.fdopen(fd, 'w', encoding='utf-8') as f:
             json.dump(r.state(), f)
         os.rename(mapfile + '.tmp', mapfile)
-        tindai.prune(os.path.dirname(mapfile), keep=30)
+        tindai.prune(os.path.dirname(mapfile), keep=1000)
     return {'ok': True, 'id': bid, 'text': text, 'history': history, 'system': SYSTEM_PROMPT,
-            'redactions': r.summary()}
+            'redactions': summary, 'raw': raw}
 
 
 if __name__ == '__main__':

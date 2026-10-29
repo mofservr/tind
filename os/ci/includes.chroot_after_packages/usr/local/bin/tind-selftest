@@ -29,9 +29,12 @@ for at in 60 240; do
         >/dev/null 2>&1 || true
 done
 # CI only: the boot job opens the AI assistant with Super+K at ~108 s (first use: the guide) and at ~288 s; accept the
-# guide in between, so the second screenshot shows the Ask page
+# guide in between, and at ~262 s open the chat the AI test below saved, so the second screenshot shows a real chat
 systemd-run --unit=tind-ci-ai-accept --collect \
     sh -c "sleep 150; runuser -u tind -- sh -c 'mkdir -p /home/tind/.config/tind-ai && touch /home/tind/.config/tind-ai/accepted'" \
+    >/dev/null 2>&1 || true
+systemd-run --unit=tind-ci-ai-open --collect \
+    sh -c "sleep 262; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus WAYLAND_DISPLAY=wayland-0 timeout 60 tind-ai-ask --open last" \
     >/dev/null 2>&1 || true
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
@@ -276,16 +279,30 @@ echo "" | /usr/lib/tind-ai/setkey custom http://127.0.0.1:8099/v1 ci-model 2>&1 
 logger -p user.warning -t tind-ci "planted for the AI test: password=hunter22ci token ghp_cicicicicicicicicicicicicicicicicici99 from 10.11.12.13 by ola.ci@example.no"
 sleep 1
 cat > /run/tind-ci-aiclient.py <<'PY'
-import json, sys
+import json, os, sys, time
 sys.path.insert(0, '/usr/lib/tind-ai')
 import tindai
-b = tindai.call(tindai.LOCAL_SOCKET, {'op': 'brief', 'request': 'CI test: why does Steam not start?', 'provider': 'custom',
+req = 'CI test: why does Steam not start? My laptop is 192.168.1.37.'
+b = tindai.call(tindai.LOCAL_SOCKET, {'op': 'brief', 'request': req, 'provider': 'custom',
                                       'model': 'ci-model', 'journal': True, 'conversation': 'ci0001'})
 print(json.dumps({'brief_ok': b.get('ok'), 'error': b.get('error'), 'id': b.get('id'), 'redactions': b.get('redactions')}))
 open('/tmp/tind-ci-brief.txt', 'w').write(b.get('text', ''))
 if b.get('ok'):
     r = tindai.call(tindai.remote_socket('custom'), {'op': 'send', 'id': b['id'], 'model': 'ci-model'})
     print(json.dumps({'send_ok': r.get('ok'), 'error': r.get('error'), 'answer': (r.get('answer') or '')[:60]}))
+    # save it the way the chat window does, so the boot screenshot shows a real chat
+    if r.get('ok'):
+        p = tindai.provider('custom')
+        d = os.path.expanduser('~/.local/share/tind-ai/chats/custom')
+        os.makedirs(d, mode=0o700, exist_ok=True)
+        now = int(time.time())
+        json.dump({'id': 'ci0001', 'provider': 'custom', 'model': 'ci-model', 'title': req[:60], 'created': now,
+                   'updated': now, 'messages': [
+                       {'role': 'user', 'text': req, 'sent': b['text'], 'redactions': b['redactions'], 'raw': False,
+                        'items': ['System log']},
+                       {'role': 'assistant', 'text': r['answer'], 'provider_name': tindai.provider_label(p),
+                        'model': 'ci-model', 'model_name': 'ci-model', 'seconds': r.get('seconds')}]},
+                  open(os.path.join(d, 'ci0001.json'), 'w'))
 PY
 out="$(asuser python3 /run/tind-ci-aiclient.py 2>&1)"; echo "$out"
 echo "$out" | grep -q '"brief_ok": true' && ai brief ok || ai brief "FAIL $(echo "$out" | tail -2 | tr '\n' '|')"

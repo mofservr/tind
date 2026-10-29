@@ -129,6 +129,35 @@ except ValueError:
     check(True, 'local: an empty request is refused')
 
 
+# Wi-Fi names and Steam ids
+wl = Redactor()
+wout = wl.text("""NetworkManager[812]: <info> device (wlp2s0): Activation: starting connection 'Hjemme 5G' (wifi)
+wpa_supplicant[700]: wlp2s0: Trying to associate with SSID 'Hjemme 5G'
+SSID:                   Telenor-AB12
+[2026-10-28 21:15:03] Logging in user 'olanordmann_gamer' [U:1:12345678] to Steam Public...
+steamid 76561198012345678 "AccountName"\t\t"olanordmann_gamer"
+user 'root' via 'sudo'""")
+for v in ('Hjemme 5G', 'Telenor-AB12', 'olanordmann_gamer', '[U:1:12345678]', '76561198012345678'):
+    check(v not in wout, 'redact: Wi-Fi name or Steam id %r is gone' % v)
+check(wout.count("'[wifi-1]'") == 2, 'redact: the same Wi-Fi name gets the same placeholder')
+check("user 'root'" in wout, 'redact: system words such as root stay')
+
+# send unredacted (the human's per-message choice), summaries per message, forgetting a chat
+raw = local.handle(uid, {'op': 'brief', 'request': 'my gateway is ' + PLANTED['ip'], 'provider': 'custom',
+                         'raw': True, 'conversation': 'abc123'})
+check(PLANTED['ip'] in raw['text'] and raw['redactions'] == {} and raw['raw'] is True,
+      'local: a message sent unredacted goes as typed')
+mix = local.handle(uid, {'op': 'brief', 'request': 'thanks', 'provider': 'custom', 'conversation': 'abc123',
+                         'history': [{'role': 'user', 'text': 'my gateway is ' + PLANTED['ip'], 'raw': True},
+                                     {'role': 'user', 'text': 'mail ' + PLANTED['email']}]})
+check(PLANTED['ip'] in mix['history'][0]['text'] and PLANTED['email'] not in mix['history'][1]['text'],
+      'local: history keeps each message\'s own choice')
+check(mix['redactions'] == {}, 'local: the summary counts only the new message, not the history')
+check(mix['text'] == 'thanks', 'local: a plain chat message is sent as is, with no headings')
+local.handle(uid, {'op': 'forget', 'conversation': 'abc123'})
+check(not os.path.exists(os.path.join(local.MAP_DIR, str(uid), 'abc123.json')),
+      'local: deleting a chat forgets its placeholder map')
+
 # ---- the remote service against a fake provider -------------------------------------------------------------------
 seen = {}
 
@@ -203,6 +232,12 @@ for pid, adapter, want in (('custom', 'openai', 'compatible answer'), ('anthropi
         check(False, 'remote %s: a path in the id is refused' % pid)
     except ValueError:
         check(True, 'remote %s: a path in the id is refused' % pid)
+loc = load_script(os.path.join(ROOT, 'tind-ai-remote/usr/lib/tind-ai/remote'), 'tind_ai_remote_local', ['local'])
+try:
+    loc.handle(uid, {'op': 'send', 'id': b['id']})
+    check(False, 'remote: the local provider is never sent through the remote service')
+except PermissionError:
+    check(True, 'remote: the local provider is never sent through the remote service')
 srv.shutdown()
 
 # ---- endpoint rules ----------------------------------------------------------------------------------------------
@@ -219,6 +254,13 @@ for p in tindai.providers():
         endpoint.parse(p['base_url'])
 check(tindai.provider('scaleway')['eu'] is True and tindai.provider('anthropic')['eu'] is False,
       'providers: EU and non-EU providers are marked')
+labels = [tindai.provider_label(p) for p in tindai.providers()]
+check('Scaleway - France' in labels and 'Anthropic - USA' in labels, 'providers: shown as name - country')
+check(all(m.get('use') in ('quick', 'everyday', 'coding') for p in tindai.providers() if p['id'] != 'custom'
+          for m in p['models']), 'providers: every model has a use (quick, everyday or coding)')
+check(tindai.model_label(tindai.provider('anthropic')['models'][1]) == 'Claude Sonnet 5.5 (everyday)',
+      'providers: models shown as name (use)')
+check(tindai.provider('local')['service'] == 'local', 'providers: this computer is served by the local service')
 check(json.load(open(tindai.PROVIDERS_FILE))['default'] == 'scaleway', 'providers: Scaleway is the default')
 
 shutil.rmtree(tmp)

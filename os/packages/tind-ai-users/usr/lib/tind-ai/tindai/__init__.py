@@ -38,8 +38,18 @@ def providers():
         if p['id'] == 'custom' and custom.get('base_url'):
             p['base_url'] = custom['base_url']
             if custom.get('model'):
-                p['models'] = [{'id': custom['model'], 'label': custom['model'], 'use': 'everyday'}]
+                p['models'] = [{'id': custom['model'], 'name': custom['model'], 'use': 'everyday'}]
     return data['providers']
+
+
+def provider_label(p):
+    """How a provider is shown everywhere: 'Scaleway - France'."""
+    return '%s - %s' % (p['name'], p['country'])
+
+
+def model_label(m):
+    """How a model is shown everywhere: 'Claude Sonnet 5.5 (everyday)'."""
+    return '%s (%s)' % (m['name'], m['use']) if m.get('use') else m['name']
 
 
 def provider(pid):

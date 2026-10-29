@@ -32,8 +32,9 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   "keyboard shortcuts" are switched on in its settings, log out and in again so the two do not fight over the keys.
 - **The AI assistant box** (test channel, `ai-box` branch, from 28 Oct): the walls (two system users, the `tind_ai`
   firewall table, the sandboxed services), redaction and one request end to end are checked in the build's virtual
-  machine against a fake provider. Not yet run against a real provider (Scaleway, IONOS, Mistral, Claude, OpenAI) or on
-  real hardware.
+  machine against a fake provider. The window opens on real hardware (Morten, 29 Oct, laptop). Not yet run against a
+  real provider (Scaleway, IONOS, Mistral, Claude, OpenAI). The chat window (29 Oct) is checked under Xvfb and in the
+  build's screenshots only.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".

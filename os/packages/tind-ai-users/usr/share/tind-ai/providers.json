@@ -1,44 +1,52 @@
 {
- "_comment": "Tind AI box providers. 'default' is preselected in the Ask window. 'eu' false marks a provider outside the EU/EEA in the window. Model ids can be changed per user in the window's settings; these are the suggestions.",
+ "_comment": "Tind AI box providers. Shown as 'name - country'; models as 'name (use)', use one of quick, everyday, coding. 'default' is preselected for a new chat. 'service' says which system user talks to the model: 'remote' (tind-ai-remote, one host only) or 'local' (tind-ai-local, no network; for a model on this computer). Model ids can be changed per user in the window; these are the suggestions.",
  "default": "scaleway",
  "providers": [
-  {"id": "scaleway", "name": "Scaleway", "country": "France", "eu": true,
+  {"id": "scaleway", "name": "Scaleway", "country": "France", "eu": true, "service": "remote",
    "adapter": "openai", "base_url": "https://api.scaleway.ai/v1",
    "key_help": "Scaleway console > Identity and Access Management > API keys",
    "models": [
-     {"id": "gpt-oss-120b", "label": "gpt-oss-120b (everyday)", "use": "everyday"},
-     {"id": "mistral-medium-3.5-128b", "label": "Mistral Medium 3.5 (coding and troubleshooting)", "use": "coding"}
+     {"id": "gpt-oss-120b", "name": "gpt-oss-120b", "use": "everyday"},
+     {"id": "mistral-medium-3.5-128b", "name": "Mistral Medium 3.5", "use": "coding"}
    ]},
-  {"id": "ionos", "name": "IONOS", "country": "Germany", "eu": true,
+  {"id": "ionos", "name": "IONOS", "country": "Germany", "eu": true, "service": "remote",
    "adapter": "openai", "base_url": "https://openai.inference.de-txl.ionos.com/v1",
    "key_help": "IONOS Data Center Designer > Management > Token Manager",
    "models": [
-     {"id": "openai/gpt-oss-120b", "label": "gpt-oss-120b (everyday)", "use": "everyday"},
-     {"id": "meta-llama/Llama-3.3-70B-Instruct", "label": "Llama 3.3 70B", "use": "everyday"}
+     {"id": "mistralai/Mistral-Small-24B-Instruct", "name": "Mistral Small 24B", "use": "quick"},
+     {"id": "openai/gpt-oss-120b", "name": "gpt-oss-120b", "use": "everyday"}
    ]},
-  {"id": "mistral", "name": "Mistral", "country": "France", "eu": true,
+  {"id": "mistral", "name": "Mistral", "country": "France", "eu": true, "service": "remote",
    "adapter": "openai", "base_url": "https://api.mistral.ai/v1",
    "key_help": "console.mistral.ai > API keys",
    "models": [
-     {"id": "mistral-medium-latest", "label": "Mistral Medium (everyday and coding)", "use": "coding"},
-     {"id": "mistral-small-latest", "label": "Mistral Small (quick)", "use": "everyday"}
+     {"id": "mistral-small-latest", "name": "Mistral Small", "use": "quick"},
+     {"id": "mistral-medium-latest", "name": "Mistral Medium", "use": "coding"}
    ]},
-  {"id": "anthropic", "name": "Anthropic (Claude)", "country": "USA", "eu": false,
+  {"id": "anthropic", "name": "Anthropic", "country": "USA", "eu": false, "service": "remote",
    "adapter": "anthropic", "base_url": "https://api.anthropic.com/v1",
-   "key_help": "console.anthropic.com > API keys (billed separately from a Claude subscription)",
+   "key_help": "console.anthropic.com > API keys (billed separately from a Claude subscription, as far as known)",
    "models": [
-     {"id": "claude-sonnet-5-5", "label": "Claude Sonnet 5.5", "use": "coding"},
-     {"id": "claude-haiku-5-5", "label": "Claude Haiku 5.5 (quick)", "use": "everyday"}
+     {"id": "claude-haiku-5-5", "name": "Claude Haiku 5.5", "use": "quick"},
+     {"id": "claude-sonnet-5-5", "name": "Claude Sonnet 5.5", "use": "everyday"},
+     {"id": "claude-opus-5-5", "name": "Claude Opus 5.5", "use": "coding"}
    ]},
-  {"id": "openai", "name": "OpenAI (ChatGPT)", "country": "USA", "eu": false,
+  {"id": "openai", "name": "OpenAI", "country": "USA", "eu": false, "service": "remote",
    "adapter": "openai", "base_url": "https://api.openai.com/v1",
-   "key_help": "platform.openai.com > API keys (billed separately from a ChatGPT subscription)",
+   "key_help": "platform.openai.com > API keys (billed separately from a ChatGPT subscription, as far as known)",
    "models": [
-     {"id": "gpt-5.5", "label": "GPT-5.5", "use": "coding"}
+     {"id": "gpt-5.6-luna", "name": "GPT-5.6 Luna", "use": "quick"},
+     {"id": "gpt-5.6-terra", "name": "GPT-5.6 Terra", "use": "everyday"},
+     {"id": "gpt-5.6-sol", "name": "GPT-5.6 Sol", "use": "coding"}
    ]},
-  {"id": "custom", "name": "Custom endpoint", "country": "you choose", "eu": null,
+  {"id": "local", "name": "This computer", "country": "local", "eu": null, "service": "local",
+   "adapter": "local", "base_url": "",
+   "unavailable": "No local model is installed on this computer yet",
+   "key_help": "",
+   "models": []},
+  {"id": "custom", "name": "Custom server", "country": "your choice", "eu": null, "service": "remote",
    "adapter": "openai", "base_url": "",
-   "key_help": "Any OpenAI-compatible server. Plain http is only allowed to this computer (127.0.0.1), for a local model server.",
+   "key_help": "Any OpenAI-compatible server. Plain http is only allowed to this computer (127.0.0.1).",
    "models": []}
  ]
 }

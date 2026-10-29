@@ -26,6 +26,17 @@ SECRET_KV = re.compile(r'''(?ix)
           client[_-]?secret|auth(?:orization)?|bearer|cookie|session(?:id)?|psk|wpa[_-]?psk)
        ["']?\s*[:=]\s*(?:bearer\s+|basic\s+)?)
     (["']?)(?!\[|(?:bearer|basic)\s)([^\s"',;]{3,})''')
+# Wi-Fi network names as NetworkManager and wpa_supplicant log them: SSID 'x', connection 'x', set 'x' (dev) as default,
+# and nmcli-style "SSID: x". A home network's name can point to where someone lives.
+WIFI = re.compile(r'''(?ix)
+    (\b(?:ssid|connection|network|set)\s*[:=]?\s*)'([^'\n]{1,64})'
+  | (\bssid\s*[:=]\s*)"([^"\n]{1,64})"
+  | (\bssid:\s+)([^\s'"][^\n]{0,63})$''', re.M)
+# Steam: 64-bit Steam IDs, [U:1:123] account ids, and the account name in "user 'x'" / AccountName "x" lines
+STEAM_ID = re.compile(r'\b7656119\d{10}\b|\[U:\d:\d+\]')
+STEAM_NAME = re.compile(r'''(?ix)
+    (\b(?:user|account|accountname|persona(?:name)?)\b\s*[:=]?\s*)'([^'\n]{2,64})'
+  | ("(?:AccountName|PersonaName)"\s+)"([^"\n]{1,64})"''')
 BEARER = re.compile(r'(?i)\b(bearer|basic)\s+([A-Za-z0-9._~+/=-]{12,})')
 EMAIL = re.compile(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b')
 MAC = re.compile(r'\b[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2}){5}\b|\b[0-9A-Fa-f]{2}(?:-[0-9A-Fa-f]{2}){5}\b')
@@ -39,7 +50,8 @@ KEEP_IPS = {'127.0.0.1', '0.0.0.0', '255.255.255.255', '127.0.0.53'}
 # words that name the system, not a person: a login or real-name part from this list is never replaced (the live
 # session's user is "tind", "Debian Live user"; replacing those would blank every tind-* package and "user" in a log)
 STOP = {'tind', 'debian', 'live', 'user', 'users', 'root', 'admin', 'guest', 'steam', 'gnome', 'linux', 'test',
-        'home', 'default', 'system', 'local', 'desktop', 'laptop', 'computer', 'owner'}
+        'home', 'default', 'system', 'local', 'desktop', 'laptop', 'computer', 'owner', 'anonymous', 'sudo', 'gdm',
+        'nobody', 'lo'}
 
 
 class Redactor:
@@ -94,6 +106,20 @@ class Redactor:
         self.counts[kind] = self.counts.get(kind, 0) + 1
         return m[value]
 
+    def _quoted(self, kind):
+        """Replacement for patterns made of (prefix, value) group pairs: keep the prefix and quotes, hide the value."""
+        def rep(mt):
+            g = mt.groups()
+            for i in range(0, len(g), 2):
+                if g[i] is not None:
+                    pre, val = g[i], g[i + 1]
+                    whole = mt.group(0)
+                    if (val.startswith('[') and val.endswith(']')) or val.strip().lower() in STOP:
+                        return whole                # already a placeholder, or a system word like 'root'
+                    return pre + whole[len(pre):].replace(val, self._ph(kind, val), 1)
+            return mt.group(0)
+        return rep
+
     def _sub(self, pattern, kind, text, keep=None):
         def rep(mt):
             v = mt.group(0)
@@ -129,6 +155,9 @@ class Redactor:
         s = TOKENS.sub(lambda m: self._ph('token', m.group(0)), s)
         s = BEARER.sub(lambda m: m.group(1) + ' ' + self._ph('secret', m.group(2)), s)
         s = SECRET_KV.sub(lambda m: m.group(1) + m.group(2) + self._ph('secret', m.group(3)), s)
+        s = WIFI.sub(self._quoted('wifi'), s)
+        s = STEAM_ID.sub(lambda m: self._ph('steam-id', m.group(0)), s)
+        s = STEAM_NAME.sub(self._quoted('steam-name'), s)
         s = self._sub(EMAIL, 'email', s)
         s = self._sub(MAC, 'mac', s)
         s = self._sub(UUID, 'uuid', s)
