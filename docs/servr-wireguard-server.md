@@ -6,10 +6,10 @@
 
 - **Split tunnel.** Only `10.0.0.0/24` and `*.servr.no` go through the tunnel (`ALLOWED_IPS=10.0.0.0/24`).
 - **Names inside the tunnel (option A).** For queries arriving over the tunnel, `*.servr.no` resolves to `10.0.0.1` (a second dnsmasq that listens on `10.0.0.1` only). The LAN address `192.168.1.37` must **not** be in `ALLOWED_IPS`: it clashes with friends' `192.168.1.x` networks and, at home, sends the tunnel's own endpoint traffic back into the tunnel.
-- **`vpn.servr.no` always resolves to the public IP**, at home and away. Never use it as a tunnel-internal name.
+- **At home the tunnel uses the server's LAN address; everywhere else the public one** (31 Oct 2026; replaces "`vpn.servr.no` always resolves to the public IP"). The home router cannot carry gigabit LAN traffic, so at home the tunnel must not hairpin through it. Devices get the LAN address as `LAN_ENDPOINT` in their enrolment block and use it wherever the server answers on it, whatever DNS the network hands out. `vpn.servr.no` itself stays the public name; the tunnel's own resolver must never answer it with `10.0.0.1`, and it is never a tunnel-internal name.
 - **Scope: only Morten's own devices.** Every enrolled device can reach every internal service (Caddy trusts `10.0.0.0/24`). Friends' and family's devices wait for a separate OPNsense WireGuard zone.
 - `tind-add-peer` has no remove command yet. Remove a peer by hand on the server.
-- Client side: `tind-wireguard` includes a watchdog (`tind-wireguard-watchdog.timer`) that reconnects when the last handshake is older than 150 s, because WireGuard resolves the endpoint name only when the tunnel comes up. Split DNS needs `systemd-resolved` on the client (Tind has it active).
+- Client side (`tind-wireguard` 0.3.2): `tind-enroll refresh` picks the endpoint address and writes it into the NetworkManager profile, so NetworkManager never looks the name up through the tunnel's own DNS. It tries `LAN_ENDPOINT` once per network (proven by a ping through the tunnel), otherwise looks `vpn.servr.no` up through the current network's DNS. The watchdog (`tind-wireguard-watchdog.timer`, every minute) runs it, and reconnects when the last handshake is older than 150 s. Split DNS needs `systemd-resolved` on the client (Tind has it active).
 
 ## Goal
 
@@ -42,7 +42,8 @@ The image ships no endpoint, server key or subnet. Each device gets them in an *
 One-time setup on the server: copy `docs/server/tind-add-peer` to `/usr/local/sbin/` and create `/etc/tind-add-peer.conf`:
 
 ```sh
-ENDPOINT=vpn.servr.no:51820   # resolves to the public IP, at home and away; see "The endpoint name" below
+ENDPOINT=vpn.servr.no:51820          # public name; see "The endpoint name" below
+LAN_ENDPOINT=<server LAN address>:51820   # optional; devices use it at home
 # optional: WG_IF=wg0  POOL_START=10  ALLOWED_IPS=...  DNS_SERVER=...
 ```
 
@@ -57,6 +58,7 @@ Per device:
    SERVER_PUBLIC_KEY=...
    ALLOWED_IPS=10.0.0.0/24
    DNS_SERVER=10.0.0.1
+   LAN_ENDPOINT=<server LAN address>:51820
    ```
 
 3. Send the block back over a channel you trust. On the device: `sudo tind-enroll apply` and paste it (or `apply FILE`).
@@ -65,7 +67,7 @@ Running `tind-add-peer` again with the same key prints the same block. `sudo tin
 
 ### The endpoint name
 
-Use a name, not the IP, so the repository and the image never contain your address. `vpn.servr.no` always resolves to the **public** IP, both at home and away (decision above), so the lookup works whether or not the tunnel is up and the endpoint traffic never loops into the tunnel. If the home WAN IP changes, the tunnel goes quiet until it is brought up again; the client watchdog does that.
+Use a name, not the IP, so the repository and the image never contain your address. Tind devices look the name up through the DNS of the network they are on, never through the tunnel (`tind-enroll refresh`, run every minute by the watchdog). At home they use `LAN_ENDPOINT` instead, once a ping through the tunnel proves the server answers on it, so it works even where the router's DHCP hands out the ISP's DNS. For that the server must accept WireGuard on its LAN interface (UDP 51820). The LAN address must not be in `ALLOWED_IPS`, so endpoint traffic never loops into the tunnel (`tind-enroll` refuses a block that breaks this). A new home WAN IP or a move between networks is picked up within about a minute. Existing devices get `LAN_ENDPOINT` by running `tind-add-peer` again with their key (it prints the same block, now with the line) and `sudo tind-enroll apply` on the device.
 
 ### What names resolve to inside the tunnel
 

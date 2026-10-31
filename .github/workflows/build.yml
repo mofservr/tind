@@ -38,6 +38,8 @@ jobs:
             os/scripts/test-publish-apt.sh || rc=1
             echo "== GPU fallback for old NVIDIA cards"
             os/scripts/test-gpu-check.sh || rc=1
+            echo "== tunnel endpoint looked up through the network's own DNS"
+            os/scripts/test-wireguard.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"

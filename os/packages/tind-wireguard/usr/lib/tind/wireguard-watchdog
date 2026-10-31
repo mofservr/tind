@@ -1,9 +1,10 @@
 #!/bin/bash
-# Reconnect the servr.no tunnel when it has gone silent.
-# WireGuard resolves the endpoint hostname only when the tunnel comes up. If the home WAN IP changes,
-# the tunnel stops working without any error. A healthy tunnel with keepalive renews its handshake
-# about every two minutes, so a handshake older than MAX_AGE seconds means the tunnel is dead.
-# Taking the connection down and up resolves the endpoint name again.
+# Keep the servr.no tunnel pointed at the right address, and reconnect it when it has gone silent.
+# 1. `tind-enroll refresh` looks the endpoint name up through the current network's DNS (the server's
+#    LAN address at home, the public one elsewhere) and reconnects when the address has changed, for
+#    example after moving between networks or a new home WAN IP.
+# 2. A healthy tunnel with keepalive renews its handshake about every two minutes, so a handshake older
+#    than MAX_AGE seconds means the tunnel is dead: take the connection down and up.
 # Runs from tind-wireguard-watchdog.timer (every minute). Does nothing when no tunnel is installed.
 set -u
 CONF=/etc/tind/servr-tunnel.conf
@@ -20,6 +21,10 @@ ip route show default 2>/dev/null | grep -q . || exit 0
 
 now="$(date +%s)"
 mkdir -p "$STATE"
+if [ "$("${TIND_ENROLL:-/usr/bin/tind-enroll}" refresh 2>/dev/null)" = changed ]; then
+    echo "$now" > "$STATE/ref"
+    exit 0
+fi
 active="$(nmcli -t -g GENERAL.STATE connection show "$CONNECTION_NAME" 2>/dev/null || true)"
 
 bounce() {

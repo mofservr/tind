@@ -14,6 +14,10 @@
 #   POOL_START=10                    first host number handed to Tind devices (default 10)
 #   ALLOWED_IPS=10.0.0.0/24          what goes through the tunnel (default: the interface's /24)
 #   DNS_SERVER=10.0.0.1              resolver inside the tunnel (default: the interface's address)
+#   LAN_ENDPOINT=192.168.1.10:51820  optional: the server's address:port on its home LAN. Devices try it
+#                                    first on every network and keep it only if the server answers
+#                                    through it, so at home the tunnel stays off the router. Must not
+#                                    be inside ALLOWED_IPS.
 #
 # Nothing printed here is secret. The device's private key never leaves the device.
 set -euo pipefail
@@ -28,7 +32,7 @@ usage() { sed -n '2,10p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
 [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-add-peer $*"
 command -v wg >/dev/null 2>&1 || die "wg not found; this must run on the WireGuard server"
 
-ENDPOINT="" WG_IF="" POOL_START="" ALLOWED_IPS="" DNS_SERVER=""
+ENDPOINT="" WG_IF="" POOL_START="" ALLOWED_IPS="" DNS_SERVER="" LAN_ENDPOINT=""
 if [ -r "$SETTINGS" ]; then
     # shellcheck disable=SC1090
     . "$SETTINGS"
@@ -70,6 +74,10 @@ cmd_add() {
     [ -n "$ENDPOINT" ] || die "ENDPOINT is not set in $SETTINGS (example: ENDPOINT=vpn.example.org:51820)"
     [[ "$ENDPOINT" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?:[0-9]{1,5}$ ]] \
         || die "ENDPOINT must look like vpn.example.org:51820"
+    if [ -n "$LAN_ENDPOINT" ]; then
+        [[ "$LAN_ENDPOINT" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}:[0-9]{1,5}$ ]] \
+            || die "LAN_ENDPOINT must look like 192.168.1.10:51820"
+    fi
     [[ "$name" =~ ^[a-z0-9][a-z0-9-]{0,30}$ ]] || die "device name: lower-case letters, digits and dashes only"
     [[ "$pub" =~ ^[A-Za-z0-9+/]{43}=$ ]] || die "that is not a WireGuard public key (44 characters ending in =)"
     [ "$pub" != "$(wg show "$WG_IF" public-key)" ] || die "that is the server's own public key"
@@ -121,6 +129,7 @@ SERVER_PUBLIC_KEY=$(wg show "$WG_IF" public-key)
 ALLOWED_IPS=$ALLOWED_IPS
 DNS_SERVER=$DNS_SERVER
 BLOCK
+    if [ -n "$LAN_ENDPOINT" ]; then echo "LAN_ENDPOINT=$LAN_ENDPOINT"; fi
 }
 
 case "${1:-}" in

@@ -1,10 +1,10 @@
 Package: tind-wireguard
-Version: 0.3.1
+Version: 0.3.2
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: net
 Priority: optional
-Depends: wireguard-tools, network-manager, systemd-resolved
+Depends: wireguard-tools, network-manager, systemd-resolved, iproute2, iputils-ping
 Recommends: qrencode
 Installed-Size: 72
 Description: Always-on split-tunnel WireGuard to servr.no
@@ -12,6 +12,9 @@ Description: Always-on split-tunnel WireGuard to servr.no
  pair; no private key is ever shipped in the image. The tunnel only routes the
  server's own addresses (split tunnel), stays up in the background through
  NetworkManager, and resolves servr.no names through the tunnel (split DNS).
+ At home it uses the server's LAN address (LAN_ENDPOINT, tried and proven on
+ each network); elsewhere the endpoint name, looked up through the current
+ network's DNS, never through the tunnel.
  .
  Run: sudo tind-enroll init, send the public key to the server admin, then paste the
  enrolment block that comes back into: sudo tind-enroll apply

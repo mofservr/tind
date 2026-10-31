@@ -5,6 +5,7 @@
 #   sudo tind-enroll apply [FILE]      install the tunnel from the enrolment block the server admin sends
 #                                      back (paste it, or pass a file; end a paste with Ctrl-D)
 #   sudo tind-enroll status            show tunnel state
+#   sudo tind-enroll refresh           look the endpoint up again through this network's DNS
 #   sudo tind-enroll remove [--purge-key]
 #
 # The private key is generated here and never leaves this device. The image contains no server
@@ -12,15 +13,23 @@
 set -euo pipefail
 
 CONF=/etc/tind/servr-tunnel.conf
-KEYDIR=/etc/tind/wireguard
+KEYDIR="${TIND_WG_KEYDIR:-/etc/tind/wireguard}"
 KEY="$KEYDIR/private.key"
+# the endpoint as the server admin gave it (name:port); the profile itself holds the address in use
+ENDPOINT_FILE="$KEYDIR/endpoint"
+# optional: the server's address on its home LAN (address:port), tried first on every new network
+LAN_FILE="$KEYDIR/lan-endpoint"
+# which network the LAN endpoint was last tried on, and whether it answered (lost at reboot on purpose)
+RUN_DIR="${TIND_WG_RUN:-/run/tind-wireguard}"
+# a tunnel with keepalive renews its handshake about every two minutes
+STALE_AFTER=180
 
 die() { echo "tind-enroll: $*" >&2; exit 1; }
 
 APPLY_TMP=""
 cleanup_apply() { [ -z "$APPLY_TMP" ] || rm -rf "$APPLY_TMP"; return 0; }
 
-usage() { sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
+usage() { sed -n '2,13p' "$0" | sed 's/^# \{0,1\}//'; exit "${1:-0}"; }
 
 need_root() { [ "$(id -u)" -eq 0 ] || die "run as root: sudo tind-enroll $*"; }
 
@@ -48,7 +57,7 @@ trim() {
 # the keys below are accepted, and every value is checked in check_values before it is used.
 read_block() {
     local file="${1:-}" line key val
-    ADDRESS="" SERVER_ENDPOINT="" SERVER_PUBLIC_KEY="" ALLOWED_IPS="" DNS_SERVER=""
+    ADDRESS="" SERVER_ENDPOINT="" SERVER_PUBLIC_KEY="" ALLOWED_IPS="" DNS_SERVER="" LAN_ENDPOINT=""
     if [ -n "$file" ]; then
         [ -r "$file" ] || die "cannot read $file"
         exec 3<"$file"
@@ -68,7 +77,7 @@ read_block() {
         val="${val#\"}"
         val="${val%\"}"
         case "$key" in
-            ADDRESS|SERVER_ENDPOINT|SERVER_PUBLIC_KEY|ALLOWED_IPS|DNS_SERVER|DNS_DOMAIN|KEEPALIVE)
+            ADDRESS|SERVER_ENDPOINT|SERVER_PUBLIC_KEY|ALLOWED_IPS|DNS_SERVER|DNS_DOMAIN|KEEPALIVE|LAN_ENDPOINT)
                 printf -v "$key" '%s' "$val" ;;
             *) die "unknown key '$key' in the enrolment block" ;;
         esac
@@ -95,6 +104,45 @@ check_values() {
         [[ "$item" =~ ^${ip}/[0-9]{1,2}$ ]] || die "ALLOWED_IPS entry '$item' is not an IPv4 network like 10.0.0.0/24"
         [ "${item#*/}" -gt 0 ] || die "ALLOWED_IPS must not contain a default route; this is a split tunnel."
     done
+    if [ -n "$LAN_ENDPOINT" ]; then
+        [[ "$LAN_ENDPOINT" =~ ^${ip}:[0-9]{1,5}$ ]] || die "LAN_ENDPOINT must look like 192.168.1.10:51820"
+        # inside the tunnel's own networks it would send the endpoint traffic into the tunnel itself
+        for item in "${items[@]}"; do
+            ! in_net "${LAN_ENDPOINT%:*}" "$item" || die "LAN_ENDPOINT must not be inside ALLOWED_IPS ($item)"
+        done
+    fi
+}
+
+ip2int() { local IFS=.; set -- $1; echo $(( ($1 << 24) + ($2 << 16) + ($3 << 8) + $4 )); }
+
+in_net() { # in_net ADDRESS NETWORK/BITS
+    local bits="${2#*/}" mask
+    mask=$(( bits == 0 ? 0 : (0xFFFFFFFF << (32 - bits)) & 0xFFFFFFFF ))
+    [ $(( $(ip2int "$1") & mask )) -eq $(( $(ip2int "${2%/*}") & mask )) ]
+}
+
+# The endpoint name is looked up by Tind, never by NetworkManager. NetworkManager resolves a name
+# through the normal resolver, where the tunnel's own routing domain (~servr.no) wins, and does it
+# again on every DNS change. The tunnel's DNS gives the public address, so at home the endpoint
+# traffic went out to the router and back in (hairpin, measured 18 instead of 109 MB/s).
+# Asking only the DNS of the links that carry the default route gives the answer of the network the
+# device is on: the server's LAN address at home, the public one elsewhere.
+uplink_lookup() {
+    local name="$1" dev addr
+    if [[ "$name" =~ ^[0-9]{1,3}(\.[0-9]{1,3}){3}$ ]]; then printf '%s' "$name"; return 0; fi
+    for dev in $(ip -4 route show default 2>/dev/null \
+            | awk '{for (i = 1; i < NF; i++) if ($i == "dev") { print $(i + 1); break }}'); do
+        [ "$dev" = "$CONNECTION_NAME" ] && continue
+        addr="$(resolvectl query -4 --legend=no -i "$dev" "$name" 2>/dev/null \
+            | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -1 || true)"
+        if [ -n "$addr" ]; then printf '%s' "$addr"; return 0; fi
+    done
+    return 1
+}
+
+profile_file() {
+    nmcli -t -f NAME,FILENAME connection show 2>/dev/null \
+        | awk -F: -v n="$CONNECTION_NAME" '$1 == n { print $2; exit }' || true
 }
 
 cmd_init() {
@@ -136,7 +184,16 @@ cmd_apply() {
     APPLY_TMP="$(mktemp -d)"
     trap cleanup_apply EXIT
     local file="$APPLY_TMP/$CONNECTION_NAME.conf"
+    local host="${SERVER_ENDPOINT%:*}" port="${SERVER_ENDPOINT##*:}" target
     umask 077
+    # the old tunnel goes first, so even the fallback lookup cannot go through it
+    nmcli connection delete "$CONNECTION_NAME" >/dev/null 2>&1 || true
+    target="$(uplink_lookup "$host" || getent ahostsv4 "$host" 2>/dev/null | awk 'NR == 1 { print $1 }')" || true
+    [ -n "$target" ] || die "cannot look up $host on this network"
+    mkdir -p "$KEYDIR"
+    printf '%s\n' "$SERVER_ENDPOINT" > "$ENDPOINT_FILE"
+    if [ -n "$LAN_ENDPOINT" ]; then printf '%s\n' "$LAN_ENDPOINT" > "$LAN_FILE"; else rm -f "$LAN_FILE"; fi
+    rm -f "$RUN_DIR/lan-net"
     cat > "$file" <<CFG
 [Interface]
 PrivateKey = $(cat "$KEY")
@@ -144,11 +201,10 @@ Address = $addr
 
 [Peer]
 PublicKey = $SERVER_PUBLIC_KEY
-Endpoint = $SERVER_ENDPOINT
+Endpoint = $target:$port
 AllowedIPs = ${ALLOWED_IPS// /}
 PersistentKeepalive = $KEEPALIVE
 CFG
-    nmcli connection delete "$CONNECTION_NAME" >/dev/null 2>&1 || true
     nmcli connection import type wireguard file "$file"
     nmcli connection modify "$CONNECTION_NAME" \
         connection.autoconnect yes \
@@ -160,6 +216,124 @@ CFG
     echo
     echo "Tunnel '$CONNECTION_NAME' is up and will start automatically."
     echo "Only traffic to ${ALLOWED_IPS// /} and names under $DNS_DOMAIN uses it."
+    if [ -n "$LAN_ENDPOINT" ] && [ "$(cmd_refresh)" = lan ]; then
+        echo "The server answers on its home LAN address $LAN_ENDPOINT here; the tunnel uses that."
+    else
+        echo "Endpoint $host is $target on this network."
+    fi
+    echo "The watchdog checks this every minute and follows you between networks."
+}
+
+# The network the device is on: uplink interface, gateway and the gateway's MAC address. The MAC
+# tells the home router from another router that happens to have the same address.
+net_signature() {
+    local dev gw mac
+    read -r dev gw < <(ip -4 route show default 2>/dev/null | awk -v t="$CONNECTION_NAME" '
+        { d = ""; g = ""
+          for (i = 1; i < NF; i++) { if ($i == "dev") d = $(i + 1); if ($i == "via") g = $(i + 1) }
+          if (d != "" && d != t) { print d, g; exit } }') || true
+    [ -n "${dev:-}" ] || return 1
+    mac="$(ip neigh show "${gw:-0.0.0.0}" dev "$dev" 2>/dev/null \
+        | awk '{ for (i = 1; i < NF; i++) if ($i == "lladdr") { print $(i + 1); exit } }' || true)"
+    printf '%s %s %s' "$dev" "${gw:-none}" "${mac:-unknown}"
+}
+
+handshake_age() {
+    local hs
+    hs="$(wg show "$CONNECTION_NAME" latest-handshakes 2>/dev/null | awk 'NR == 1 { print $2 }' || true)"
+    echo $(( $(date +%s) - ${hs:-0} ))
+}
+
+# Point the running tunnel at ADDRESS:PORT and ping the server's tunnel address through it. Only the
+# real server can answer inside the tunnel, so a reply proves the path. Takes about a second.
+answers_on() { # answers_on ADDRESS:PORT PEER TUNNEL_IP
+    wg set "$CONNECTION_NAME" peer "$2" endpoint "$1" 2>/dev/null || return 1
+    ping -c 3 -i 0.3 -W 1 -I "$CONNECTION_NAME" "$3" >/dev/null 2>&1
+}
+
+set_profile_endpoint() { # set_profile_endpoint FILE ADDRESS:PORT (the running tunnel is not touched)
+    sed -i "s|^endpoint=.*|endpoint=$2|" "$1"
+    nmcli connection load "$1" >/dev/null
+}
+
+log() { logger -t tind-enroll "$*" 2>/dev/null || true; }
+
+# Pick the endpoint address for the network the device is on and keep the profile on it.
+#  1. LAN_ENDPOINT, if the enrolment block had one: tried once on every new network, kept if the
+#     server answers through it. This works at home whatever DNS the router hands out.
+#  2. Otherwise the endpoint name, looked up through the current network's DNS (never the tunnel's).
+# Prints "lan" when it settled on the LAN endpoint, "changed" when it reconnected. Run every minute
+# by the watchdog. A profile from tind-wireguard 0.3.1 or older still holds the name: taken over here.
+cmd_refresh() {
+    need_root refresh
+    load_conf
+    local file current target host port addr lan peer tun sig last active runtime
+    file="$(profile_file)"
+    [ -n "$file" ] && [ -f "$file" ] || return 0
+    current="$(sed -n 's/^endpoint=//p' "$file" | head -1)"
+    if [ ! -s "$ENDPOINT_FILE" ]; then
+        [ -n "$current" ] || return 0
+        (umask 077; mkdir -p "$KEYDIR"; printf '%s\n' "$current" > "$ENDPOINT_FILE")
+    fi
+    target="$(head -1 "$ENDPOINT_FILE")"
+    [[ "$target" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]*[A-Za-z0-9])?:[0-9]{1,5}$ ]] \
+        || die "$ENDPOINT_FILE does not hold name:port"
+    host="${target%:*}" port="${target##*:}"
+    active="$(nmcli -t -g GENERAL.STATE connection show "$CONNECTION_NAME" 2>/dev/null || true)"
+    lan="$(head -1 "$LAN_FILE" 2>/dev/null || true)"
+
+    if [ -n "$lan" ] && [ "$active" = activated ] && sig="$(net_signature)"; then
+        mkdir -p "$RUN_DIR"
+        last="$(cat "$RUN_DIR/lan-net" 2>/dev/null || true)"
+        if [ "$last" = "$sig|ok" ] && [ "$current" = "$lan" ] && [ "$(handshake_age)" -le "$STALE_AFTER" ]; then
+            echo lan; return 0
+        fi
+        # a failed try is repeated after 30 minutes, in case the server was only away for a moment
+        if [ "$last" = "$sig|no" ] && [ -n "$(find "$RUN_DIR/lan-net" -mmin +30 2>/dev/null)" ]; then
+            last=""
+        fi
+        if [ "$last" != "$sig|no" ]; then
+            peer="$(wg show "$CONNECTION_NAME" peers 2>/dev/null | head -1 || true)"
+            tun="$(sed -n 's/^dns=\([0-9.]*\).*/\1/p' "$file" | head -1)"
+            if [ -n "$peer" ] && [ -n "$tun" ] && answers_on "$lan" "$peer" "$tun"; then
+                echo "$sig|ok" > "$RUN_DIR/lan-net"
+                if [ "$current" != "$lan" ]; then
+                    set_profile_endpoint "$file" "$lan"
+                    log "the server answers on its LAN address $lan here; using it (was $current)"
+                fi
+                echo lan; return 0
+            fi
+            echo "$sig|no" > "$RUN_DIR/lan-net"
+            log "the server does not answer on its LAN address $lan on this network"
+            # put the running tunnel back on the address it had; the lookup below decides from here
+            if [ -n "$peer" ] && [ -n "$current" ] && [ "$current" != "$lan" ]; then
+                wg set "$CONNECTION_NAME" peer "$peer" endpoint "$current" 2>/dev/null || true
+            fi
+        fi
+    fi
+
+    if ! addr="$(uplink_lookup "$host")"; then
+        # no answer on this network (offline, or DNS only global): keep the address we have
+        log "could not look up $host on this network; keeping $current"
+        return 0
+    fi
+    if [ "$current" = "$addr:$port" ]; then
+        # the running tunnel should match the profile; put it back if something moved it
+        if [ "$active" = activated ]; then
+            runtime="$(wg show "$CONNECTION_NAME" endpoints 2>/dev/null | awk 'NR == 1 { print $2 }' || true)"
+            peer="$(wg show "$CONNECTION_NAME" peers 2>/dev/null | head -1 || true)"
+            if [ -n "$runtime" ] && [ -n "$peer" ] && [ "$runtime" != "$current" ]; then
+                wg set "$CONNECTION_NAME" peer "$peer" endpoint "$current" 2>/dev/null || true
+            fi
+        fi
+        return 0
+    fi
+    set_profile_endpoint "$file" "$addr:$port"
+    log "endpoint $host is now $addr on this network (was $current)"
+    if [ "$active" = activated ]; then
+        nmcli connection up "$CONNECTION_NAME" >/dev/null 2>&1 || log "could not bring $CONNECTION_NAME up"
+    fi
+    echo changed
 }
 
 cmd_status() {
@@ -184,6 +358,7 @@ case "${1:-}" in
     init)   shift; cmd_init "$@" ;;
     apply)  shift; cmd_apply "$@" ;;
     status) shift; cmd_status "$@" ;;
+    refresh) shift; cmd_refresh "$@" ;;
     remove) shift; cmd_remove "$@" ;;
     -h|--help|help|"") usage 0 ;;
     *) usage 1 ;;

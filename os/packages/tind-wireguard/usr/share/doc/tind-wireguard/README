@@ -9,7 +9,7 @@ What it does
 Per-device steps
   1. sudo tind-enroll init            -> prints this device's PUBLIC key
   2. send the public key to the server admin; the admin replies with an enrolment block
-     (ADDRESS, SERVER_ENDPOINT, SERVER_PUBLIC_KEY, ALLOWED_IPS, DNS_SERVER)
+     (ADDRESS, SERVER_ENDPOINT, SERVER_PUBLIC_KEY, ALLOWED_IPS, DNS_SERVER, optionally LAN_ENDPOINT)
   3. sudo tind-enroll apply           -> paste the block, end with Ctrl-D (or: apply FILE)
   4. tind-enroll status
 
@@ -23,8 +23,21 @@ Design rules
     names under servr.no resolve to while the tunnel is up.
   - Server side: docs/server/tind-add-peer and docs/servr-wireguard-server.md in the Tind repository.
 
+Which address the tunnel uses
+  At home the tunnel must reach the server on its LAN address, not through the router (the router
+  cannot carry gigabit LAN traffic). tind-enroll refresh picks the address and writes it into the
+  NetworkManager profile, so NetworkManager never looks the name up itself (its lookup would go
+  through the tunnel's own DNS and give the public address).
+  1. LAN_ENDPOINT (optional, /etc/tind/wireguard/lan-endpoint): tried once on every new network
+     (told apart by the gateway's MAC address). The running tunnel is pointed at it and the server's
+     tunnel address is pinged; only the real server can answer inside the tunnel, so a reply proves
+     the path. Kept if it answers; tried again after 30 minutes, or when the tunnel goes quiet.
+  2. Otherwise SERVER_ENDPOINT (/etc/tind/wireguard/endpoint), looked up only through the DNS of the
+     network the device is on: the public address away from home.
+  By hand: sudo tind-enroll refresh. Check: journalctl -t tind-enroll
+
 Watchdog
-  tind-wireguard-watchdog.timer runs every minute. WireGuard looks up the endpoint name only
-  when the tunnel comes up, so a changed home IP leaves the tunnel silently dead. When the last
-  handshake is older than 150 seconds the watchdog takes the connection down and up again, which
-  looks the name up again. Check: journalctl -t tind-wireguard-watchdog
+  tind-wireguard-watchdog.timer runs every minute (first run 45 seconds after boot). It runs
+  tind-enroll refresh, which follows the device between networks and reconnects when the address
+  has to change (another network, a new home WAN IP). When the last handshake is older than 150 seconds it takes the connection
+  down and up again. Check: journalctl -t tind-wireguard-watchdog
