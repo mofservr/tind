@@ -8,25 +8,25 @@ Components: main
 Architectures: amd64
 Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
 Hit:1 http://deb.debian.org/debian trixie-backports InRelease
-Hit:2 http://deb.debian.org/debian trixie InRelease
-Hit:3 https://packages.microsoft.com/repos/code stable InRelease
+Hit:2 https://packages.microsoft.com/repos/code stable InRelease
+Hit:3 http://deb.debian.org/debian trixie InRelease
 Hit:4 http://deb.debian.org/debian trixie-updates InRelease
 Hit:5 http://deb.debian.org/debian-security trixie-security InRelease
-Get:6 https://updates.signal.org/desktop/apt xenial InRelease [5963 B]
-Hit:7 https://downloads.claude.ai/claude-desktop/apt/stable stable InRelease
+Hit:6 https://downloads.claude.ai/claude-desktop/apt/stable stable InRelease
+Get:7 https://updates.signal.org/desktop/apt xenial InRelease [5963 B]
 Get:8 https://updates.signal.org/desktop/apt xenial/main amd64 Packages [102 kB]
-Fetched 108 kB in 0s (592 kB/s)
+Fetched 108 kB in 1s (190 kB/s)
 Reading package lists...
 Reading package lists...
 Building dependency tree...
 Reading state information...
 The following NEW packages will be installed:
   signal-desktop
-0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 1 newly installed, 0 to remove and 1 not upgraded.
 Need to get 121 MB of archives.
 After this operation, 385 MB of additional disk space will be used.
 Get:1 https://updates.signal.org/desktop/apt xenial/main amd64 signal-desktop amd64 8.33.0 [121 MB]
-Fetched 121 MB in 1s (119 MB/s)
+Fetched 121 MB in 2s (74.0 MB/s)
 Selecting previously unselected package signal-desktop.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 47460 files and directories currently installed.)
 Preparing to unpack .../signal-desktop_8.33.0_amd64.deb ...
@@ -52,7 +52,7 @@ The following NEW packages will be installed:
   libqt5qmlmodels5 libqt5quick5 libqt5quickwidgets5 libqt5waylandcompositor5
   librlottie0-1 libxcb-record0 libxcb-screensaver0 qt5-image-formats-plugins
   telegram-desktop
-0 upgraded, 14 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 14 newly installed, 0 to remove and 1 not upgraded.
 Need to get 42.2 MB of archives.
 After this operation, 137 MB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 libmng1 amd64 1.0.10+dfsg-3.1+b6 [214 kB]
@@ -68,8 +68,8 @@ Get:10 http://deb.debian.org/debian trixie/main amd64 libqt5waylandcompositor5 a
 Get:11 http://deb.debian.org/debian trixie/main amd64 librlottie0-1 amd64 0.1+dfsg-4.2+deb13u2 [117 kB]
 Get:12 http://deb.debian.org/debian trixie/main amd64 libxcb-record0 amd64 1.17.0-2+b1 [107 kB]
 Get:13 http://deb.debian.org/debian trixie/main amd64 libxcb-screensaver0 amd64 1.17.0-2+b1 [106 kB]
-Get:14 http://deb.debian.org/debian trixie-backports/main amd64 telegram-desktop amd64 5.7.2+ds-2~bpo13+1 [37.6 MB]
-Fetched 42.2 MB in 0s (131 MB/s)
+Get:14 http://deb.debian.org/debian trixie-backports/main amd64 telegram-desktop amd64 5.7.2+ds-2~bpo13+2 [37.6 MB]
+Fetched 42.2 MB in 1s (50.9 MB/s)
 Selecting previously unselected package libmng1:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 47611 files and directories currently installed.)
 Preparing to unpack .../00-libmng1_1.0.10+dfsg-3.1+b6_amd64.deb ...
@@ -111,8 +111,8 @@ Selecting previously unselected package libxcb-screensaver0:amd64.
 Preparing to unpack .../12-libxcb-screensaver0_1.17.0-2+b1_amd64.deb ...
 Unpacking libxcb-screensaver0:amd64 (1.17.0-2+b1) ...
 Selecting previously unselected package telegram-desktop.
-Preparing to unpack .../13-telegram-desktop_5.7.2+ds-2~bpo13+1_amd64.deb ...
-Unpacking telegram-desktop (5.7.2+ds-2~bpo13+1) ...
+Preparing to unpack .../13-telegram-desktop_5.7.2+ds-2~bpo13+2_amd64.deb ...
+Unpacking telegram-desktop (5.7.2+ds-2~bpo13+2) ...
 Setting up libmng1:amd64 (1.0.10+dfsg-3.1+b6) ...
 Setting up libqrcodegencpp1:amd64 (1.8.0-1.2+b2) ...
 Setting up libkf5coreaddons-data (5.116.0-1) ...
@@ -126,7 +126,7 @@ Setting up libqt5qmlmodels5:amd64 (5.15.15+dfsg-3) ...
 Setting up libqt5quick5:amd64 (5.15.15+dfsg-3) ...
 Setting up libqt5quickwidgets5:amd64 (5.15.15+dfsg-3) ...
 Setting up libqt5waylandcompositor5:amd64 (5.15.15-3) ...
-Setting up telegram-desktop (5.7.2+ds-2~bpo13+1) ...
+Setting up telegram-desktop (5.7.2+ds-2~bpo13+2) ...
 Processing triggers for desktop-file-utils (0.28-1) ...
 Processing triggers for hicolor-icon-theme (0.18-2) ...
 Processing triggers for libc-bin (2.41-12+deb13u4) ...
