@@ -39,5 +39,12 @@ Which address the tunnel uses
 Watchdog
   tind-wireguard-watchdog.timer runs every minute (first run 45 seconds after boot). It runs
   tind-enroll refresh, which follows the device between networks and reconnects when the address
-  has to change (another network, a new home WAN IP). When the last handshake is older than 150 seconds it takes the connection
-  down and up again. Check: journalctl -t tind-wireguard-watchdog
+  has to change (another network, a new home WAN IP). When the last handshake of a running tunnel
+  is older than 150 seconds it takes the connection down and up again. Check: journalctl -t tind-wireguard-watchdog
+
+Switching it off
+  A tunnel that is switched off stays off: the watchdog only looks after a running tunnel.
+  Until the next boot:  sudo nmcli connection down tind-servr   (or GNOME's VPN switch)
+  For good:             sudo nmcli connection modify tind-servr connection.autoconnect no
+  Back on:              sudo nmcli connection modify tind-servr connection.autoconnect yes
+                        sudo nmcli connection up tind-servr

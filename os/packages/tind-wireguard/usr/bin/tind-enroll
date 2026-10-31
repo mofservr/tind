@@ -256,7 +256,14 @@ set_profile_endpoint() { # set_profile_endpoint FILE ADDRESS:PORT (the running t
     nmcli connection load "$1" >/dev/null
 }
 
-log() { logger -t tind-enroll "$*" 2>/dev/null || true; }
+# Log a line, but not the same line again and again: refresh runs every minute, and a lookup that keeps
+# failing would otherwise fill the journal.
+log() {
+    local last="$RUN_DIR/last-log"
+    [ "$(cat "$last" 2>/dev/null || true)" = "$*" ] && return 0
+    logger -t tind-enroll "$*" 2>/dev/null || true
+    (mkdir -p "$RUN_DIR" && printf '%s\n' "$*" > "$last") 2>/dev/null || true
+}
 
 # Pick the endpoint address for the network the device is on and keep the profile on it.
 #  1. LAN_ENDPOINT, if the enrolment block had one: tried once on every new network, kept if the

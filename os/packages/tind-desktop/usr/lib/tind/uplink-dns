@@ -1,0 +1,28 @@
+#!/bin/bash
+# Which DNS servers the network links that carry the internet (the default route) have. Prints one
+# line per link and exits 1 when one has none and no global DNS server is set either: then no name
+# resolves, although addresses still work ("ping 1.1.1.1 works, ping debian.org does not").
+# This happened on 31 Oct 2026: after a reboot the network card got a new name (its PCI bus number
+# moved), NetworkManager made a new profile for it, and that profile had no DNS server.
+# Used by tind-report (Summary) and the self-test.
+set -u
+global="$(resolvectl dns 2>/dev/null | sed -n 's/^Global:[[:space:]]*//p')"
+devs="$( { ip -4 route show default; ip -6 route show default; } 2>/dev/null \
+    | awk '{ for (i = 1; i < NF; i++) if ($i == "dev") { print $(i + 1); break } }' | sort -u)"
+if [ -z "$devs" ]; then
+    echo "no default route (offline)"
+    exit 0
+fi
+rc=0
+for dev in $devs; do
+    servers="$(resolvectl dns "$dev" 2>/dev/null | sed -E 's/^Link [0-9]+ \([^)]*\):[[:space:]]*//')"
+    if [ -n "$servers" ]; then
+        echo "$dev: $servers"
+    elif [ -n "$global" ]; then
+        echo "$dev: none on the link (global: $global)"
+    else
+        echo "$dev: NONE - names will not resolve; give its connection a DNS server or let DHCP set one"
+        rc=1
+    fi
+done
+exit "$rc"

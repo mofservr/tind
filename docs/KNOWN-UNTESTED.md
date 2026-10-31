@@ -19,6 +19,10 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
 - Installs on UEFI, with and without Secure Boot, and on legacy BIOS; the optional app boxes ("extras").
 - The first-boot step that turns on Debian's non-free packages, and the Stetind default wallpaper.
 - Hiding NVIDIA's Vulkan file on machines without an NVIDIA card (the logic is tested with faked commands).
+- The tunnel to servr.no picking its address (31 Oct, tested with faked commands): the server's home-network address at
+  home, the public one elsewhere, following you between networks, and staying off when you switch it off.
+- The DNS warning in `tind-report` and the daily checks: it names a network link that carries the internet but has no
+  DNS server (the internet then seems down although addresses still answer).
 
 ## Not tested by anyone yet
 

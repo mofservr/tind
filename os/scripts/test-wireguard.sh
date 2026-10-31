@@ -197,4 +197,18 @@ block ""
 PATH="$d/bin:$PATH" TIND_WG_KEYDIR="$d/keys" TIND_WG_RUN="$d/run" "$enroll" apply "$d/block" >/dev/null 2>&1
 check "block without it: LAN endpoint removed" '[ ! -e "$d/keys/lan-endpoint" ]'
 
+# 17. switched off: the watchdog leaves a tunnel that is down alone (no up, no refresh reconnect)
+d="$work/17"; setup "$d" 198.51.100.9:51820
+sed -i 's/echo activated/echo deactivated/' "$d/bin/nmcli"
+printf '#!/bin/sh\nexit 0\n' > "$d/bin/fake-enroll"; chmod +x "$d/bin/fake-enroll"
+mkdir -p "$d/state"; echo $(( $(date +%s) - 1000 )) > "$d/state/ref"
+PATH="$d/bin:$PATH" TD_HSAGE=1000 TIND_ENROLL="$d/bin/fake-enroll" TIND_WG_STATE="$d/state" "$watchdog"
+check "watchdog: a tunnel switched off stays off" '! grep -qE "^connection (up|down)" "$d/nmcli.calls"'
+
+# 18. a lookup that keeps failing is logged once, not every minute
+d="$work/18"; setup "$d" 198.51.100.9:51820
+mkdir -p "$d/keys"; echo vpn.servr.no:51820 > "$d/keys/endpoint"
+for _ in 1 2 3; do TD_NODNS=1 PATH="$d/bin:$PATH" TIND_WG_KEYDIR="$d/keys" TIND_WG_RUN="$d/run" "$enroll" refresh >/dev/null; done
+check "log: a repeated failure is logged once" '[ "$(grep -c "could not look up" "$d/log")" = 1 ]'
+
 exit "$rc"

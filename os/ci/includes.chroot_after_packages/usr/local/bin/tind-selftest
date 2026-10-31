@@ -247,6 +247,10 @@ for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.l
 done
 [ "$seen" = 1 ] || echo "WARN no debian.org apt source found in sources.list, *.list or *.sources"
 daily debian-non-free "$nf"
+# the links that carry the internet must have a DNS server, or no name resolves (31 Oct 2026)
+ud="$(/usr/lib/tind/uplink-dns 2>&1)"; udrc=$?
+echo "$ud" | sed 's/^/uplink-dns: /'
+[ "$udrc" = 0 ] && daily uplink-dns ok || daily uplink-dns "FAIL $(echo "$ud" | grep NONE | head -2 | tr '\n' '|')"
 nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
 echo "DAILY info autostart-update-entries: ${nag:-none}"
 echo "INFO vulkan-nvidia-icd: tind diversions=$(dpkg-divert --list 2>/dev/null | grep -c 'tind-no-nvidia' || true) nvidia icd files=$(find /usr/share/vulkan/icd.d /etc/vulkan/icd.d -maxdepth 1 -name 'nvidia*' 2>/dev/null | tr '\n' ' ') vulkaninfo loader errors=$(vulkaninfo --summary 2>&1 | grep -c "Could not get 'vkCreateInstance'" || true)"
