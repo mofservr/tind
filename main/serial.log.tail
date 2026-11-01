@@ -1,7 +1,3 @@
-caffeine@patapon.info: files present, schema compiled, ENABLED
-  Version: 55
-  State: ACTIVE
-system-monitor-panel@naimur: files present, schema compiled, ENABLED
   Version: 2.2
   State: ACTIVE
 multi-monitors-bar@frederykabryan: files present, schema compiled, ENABLED
@@ -46,7 +42,7 @@ grep: write error: Broken pipe
 /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/uBlock0@raymondhill.net/js/ublock.js
 
 ##### firefox startup (headless, 40s)
-{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{10d76744-b362-4820-add7-dc5a8881530b}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
+{"schemaVersion":37,"addons":[{"id":"formautofill@mozilla.org","syncGUID":"{b107781c-5964-4789-a695-8528d7123fdd}","version":"1.0.1","type":"extension","loader":null,"updateURL":null,"installOrigins":
 extensions.json present: yes
 formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
@@ -63,8 +59,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "acf143fd-ba53-4353-bff4-80e0864ac9f9");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "679ae0c6-33c5-4f8a-a79c-f5063b38330c");
+user_pref("toolkit.telemetry.cachedClientID", "c6c0bc77-2111-40fc-990e-957aca7d13d9");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "764de167-de23-477a-97fe-d13c3e45ea75");
 user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -103,7 +99,7 @@ tind-enroll apply: no shell errors
 tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (c3b3575d-4a4b-45e2-8818-8b1f5311ebdb) successfully deleted.
+Connection 'tind-servr' (3fdd22d2-8479-48bd-9779-59b0f754c502) successfully deleted.
 Removed this device's private key.
 
 ##### wireguard watchdog
@@ -122,7 +118,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 227 Nov  1 14:22 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 227 Nov  1 22:34 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=/usr/lib/tind/install-launcher
 Icon=tind-logo
@@ -133,8 +129,8 @@ NoDisplay=true
 ##### optins
 communication.optin  developer.optin	  gaming.optin	  productivity.optin
 creative.optin	     entertainment.optin  hardware.optin  security.optin
--rwxr-xr-x 1 root root 2927 Nov  1 14:22 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 1246 Nov  1 14:22 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 2927 Nov  1 22:34 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Nov  1 22:34 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -239,7 +235,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov  1 14:39 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov  1 22:49 /var/lib/tind/apt-refreshed
 56
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -262,7 +258,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Sun 2026-11-01 14:39:09 CET; 1min 49s ago
+  Condition: start condition unmet at Sun 2026-11-01 22:49:21 CET; 1min 49s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -281,12 +277,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:46126
+udp 0.0.0.0:46474
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:36212
 udp [::]:5353
+udp [::]:55719
 
 ##### hardware basics
 active
@@ -303,7 +299,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-459 /tmp/tind-report-test.txt
+462 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -355,31 +351,33 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 installed packages: 1650
 
 ##### journal errors (this boot)
-Nov 01 14:39:11 tind adduser[1112]: The group `powerdev' does not exist.
-Nov 01 14:39:11 tind adduser[1128]: The group `debian-tor' does not exist.
-Nov 01 14:39:16 tind gdm-autologin][1502]: gkr-pam: couldn't unlock the login keyring.
+Nov 01 22:49:21 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+Nov 01 22:49:24 tind adduser[1116]: The group `powerdev' does not exist.
+Nov 01 22:49:24 tind adduser[1132]: The group `debian-tor' does not exist.
+Nov 01 22:49:30 tind gdm-autologin][1511]: gkr-pam: couldn't unlock the login keyring.
+Nov 01 22:49:38 tind systemd[1519]: Failed to start app-gnome-tind\x2dlive\x2ddock-1926.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Nov 01 14:39:17 tind gnome-shell[1701]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 01 14:39:17 tind gnome-shell[1701]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 01 14:39:17 tind gnome-shell[1701]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 01 14:39:19 tind gnome-shell[1701]: pci id for fd 12: 1234:1111, driver (null)
-Nov 01 14:39:19 tind gnome-shell[1701]: Thread 'KMS thread' will be using high priority scheduling
-Nov 01 14:39:19 tind gnome-shell[1701]: pci id for fd 13: 1234:1111, driver (null)
-Nov 01 14:39:19 tind gnome-shell[1701]: kmsro: driver missing
-Nov 01 14:39:20 tind gnome-shell[1701]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 01 14:39:20 tind gnome-shell[1701]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 01 14:39:20 tind gnome-shell[1701]: Created gbm renderer for '/dev/dri/card0'
-Nov 01 14:39:20 tind gnome-shell[1701]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 01 14:39:20 tind gnome-shell[1701]: Using public X11 display :0, (using :1 for managed services)
-Nov 01 14:39:20 tind gnome-shell[1701]: Using Wayland display name 'wayland-0'
-Nov 01 14:39:20 tind gnome-shell[1701]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 01 14:39:21 tind gnome-shell[1701]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 01 14:39:23 tind gnome-shell[1701]: Will monitor session 1
-Nov 01 14:39:23 tind gnome-shell[1701]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 01 14:39:28 tind gnome-shell[1701]: GNOME Shell started at Sun Nov 01 2026 14:39:21 GMT+0100 (Central European Standard Time)
-Nov 01 14:39:28 tind gnome-shell[1701]: Registering session with GDM
-Nov 01 14:40:49 tind gnome-shell[1701]: Invalid sequence for VSYNC frame info
+Nov 01 22:49:32 tind gnome-shell[1749]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 01 22:49:32 tind gnome-shell[1749]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 01 22:49:32 tind gnome-shell[1749]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 01 22:49:34 tind gnome-shell[1749]: Thread 'KMS thread' will be using high priority scheduling
+Nov 01 22:49:34 tind gnome-shell[1749]: pci id for fd 12: 1234:1111, driver (null)
+Nov 01 22:49:34 tind gnome-shell[1749]: pci id for fd 13: 1234:1111, driver (null)
+Nov 01 22:49:34 tind gnome-shell[1749]: kmsro: driver missing
+Nov 01 22:49:35 tind gnome-shell[1749]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 01 22:49:35 tind gnome-shell[1749]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 01 22:49:35 tind gnome-shell[1749]: Created gbm renderer for '/dev/dri/card0'
+Nov 01 22:49:35 tind gnome-shell[1749]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 01 22:49:35 tind gnome-shell[1749]: Using public X11 display :0, (using :1 for managed services)
+Nov 01 22:49:35 tind gnome-shell[1749]: Using Wayland display name 'wayland-0'
+Nov 01 22:49:35 tind gnome-shell[1749]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 01 22:49:36 tind gnome-shell[1749]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 01 22:49:39 tind gnome-shell[1749]: Will monitor session 1
+Nov 01 22:49:39 tind gnome-shell[1749]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 01 22:49:45 tind gnome-shell[1749]: GNOME Shell started at Sun Nov 01 2026 22:49:37 GMT+0100 (Central European Standard Time)
+Nov 01 22:49:45 tind gnome-shell[1749]: Registering session with GDM
+Nov 01 22:51:02 tind gnome-shell[1749]: Invalid sequence for VSYNC frame info
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -395,6 +393,8 @@ sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-backport
 DAILY debian-non-free ok
 uplink-dns: enp0s2: 10.0.2.3
 DAILY uplink-dns ok
+wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp0s2)
+DAILY wired-profiles ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====
