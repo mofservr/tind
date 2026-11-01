@@ -2,7 +2,7 @@
 Description=Check the servr.no tunnel every minute
 
 [Timer]
-OnBootSec=3min
+OnBootSec=45s
 OnUnitActiveSec=60s
 AccuracySec=10s
 

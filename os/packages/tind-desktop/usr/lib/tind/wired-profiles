@@ -1,0 +1,174 @@
+#!/bin/bash
+# Saved wired network settings and the cards they belong to.
+#
+# A network card's name comes from its place on the PCI bus (enp6s0 = bus 6, slot 0). Adding a card
+# that sits earlier on the bus (an HBA, a GPU, an NVMe adapter) renumbers the buses after it, so the
+# card comes up with a new name (enp10s0). NetworkManager's own wired profiles ("Wired connection 1")
+# are tied to the name only, so after a rename the saved settings (a hand-set DNS server, a fixed
+# address) no longer match the card; NetworkManager makes a new blank profile for it and the saved
+# settings are silently ignored. This happened on Morten's desktop on 31 Oct 2026 (no DNS, so no
+# names resolved).
+#
+#   wired-profiles check   list saved wired profiles that match no card here; exit 1 when one looks
+#                          like a card that got a new name (used by tind-report and the self-test)
+#   wired-profiles fix     move such a profile to the card: tie it to the card's MAC address instead of
+#                          its name, so it can never be split off again, and switch the card over to it
+#                          (run at boot by tind-wired-profiles.service)
+#
+# What fix moves (decided by Morten, 1 Nov 2026):
+#  - A profile that has a MAC address saved: always, when a card with that MAC is here.
+#  - A profile with only a name saved: only when it is unambiguous: it is the only such profile, there
+#    is exactly one wired card, that card has no saved profile of its own, and both names are PCI names
+#    that differ only in the bus number (enp6s0 -> enp10s0). A USB adapter that is just unplugged, or a
+#    card that already has its own settings, is never touched.
+#  - Anything else is reported, not changed.
+# The blank profile NetworkManager made is left alone: it only lives in memory and is gone after the next
+# reboot (deleting it would make NetworkManager never create an automatic profile for that card again).
+set -u
+MODE="${1:-check}"
+SYSNET="${TIND_SYSNET:-/sys/class/net}"
+LOG="${TIND_WP_LOG:-/var/lib/tind/wired-profiles.log}"
+TAG=tind-wired-profiles
+
+say() { echo "$*"; [ "$MODE" = fix ] && { logger -t "$TAG" "$*" 2>/dev/null || true; }; return 0; }
+upper() { tr '[:lower:]' '[:upper:]'; }
+
+# Physical wired cards here: "name MAC" (the permanent MAC, also when NetworkManager clones another one).
+cards() {
+    local d n mac
+    for d in "$SYSNET"/*; do
+        n="${d##*/}"
+        [ -e "$d/device" ] || continue                       # virtual (bridge, veth, tunnel, docker)
+        [ "$(cat "$d/type" 2>/dev/null)" = 1 ] || continue   # not Ethernet
+        { [ -e "$d/wireless" ] || [ -e "$d/phy80211" ]; } && continue
+        mac="$(ip -o link show dev "$n" 2>/dev/null | sed -nE 's/.* permaddr ([0-9a-fA-F:]{17}).*/\1/p')"
+        [ -n "$mac" ] || mac="$(ip -o link show dev "$n" 2>/dev/null | sed -nE 's/.* link\/ether ([0-9a-fA-F:]{17}).*/\1/p')"
+        echo "$n $(echo "$mac" | upper)"
+    done
+}
+
+field() { nmcli -e no -g "$1" connection show "$2" 2>/dev/null | head -n 1; }
+
+# Saved wired profiles: "uuid|name|mac|autoconnect|controller|id". Saved = stored under /etc; the blank
+# ones NetworkManager makes by itself live under /run and are not counted.
+profiles() {
+    local line uuid type file
+    nmcli -t -f UUID,TYPE,FILENAME connection show 2>/dev/null | while IFS= read -r line; do
+        uuid="${line%%:*}"; line="${line#*:}"; type="${line%%:*}"; file="${line#*:}"
+        [ "$type" = 802-3-ethernet ] || continue
+        case "$file" in /etc/*) ;; *) continue ;; esac
+        printf '%s|%s|%s|%s|%s|%s\n' "$uuid" "$(field connection.interface-name "$uuid")" \
+            "$(field 802-3-ethernet.mac-address "$uuid" | sed 's|\\||g' | upper)" \
+            "$(field connection.autoconnect "$uuid")" "$(field connection.master "$uuid")" \
+            "$(field connection.id "$uuid")"
+    done
+}
+
+# does profile (name, mac) match card (cname, cmac)?
+matches() { { [ -z "$1" ] || [ "$1" = "$3" ]; } && { [ -z "$2" ] || [ "$2" = "$4" ]; }; }
+# enp<bus>s<rest>: print <rest> (slot, function, port); empty when not a PCI-path name
+pci_rest() { echo "$1" | sed -nE 's/^enp[0-9]+(s[0-9]+(f[0-9]+)?(d[0-9]+)?)$/\1/p'; }
+
+CARDS="$(cards)"
+PROFILES="$(profiles)"
+ncards=$(printf '%s\n' "$CARDS" | grep -c . || true)
+
+# cards with no saved profile of their own
+bare_cards() {
+    local cn cm p
+    while read -r cn cm; do
+        [ -n "$cn" ] || continue
+        p="$(printf '%s\n' "$PROFILES" | while IFS='|' read -r _ pn pm _ _ _; do
+            [ -n "$pn$pm" ] || { echo x; continue; }
+            matches "$pn" "$pm" "$cn" "$cm" && echo x; done)"
+        [ -z "$p" ] && echo "$cn $cm"
+    done <<< "$CARDS"
+}
+# saved profiles tied to a name or MAC that no card here has
+orphans() {
+    local u pn pm ac ctl id cn cm hit
+    while IFS='|' read -r u pn pm ac ctl id; do
+        [ -n "$u" ] && [ -n "$pn$pm" ] || continue
+        hit=""
+        while read -r cn cm; do [ -n "$cn" ] && matches "$pn" "$pm" "$cn" "$cm" && hit=1; done <<< "$CARDS"
+        [ -z "$hit" ] && printf '%s|%s|%s|%s|%s|%s\n' "$u" "$pn" "$pm" "$ac" "$ctl" "$id"
+    done <<< "$PROFILES"
+}
+BARE="$(bare_cards)"
+ORPHANS="$(orphans)"
+norphans=$(printf '%s\n' "$ORPHANS" | grep -c . || true)
+cardnames="$(printf '%s\n' "$CARDS" | awk 'NF {print $1}' | paste -sd' ' -)"
+
+# What fix would do, one line per unmatched profile: "move|uuid|id|oldname|card|mac|autoconnect" or
+# "skip|reason". check and fix use the same plan, so check says exactly what the next boot will do.
+plan() {
+    local u pn pm ac ctl id card cn cm old_rest new_rest
+    while IFS='|' read -r u pn pm ac ctl id; do
+        [ -n "$u" ] || continue
+        if [ -n "$ctl" ]; then echo "skip|'$id' is part of $ctl and is tied to ${pn:-a MAC address} which is not here; left alone"; continue; fi
+        if [ -n "$pm" ]; then
+            card="$(printf '%s\n' "$CARDS" | awk -v m="$pm" '$2 == m {print $1; exit}')"
+            if [ -n "$card" ]; then echo "move|$u|$id|$pn|$card|$pm|$ac"
+            else echo "skip|'$id' belongs to a card that is not here (its MAC address is not found); left alone"; fi
+            continue
+        fi
+        # only a name saved: move only when it cannot be anything else
+        if [ "$norphans" -ne 1 ] || [ "$ncards" -ne 1 ]; then
+            echo "skip|'$id' is tied to $pn which is not here; not moved, because there are $ncards wired cards and $norphans unmatched profiles"
+            continue
+        fi
+        read -r cn cm <<< "$CARDS"
+        if ! printf '%s\n' "$BARE" | awk '{print $1}' | grep -qxF "$cn"; then
+            echo "skip|'$id' is tied to $pn which is not here; not moved, because $cn has its own saved settings"
+            continue
+        fi
+        old_rest="$(pci_rest "$pn")"; new_rest="$(pci_rest "$cn")"
+        if [ -z "$old_rest" ] || [ "$old_rest" != "$new_rest" ] || [ "$pn" = "$cn" ]; then
+            echo "skip|'$id' is tied to $pn which is not here; not moved, because $cn is not the same card on another bus"
+            continue
+        fi
+        echo "move|$u|$id|$pn|$cn|$cm|$ac"
+    done <<< "$ORPHANS"
+}
+PLAN="$(plan)"
+
+if [ "$MODE" = check ]; then
+    [ -z "$ORPHANS" ] && echo "ok: every saved wired profile matches a card here (wired cards: ${cardnames:-none})"
+    while IFS='|' read -r what a b c d _; do
+        case "$what" in
+            move) echo "'$b' is tied to $c which is not here: the card got a new name ($d); not moved yet" ;;
+            skip) echo "$a" ;;
+        esac
+    done <<< "$PLAN"
+    [ -r "$LOG" ] && tail -n 3 "$LOG" | sed 's/^/moved earlier: /'
+    if grep -q '^move|' <<< "$PLAN"; then
+        echo "fixed at the next boot, or now with: sudo /usr/lib/tind/wired-profiles fix"
+        exit 1
+    fi
+    exit 0
+fi
+
+[ "$MODE" = fix ] || { echo "usage: wired-profiles check|fix" >&2; exit 2; }
+
+move() { # move UUID ID OLDNAME CARD MAC AUTOCONNECT
+    if ! nmcli connection modify "$1" connection.interface-name "" 802-3-ethernet.mac-address "$5" 2>/dev/null; then
+        say "could not move '$2' from ${3:-its MAC} to $4"
+        return 1
+    fi
+    (mkdir -p "$(dirname "$LOG")" && echo "$(date '+%Y-%m-%d %H:%M') '$2' moved from ${3:-?} to $4 (now tied to the card's MAC address)" >> "$LOG") 2>/dev/null || true
+    say "moved '$2' from ${3:-?} to $4: the card got a new name; the settings are now tied to its MAC address"
+    # switch the card over, unless it already runs another saved profile or the profile is not meant to start by itself
+    if [ "$6" = yes ] && printf '%s\n' "$BARE" | awk '{print $1}' | grep -qxF "$4"; then
+        nmcli -w 30 connection up "$1" ifname "$4" >/dev/null 2>&1 || say "'$2' moved, but did not come up on $4"
+    fi
+    return 0
+}
+
+rc=0
+while IFS='|' read -r what u id pn card mac ac; do
+    case "$what" in
+        move) move "$u" "$id" "$pn" "$card" "$mac" "$ac" || rc=1 ;;
+        skip) say "$u" ;;
+    esac
+done <<< "$PLAN"
+exit "$rc"

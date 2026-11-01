@@ -1,9 +1,13 @@
 #!/bin/bash
-# Reconnect the servr.no tunnel when it has gone silent.
-# WireGuard resolves the endpoint hostname only when the tunnel comes up. If the home WAN IP changes,
-# the tunnel stops working without any error. A healthy tunnel with keepalive renews its handshake
-# about every two minutes, so a handshake older than MAX_AGE seconds means the tunnel is dead.
-# Taking the connection down and up resolves the endpoint name again.
+# Keep the servr.no tunnel pointed at the right address, and reconnect it when it has gone silent.
+# 1. `tind-enroll refresh` looks the endpoint name up through the current network's DNS (the server's
+#    LAN address at home, the public one elsewhere) and reconnects when the address has changed, for
+#    example after moving between networks or a new home WAN IP.
+# 2. A healthy tunnel with keepalive renews its handshake about every two minutes, so a handshake older
+#    than MAX_AGE seconds means the tunnel is dead: take the connection down and up.
+# A tunnel that is down stays down: switching it off (GNOME's VPN switch, nmcli connection down) holds
+# until the next boot, and `nmcli connection modify tind-servr connection.autoconnect no` holds across
+# boots. NetworkManager's autoconnect is what brings it up at boot, never this watchdog.
 # Runs from tind-wireguard-watchdog.timer (every minute). Does nothing when no tunnel is installed.
 set -u
 CONF=/etc/tind/servr-tunnel.conf
@@ -20,6 +24,10 @@ ip route show default 2>/dev/null | grep -q . || exit 0
 
 now="$(date +%s)"
 mkdir -p "$STATE"
+if [ "$("${TIND_ENROLL:-/usr/bin/tind-enroll}" refresh 2>/dev/null)" = changed ]; then
+    echo "$now" > "$STATE/ref"
+    exit 0
+fi
 active="$(nmcli -t -g GENERAL.STATE connection show "$CONNECTION_NAME" 2>/dev/null || true)"
 
 bounce() {
@@ -30,12 +38,8 @@ bounce() {
     echo "$now" > "$STATE/ref"
 }
 
-if [ "$active" != "activated" ]; then
-    # autoconnect normally does this; retry at most once per MAX_AGE
-    last="$(cat "$STATE/ref" 2>/dev/null || echo 0)"
-    [ $((now - last)) -ge "$MAX_AGE" ] && bounce "tunnel not active"
-    exit 0
-fi
+# switched off (by the user, or autoconnect is off): leave it alone
+[ "$active" = "activated" ] || exit 0
 
 # the newest of: last handshake, our last reconnect, first time we saw it active
 hs="$(wg show "$CONNECTION_NAME" latest-handshakes 2>/dev/null | awk 'NR==1{print $2}')"

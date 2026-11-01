@@ -362,7 +362,52 @@ for f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.l
 done
 [ "$seen" = 1 ] || echo "WARN no debian.org apt source found in sources.list, *.list or *.sources"
 daily debian-non-free "$nf"
+# the links that carry the internet must have a DNS server, or no name resolves (31 Oct 2026)
+ud="$(/usr/lib/tind/uplink-dns 2>&1)"; udrc=$?
+echo "$ud" | sed 's/^/uplink-dns: /'
+[ "$udrc" = 0 ] && daily uplink-dns ok || daily uplink-dns "FAIL $(echo "$ud" | grep NONE | head -2 | tr '\n' '|')"
+# saved wired settings must match a card here; a renamed card is moved at boot (tind-wired-profiles, 1 Nov 2026)
+wp="$(/usr/lib/tind/wired-profiles check 2>&1)"; wprc=$?
+echo "$wp" | sed 's/^/wired-profiles: /'
+[ "$wprc" = 0 ] && daily wired-profiles ok || daily wired-profiles "FAIL $(echo "$wp" | head -2 | tr '\n' '|')"
 nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
 echo "DAILY info autostart-update-entries: ${nag:-none}"
 echo "INFO vulkan-nvidia-icd: tind diversions=$(dpkg-divert --list 2>/dev/null | grep -c 'tind-no-nvidia' || true) nvidia icd files=$(find /usr/share/vulkan/icd.d /etc/vulkan/icd.d -maxdepth 1 -name 'nvidia*' 2>/dev/null | tr '\n' ' ') vulkaninfo loader errors=$(vulkaninfo --summary 2>&1 | grep -c "Could not get 'vkCreateInstance'" || true)"
+# Installed system only: a real card rename (the installer test boots the disk a third time with an extra
+# PCIe root port in front of the network card, so the card's bus number and name change, like the HBA on
+# Morten's desktop on 31 Oct 2026). Boot 1 saves the wired profile the way GNOME Settings does (tied to the
+# name only); boot 2 checks that tind-wired-profiles moved it to the renamed card.
+if ! grep -q 'boot=live' /proc/cmdline; then
+    sec "wired profile rename test"
+    mk=/var/lib/tind-ci/rename-setup
+    nmcli -t -f NAME,UUID,TYPE,DEVICE,FILENAME connection show
+    if [ ! -e "$mk" ]; then
+        line="$(nmcli -t -f UUID,TYPE,DEVICE connection show --active | grep ':802-3-ethernet:' | head -1)"
+        uuid="${line%%:*}"; dev="${line##*:}"
+        if [ -n "$uuid" ] && nmcli connection modify "$uuid" ipv4.dns-search tind-ci.test; then
+            mkdir -p "${mk%/*}"; echo "$uuid $dev" > "$mk"; sync
+            echo "RENAME-SETUP saved $uuid on $dev: interface-name=$(nmcli -g connection.interface-name connection show "$uuid") mac=$(nmcli -e no -g 802-3-ethernet.mac-address connection show "$uuid")"
+        else
+            echo "RENAME-SETUP FAIL no active wired profile to save (${line:-none})"
+        fi
+    else
+        read -r uuid olddev < "$mk"
+        now="$(nmcli -t -f UUID,DEVICE connection show --active | grep "^$uuid:" | head -1)"; newdev="${now#*:}"
+        echo "saved profile $uuid was on $olddev, active now on: ${newdev:-nothing}"
+        journalctl -b -t tind-wired-profiles --no-pager 2>&1 | tail -5
+        cat /var/lib/tind/wired-profiles.log 2>/dev/null
+        cards="$(for d in /sys/class/net/*; do [ -e "$d/device" ] && [ ! -e "$d/wireless" ] && echo "${d##*/}"; done | paste -sd' ' -)"
+        if echo " $cards " | grep -q " $olddev "; then
+            echo "RENAME-TEST FAIL the card did not get a new name (cards: $cards)"
+        elif [ -z "$newdev" ]; then
+            echo "RENAME-TEST FAIL the saved profile is not active (cards: $cards)"
+        elif ! grep -q "moved from $olddev to $newdev" /var/lib/tind/wired-profiles.log 2>/dev/null; then
+            echo "RENAME-TEST FAIL active on $newdev but no move logged"
+        elif [ "$wprc" != 0 ]; then
+            echo "RENAME-TEST FAIL wired-profiles check still complains"
+        else
+            echo "RENAME-TEST ok $olddev -> $newdev, saved settings moved and active"
+        fi
+    fi
+fi
 echo "=====TIND-SELFTEST-END====="

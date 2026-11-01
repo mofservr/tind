@@ -1,0 +1,14 @@
+[Unit]
+Description=Tind: move saved wired settings to a network card that got a new name
+Documentation=file:///usr/lib/tind/wired-profiles
+After=NetworkManager.service
+ConditionPathExists=/usr/bin/nmcli
+
+[Service]
+Type=oneshot
+# wait until NetworkManager has looked at every card (at most 60 s; never fails the unit)
+ExecStartPre=-/usr/bin/nm-online -s -q -t 60
+ExecStart=/usr/lib/tind/wired-profiles fix
+
+[Install]
+WantedBy=multi-user.target
