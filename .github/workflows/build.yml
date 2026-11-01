@@ -42,6 +42,8 @@ jobs:
             os/scripts/test-wireguard.sh || rc=1
             echo "== the internet link has a DNS server (uplink-dns)"
             os/scripts/test-uplink-dns.sh || rc=1
+            echo "== saved wired settings follow a renamed network card (wired-profiles)"
+            os/scripts/test-wired-profiles.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"

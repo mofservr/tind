@@ -23,6 +23,8 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   home, the public one elsewhere, following you between networks, and staying off when you switch it off.
 - The DNS warning in `tind-report` and the daily checks: it names a network link that carries the internet but has no
   DNS server (the internet then seems down although addresses still answer).
+- Saved wired settings following a network card that got a new name because a card was added (1 Nov): tested with
+  faked commands and with a real rename in the test machine, not yet on a real one.
 
 ## Not tested by anyone yet
 

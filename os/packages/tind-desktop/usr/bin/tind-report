@@ -66,6 +66,7 @@ summary() {
     echo "Sound:     $(pci_names 0403 0401)"
     echo "Ethernet:  $(pci_names 0200)"
     echo "DNS:       $(/usr/lib/tind/uplink-dns 2>&1 | paste -sd';' -)"
+    echo "Wired:     $(/usr/lib/tind/wired-profiles check 2>&1 | paste -sd';' -)"
     echo "Boot:      $([ -d /sys/firmware/efi ] && echo UEFI || echo BIOS); Secure Boot: $(command -v mokutil >/dev/null && mokutil --sb-state 2>&1 | head -n 1 || echo unknown)"
 }
 {
@@ -104,7 +105,7 @@ summary() {
         done
     fi
     run nmcli -t -f DEVICE,TYPE,STATE device
-    run nmcli -t -f NAME,DEVICE,STATE connection show
+    run nmcli -t -f NAME,TYPE,DEVICE,STATE,FILENAME connection show
     run resolvectl dns; run resolvectl domain
     printf '$ kernel warnings and errors this boot\n'; jctl -k -b -p warning --no-pager | tail -n 60
     sec "Audio"; run lspci -nnk -d ::0403; run lspci -nnk -d ::0401; command -v wpctl >/dev/null && run wpctl status
