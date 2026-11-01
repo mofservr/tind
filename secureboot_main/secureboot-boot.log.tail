@@ -2,32 +2,30 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 6576
--rw-r--r-- 1 runner runner   7006 Nov  1 13:57 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Nov  1 13:57 secboot-s02.png
--rw-r--r-- 1 runner runner 846650 Nov  1 13:58 secboot-s03.png
--rw-r--r-- 1 runner runner 846650 Nov  1 13:58 secboot-s04.png
--rw-r--r-- 1 runner runner 847303 Nov  1 13:59 secboot-s05.png
--rw-r--r-- 1 runner runner 826475 Nov  1 13:59 secboot-s06.png
--rw-r--r-- 1 runner runner 825749 Nov  1 14:00 secboot-s07.png
--rw-r--r-- 1 runner runner 825749 Nov  1 14:00 secboot-s08.png
--rw-r--r-- 1 runner runner 825721 Nov  1 14:01 secboot-s09.png
--rw-r--r-- 1 runner runner 825721 Nov  1 14:01 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Nov  1 13:57 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Nov  1 13:57 secureboot-inspect.log
--rw-r----- 1 runner runner  31422 Nov  1 13:59 serial-secboot.log
-Nov 01 14:58:09 tind gnome-shell[1712]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 01 14:58:09 tind gnome-shell[1712]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 01 14:58:09 tind gnome-shell[1712]: Created gbm renderer for '/dev/dri/card0'
-Nov 01 14:58:09 tind gnome-shell[1712]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 01 14:58:09 tind gnome-shell[1712]: Using public X11 display :0, (using :1 for managed services)
-Nov 01 14:58:09 tind gnome-shell[1712]: Using Wayland display name 'wayland-0'
-Nov 01 14:58:09 tind gnome-shell[1712]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 01 14:58:10 tind gnome-shell[1712]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 01 14:58:11 tind gnome-shell[1712]: Will monitor session 1
-Nov 01 14:58:12 tind gnome-shell[1712]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 01 14:58:16 tind gnome-shell[1712]: GNOME Shell started at Sun Nov 01 2026 14:58:10 GMT+0100 (Central European Standard Time)
-Nov 01 14:58:16 tind gnome-shell[1712]: Registering session with GDM
+total 5792
+-rw-r--r-- 1 runner runner   7006 Nov  1 22:07 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Nov  1 22:08 secboot-s02.png
+-rw-r--r-- 1 runner runner  41825 Nov  1 22:08 secboot-s03.png
+-rw-r--r-- 1 runner runner 847026 Nov  1 22:09 secboot-s04.png
+-rw-r--r-- 1 runner runner 847026 Nov  1 22:09 secboot-s05.png
+-rw-r--r-- 1 runner runner 826131 Nov  1 22:10 secboot-s06.png
+-rw-r--r-- 1 runner runner 826131 Nov  1 22:10 secboot-s07.png
+-rw-r--r-- 1 runner runner 825700 Nov  1 22:11 secboot-s08.png
+-rw-r--r-- 1 runner runner 825073 Nov  1 22:11 secboot-s09.png
+-rw-r--r-- 1 runner runner 825080 Nov  1 22:12 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Nov  1 22:07 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Nov  1 22:07 secureboot-inspect.log
+-rw-r----- 1 runner runner  31907 Nov  1 22:10 serial-secboot.log
+Nov 01 23:08:39 tind gnome-shell[1729]: Created gbm renderer for '/dev/dri/card0'
+Nov 01 23:08:39 tind gnome-shell[1729]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 01 23:08:39 tind gnome-shell[1729]: Using public X11 display :0, (using :1 for managed services)
+Nov 01 23:08:39 tind gnome-shell[1729]: Using Wayland display name 'wayland-0'
+Nov 01 23:08:39 tind gnome-shell[1729]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 01 23:08:40 tind gnome-shell[1729]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 01 23:08:43 tind gnome-shell[1729]: Will monitor session 1
+Nov 01 23:08:44 tind gnome-shell[1729]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 01 23:08:49 tind gnome-shell[1729]: GNOME Shell started at Sun Nov 01 2026 23:08:41 GMT+0100 (Central European Standard Time)
+Nov 01 23:08:49 tind gnome-shell[1729]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -43,6 +41,8 @@ sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-backport
 DAILY debian-non-free ok
 uplink-dns: enp0s2: 10.0.2.3
 DAILY uplink-dns ok
+wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp0s2)
+DAILY wired-profiles ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====
