@@ -1,9 +1,3 @@
-ipp-activator@mozilla.com active=true location=app-builtin-addons
-newtab@mozilla.org active=true location=app-builtin-addons
-pictureinpicture@mozilla.org active=true location=app-builtin-addons
-addons-search-detection@mozilla.com active=true location=app-builtin-addons
-webcompat@mozilla.org active=true location=app-builtin-addons
-langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
 langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
 uBlock0@raymondhill.net active=true location=app-system-share
 default-theme@mozilla.org active=true location=app-builtin
@@ -12,8 +6,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "441cf8fd-661d-495f-8bb0-4a5fe93133f1");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "5a650837-0fae-4814-a7f6-8f74a8decf03");
+user_pref("toolkit.telemetry.cachedClientID", "66bae361-d0f3-42b8-8d33-68ef16730c5a");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "0c8819f6-d409-4c17-8675-32e653664a4f");
 user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -34,8 +28,8 @@ tind-enroll: set up this device's WireGuard split tunnel to servr.no.
   sudo tind-enroll apply [FILE]      install the tunnel from the enrolment block the server admin sends
                                      back (paste it, or pass a file; end a paste with Ctrl-D)
   sudo tind-enroll status            show tunnel state
+  sudo tind-enroll refresh           look the endpoint up again through this network's DNS
   sudo tind-enroll remove [--purge-key]
-
 DNS_DOMAIN="servr.no"
 KEEPALIVE="25"
 CONNECTION_NAME="tind-servr"
@@ -45,14 +39,14 @@ CONNECTION_NAME="tind-servr"
 The admin will reply with an enrolment block (a few KEY=value lines).
 Then run:  sudo tind-enroll apply      and paste it, or:  sudo tind-enroll apply FILE
 tind-enroll: ADDRESS is missing from the enrolment block
-
-Tunnel 'tind-servr' is up and will start automatically.
 Only traffic to 10.99.99.0/24 and names under servr.no uses it.
+Endpoint 192.0.2.1 is 192.0.2.1 on this network.
+The watchdog checks this every minute and follows you between networks.
 tind-enroll apply: no shell errors
 tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (4879bcd3-ed07-4e6b-9dd5-7802bcdee0d4) successfully deleted.
+Connection 'tind-servr' (d2b763da-6631-48b3-82b6-13808f233595) successfully deleted.
 Removed this device's private key.
 
 ##### wireguard watchdog
@@ -71,7 +65,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 227 Oct 29 15:17 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 227 Nov  1 23:59 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=/usr/lib/tind/install-launcher
 Icon=tind-logo
@@ -83,8 +77,8 @@ NoDisplay=true
 ai.optin	     developer.optin	  hardware.optin
 communication.optin  entertainment.optin  productivity.optin
 creative.optin	     gaming.optin	  security.optin
--rwxr-xr-x 1 root root 2927 Oct 29 15:17 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 1246 Oct 29 15:17 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 2927 Nov  1 23:59 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Nov  1 23:59 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -189,7 +183,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Oct 29 15:45 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov  2 00:20 /var/lib/tind/apt-refreshed
 56
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -212,7 +206,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Thu 2026-10-29 15:44:53 CET; 1min 51s ago
+  Condition: start condition unmet at Mon 2026-11-02 00:20:30 CET; 1min 51s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -231,12 +225,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:42309
 udp 0.0.0.0:5353
+udp 0.0.0.0:59881
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
+udp [::]:46260
 udp [::]:5353
-udp [::]:56049
 
 ##### hardware basics
 active
@@ -253,7 +247,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-457 /tmp/tind-report-test.txt
+471 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -278,7 +272,7 @@ Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
 Name=Thunderbird | thunderbird | thunderbird.desktop
 
 ##### largest installed packages
-309448	thunderbird
+309769	thunderbird
 301610	firefox-esr
 187357	papirus-icon-theme
 143940	firmware-netronome
@@ -306,34 +300,36 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 installed packages: 1655
 
 ##### journal errors (this boot)
-Oct 29 15:44:52 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
-Oct 29 15:44:56 tind adduser[1092]: The group `powerdev' does not exist.
-Oct 29 15:44:56 tind adduser[1108]: The group `debian-tor' does not exist.
-Oct 29 15:45:02 tind gdm-autologin][1511]: gkr-pam: couldn't unlock the login keyring.
-Oct 29 15:45:03 tind systemd[1519]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1691.scope - Application launched by gnome-session-binary.
-Oct 29 15:45:03 tind systemd[1519]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1709.scope - Application launched by gnome-session-binary.
+Nov 02 00:20:29 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+Nov 02 00:20:32 tind adduser[1089]: The group `powerdev' does not exist.
+Nov 02 00:20:32 tind adduser[1105]: The group `debian-tor' does not exist.
+Nov 02 00:20:38 tind gdm-autologin][1512]: gkr-pam: couldn't unlock the login keyring.
+Nov 02 00:20:39 tind systemd[1521]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1732.scope - Application launched by gnome-session-binary.
+Nov 02 00:20:39 tind systemd[1521]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1752.scope - Application launched by gnome-session-binary.
+Nov 02 00:20:46 tind systemd[1521]: Failed to start app-gnome-im\x2dlaunch-1958.scope - Application launched by gnome-session-binary.
+Nov 02 00:20:46 tind systemd[1521]: Failed to start app-gnome-tind\x2dlive\x2ddock-1909.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Oct 29 15:45:03 tind gnome-shell[1708]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Oct 29 15:45:03 tind gnome-shell[1708]: Enabling experimental feature 'scale-monitor-framebuffer'
-Oct 29 15:45:03 tind gnome-shell[1708]: Enabling experimental feature 'xwayland-native-scaling'
-Oct 29 15:45:06 tind gnome-shell[1708]: Thread 'KMS thread' will be using high priority scheduling
-Oct 29 15:45:06 tind gnome-shell[1708]: pci id for fd 12: 1234:1111, driver (null)
-Oct 29 15:45:06 tind gnome-shell[1708]: pci id for fd 13: 1234:1111, driver (null)
-Oct 29 15:45:06 tind gnome-shell[1708]: kmsro: driver missing
-Oct 29 15:45:07 tind gnome-shell[1708]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Oct 29 15:45:07 tind gnome-shell[1708]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Oct 29 15:45:07 tind gnome-shell[1708]: Created gbm renderer for '/dev/dri/card0'
-Oct 29 15:45:07 tind gnome-shell[1708]: Boot VGA GPU /dev/dri/card0 selected as primary
-Oct 29 15:45:07 tind gnome-shell[1708]: Using public X11 display :0, (using :1 for managed services)
-Oct 29 15:45:07 tind gnome-shell[1708]: Using Wayland display name 'wayland-0'
-Oct 29 15:45:07 tind gnome-shell[1708]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Oct 29 15:45:08 tind gnome-shell[1708]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Oct 29 15:45:09 tind gnome-shell[1708]: Will monitor session 1
-Oct 29 15:45:10 tind gnome-shell[1708]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Oct 29 15:45:16 tind gnome-shell[1708]: GNOME Shell started at Thu Oct 29 2026 15:45:08 GMT+0100 (Central European Standard Time)
-Oct 29 15:45:16 tind gnome-shell[1708]: Registering session with GDM
-Oct 29 15:46:35 tind gnome-shell[1708]: Invalid sequence for VSYNC frame info
+Nov 02 00:20:40 tind gnome-shell[1751]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 02 00:20:40 tind gnome-shell[1751]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 02 00:20:40 tind gnome-shell[1751]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 02 00:20:43 tind gnome-shell[1751]: Thread 'KMS thread' will be using high priority scheduling
+Nov 02 00:20:43 tind gnome-shell[1751]: pci id for fd 12: 1234:1111, driver (null)
+Nov 02 00:20:43 tind gnome-shell[1751]: pci id for fd 13: 1234:1111, driver (null)
+Nov 02 00:20:43 tind gnome-shell[1751]: kmsro: driver missing
+Nov 02 00:20:43 tind gnome-shell[1751]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 02 00:20:43 tind gnome-shell[1751]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 02 00:20:43 tind gnome-shell[1751]: Created gbm renderer for '/dev/dri/card0'
+Nov 02 00:20:43 tind gnome-shell[1751]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 02 00:20:43 tind gnome-shell[1751]: Using public X11 display :0, (using :1 for managed services)
+Nov 02 00:20:43 tind gnome-shell[1751]: Using Wayland display name 'wayland-0'
+Nov 02 00:20:43 tind gnome-shell[1751]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 02 00:20:44 tind gnome-shell[1751]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 02 00:20:46 tind gnome-shell[1751]: Will monitor session 1
+Nov 02 00:20:47 tind gnome-shell[1751]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 02 00:20:52 tind gnome-shell[1751]: GNOME Shell started at Mon Nov 02 2026 00:20:45 GMT+0100 (Central European Standard Time)
+Nov 02 00:20:52 tind gnome-shell[1751]: Registering session with GDM
+Nov 02 00:22:15 tind gnome-shell[1751]: Invalid sequence for VSYNC frame info
 
 ##### ai box
 AI users ok
@@ -347,19 +343,19 @@ AI tind-ai-remote-sandbox ok
 AI local-private-network ok
 socket units: active active active 
 setkey: key stored for custom
-{"brief_ok": true, "error": null, "id": "20261029-154717-48c4e2e8", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
+{"brief_ok": true, "error": null, "id": "20261102-002254-b718e62e", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
 {"send_ok": true, "error": null, "answer": "Fake answer from the CI provider.\n```bash\necho hello\n```"}
 AI brief ok
 AI send-and-answer ok
 AI journal-in-briefing ok
 ## System journal, this boot, warnings and errors (last 300 lines)
 ```
-2026-10-29T15:44:52+01:00 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
-2026-10-29T15:44:52+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
-2026-10-29T15:44:52+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
-2026-10-29T15:44:56+01:00 tind adduser[1092]: The group `powerdev' does not exist.
-2026-10-29T15:44:56+01:00 tind adduser[1108]: The group `debian-tor' does not exist.
-2026-10-29T15:45:00+01:00 tind udisksd[1391]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data return
+2026-11-02T00:20:29+01:00 localhost.localdomain kernel: RETBleed: WARNING: Spectre v2 mitigation leaves CPU vulnerable to RETBleed attacks, data leaks possible!
+2026-11-02T00:20:29+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-02T00:20:29+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-02T00:20:32+01:00 tind adduser[1089]: The group `powerdev' does not exist.
+2026-11-02T00:20:32+01:00 tind adduser[1105]: The group `debian-tor' does not exist.
+2026-11-02T00:20:37+01:00 tind udisksd[1383]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data return
 AI nothing-planted-left-the-computer ok
 AI remote-only-its-host-and-port ok
 AI local-cannot-read-outbox ok
@@ -395,6 +391,10 @@ sources /etc/apt/sources.list: deb http://security.debian.org/ trixie-security m
 sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-updates main contrib non-free non-free-firmware
 sources /etc/apt/sources.list: deb http://deb.debian.org/debian/ trixie-backports main contrib non-free non-free-firmware
 DAILY debian-non-free ok
+uplink-dns: enp0s2: 10.0.2.3
+DAILY uplink-dns ok
+wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp0s2)
+DAILY wired-profiles ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====

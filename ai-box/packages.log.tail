@@ -1,6 +1,3 @@
-runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
@@ -52,6 +49,7 @@ runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/22.08
 runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/23.08
 runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/24.08
 runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/25.08
+runtime/org.freedesktop.Platform.VulkanLayer.vkBasalt/x86_64/26.08
 == flatpak runtimes of game apps
 -- com.valvesoftware.Steam:    Runtime: org.freedesktop.Platform/x86_64/26.08 
 -- net.lutris.Lutris:    Runtime: org.gnome.Platform/x86_64/51 
@@ -157,7 +155,7 @@ sane-airscan 0.99.35-1 ii
 sane-utils 1.3.1-3+b1 ii 
 signal-desktop 8.33.0 ii 
 strawberry 1.2.10-2 ii 
-telegram-desktop 5.7.2+ds-2~bpo13+1 ii 
+telegram-desktop 5.7.2+ds-2~bpo13+2 ii 
 virt-manager 1:5.0.0-5+deb13u1 ii 
 vlc 3.0.24-0+deb13u1 ii 
 wireshark 4.4.19-0+deb13u1 ii 
@@ -210,7 +208,7 @@ firewall table: not checkable in this container (checked in the booted ISO)
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   71G   74G  50% /__w
+/dev/root       145G   72G   74G  50% /__w
 
 == KVM
 not available (VM tests will be slow)
@@ -289,6 +287,8 @@ ok       gstreamer1.0-plugins-base
 ok       gstreamer1.0-plugins-good
 ok       gvfs-backends
 ok       gvfs-fuse
+ok       iproute2
+ok       iputils-ping
 ok       jq
 ok       libatk-adaptor
 ok       libcanberra-pulse
