@@ -263,6 +263,69 @@ check(tindai.model_label(tindai.provider('anthropic')['models'][1]) == 'Claude S
 check(tindai.provider('local')['service'] == 'local', 'providers: this computer is served by the local service')
 check(json.load(open(tindai.PROVIDERS_FILE))['default'] == 'scaleway', 'providers: Scaleway is the default')
 
+# ---- task templates (chips above the input box) -------------------------------------------------------------------
+ask = load_script(os.path.join(ROOT, 'tind-ai-ui/usr/bin/tind-ai-ask'), 'tind_ai_ask', [])
+TPL_FILE = os.path.join(ROOT, 'tind-ai-ui/usr/share/tind-ai/templates.json')
+tpls = ask.load_templates(TPL_FILE)
+by = {t['id']: t for t in tpls}
+check([t['title'] for t in tpls] == ['Fix a problem', 'Explain this error', 'Write a script', 'Help with a setting',
+                                     'Ask about my system'], 'templates: the five templates, in the agreed order')
+check(all(1 <= len(t['fields']) <= 3 for t in tpls), 'templates: each asks for at most three short fields')
+check(all(any(f.get('required') for f in t['fields']) for t in tpls),
+      'templates: each has a required first answer, so an empty template cannot be sent')
+check({k: set(by[k]['attach']) for k in by} == {'fix': {'report', 'journal'}, 'error': set(), 'script': set(),
+                                                 'setting': {'report'}, 'system': {'report'}},
+      'templates: pre-ticked data is the agreed default (Steam logs are never pre-ticked)')
+bad = []
+for t in tpls:
+    ids = {f['id'] for f in t['fields']}
+    for ln in t['lines']:
+        text = ln if isinstance(ln, str) else ln.get('text', '')
+        bad += [(t['id'], n) for n in ask.re.findall(r'\{(\w+)\}', text) if n not in ids]
+check(not bad, 'templates: every {placeholder} names a field of its template %s' % bad)
+
+fix = by['fix']
+only = ask.compose_prompt(fix, {'happened': 'Wi-Fi drops every few minutes'}, ['report', 'journal'])
+check('Wi-Fi drops every few minutes' in only and 'What I expected' not in only and 'What I have tried' not in only,
+      'templates: a line whose field was left empty is dropped')
+check('Use the attached data' in only, 'templates: the line about attached data appears when data is attached')
+check('Use the attached data' not in ask.compose_prompt(fix, {'happened': 'x'}, []),
+      'templates: and is left out when the human unticked everything')
+full = ask.compose_prompt(fix, {'happened': 'a', 'expected': 'b', 'tried': 'c'}, [])
+check('What happened: a' in full and 'What I expected: b' in full and 'What I have tried: c' in full,
+      'templates: every answer lands in the prompt')
+check(ask.compose_prompt(fix, {'happened': 'use {tried} here', 'tried': 'SECRET'}, [])
+      .count('SECRET') == 1, 'templates: an answer is never read as a placeholder')
+err = ask.compose_prompt(by['error'], {'error': 'line one\n\nline three'}, [])
+check('line one\n\nline three' in err and '\n\n\n' not in err and not err.startswith('\n') and not err.endswith('\n'),
+      'templates: a pasted error keeps its own blank lines; no stray blank lines around it')
+check(ask.missing_required(fix, {'happened': '  '}) == ['What happened?'] and not ask.missing_required(fix, {'happened': 'x'}),
+      'templates: a required field that is only spaces counts as empty')
+sysq = ask.compose_prompt(by['system'], {'question': 'Which GPU?'}, ['report'])
+check(sysq.startswith('I have a question about my computer:') and 'attached Tind report' in sysq,
+      'templates: the system question refers to the report when it is attached')
+check('attached Tind report' not in ask.compose_prompt(by['system'], {'question': 'Which GPU?'}, []),
+      'templates: and not when it is not')
+# what a template writes is ordinary typed text: the fixed rules hide the planted data (Direct)
+tp = ask.compose_prompt(fix, {'happened': 'Cannot reach ' + PLANTED['ip'] + ' as ' + PLANTED['email'],
+                              'tried': 'token ' + PLANTED['gh']}, ['report'])
+tb = local.handle(uid, {'op': 'brief', 'request': tp, 'provider': 'custom'})
+check(tb['ok'] and all(PLANTED[k] not in tb['text'] for k in ('ip', 'email', 'gh')) and '[ip-1]' in tb['text'],
+      'templates: a filled-in template goes through the fixed redaction rules like typed text')
+# the loader never breaks the window
+junk = os.path.join(tmp, 'junk.json')
+check(ask.load_templates(os.path.join(tmp, 'missing.json')) == [], 'templates: a missing file gives no chips')
+open(junk, 'w').write('{not json')
+check(ask.load_templates(junk) == [], 'templates: a broken file gives no chips')
+json.dump({'templates': [
+    {'id': 'a', 'title': 'A', 'fields': [{'id': 'x', 'label': 'X'}], 'lines': ['{x}'], 'attach': ['report', 'bogus']},
+    {'id': 'a', 'title': 'Duplicate', 'fields': [{'id': 'x'}], 'lines': ['{x}']},
+    {'id': 'b', 'title': 'No lines', 'fields': [{'id': 'x'}]},
+    {'id': 'c', 'title': 'Bad field id', 'fields': [{'id': 'not ok'}], 'lines': ['x']}]}, open(junk, 'w'))
+odd = ask.load_templates(junk)
+check([t['id'] for t in odd] == ['a'] and odd[0]['attach'] == ['report'],
+      'templates: a malformed, duplicate or half-empty entry is skipped and unknown data names are dropped')
+
 shutil.rmtree(tmp)
 print('ALL AI TESTS PASSED' if not failures else '%d AI TEST(S) FAILED' % failures)
 sys.exit(1 if failures else 0)

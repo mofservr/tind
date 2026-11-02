@@ -4,6 +4,7 @@
   tind-ai-ask              open the window (a second start brings the open window to the front)
   tind-ai-ask --open last  open the most recent chat (used by the CI self-test)
   tind-ai-ask --check      print whether the services answer and which providers have a key (no window)
+  tind-ai-ask --templates  list the task templates (the chips above the input box; no window)
 
 How a message travels (see /usr/share/doc/tind-ai-users/README):
   1. You type (Direct). Attaching system data (system log, Tind report, Steam logs, files) makes it Checked: the exact
@@ -35,6 +36,8 @@ ACCEPTED = os.path.join(CONFIG_DIR, 'accepted')
 SETTINGS = os.path.join(CONFIG_DIR, 'settings.json')
 MAX_FILE = 200_000
 SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
+TEMPLATES_FILE = '/usr/share/tind-ai/templates.json'
+ATTACH_KEYS = ('journal', 'report', 'steam')
 
 GUIDE = (
     "This window lets an AI service help you with your computer: a setting, an error message, a program that will "
@@ -146,6 +149,63 @@ def to_markup(text, escape):
     return '\n'.join(lines)
 
 
+def load_templates(path=TEMPLATES_FILE):
+    """The task templates (static data, no model call). A broken or missing file gives an empty list: the window then
+    simply has no template chips. An entry that is not well formed is skipped, never fatal."""
+    data = load_json(path, {})
+    out, seen = [], set()
+    for t in data.get('templates', []) if isinstance(data, dict) else []:
+        try:
+            fields = [f for f in t['fields'] if isinstance(f, dict) and re.fullmatch(r'\w+', str(f.get('id', '')))]
+            lines = [ln for ln in t['lines'] if isinstance(ln, (str, dict))]
+            if not (t['id'] and t['title'] and fields and lines) or t['id'] in seen:
+                continue
+        except (KeyError, TypeError):
+            continue
+        seen.add(t['id'])
+        out.append({'id': str(t['id']), 'title': str(t['title']), 'hint': str(t.get('hint', '')), 'fields': fields,
+                    'attach': [k for k in t.get('attach', []) if k in ATTACH_KEYS], 'lines': lines})
+    return out
+
+
+def missing_required(tpl, values):
+    """Labels of the required fields that are still empty."""
+    return [f.get('label', f['id']) for f in tpl['fields']
+            if f.get('required') and not (values.get(f['id']) or '').strip()]
+
+
+def compose_prompt(tpl, values, attached):
+    """One English prompt from a template, the answers {field: text} and the attached data keys. A line with a field
+    that was left empty is dropped; a line with "if_attached" stays only when one of those is attached. Answers are
+    inserted as they are (they are never read as placeholders) and go through the fixed redaction rules like any
+    typed text."""
+    entries = []
+    for ln in tpl['lines']:
+        text, cond = (ln, None) if isinstance(ln, str) else (str(ln.get('text', '')), ln.get('if_attached'))
+        if cond and not any(k in attached for k in cond):
+            continue
+        names = re.findall(r'\{(\w+)\}', text)
+        vals = {n: (values.get(n) or '').strip() for n in names}
+        if any(not v for v in vals.values()):
+            continue
+        entries.append(re.sub(r'\{(\w+)\}', lambda m: vals[m.group(1)], text))
+    while entries and not entries[0].strip():
+        entries.pop(0)
+    while entries and not entries[-1].strip():
+        entries.pop()
+    tidy = [e for i, e in enumerate(entries) if e.strip() or (i and entries[i - 1].strip())]
+    return '\n'.join(tidy)
+
+
+def check_templates():
+    tpls = load_templates()
+    for t in tpls:
+        print('%-8s %-24s %d fields, pre-attached: %s' % (t['id'], t['title'], len(t['fields']),
+                                                           ', '.join(t['attach']) or 'nothing'))
+    print('templates: %d' % len(tpls))
+    return 0 if tpls else 1
+
+
 def check():
     rc = 0
     try:
@@ -204,6 +264,8 @@ def main(open_target=None):
             self.chat = None
             self.attach = {'journal': False, 'report': False, 'steam': False, 'files': []}
             self.busy = False
+            self.templates = load_templates()
+            self.tpl, self.tpl_views, self.tpl_checks = None, {}, {}
 
             self.toasts = Adw.ToastOverlay()
             self.split = Adw.NavigationSplitView(min_sidebar_width=230, max_sidebar_width=300)
@@ -300,6 +362,7 @@ def main(open_target=None):
             self.scroll.set_child(Adw.Clamp(maximum_size=780, child=self.msgbox))
             self.stack.add_named(self.scroll, 'chat')
             self.stack.add_named(self.build_guide(), 'guide')
+            self.stack.add_named(self.build_template_page(), 'template')
             view.set_content(self.stack)
             self.composer = self.build_composer()
             view.add_bottom_bar(self.composer)
@@ -352,6 +415,7 @@ def main(open_target=None):
             outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, margin_top=6, margin_bottom=10,
                             margin_start=16, margin_end=16)
             self.chips = Gtk.Box(spacing=6, visible=False)
+            self.tpl_row = self.build_template_chips()
             self.rawnote = label('Unredacted: the next message is sent exactly as typed, nothing is hidden.',
                                  ['error', 'caption'], visible=False)
             box = Gtk.Box(spacing=6, css_classes=['tind-composer'])
@@ -374,12 +438,138 @@ def main(open_target=None):
             self.sendbtn.connect('clicked', lambda *_: self.on_send())
             for w in (add, isw, self.rawbtn, self.sendbtn):
                 box.append(w)
-            for w in (self.chips, self.rawnote, box):
+            for w in (self.tpl_row, self.chips, self.rawnote, box):
                 outer.append(w)
             hint = label('Enter sends, Shift+Enter adds a line. Attaching system data shows you the text first.',
                          ['dim-label', 'caption'])
             outer.append(hint)
             return Adw.Clamp(maximum_size=812, child=outer)
+
+        # ---- task templates (static text, no model call) ---------------------------------------------------------
+        def build_template_chips(self):
+            row = Gtk.Box(spacing=6)
+            row.append(Gtk.Label(label='Start from:', css_classes=['dim-label', 'caption']))
+            for t in self.templates:
+                b = Gtk.Button(label=t['title'], css_classes=['pill', 'tind-chip'], tooltip_text=t['hint'] or None)
+                b.connect('clicked', lambda _b, t=t: self.open_template(t))
+                row.append(b)
+            sw = Gtk.ScrolledWindow(vscrollbar_policy=Gtk.PolicyType.NEVER, hscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
+                                    propagate_natural_height=True, visible=False)
+            sw.set_child(row)
+            return sw
+
+        def build_template_page(self):
+            self.tpl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin_top=24, margin_bottom=24,
+                                   margin_start=24, margin_end=24)
+            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
+            sw.set_child(Adw.Clamp(maximum_size=640, child=self.tpl_box))
+            # the buttons stay in view below the scrolling form
+            self.tpl_actions = Gtk.Box(spacing=8, halign=Gtk.Align.END, margin_top=8, margin_bottom=12,
+                                       margin_start=24, margin_end=24)
+            page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            page.append(sw)
+            page.append(Gtk.Separator())
+            page.append(Adw.Clamp(maximum_size=640, child=self.tpl_actions))
+            return page
+
+        def update_templates(self):
+            """The chips show in an empty chat only: they start a task, free typing stays the default."""
+            show = bool(self.templates) and self.tpl is None and self.chat is not None and not self.busy \
+                and not self.chat['messages'] and self.stack.get_visible_child_name() == 'chat'
+            self.tpl_row.set_visible(show)
+
+        def open_template(self, tpl):
+            if self.busy or self.chat is None or self.chat['messages']:
+                return
+            buf = self.input.get_buffer()
+            typed = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).strip()
+            box = self.tpl_box
+            while (child := box.get_first_child()) is not None:
+                box.remove(child)
+            self.tpl, self.tpl_views, self.tpl_checks = tpl, {}, {}
+            box.append(label(tpl['title'], ['title-2']))
+            if tpl['hint']:
+                box.append(label(tpl['hint'], ['dim-label']))
+            for i, f in enumerate(tpl['fields']):
+                box.append(label(f.get('label', f['id']) + ('' if f.get('required') else ' (optional)'),
+                                 ['heading'], margin_top=6))
+                tv = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, top_margin=8, bottom_margin=8, left_margin=8,
+                                  right_margin=8, accepts_tab=False)
+                if i == 0 and typed:                  # what was already typed becomes the first answer
+                    tv.get_buffer().set_text(typed)
+                tv.get_buffer().connect('changed', lambda *_: self.tpl_validate())
+                keys = Gtk.EventControllerKey()
+                keys.connect('key-pressed', self.on_template_key)
+                tv.add_controller(keys)
+                fsw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, css_classes=['card'],
+                                         min_content_height=max(1, int(f.get('lines', 2))) * 22 + 18)
+                fsw.set_child(tv)
+                box.append(fsw)
+                if f.get('example'):
+                    box.append(label('For example: ' + str(f['example']), ['dim-label', 'caption']))
+                self.tpl_views[f['id']] = tv
+            box.append(label('Send along', ['heading'], margin_top=10))
+            for key, text in (('report', 'Tind report (hardware, drivers, setup)'),
+                              ('journal', 'System log (this boot, warnings and errors)'),
+                              ('steam', 'Steam and Proton logs')):
+                cb = Gtk.CheckButton(label=text, active=key in tpl['attach'])
+                self.tpl_checks[key] = cb
+                box.append(cb)
+            box.append(label('Attached data is shown to you in full before anything is sent. Names, addresses and '
+                             'keys are hidden first.', ['dim-label', 'caption']))
+            while (child := self.tpl_actions.get_first_child()) is not None:
+                self.tpl_actions.remove(child)
+            back = Gtk.Button(label='Back', css_classes=['flat'])
+            back.connect('clicked', self.close_template)
+            self.tpl_go = Gtk.Button(label='Write the message', css_classes=['suggested-action', 'pill'],
+                                     tooltip_text='Puts the message in the box below, ready to read, change and send '
+                                                  '(Ctrl+Enter)')
+            self.tpl_go.connect('clicked', self.submit_template)
+            self.tpl_actions.append(back)
+            self.tpl_actions.append(self.tpl_go)
+            self.tpl_validate()
+            self.stack.set_visible_child_name('template')
+            self.composer.set_visible(False)
+            self.update_templates()
+            first = self.tpl_views[tpl['fields'][0]['id']]
+            first.grab_focus()
+
+        def tpl_values(self):
+            out = {}
+            for fid, tv in self.tpl_views.items():
+                b = tv.get_buffer()
+                out[fid] = b.get_text(b.get_start_iter(), b.get_end_iter(), False).strip()
+            return out
+
+        def tpl_validate(self):
+            go = getattr(self, 'tpl_go', None)
+            if go is not None and self.tpl is not None:
+                go.set_sensitive(not missing_required(self.tpl, self.tpl_values()))
+
+        def on_template_key(self, _ctl, keyval, _code, state):
+            if keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter) and state & Gdk.ModifierType.CONTROL_MASK:
+                self.submit_template()
+                return True
+            return False
+
+        def close_template(self, *_):
+            self.tpl, self.tpl_views, self.tpl_checks = None, {}, {}
+            self.composer.set_visible(True)
+            self.stack.set_visible_child_name('chat')
+            self.update_templates()
+            self.input.grab_focus()
+
+        def submit_template(self, *_):
+            tpl, vals = self.tpl, self.tpl_values()
+            if tpl is None or missing_required(tpl, vals):
+                return
+            attached = [k for k, cb in self.tpl_checks.items() if cb.get_active()]
+            text = compose_prompt(tpl, vals, attached)
+            for k in ATTACH_KEYS:
+                self.attach[k] = k in attached
+            self.draw_chips()
+            self.input.get_buffer().set_text(text)
+            self.close_template()
 
         def build_attach_popover(self):
             pop = Gtk.Popover()
@@ -429,6 +619,7 @@ def main(open_target=None):
             self.update_header()
             self.stack.set_visible_child_name('guide')
             self.composer.set_sensitive(False)
+            self.update_templates()
 
         def new_chat(self, pid=None):
             if not os.path.exists(ACCEPTED):
@@ -458,6 +649,8 @@ def main(open_target=None):
                 self.refresh_sidebar()
 
         def render(self):
+            self.tpl = None
+            self.composer.set_visible(True)
             self.stack.set_visible_child_name('chat')
             self.composer.set_sensitive(True)
             self.update_header()
@@ -473,6 +666,7 @@ def main(open_target=None):
                     description='%s Names, addresses and keys are hidden before anything is sent.' % where))
             for m in msgs:
                 self.msgbox.append(self.bubble(m))
+            self.update_templates()
             GLib.idle_add(self.scroll_end)
 
         def scroll_end(self):
@@ -660,7 +854,10 @@ def main(open_target=None):
         def on_window_key(self, _ctl, keyval, _code, state):
             ctrl = state & Gdk.ModifierType.CONTROL_MASK
             if keyval == Gdk.KEY_Escape:
-                self.close()
+                if self.tpl is not None:
+                    self.close_template()
+                else:
+                    self.close()
                 return True
             if ctrl and keyval in (Gdk.KEY_w, Gdk.KEY_q):
                 self.close()
@@ -916,5 +1113,7 @@ def main(open_target=None):
 if __name__ == '__main__':
     if '--check' in sys.argv:
         sys.exit(check())
+    if '--templates' in sys.argv:
+        sys.exit(check_templates())
     target = sys.argv[sys.argv.index('--open') + 1] if '--open' in sys.argv[:-1] else None
     sys.exit(main(target))

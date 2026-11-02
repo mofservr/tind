@@ -1,0 +1,96 @@
+{
+ "comment": "Task templates for the AI assistant window (tind-ai-ask). Static text, no model call: a template asks a few short questions and turns the answers into one prompt. Data, not code: add a template by adding an entry. A line is a string or {\"text\": ..., \"if_attached\": [\"report\", ...]}; {field} is replaced by the field's answer, and a line whose field is empty is left out. attach lists what is pre-ticked (journal, report, steam); the human can untick it, and whatever is attached still goes through the Checked preview.",
+ "templates": [
+  {
+   "id": "fix",
+   "title": "Fix a problem",
+   "hint": "Something does not work. The Tind report and the system log are added for you; untick them if you prefer.",
+   "fields": [
+    {"id": "happened", "label": "What happened?", "example": "The Wi-Fi drops every few minutes", "lines": 3, "required": true},
+    {"id": "expected", "label": "What did you expect?", "example": "It should stay connected", "lines": 2},
+    {"id": "tried", "label": "What have you tried?", "example": "Restarted the computer", "lines": 2}
+   ],
+   "attach": ["report", "journal"],
+   "lines": [
+    "I have a problem with my computer.",
+    "What happened: {happened}",
+    "What I expected: {expected}",
+    "What I have tried: {tried}",
+    "",
+    {"text": "Use the attached data where it helps.", "if_attached": ["report", "journal"]},
+    "Find the most likely cause and give me the steps to fix it, one at a time. Say what each command does before I run it."
+   ]
+  },
+  {
+   "id": "error",
+   "title": "Explain this error",
+   "hint": "Paste an error message and get it explained in plain words.",
+   "fields": [
+    {"id": "error", "label": "The error message", "example": "Paste it here exactly as you see it", "lines": 5, "required": true},
+    {"id": "doing", "label": "What were you doing?", "example": "Installing a program from the software centre", "lines": 2}
+   ],
+   "attach": [],
+   "lines": [
+    "I got this error message:",
+    "{error}",
+    "",
+    "What I was doing: {doing}",
+    "",
+    {"text": "Use the attached data where it helps.", "if_attached": ["report", "journal", "steam"]},
+    "Explain in plain words what it means and what usually causes it, then how to fix it."
+   ]
+  },
+  {
+   "id": "script",
+   "title": "Write a script",
+   "hint": "Describe a job you want automated. Nothing is attached unless you tick it.",
+   "fields": [
+    {"id": "job", "label": "What should the script do?", "example": "Rename all photos in a folder by date", "lines": 3, "required": true},
+    {"id": "details", "label": "Anything it must handle or avoid?", "example": "Never overwrite or delete the originals", "lines": 2}
+   ],
+   "attach": [],
+   "lines": [
+    "Please write a script for my computer.",
+    "What it should do: {job}",
+    "Details: {details}",
+    "",
+    "Prefer bash, or Python if bash would be awkward. Keep it short, comment the tricky parts and tell me how to run it. Do not delete or overwrite anything without asking."
+   ]
+  },
+  {
+   "id": "setting",
+   "title": "Help with a setting",
+   "hint": "Find or change a setting. The Tind report is added for you; untick it if you prefer.",
+   "fields": [
+    {"id": "goal", "label": "What do you want to change?", "example": "Make the text bigger", "lines": 3, "required": true},
+    {"id": "where", "label": "In which program or part of the desktop?", "example": "Firefox", "lines": 1}
+   ],
+   "attach": ["report"],
+   "lines": [
+    "I want to change a setting.",
+    "What I want: {goal}",
+    "Where: {where}",
+    "",
+    "Give the steps in GNOME Settings or the program's own menus first. Use the terminal only if there is no other way, and say what a command does before I run it."
+   ]
+  },
+  {
+   "id": "system",
+   "title": "Ask about my system",
+   "hint": "A question about this computer. The Tind report is added for you; untick it if you prefer.",
+   "fields": [
+    {"id": "question", "label": "Your question", "example": "Which graphics driver am I using, and is it a good one?", "lines": 3, "required": true},
+    {"id": "goal", "label": "What are you trying to do?", "example": "Play games at a steady frame rate", "lines": 2}
+   ],
+   "attach": ["report"],
+   "lines": [
+    "I have a question about my computer:",
+    "{question}",
+    "",
+    "What I am trying to do: {goal}",
+    "",
+    {"text": "Answer from the attached Tind report where you can, and say so when the report does not show it.", "if_attached": ["report"]}
+   ]
+  }
+ ]
+}

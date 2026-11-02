@@ -324,6 +324,8 @@ f="$(ls /var/lib/tind-ai/outbox/$UIDN/*.json 2>/dev/null | head -1)"
 [ -n "$f" ] && asuser cat "$f" >/dev/null 2>&1 && ai human-reads-own-answer ok || ai human-reads-own-answer "FAIL ${f:-no answer saved}"
 stat -c '%a %U %n' /var/lib/tind-ai/* /var/lib/tind-ai/*/* 2>&1 | head -12
 asuser tind-ai-ask --check 2>&1 | head -10
+tpl="$(asuser tind-ai-ask --templates 2>&1)"; echo "$tpl" | head -6
+echo "$tpl" | grep -q '^templates: 5$' && ai templates ok || ai templates "FAIL $(echo "$tpl" | tail -1)"
 systemctl stop tind-ci-fakeai >/dev/null 2>&1 || true
 fi
 # daily-machine checks (roadmap d1): one DAILY line per check, "ok" or "FAIL <why>". The installer test prints them
