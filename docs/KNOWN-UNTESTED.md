@@ -41,7 +41,10 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   machine against a fake provider. The window opens on real hardware (Morten, 29 Oct, laptop). Not yet run against a
   real provider (Scaleway, IONOS, Mistral, Claude, OpenAI). The chat window (29 Oct) is checked under Xvfb and in the
   build's screenshots only. The task templates (chips above the input box, 2 Nov) are checked by unit tests and under
-  Xvfb, not on a real machine.
+  Xvfb, not on a real machine. The `~/TindAI` folder (3 Nov: the Markdown chat archive with names and addresses put
+  back, saved documents, the export moved in) is checked by unit tests, under Xvfb and in the build's virtual machine
+  with a fake provider; moving real old chats and `~/AI-export` on a used machine is not. Word, PDF and ODT are made by
+  LibreOffice Writer, which is not on the ISO: checked outside the build only, not opened in a real Word.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".
