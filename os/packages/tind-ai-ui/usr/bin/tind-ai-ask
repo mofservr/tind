@@ -259,7 +259,8 @@ def chat_to_md(chat):
             head = 'You'
         else:
             head = ' · '.join(b for b in (m.get('provider_name'), m.get('model_name') or m.get('model')) if b) or 'AI'
-        lines += ['### %s · %s' % (head, _when(m.get('time'))), '', _escape(m['text'].strip('\n')), '']
+        stamp = ' · ' + _when(m['time']) if m.get('time') else ''
+        lines += ['### %s%s' % (head, stamp), '', _escape(m['text'].strip('\n')), '']
         sent = m.get('sent')
         if sent and sent != m['text']:
             if m['role'] == 'user':

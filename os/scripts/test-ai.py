@@ -82,6 +82,10 @@ for k, v in PLANTED.items():
     check(v not in out, 'redact: planted %s is gone' % k)
 check(out.count('[ip-1]') == 2, 'redact: the same address gets the same placeholder')
 check('[ip-2]' in out, 'redact: IPv6 address replaced')
+ends = Redactor().text('My laptop is 192.168.1.37. Gateway 10.0.0.1, DNS 10.0.0.53; version 1.2.3.4.5 and 6.12.113.')
+check('192.168.1.37' not in ends and '10.0.0.1' not in ends and '10.0.0.53' not in ends
+      and '1.2.3.4.5' in ends and '6.12.113' in ends,
+      'redact: an address at the end of a sentence is hidden too; longer dotted numbers stay: %s' % ends)
 check('IGNORE ALL PREVIOUS INSTRUCTIONS' in out, 'redact: ordinary text (even a hostile line) stays readable')
 check('6.12.113' in out and '21:15:03' in out and '127.0.0.1:8080' in out,
       'redact: versions, clock times and loopback stay readable')

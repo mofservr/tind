@@ -314,7 +314,7 @@ echo "$out" | grep -q '"send_ok": true' && echo "$out" | grep -q 'Fake answer' &
     || ai send-and-answer "FAIL $(echo "$out" | tail -1)"
 grep -q 'planted for the AI test' /tmp/tind-ci-brief.txt && ai journal-in-briefing ok || ai journal-in-briefing "FAIL the planted journal line is not in the briefing"
 grep -A7 '^## System journal' /tmp/tind-ci-brief.txt | cut -c1-160
-leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
+leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no 192.168.1.37; do
     grep -q "$v" /tmp/tind-ci-brief.txt /run/tind-ci-fakeai-got.json 2>/dev/null && leak="$leak $v"
 done
 [ -s /run/tind-ci-fakeai-got.json ] && [ -z "$leak" ] && ai nothing-planted-left-the-computer ok \
