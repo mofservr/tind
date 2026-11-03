@@ -1,4 +1,4 @@
 ref: ai-box
-sha: ba20031496034559d1c2c6cd1c4e3b2900f96ad6
-run: 41673668935
+sha: 4adf93f6bb6b2698b9a41af55b55d126e9199789
+run: 41683442988
 results: packages=success iso=success boot=success
