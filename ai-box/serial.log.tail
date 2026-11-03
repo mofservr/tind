@@ -1,54 +1,10 @@
-  sudo tind-enroll refresh           look the endpoint up again through this network's DNS
-  sudo tind-enroll remove [--purge-key]
-DNS_DOMAIN="servr.no"
-KEEPALIVE="25"
-CONNECTION_NAME="tind-servr"
-
-##### enroll init/apply smoke test
-
-The admin will reply with an enrolment block (a few KEY=value lines).
-Then run:  sudo tind-enroll apply      and paste it, or:  sudo tind-enroll apply FILE
-tind-enroll: ADDRESS is missing from the enrolment block
-Only traffic to 10.99.99.0/24 and names under servr.no uses it.
-Endpoint 192.0.2.1 is 192.0.2.1 on this network.
-The watchdog checks this every minute and follows you between networks.
-tind-enroll apply: no shell errors
-tind-enroll apply: temp dir removed
-  persistent keepalive: every 25 seconds
-Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (eedc39dc-5c74-4554-ad72-dc48f44dbe36) successfully deleted.
-Removed this device's private key.
-
-##### wireguard watchdog
-enabled
-watchdog with no tunnel installed: exit 0
-
-##### gnome-tour removed?
-dpkg-query: no packages found matching gnome-tour
-
-##### calamares branding
-106:branding: tind
-branding.desc
-icon.png
-logo.png
-show.qml
-welcome.png
-
-##### installer launcher
--rw-r--r-- 1 root root 227 Nov  3 01:14 /usr/share/applications/tind-install.desktop
-Name=Install Tind
-Exec=/usr/lib/tind/install-launcher
-Icon=tind-logo
--- original:
-Name=Install Debian
-NoDisplay=true
 
 ##### optins
 ai.optin	     developer.optin	  hardware.optin
 communication.optin  entertainment.optin  productivity.optin
 creative.optin	     gaming.optin	  security.optin
--rwxr-xr-x 1 root root 2927 Nov  3 01:14 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 1246 Nov  3 01:14 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 2927 Nov  3 17:36 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Nov  3 17:36 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -153,7 +109,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov  3 01:34 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov  3 17:55 /var/lib/tind/apt-refreshed
 57
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -176,7 +132,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Tue 2026-11-03 01:34:03 CET; 1min 49s ago
+  Condition: start condition unmet at Tue 2026-11-03 17:55:09 CET; 1min 51s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -195,12 +151,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:41941
+udp 0.0.0.0:53422
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:45184
 udp [::]:5353
+udp [::]:56321
 
 ##### hardware basics
 active
@@ -217,7 +173,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-465 /tmp/tind-report-test.txt
+463 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -270,34 +226,31 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 installed packages: 1655
 
 ##### journal errors (this boot)
-Nov 03 01:34:05 tind adduser[1088]: The group `powerdev' does not exist.
-Nov 03 01:34:05 tind adduser[1104]: The group `debian-tor' does not exist.
-Nov 03 01:34:10 tind gdm-autologin][1504]: gkr-pam: couldn't unlock the login keyring.
-Nov 03 01:34:11 tind systemd[1513]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1724.scope - Application launched by gnome-session-binary.
-Nov 03 01:34:11 tind systemd[1513]: Failed to start app-gnome-gnome\x2dkeyring\x2dssh-1733.scope - Application launched by gnome-session-binary.
-Nov 03 01:34:16 tind systemd[1513]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1910.scope - Application launched by gnome-session-binary.
+Nov 03 17:55:12 tind adduser[1063]: The group `powerdev' does not exist.
+Nov 03 17:55:12 tind adduser[1079]: The group `debian-tor' does not exist.
+Nov 03 17:55:18 tind gdm-autologin][1486]: gkr-pam: couldn't unlock the login keyring.
 
 ##### gnome-shell journal
-Nov 03 01:34:12 tind gnome-shell[1743]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 03 01:34:12 tind gnome-shell[1743]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 03 01:34:12 tind gnome-shell[1743]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 03 01:34:14 tind gnome-shell[1743]: Thread 'KMS thread' will be using high priority scheduling
-Nov 03 01:34:14 tind gnome-shell[1743]: pci id for fd 12: 1234:1111, driver (null)
-Nov 03 01:34:14 tind gnome-shell[1743]: pci id for fd 13: 1234:1111, driver (null)
-Nov 03 01:34:14 tind gnome-shell[1743]: kmsro: driver missing
-Nov 03 01:34:14 tind gnome-shell[1743]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 03 01:34:14 tind gnome-shell[1743]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 03 01:34:14 tind gnome-shell[1743]: Created gbm renderer for '/dev/dri/card0'
-Nov 03 01:34:14 tind gnome-shell[1743]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 03 01:34:14 tind gnome-shell[1743]: Using public X11 display :0, (using :1 for managed services)
-Nov 03 01:34:14 tind gnome-shell[1743]: Using Wayland display name 'wayland-0'
-Nov 03 01:34:14 tind gnome-shell[1743]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 03 01:34:15 tind gnome-shell[1743]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 03 01:34:16 tind gnome-shell[1743]: Will monitor session 1
-Nov 03 01:34:17 tind gnome-shell[1743]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 03 01:34:23 tind gnome-shell[1743]: GNOME Shell started at Tue Nov 03 2026 01:34:16 GMT+0100 (Central European Standard Time)
-Nov 03 01:34:23 tind gnome-shell[1743]: Registering session with GDM
-Nov 03 01:35:43 tind gnome-shell[1743]: Invalid sequence for VSYNC frame info
+Nov 03 17:55:20 tind gnome-shell[1725]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 03 17:55:20 tind gnome-shell[1725]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 03 17:55:20 tind gnome-shell[1725]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 03 17:55:23 tind gnome-shell[1725]: pci id for fd 12: 1234:1111, driver (null)
+Nov 03 17:55:23 tind gnome-shell[1725]: Thread 'KMS thread' will be using high priority scheduling
+Nov 03 17:55:23 tind gnome-shell[1725]: pci id for fd 13: 1234:1111, driver (null)
+Nov 03 17:55:23 tind gnome-shell[1725]: kmsro: driver missing
+Nov 03 17:55:23 tind gnome-shell[1725]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 03 17:55:23 tind gnome-shell[1725]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 03 17:55:23 tind gnome-shell[1725]: Created gbm renderer for '/dev/dri/card0'
+Nov 03 17:55:23 tind gnome-shell[1725]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 03 17:55:24 tind gnome-shell[1725]: Using public X11 display :0, (using :1 for managed services)
+Nov 03 17:55:24 tind gnome-shell[1725]: Using Wayland display name 'wayland-0'
+Nov 03 17:55:24 tind gnome-shell[1725]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 03 17:55:25 tind gnome-shell[1725]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 03 17:55:26 tind gnome-shell[1725]: Will monitor session 1
+Nov 03 17:55:27 tind gnome-shell[1725]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 03 17:55:34 tind gnome-shell[1725]: GNOME Shell started at Tue Nov 03 2026 17:55:25 GMT+0100 (Central European Standard Time)
+Nov 03 17:55:34 tind gnome-shell[1725]: Registering session with GDM
+Nov 03 17:56:49 tind gnome-shell[1725]: Invalid sequence for VSYNC frame info
 
 ##### ai box
 AI users ok
@@ -311,19 +264,19 @@ AI tind-ai-remote-sandbox ok
 AI local-private-network ok
 socket units: active active active 
 setkey: key stored for custom
-{"brief_ok": true, "error": null, "id": "20261103-013624-068cc069", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
-{"send_ok": true, "error": null, "answer": "Fake answer from the CI provider.\n```bash\necho hello\n```"}
+{"brief_ok": true, "error": null, "id": "20261103-175733-1278c2db", "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}}
+{"send_ok": true, "error": null, "answer": "Fake answer from the CI provider about [ip-1].\n```bash\necho "}
 AI brief ok
 AI send-and-answer ok
 AI journal-in-briefing ok
 ## System journal, this boot, warnings and errors (last 300 lines)
 ```
-2026-11-03T01:34:02+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
-2026-11-03T01:34:02+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/s
-2026-11-03T01:34:02+01:00 localhost.localdomain kernel: amd_pstate: The CPPC feature is supported but currently disabled by the BIOS.
-                                                        Please enable it if your BIOS has the CPPC option.
-2026-11-03T01:34:02+01:00 localhost.localdomain kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
-2026-11-03T01:34:02+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/s
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-03T17:55:12+01:00 tind adduser[1063]: The group `powerdev' does not exist.
 AI nothing-planted-left-the-computer ok
 AI remote-only-its-host-and-port ok
 AI local-cannot-read-outbox ok
@@ -331,6 +284,52 @@ AI remote-cannot-read-local-state ok
 AI remote-cannot-read-keys ok
 AI ai-users-cannot-read-home ok
 AI human-reads-own-answer ok
+chats migrated: 1
+AI chat-archive-restored FAIL /home/tind/TindAI/ChatArchive/custom/2026-11-03-ci-test-why-does-steam-not-start-my-lapt-ci0001.md chats migrated: 1 total 8|drwx------ 2 tind tind   60 Nov  3 17:57 .|drwxr-xr-x 3 tind tind   60 Nov  3 17:57 ..|-rw------- 1 tind tind 6616 Nov  3 17:57 2026-11-03-ci-test-why-does-steam-not-start-my-lapt-ci0001.md|
+---
+tind-chat: 1
+id: "ci0001"
+provider: "custom"
+model: "ci-model"
+title: "CI test: why does Steam not start? My laptop is 192.168.1.37"
+created: 1793725053
+updated: 1793725053
+---
+
+# CI test: why does Steam not start? My laptop is 192.168.1.37
+
+<!-- tind:message {"role": "user", "raw": false, "items": ["System log"], "redactions": {"email": 1, "ip": 1, "secret": 1, "token": 1}} -->
+### You · 01 Jan 1970 01:00
+
+CI test: why does Steam not start? My laptop is 192.168.1.37.
+
+<!-- tind:sent -->
+<details><summary>Sent with placeholders (hidden: 1 email, 1 ip, 1 secret, 1 token)</summary>
+
+~~~text
+CI test: why does Steam not start? My laptop is 192.168.1.37.
+
+## System journal, this boot, warnings and errors (last 300 lines)
+```
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/s
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-03T17:55:08+01:00 localhost.localdomain kernel: ata3.00: LPM support broken, forcing max_power
+2026-11-03T17:55:12+01:00 tind adduser[1063]: The group `powerdev' does not exist.
+2026-11-03T17:55:12+01:00 tind adduser[1079]: The group `debian-tor' does not exist.
+2026-11-03T17:55:17+01:00 tind udisksd[1369]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data return
+                                              0000: f0 00 0b 00  58 00 01 0a  00 00 00 00  00 00 00 00    ....X...........
+                                              0010: 00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00    ................
+                                               (g-io-error-quark, 0)
+2026-11-03T17:55:17+01:00 tind gdm-autologin][1486]: gkr-pam: no password is available for user
+2026-11-03T17:55:18+01:00 tind gdm-autologin][1486]: gkr-pam: couldn't unlock the login keyring.
+2026-11-03T17:55:19+01:00 tind wireplumber[1548]: default: Failed to get percentage from UPower: org.freedesktop.DBus.Error.NameHasNoOwner
+2026-11-03T17:55:19+01:00 tind wireplumber[1548]: spa.bluez5: BlueZ system service is not available
+AI remote-cannot-restore ok
+saved /home/tind/TindAI/Documents/2026-11-03 CI letter.md
+AI document-markdown ok
+AI document-word-needs-writer ok
 711 tind-ai-local /var/lib/tind-ai/briefing
 700 tind-ai-local /var/lib/tind-ai/local
 711 tind-ai-remote /var/lib/tind-ai/outbox
@@ -345,6 +344,7 @@ anthropic  Anthropic - USA                no key yet
 openai     OpenAI - USA                   no key yet
 local      This computer - local          No local model is installed on this computer yet
 custom     Custom server - your choice    key set
+TindAI folder: ~/TindAI
 saved chats: 1
 fix      Fix a problem            3 fields, pre-attached: report, journal
 error    Explain this error       2 fields, pre-attached: nothing
@@ -369,15 +369,15 @@ This computer - local        (no model yet)                     Free          Fr
 Custom server - your choice  ci-model (everyday)                Price unknown Not on Tind's price list; check with the provider
 prices: 12 models priced, list as of 2026-11-03
 AI prices ok
-exported to /home/tind/AI-export: tind-report.txt, system-log.txt, about.txt
+exported to /home/tind/TindAI/Export: tind-report.txt, system-log.txt, about.txt
 hidden: 1 email, 11 ip, 2 secret, 1 token, 4 uuid
 AI export-redacted ok
 AI export-unredacted ok
 total 36
--rw------- 1 tind tind   134 Nov  3 01:36 about.txt
--rw------- 1 tind tind  6959 Nov  3 01:36 system-log.txt
--rw------- 1 tind tind 23300 Nov  3 01:36 tind-report.txt
-Tind export, 2026-11-03 01:36: redacted (names, addresses and keys are placeholders such as [ip-1]); tind-report.txt, system-log.txt.
+-rw------- 1 tind tind   134 Nov  3 17:57 about.txt
+-rw------- 1 tind tind  5389 Nov  3 17:57 system-log.txt
+-rw------- 1 tind tind 22878 Nov  3 17:57 tind-report.txt
+Tind export, 2026-11-03 17:57: redacted (names, addresses and keys are placeholders such as [ip-1]); tind-report.txt, system-log.txt.
 
 ##### daily machine checks
 DAILY failed-units ok

@@ -208,7 +208,7 @@ firewall table: not checkable in this container (checked in the booted ISO)
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   72G   74G  50% /__w
+/dev/root       145G   71G   74G  50% /__w
 
 == KVM
 not available (VM tests will be slow)
