@@ -33,10 +33,25 @@ Tind updates and never fetched. A coloured mark by each model and the Prices pag
 free (this computer), green cheap, amber mid, red expensive, gray unknown (a custom server). The band uses 3 parts
 input to 1 part output, with the limits 1 and 10 from the same file.
 
+The TindAI folder (~/TindAI unless you pick another in the window menu; 0700, files 0600):
+  ChatArchive/<provider>/  every chat as a readable Markdown file; the sidebar reads this folder, and deleting a chat
+                           deletes its file (and the local service's placeholder map). The answers show the real
+                           values again: the local service puts the placeholders back (op "restore"), for the human
+                           who owns the chat only. What was sent, with placeholders, is kept folded under each message,
+                           and the chat history always goes back to the provider in that form.
+  Documents/               documents saved from an answer as Markdown, Word, PDF or ODT. A model puts a finished
+                           document in a ````document block; every answer also has "Save as document". Word, PDF and
+                           ODT are made on this computer, as you, by LibreOffice Writer (Productivity and cloud box;
+                           grayed out without it). The answer becomes HTML written by the window itself: everything
+                           escaped, no raw HTML, no images, nothing that could be fetched.
+  Export/                  see below. Chats kept in ~/.local/share/tind-ai/chats before 0.1.0~test7 move to the
+                           archive once (that folder is renamed chats.migrated, not deleted); ~/AI-export moves to Export.
+A folder you sync (Nextcloud and the like) sends its files on: the archive holds your real names and addresses.
+
 Export (window menu, or the + menu): the Tind report, the system log and the Steam and Proton logs written to
-~/AI-export (or a folder you pick) for AI apps outside the window, such as Claude Desktop. Those apps run as you,
+<TindAI>/Export for AI apps outside the window, such as Claude Desktop. Those apps run as you,
 outside the walls, so the local service applies the fixed rules first unless Unredacted is ticked; nothing is saved
 in the briefing folder. Each export replaces the previous set; about.txt says when it was made and whether it is
 redacted. The folder is 0700, the files 0600.
 
-Check from a terminal: tind-ai-ask --check, tind-ai-ask --prices
+Check from a terminal: tind-ai-ask --check, tind-ai-ask --prices, tind-ai-ask --document FILE.md --format pdf

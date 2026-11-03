@@ -10,6 +10,10 @@
                            export the Tind report and the system log to the export folder, like the window's Export
                            (no window; used by the CI self-test)
   tind-ai-ask --open prices  open the window on the Prices page
+  tind-ai-ask --migrate    move chats from the old JSON store into the chat archive (also done when the window opens)
+  tind-ai-ask --document FILE.md [--format md|docx|pdf|odt]
+                           save a Markdown file to the Documents folder the way the window's Save as does (no window;
+                           Word, PDF and ODT need LibreOffice Writer)
 
 How a message travels (see /usr/share/doc/tind-ai-users/README):
   1. You type (Direct). Attaching system data (system log, Tind report, Steam logs, files) makes it Checked: the exact
@@ -18,18 +22,25 @@ How a message travels (see /usr/share/doc/tind-ai-users/README):
      saves the briefing. "Unredacted" skips the rules for one message.
   3. The provider's remote service (tind-ai-remote@PROVIDER) sends that saved briefing and writes the answer to your
      outbox. Nothing in an answer runs by itself.
-Chats are kept in ~/.local/share/tind-ai/chats/<provider>/ (readable by you only) until you delete them.
-
-Export (header menu, or the + menu) writes the Tind report, the system log and the Steam and Proton logs to a folder in
-your home (~/AI-export unless you pick another), for AI apps outside this window such as Claude Desktop. Those apps
-run as you, outside the walls, so the fixed rules hide names, addresses and keys first unless you tick Unredacted.
-Every export replaces the previous one, so the folder always holds one current set.
+Everything the window keeps for you is in one folder, ~/TindAI unless you pick another (menu > TindAI folder):
+  ChatArchive/<provider>/  every chat as a readable Markdown file, kept until you delete the chat; the sidebar reads
+                           this folder. Names and addresses are put back in (the provider only ever saw placeholders),
+                           so the archive is as private as the rest of your home.
+  Documents/               documents you save from an answer, as Markdown, Word, PDF or ODT (LibreOffice Writer
+                           makes the last three, on this computer).
+  Export/                  Export (header menu, or the + menu) writes the Tind report, the system log and the Steam
+                           and Proton logs here, for AI apps outside this window such as Claude Desktop. Those apps
+                           run as you, outside the walls, so the fixed rules hide names, addresses and keys first
+                           unless you tick Unredacted. Every export replaces the previous one.
+Folders and files are readable by you only. A folder synced elsewhere (Nextcloud and the like) sends its files on.
 """
 import glob
+import html
 import json
 import os
 import re
 import secrets
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -41,7 +52,7 @@ import tindai  # noqa: E402
 
 CONFIG_DIR = os.path.join(os.environ.get('XDG_CONFIG_HOME') or os.path.expanduser('~/.config'), 'tind-ai')
 DATA_DIR = os.path.join(os.environ.get('XDG_DATA_HOME') or os.path.expanduser('~/.local/share'), 'tind-ai')
-CHATS_DIR = os.path.join(DATA_DIR, 'chats')
+LEGACY_CHATS_DIR = os.path.join(DATA_DIR, 'chats')     # before 0.1.0~test7: one JSON file per chat
 ACCEPTED = os.path.join(CONFIG_DIR, 'accepted')
 SETTINGS = os.path.join(CONFIG_DIR, 'settings.json')
 MAX_FILE = 200_000
@@ -52,7 +63,9 @@ PRICES_FILE = '/usr/share/tind-ai/prices.json'
 BANDS = ('free', 'cheap', 'mid', 'expensive', 'unknown')
 BAND_NAMES = {'free': 'Free', 'cheap': 'Cheap', 'mid': 'Mid', 'expensive': 'Expensive', 'unknown': 'Price unknown'}
 CURRENCY = {'EUR': '€', 'USD': '$', 'GBP': '£', 'NOK': 'kr '}
-EXPORT_DEFAULT = os.path.expanduser('~/AI-export')
+FOLDER_DEFAULT = os.path.expanduser('~/TindAI')
+SUBDIRS = ('Documents', 'ChatArchive', 'Export')
+OLD_EXPORT = os.path.expanduser('~/AI-export')          # the export folder before 0.1.0~test7
 # key in the window -> file in the export folder, and how it is described in about.txt
 EXPORT_FILES = {'report': ('tind-report.txt', 'Tind report'), 'journal': ('system-log.txt', 'system log'),
                 'steam': ('steam-proton.txt', 'Steam and Proton logs')}
@@ -66,7 +79,9 @@ GUIDE = (
     "[ip-1]. Each message shows what was hidden.\n"
     "• When you attach system data (logs, the Tind report, files) you see the exact text before it is sent.\n"
     "• Only that text goes to the provider named at the top. European providers are the default.\n"
-    "• The AI cannot run anything on this computer. Its suggestions are shown to you; you decide what to copy and run.\n\n"
+    "• The AI cannot run anything on this computer. Its suggestions are shown to you; you decide what to copy and run.\n"
+    "• Chats and saved documents are kept in ~/TindAI, readable by you only. The chat archive shows your real names "
+    "and addresses again. If you sync that folder (Nextcloud and the like), it leaves this computer.\n\n"
     "AI answers can be wrong. Read a command before you run it, and keep backups of what matters.")
 
 
@@ -127,32 +142,320 @@ def collect_steam():
     return [(os.path.basename(f), tail_file(f, 80_000)) for f in found]
 
 
-def all_chats():
-    """Every saved chat, newest first: list of (path, chat dict)."""
-    out = []
-    for path in glob.glob(os.path.join(CHATS_DIR, '*', '*.json')):
-        chat = load_json(path, None)
-        if isinstance(chat, dict) and chat.get('id'):
+# ---- the TindAI folder ----------------------------------------------------------------------------------------------
+def ai_root(settings):
+    d = settings.get('folder')
+    return d if isinstance(d, str) and os.path.isabs(d) else FOLDER_DEFAULT
+
+
+def sub_dir(settings, name):
+    return os.path.join(ai_root(settings), name)
+
+
+def make_dir(path):
+    """Create path (and missing parents) readable by you only."""
+    os.makedirs(path, mode=0o700, exist_ok=True)
+    return path
+
+
+def migrate_old_export(settings):
+    """~/AI-export (before ~test7) moves to <TindAI>/Export once, when nobody picked another export folder. Returns
+    the new path, or None when there was nothing to move."""
+    if settings.get('export_dir') or not os.path.isdir(OLD_EXPORT) or os.path.islink(OLD_EXPORT):
+        return None
+    new = sub_dir(settings, 'Export')
+    if os.path.lexists(new):
+        return None
+    make_dir(os.path.dirname(new))
+    os.rename(OLD_EXPORT, new)
+    return new
+
+
+def move_folder(old_root, new_root):
+    """Move Documents, ChatArchive and Export from old_root to new_root. A sub-folder that does not exist at the new
+    place moves whole; otherwise its entries move one by one and an entry whose name is taken there stays where it
+    is. Returns (moved, kept): lists of paths relative to the TindAI folder. Nothing is ever overwritten or deleted
+    (an emptied old folder is removed)."""
+    old_root, new_root = os.path.realpath(old_root), os.path.realpath(new_root)
+    if old_root == new_root:
+        return [], []
+    for name in SUBDIRS:
+        src = os.path.join(old_root, name)
+        if new_root == src or new_root.startswith(src + os.sep):
+            raise ValueError('the new folder is inside %s' % src)
+    make_dir(new_root)
+    moved, kept = [], []
+    for name in SUBDIRS:
+        src, dst = os.path.join(old_root, name), os.path.join(new_root, name)
+        if not os.path.isdir(src):
+            continue
+        if not os.path.lexists(dst):
+            shutil.move(src, dst)
+            moved.append(name)
+            continue
+        for entry in sorted(os.listdir(src)):
+            if os.path.lexists(os.path.join(dst, entry)):
+                kept.append(os.path.join(name, entry))
+            else:
+                shutil.move(os.path.join(src, entry), os.path.join(dst, entry))
+                moved.append(os.path.join(name, entry))
+        try:
+            os.rmdir(src)
+        except OSError:
+            pass
+    try:
+        os.rmdir(old_root)
+    except OSError:
+        pass
+    return moved, kept
+
+
+def folder_has_files(root):
+    return any(os.path.isdir(os.path.join(root, n)) and os.listdir(os.path.join(root, n)) for n in SUBDIRS)
+
+
+# ---- the chat archive: one Markdown file per chat --------------------------------------------------------------------
+# The file is the chat: readable in any editor, and still everything the window needs. Front matter between --- lines
+# (one "key: JSON value" per line), then per message a marker line <!-- tind:message {meta as JSON} -->, a heading, the
+# text, and for a user message what was sent (placeholders) after <!-- tind:sent -->. A line in a text that starts with
+# "<!-- tind:" gets one more backslash in front when written and loses one when read, so no text can fake a marker.
+ARCHIVE_VERSION = 1
+MARK = '<!-- tind:'
+MSG_RE = re.compile(r'^<!-- tind:message (\{.*\}) -->$')
+ESC_RE = re.compile(r'^(\\*)<!-- tind:', re.M)
+FRONT_KEYS = ('id', 'provider', 'model', 'title', 'created', 'updated')
+MSG_META = ('role', 'time', 'raw', 'items', 'redactions', 'provider_name', 'model', 'model_name', 'seconds')
+
+
+def _escape(text):
+    return ESC_RE.sub(lambda m: '\\' + m.group(1) + MARK, text)
+
+
+def _unescape(text):
+    return re.sub(r'^\\(\\*)<!-- tind:', lambda m: m.group(1) + MARK, text, flags=re.M)
+
+
+def _fence(text, char='~'):
+    runs = [len(m.group(0)) for m in re.finditer(r'^%s+' % re.escape(char), text, re.M)]
+    return char * max([3] + [n + 1 for n in runs])
+
+
+def _when(t, fmt='%d %b %Y %H:%M'):
+    return time.strftime(fmt, time.localtime(t or 0))
+
+
+def chat_to_md(chat):
+    lines = ['---', 'tind-chat: %d' % ARCHIVE_VERSION]
+    for k in FRONT_KEYS:
+        lines.append('%s: %s' % (k, json.dumps(chat.get(k, ''), ensure_ascii=False)))
+    lines += ['---', '', '# ' + (chat.get('title') or 'New chat').replace('\n', ' '), '']
+    for m in chat.get('messages', []):
+        if m.get('pending') or not m.get('text'):
+            continue
+        meta = {k: m[k] for k in MSG_META if k in m and m[k] not in (None, '', [], {})}
+        meta['role'] = m['role']
+        lines.append(MARK + 'message ' + json.dumps(meta, ensure_ascii=False) + ' -->')
+        if m['role'] == 'user':
+            head = 'You'
+        else:
+            head = ' · '.join(b for b in (m.get('provider_name'), m.get('model_name') or m.get('model')) if b) or 'AI'
+        lines += ['### %s · %s' % (head, _when(m.get('time'))), '', _escape(m['text'].strip('\n')), '']
+        sent = m.get('sent')
+        if sent and sent != m['text']:
+            if m['role'] == 'user':
+                red = m.get('redactions') or {}
+                what = ', '.join('%d %s' % (n, k) for k, n in sorted(red.items())) or 'nothing'
+                summary = 'Sent with placeholders (hidden: %s)' % what
+            else:
+                summary = 'As received, with placeholders'
+            fence = _fence(sent)
+            lines += [MARK + 'sent -->', '<details><summary>%s</summary>' % html.escape(summary), '',
+                      fence + 'text', _escape(sent.strip('\n')), fence, '', '</details>', '']
+    return '\n'.join(lines) + '\n'
+
+
+def md_to_chat(text):
+    """The chat in an archive file, or None when the file is not one (it is then left alone, never deleted)."""
+    if not text.startswith('---\n'):
+        return None
+    try:
+        head, body = text[4:].split('\n---\n', 1)
+        front = {}
+        for line in head.split('\n'):
+            k, _, v = line.partition(': ')
+            front[k.strip()] = json.loads(v)
+    except ValueError:
+        return None
+    if front.get('tind-chat') != ARCHIVE_VERSION or not re.fullmatch(r'[0-9a-zA-Z]{1,64}', str(front.get('id', ''))):
+        return None
+    chat = {k: front.get(k, '') for k in FRONT_KEYS}
+    chat['created'] = int(chat['created'] or 0)
+    chat['updated'] = int(chat['updated'] or 0)
+    chat['messages'] = []
+    lines = body.split('\n')
+    i = 0
+    while i < len(lines):
+        mt = MSG_RE.match(lines[i])
+        if not mt:
+            i += 1
+            continue
+        try:
+            meta = json.loads(mt.group(1))
+        except ValueError:
+            meta = None
+        j = i + 1
+        while j < len(lines) and not MSG_RE.match(lines[j]):
+            j += 1
+        if isinstance(meta, dict) and meta.get('role') in ('user', 'assistant'):
+            chunk = lines[i + 1:j]
+            if chunk and chunk[0].startswith('### '):
+                chunk = chunk[1:]
+            sent = None
+            if MARK + 'sent -->' in chunk:
+                k = chunk.index(MARK + 'sent -->')
+                tail, chunk = chunk[k + 1:], chunk[:k]
+                for a, line in enumerate(tail):
+                    if re.fullmatch(r'~{3,}text', line):
+                        fence = line[:-4]
+                        b = tail.index(fence, a + 1) if fence in tail[a + 1:] else len(tail)
+                        sent = _unescape('\n'.join(tail[a + 1:b]))
+                        break
+            m = {k: meta[k] for k in MSG_META if k in meta}
+            m['text'] = _unescape('\n'.join(chunk).strip('\n'))
+            if sent is not None:
+                m['sent'] = sent
+            chat['messages'].append(m)
+        i = j
+    return chat
+
+
+def load_chat(path):
+    try:
+        with open(path, encoding='utf-8') as f:
+            chat = md_to_chat(f.read())
+    except (OSError, UnicodeDecodeError):
+        return None
+    if chat:
+        chat['_path'] = path
+    return chat
+
+
+def all_chats(folder):
+    """Every chat in the archive folder, newest first: list of (path, chat dict). A file that is not a chat is
+    skipped; two files with the same chat id (a copy made by hand) show once, the newer one."""
+    out, seen = [], set()
+    paths = glob.glob(os.path.join(folder, '*.md')) + glob.glob(os.path.join(folder, '*', '*.md'))
+    for path in paths:
+        chat = load_chat(path)
+        if chat:
             out.append((path, chat))
-    out.sort(key=lambda pc: pc[1].get('updated', 0), reverse=True)
-    return out
+    out.sort(key=lambda pc: (pc[1].get('updated', 0), os.path.getmtime(pc[0])), reverse=True)
+    unique = []
+    for path, chat in out:
+        if chat['id'] not in seen:
+            seen.add(chat['id'])
+            unique.append((path, chat))
+    return unique
 
 
-def chat_path(chat):
-    return os.path.join(CHATS_DIR, chat['provider'], chat['id'] + '.json')
+def slug(text, limit=40):
+    s = re.sub(r'[^\w]+', '-', text.lower(), flags=re.U).strip('-_')[:limit].strip('-_')
+    return s or 'chat'
+
+
+def chat_path(folder, chat):
+    """Where the chat is saved: the file it came from (even if renamed or moved by hand), or a new name."""
+    if chat.get('_path') and os.path.isdir(os.path.dirname(chat['_path'])):
+        return chat['_path']
+    name = '%s-%s-%s.md' % (_when(chat.get('created'), '%Y-%m-%d'), slug(chat.get('title') or ''), chat['id'])
+    return os.path.join(folder, re.sub(r'[^\w.-]', '_', chat.get('provider') or 'other'), name)
+
+
+def save_chat_file(folder, chat):
+    path = chat_path(folder, chat)
+    make_dir(os.path.dirname(path))
+    _write_text(path, chat_to_md(chat))
+    chat['_path'] = path
+    return path
+
+
+def migrate_old_chats(folder, restore=None):
+    """The JSON chats of before ~test7 become archive files, with the answers' placeholders put back by restore(chat
+    id, [texts]) (the local service; the answer as received is kept with the message). The old folder is renamed to
+    chats.migrated, never deleted. Returns how many chats moved."""
+    if not os.path.isdir(LEGACY_CHATS_DIR):
+        return 0
+    done = 0
+    for path in sorted(glob.glob(os.path.join(LEGACY_CHATS_DIR, '*', '*.json'))):
+        chat = load_json(path, None)
+        if not (isinstance(chat, dict) and re.fullmatch(r'[0-9a-zA-Z]{1,64}', str(chat.get('id', '')))
+                and isinstance(chat.get('messages'), list)):
+            continue
+        answers = [m for m in chat['messages'] if isinstance(m, dict) and m.get('role') == 'assistant'
+                   and m.get('text') and not m.get('sent')]
+        if answers and restore:
+            try:
+                texts = restore(chat['id'], [m['text'] for m in answers])
+            except Exception:  # noqa: BLE001 - keep the text as received
+                texts = None
+            if texts and len(texts) == len(answers):
+                for m, t in zip(answers, texts):
+                    if t != m['text']:
+                        m['sent'], m['text'] = m['text'], t
+        chat.setdefault('provider', os.path.basename(os.path.dirname(path)))
+        if not any(os.path.exists(p) for p in glob.glob(os.path.join(folder, '*', '*-%s.md' % chat['id']))):
+            save_chat_file(folder, chat)
+        done += 1
+    target = LEGACY_CHATS_DIR + '.migrated'
+    n = 1
+    while os.path.lexists(target):
+        n += 1
+        target = '%s.migrated-%d' % (LEGACY_CHATS_DIR, n)
+    os.rename(LEGACY_CHATS_DIR, target)
+    return done
+
+
+def restore_texts(conversation, texts):
+    """Placeholders back to real values, by the local service (which holds the map). Unchanged if it cannot."""
+    res = tindai.call(tindai.LOCAL_SOCKET, {'op': 'restore', 'conversation': conversation, 'texts': texts}, timeout=60)
+    if not res.get('ok'):
+        raise RuntimeError(res.get('error') or 'the local service did not answer')
+    return res['texts']
+
+
+FENCE_RE = re.compile(r'^ {0,3}(`{3,}|~{3,})\s*([A-Za-z0-9_+.-]*)[^`]*$')
 
 
 def split_blocks(text):
-    """[('text', str) | ('code', lang, str)] from an answer with ``` fenced blocks."""
-    out, pos = [], 0
-    for m in re.finditer(r'```([A-Za-z0-9_+.-]*)[^\n]*\n(.*?)(?:```|\Z)', text, re.S):
-        if m.start() > pos:
-            out.append(('text', text[pos:m.start()]))
-        out.append(('code', (m.group(1) or 'text').lower(), m.group(2).rstrip('\n')))
-        pos = m.end()
-    if pos < len(text):
-        out.append(('text', text[pos:]))
-    return [b for b in out if b[0] == 'code' or b[1].strip()]
+    """[('text', str) | ('code', lang, str) | ('doc', title, markdown)] from an answer with fenced blocks. A fence
+    opens at the start of a line and closes with the same character, at least as long; an unclosed one runs to the
+    end. A block tagged "document" is a finished document (Markdown) the human can save."""
+    out, para = [], []
+    lines = text.split('\n')
+    i = 0
+    while i < len(lines):
+        m = FENCE_RE.match(lines[i])
+        if not m:
+            para.append(lines[i])
+            i += 1
+            continue
+        fence, lang = m.group(1), (m.group(2) or 'text').lower()
+        j = i + 1
+        while j < len(lines) and not re.fullmatch(r' {0,3}%s%s*\s*' % (re.escape(fence), re.escape(fence[0])),
+                                                  lines[j]):
+            j += 1
+        body = '\n'.join(lines[i + 1:j]).rstrip('\n')
+        if '\n'.join(para).strip():
+            out.append(('text', '\n'.join(para)))
+        para = []
+        if lang == 'document':
+            out.append(('doc', doc_title(body, 'Document'), body))
+        else:
+            out.append(('code', lang, body))
+        i = j + 1
+    if '\n'.join(para).strip():
+        out.append(('text', '\n'.join(para)))
+    return out
 
 
 def to_markup(text, escape):
@@ -315,8 +618,9 @@ def home_short(path):
 
 
 def export_dir(settings):
+    """<TindAI>/Export, or the folder picked for exports before ~test7 (kept until the TindAI folder is changed)."""
     d = settings.get('export_dir')
-    return d if isinstance(d, str) and os.path.isabs(d) else EXPORT_DEFAULT
+    return d if isinstance(d, str) and os.path.isabs(d) else sub_dir(settings, 'Export')
 
 
 def export_items(keys):
@@ -336,7 +640,7 @@ def write_export(folder, files, raw, redactions=None, when=None):
     """Write one export set into folder, replacing the previous one: files of the set that are not in this export
     are removed (other files in the folder are left alone), so the folder never mixes two exports. The folder is
     made 0700 and the files 0600. Returns the names written, about.txt last."""
-    os.makedirs(folder, mode=0o700, exist_ok=True)
+    make_dir(folder)
     names = {f['file'] for f in files}
     known = {v[0] for v in EXPORT_FILES.values()}
     if not names or not names <= known:
@@ -378,7 +682,9 @@ def run_export(keys, raw, folder):
 
 
 def cli_export(raw):
-    folder = export_dir(load_json(SETTINGS, {}))
+    settings = load_json(SETTINGS, {})
+    migrate_old_export(settings)
+    folder = export_dir(settings)
     try:
         folder, names, red = run_export(['report', 'journal'], raw, folder)
     except (OSError, RuntimeError, ValueError) as e:
@@ -410,8 +716,279 @@ def check():
     for p in tindai.providers():
         state = p.get('unavailable') or ('key set' if provider_ready(p) else 'no key yet')
         print('%-10s %-30s %s' % (p['id'], tindai.provider_label(p), state))
-    print('saved chats: %d' % len(all_chats()))
+    settings = load_json(SETTINGS, {})
+    print('TindAI folder: %s' % home_short(ai_root(settings)))
+    print('saved chats: %d' % len(all_chats(sub_dir(settings, 'ChatArchive'))))
+    print('LibreOffice Writer: %s' % ('installed (Word, PDF and ODT can be saved)' if writer_available() else
+                                      'not installed (documents save as Markdown only)'))
     return rc
+
+
+# ---- documents: saved from an answer, as Markdown, Word, PDF or ODT ---------------------------------------------------
+# Word, PDF and ODT are made on this computer, as you, by LibreOffice Writer (the Productivity and cloud box). The
+# answer is untrusted text: it becomes HTML that this file writes itself, every character escaped, with no raw HTML,
+# images, styles or anything else that could be fetched; links stay links (http, https, mailto) and are never opened.
+FORMATS = {'md': ('Markdown', 'md', None), 'docx': ('Word', 'docx', 'docx:MS Word 2007 XML'),
+           'pdf': ('PDF', 'pdf', 'pdf:writer_pdf_Export'), 'odt': ('LibreOffice', 'odt', 'odt:writer8')}
+WRITER_HINT = 'Word, PDF and LibreOffice files need LibreOffice: tick Productivity and cloud in Tind Apps.'
+DOC_CSS = ('body, h1, h2, h3, h4, h5, h6, p, li, td, th { font-family: "Nunito Sans", "Liberation Sans", sans-serif; } '
+           'body { font-size: 11pt; } '
+           'pre, code { font-family: "Liberation Mono", monospace; font-size: 9.5pt; } '
+           'pre { background: #f3f3f3; } table { border-collapse: collapse; } '
+           'td, th { border: 1px solid #999; padding: 3px 6px; } blockquote { color: #555; }')
+
+
+def doc_title(markdown, fallback='AI answer'):
+    for line in markdown.split('\n'):
+        m = re.match(r'^ {0,3}#{1,2}\s+(.+?)\s*#*\s*$', line)
+        if m:
+            return re.sub(r'[*_`]', '', m.group(1)).strip()[:80] or fallback
+    return fallback
+
+
+def writer_available():
+    try:
+        st = subprocess.run(['dpkg-query', '-W', '-f=${db:Status-Abbrev}', 'libreoffice-writer'],
+                            capture_output=True, text=True, timeout=10).stdout
+    except (OSError, subprocess.SubprocessError):
+        st = ''
+    return st.startswith('ii') and shutil.which('soffice') is not None
+
+
+def _inline(text):
+    """One line of Markdown to HTML: everything escaped, then code, links, bold, italic and strike-through."""
+    text = text.replace('\0', '')
+    codes = []
+
+    def code(m):
+        codes.append('<code>%s</code>' % html.escape(m.group(2).strip()))
+        return '\0%d\0' % (len(codes) - 1)
+    text = re.sub(r'(`+)(.+?)\1', code, text)
+    text = html.escape(text, quote=True)
+    text = re.sub(r'!\[([^\]]*)\]\([^)]*\)', r'\1', text)                 # images: their text only, nothing fetched
+
+    def link(m):
+        url = m.group(2).strip()
+        if re.match(r'(https?://|mailto:)', url, re.I):
+            return '<a href="%s">%s</a>' % (url, m.group(1))
+        return m.group(1)
+    text = re.sub(r'\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;[^)]*&quot;)?\)', link, text)
+    text = re.sub(r'(\*\*|__)(?=\S)(.+?)(?<=\S)\1', r'<b>\2</b>', text)
+    text = re.sub(r'(?<![\w*])\*(?=\S)(.+?)(?<=\S)\*(?![\w*])', r'<i>\1</i>', text)
+    text = re.sub(r'(?<!\w)_(?=\S)(.+?)(?<=\S)_(?!\w)', r'<i>\1</i>', text)
+    text = re.sub(r'~~(?=\S)(.+?)(?<=\S)~~', r'<del>\1</del>', text)
+    return re.sub(r'\0(\d+)\0', lambda m: codes[int(m.group(1))], text)
+
+
+LIST_RE = re.compile(r'^(\s*)([-*+]|\d{1,9}[.)])\s+(.*)$')
+TABLE_SEP = re.compile(r'^\s*\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)*\|?\s*$')
+
+
+def _cells(line):
+    line = line.strip()
+    if line.startswith('|'):
+        line = line[1:]
+    if line.endswith('|') and not line.endswith('\\|'):
+        line = line[:-1]
+    return [c.strip() for c in re.split(r'(?<!\\)\|', line)]
+
+
+def md_to_html(markdown):
+    """The body of a Markdown document as HTML (headings, paragraphs, lists, code, quotes, tables, rules)."""
+    lines = markdown.replace('\r\n', '\n').split('\n')
+    out = []
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        if not line.strip():
+            i += 1
+            continue
+        fm = FENCE_RE.match(line)
+        if fm:
+            fence = fm.group(1)
+            j = i + 1
+            while j < len(lines) and not re.fullmatch(r' {0,3}%s%s*\s*' % (re.escape(fence), re.escape(fence[0])),
+                                                      lines[j]):
+                j += 1
+            out.append('<pre><code>%s</code></pre>' % html.escape('\n'.join(lines[i + 1:j])))
+            i = j + 1
+            continue
+        hm = re.match(r'^ {0,3}(#{1,6})\s+(.*?)\s*#*\s*$', line)
+        if hm:
+            n = len(hm.group(1))
+            out.append('<h%d>%s</h%d>' % (n, _inline(hm.group(2)), n))
+            i += 1
+            continue
+        if re.fullmatch(r' {0,3}([-*_])(\s*\1){2,}\s*', line):
+            out.append('<hr/>')
+            i += 1
+            continue
+        if line.lstrip().startswith('>'):
+            j = i
+            quoted = []
+            while j < len(lines) and lines[j].lstrip().startswith('>'):
+                quoted.append(re.sub(r'^\s*> ?', '', lines[j]))
+                j += 1
+            out.append('<blockquote>%s</blockquote>' % md_to_html('\n'.join(quoted)))
+            i = j
+            continue
+        if '|' in line and i + 1 < len(lines) and TABLE_SEP.match(lines[i + 1]):
+            rows = ['<tr>%s</tr>' % ''.join('<th>%s</th>' % _inline(c) for c in _cells(line))]
+            j = i + 2
+            while j < len(lines) and '|' in lines[j] and lines[j].strip():
+                rows.append('<tr>%s</tr>' % ''.join('<td>%s</td>' % _inline(c) for c in _cells(lines[j])))
+                j += 1
+            out.append('<table border="1" cellpadding="4" cellspacing="0">%s</table>' % ''.join(rows))
+            i = j
+            continue
+        if LIST_RE.match(line):
+            stack = []          # (indent, tag)
+            parts = []
+            j = i
+            while j < len(lines):
+                lm = LIST_RE.match(lines[j])
+                if lm:
+                    indent = len(lm.group(1).expandtabs(4))
+                    tag = 'ul' if lm.group(2)[0] in '-*+' else 'ol'
+                    while stack and indent < stack[-1][0]:
+                        parts.append('</li></%s>' % stack.pop()[1])
+                    if stack and indent == stack[-1][0] and tag != stack[-1][1]:
+                        parts.append('</li></%s>' % stack.pop()[1])
+                    if not stack or indent > stack[-1][0]:
+                        stack.append((indent, tag))
+                        parts.append('<%s><li>' % tag)
+                    else:
+                        parts.append('</li><li>')
+                    parts.append(_inline(lm.group(3)))
+                    j += 1
+                elif lines[j].strip() and lines[j].startswith((' ', '\t')) and stack:
+                    parts.append(' ' + _inline(lines[j].strip()))
+                    j += 1
+                elif not lines[j].strip() and j + 1 < len(lines) and LIST_RE.match(lines[j + 1]):
+                    j += 1
+                else:
+                    break
+            while stack:
+                parts.append('</li></%s>' % stack.pop()[1])
+            out.append(''.join(parts))
+            i = j
+            continue
+        para = []
+        while i < len(lines) and lines[i].strip() and not (
+                FENCE_RE.match(lines[i]) or re.match(r'^ {0,3}#{1,6}\s', lines[i]) or LIST_RE.match(lines[i])
+                or lines[i].lstrip().startswith('>')
+                or ('|' in lines[i] and i + 1 < len(lines) and TABLE_SEP.match(lines[i + 1]))):
+            para.append(_inline(lines[i].strip()))
+            i += 1
+        if para:
+            out.append('<p>%s</p>' % ' '.join(para))
+        else:
+            out.append('<p>%s</p>' % _inline(line.strip()))
+            i += 1
+    return '\n'.join(out)
+
+
+def md_to_page(markdown, title):
+    return ('<!DOCTYPE html>\n<html><head><meta charset="utf-8"><title>%s</title><style>%s</style></head>\n'
+            '<body>\n%s\n</body></html>\n' % (html.escape(title), DOC_CSS, md_to_html(markdown)))
+
+
+def unique_path(folder, base, ext):
+    """A new file name in folder: "<base>.<ext>", then "<base>-2.<ext>" and so on. Never an existing file."""
+    base = re.sub(r'[/\\\0]', '-', base).strip(' .') or 'Document'
+    n = 1
+    while True:
+        path = os.path.join(folder, '%s%s.%s' % (base, '' if n == 1 else '-%d' % n, ext))
+        if not os.path.lexists(path):
+            return path
+        n += 1
+
+
+def _write_new(path, data):
+    """Write a file that must not exist yet (no overwrite, not even in a race), readable by you only."""
+    fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(fd, 'wb') as f:
+        f.write(data)
+
+
+def save_document(folder, markdown, title, fmt, when=None):
+    """Save one document into folder as fmt (md, docx, pdf, odt). Returns the new file's path."""
+    if fmt not in FORMATS:
+        raise ValueError('unknown format %s' % fmt)
+    name, ext, filt = FORMATS[fmt]
+    make_dir(folder)
+    base = '%s %s' % (time.strftime('%Y-%m-%d', time.localtime(time.time() if when is None else when)), title)
+    markdown = markdown.strip('\n') + '\n'
+    if fmt == 'md':
+        for _ in range(5):
+            path = unique_path(folder, base, ext)
+            try:
+                _write_new(path, markdown.encode('utf-8'))
+                return path
+            except FileExistsError:
+                continue
+        raise OSError('could not find a free file name in %s' % folder)
+    if not writer_available():
+        raise RuntimeError(WRITER_HINT)
+    work = tempfile.mkdtemp(prefix='tind-ai-doc-')
+    try:
+        src = os.path.join(work, 'document.html')
+        with open(src, 'w', encoding='utf-8') as f:
+            f.write(md_to_page(markdown, title))
+        profile = Gio_uri(os.path.join(work, 'profile'))
+        cmd = ['soffice', '-env:UserInstallation=' + profile, '--headless', '--invisible', '--norestore', '--nologo',
+               '--nodefault', '--nolockcheck', '--infilter=HTML (StarWriter)', '--convert-to', filt,
+               '--outdir', os.path.join(work, 'out'), src]
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=180, cwd=work, stdin=subprocess.DEVNULL)
+        made = os.path.join(work, 'out', 'document.' + ext)
+        if not os.path.isfile(made) or os.path.getsize(made) == 0:
+            why = (res.stderr or res.stdout or 'no file was made').strip().split('\n')[-1][:200]
+            raise RuntimeError('LibreOffice could not make the %s file: %s' % (name, why))
+        with open(made, 'rb') as f:
+            data = f.read()
+        for _ in range(5):
+            path = unique_path(folder, base, ext)
+            try:
+                _write_new(path, data)
+                return path
+            except FileExistsError:
+                continue
+        raise OSError('could not find a free file name in %s' % folder)
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+
+
+def Gio_uri(path):  # noqa: N802 - a file:// URI without importing GTK (the CLI and tests run without it)
+    from urllib.parse import quote
+    return 'file://' + quote(os.path.abspath(path))
+
+
+def cli_document(path, fmt):
+    settings = load_json(SETTINGS, {})
+    try:
+        with open(path, encoding='utf-8') as f:
+            md = f.read()
+        out = save_document(sub_dir(settings, 'Documents'), md, doc_title(md, os.path.splitext(
+            os.path.basename(path))[0]), fmt)
+    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as e:
+        print('not saved: %s' % e)
+        return 2 if isinstance(e, RuntimeError) and str(e) == WRITER_HINT else 1
+    print('saved %s' % out)
+    return 0
+
+
+def cli_migrate():
+    settings = load_json(SETTINGS, {})
+    moved = migrate_old_export(settings)
+    if moved:
+        print('export folder moved to %s' % moved)
+    try:
+        n = migrate_old_chats(sub_dir(settings, 'ChatArchive'), restore_texts)
+    except OSError as e:
+        print('chats not migrated: %s' % e)
+        return 1
+    print('chats migrated: %d' % n)
+    return 0
 
 
 # ---- the window ---------------------------------------------------------------------------------------------------
@@ -431,6 +1008,8 @@ def main(open_target=None):
     .tind-composer { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 6px; }
     .tind-composer textview, .tind-composer textview text { background: transparent; }
     .tind-chip { font-size: 0.9em; padding: 0 4px; }
+    .tind-doc { background: @card_bg_color; border: 1px solid alpha(currentColor, 0.15); border-radius: 10px;
+                padding: 8px 12px 10px 12px; }
     /* price bands: libadwaita's own colours; the band's name is always written next to or under the mark */
     .tind-dot { font-size: 0.8em; }
     .tind-band-free { color: #3584e4; }
@@ -485,16 +1064,121 @@ def main(open_target=None):
             keys.connect('key-pressed', self.on_window_key)
             self.add_controller(keys)
 
+            self.migrate()
             self.refresh_sidebar()
+            # the archive is plain files: a chat renamed, moved or deleted by hand shows up when the window is used again
+            self.connect('notify::is-active', lambda *_: self.is_active() and not self.busy and self.refresh_sidebar())
+            chats = all_chats(self.archive())
             if not os.path.exists(ACCEPTED):
                 self.show_guide()
             elif open_target == 'prices':
                 self.new_chat()
                 self.show_prices()
-            elif open_target == 'last' and all_chats():
-                self.open_chat(all_chats()[0][1])
+            elif open_target == 'last' and chats:
+                self.open_chat(chats[0][1])
             else:
                 self.new_chat()
+
+        # ---- the TindAI folder ------------------------------------------------------------------------------------
+        def archive(self):
+            return sub_dir(self.settings, 'ChatArchive')
+
+        def migrate(self):
+            """Once: ~/AI-export into the TindAI folder, and the old JSON chats into the archive (with the answers'
+            placeholders put back). Quick, so it runs before the sidebar is filled; a failure is shown, not fatal."""
+            try:
+                migrate_old_export(self.settings)
+                n = migrate_old_chats(self.archive(), restore_texts)
+                if n:
+                    GLib.idle_add(lambda: (self.toast('%d chats moved to %s' % (
+                        n, home_short(self.archive()))), False)[1])
+            except OSError as e:
+                GLib.idle_add(lambda: (self.toast('Could not move the old chats: %s' % e), False)[1])
+
+        def open_path(self, path):
+            try:
+                make_dir(path) if not os.path.exists(path) else None
+                Gio.AppInfo.launch_default_for_uri(Gio.File.new_for_path(path).get_uri(), None)
+            except (GLib.Error, OSError) as e:
+                self.toast('Could not open %s: %s' % (home_short(path), getattr(e, 'message', e)))
+
+        def folder_dialog(self):
+            root = ai_root(self.settings)
+            dlg = Adw.AlertDialog(heading='TindAI folder', body=(
+                'Chats (ChatArchive), saved documents (Documents) and exports (Export) are kept here, readable by you '
+                'only. The chat archive shows your real names and addresses. A folder you sync (Nextcloud and the '
+                'like) sends them on.'))
+            grp = Adw.PreferencesGroup()
+            row = Adw.ActionRow(title='Folder', subtitle=GLib.markup_escape_text(home_short(root)))
+            grp.add(row)
+            dlg.set_extra_child(grp)
+            dlg.add_response('close', 'Close')
+            dlg.add_response('open', 'Open')
+            dlg.add_response('change', 'Change…')
+            dlg.set_close_response('close')
+
+            def picked(d, res):
+                try:
+                    f = d.select_folder_finish(res)
+                except GLib.Error:
+                    return
+                if f and f.get_path():
+                    self.change_folder(f.get_path())
+
+            def respond(_d, r):
+                if r == 'open':
+                    self.open_path(root)
+                elif r == 'change':
+                    fd = Gtk.FileDialog(title='TindAI folder', modal=True)
+                    start = root if os.path.isdir(root) else os.path.expanduser('~')
+                    fd.set_initial_folder(Gio.File.new_for_path(start))
+                    fd.select_folder(self, None, picked)
+            dlg.connect('response', respond)
+            dlg.present(self)
+
+        def change_folder(self, new):
+            old = ai_root(self.settings)
+            if os.path.realpath(new) == os.path.realpath(old):
+                return
+            for name in SUBDIRS:
+                src = os.path.realpath(os.path.join(old, name))
+                if os.path.realpath(new) == src or os.path.realpath(new).startswith(src + os.sep):
+                    self.toast('Pick a folder outside %s.' % home_short(src))
+                    return
+
+            def use(move):
+                note = ''
+                if move:
+                    try:
+                        moved, kept = move_folder(old, new)
+                    except (OSError, ValueError) as e:
+                        self.toast('Not moved: %s' % e)
+                        return
+                    if kept:
+                        note = ' %d files kept in %s (the name was taken).' % (len(kept), home_short(old))
+                self.settings['folder'] = new
+                self.settings.pop('export_dir', None)
+                save_json(SETTINGS, self.settings, 0o644)
+                if self.chat:
+                    self.chat.pop('_path', None)        # the open chat is saved in the new folder from now on
+                self.refresh_sidebar()
+                self.toast('The TindAI folder is now %s.%s' % (home_short(new), note))
+
+            if not folder_has_files(old):
+                use(False)
+                return
+            dlg = Adw.AlertDialog(heading='Move your chats and documents?', body=(
+                'Move ChatArchive, Documents and Export from %s to %s? Files are never overwritten: one whose name is '
+                'taken stays where it is. If you keep them where they are, the window starts empty in the new '
+                'folder.' % (home_short(old), home_short(new))))
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('keep', 'Keep them there')
+            dlg.add_response('move', 'Move')
+            dlg.set_response_appearance('move', Adw.ResponseAppearance.SUGGESTED)
+            dlg.set_default_response('move')
+            dlg.set_close_response('cancel')
+            dlg.connect('response', lambda _d, r: r in ('keep', 'move') and use(r == 'move'))
+            dlg.present(self)
 
         # ---- sidebar ----------------------------------------------------------------------------------------------
         def build_sidebar(self):
@@ -507,7 +1191,7 @@ def main(open_target=None):
             view.add_top_bar(head)
             self.list = Gtk.ListBox(css_classes=['navigation-sidebar'], selection_mode=Gtk.SelectionMode.SINGLE)
             self.list.set_header_func(self.list_header)
-            self.list.connect('row-activated', lambda _l, row: self.open_chat(load_json(row.path, None)))
+            self.list.connect('row-activated', lambda _l, row: self.open_chat(load_chat(row.path)))
             self.list.set_placeholder(label('No saved chats yet.', ['dim-label'], margin_top=12, margin_start=12))
             sw = Gtk.ScrolledWindow(vexpand=True, hscrollbar_policy=Gtk.PolicyType.NEVER)
             sw.set_child(self.list)
@@ -528,7 +1212,7 @@ def main(open_target=None):
 
         def refresh_sidebar(self):
             order = {p['id']: i for i, p in enumerate(self.providers)}
-            chats = sorted(all_chats(), key=lambda pc: (order.get(pc[1]['provider'], 99), -pc[1].get('updated', 0)))
+            chats = sorted(all_chats(self.archive()), key=lambda pc: (order.get(pc[1]['provider'], 99), -pc[1].get('updated', 0)))
             while (row := self.list.get_row_at_index(0)) is not None:
                 self.list.remove(row)
             for path, chat in chats:
@@ -561,8 +1245,14 @@ def main(open_target=None):
             menu = Gio.Menu()
             menu.append('Prices', 'win.prices')
             menu.append('Export logs to a folder…', 'win.export')
+            folders = Gio.Menu()
+            folders.append('Open saved documents', 'win.open-docs')
+            folders.append('TindAI folder…', 'win.folder')
+            menu.append_section(None, folders)
             for name, fn in (('prices', lambda *_: self.show_prices()), ('export', lambda *_: self.export_dialog()),
-                             ('open-export', lambda *_: self.open_export_folder())):
+                             ('open-export', lambda *_: self.open_export_folder()),
+                             ('open-docs', lambda *_: self.open_path(sub_dir(self.settings, 'Documents'))),
+                             ('folder', lambda *_: self.folder_dialog())):
                 act = Gio.SimpleAction.new(name, None)
                 act.connect('activate', fn)
                 self.add_action(act)
@@ -706,7 +1396,8 @@ def main(open_target=None):
             ticked = [k for k in last if k in EXPORT_FILES] if isinstance(last, list) else ['report', 'journal']
             dlg = Adw.AlertDialog(heading='Export logs to a folder',
                                   body='For AI apps outside this window, such as Claude Desktop: point them at the '
-                                       'folder. Each export replaces the previous one.')
+                                       'folder. Each export replaces the previous one. The folder follows the TindAI '
+                                       'folder (menu > TindAI folder).')
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
             checks = {}
             for key, text in (('report', 'Tind report (hardware, drivers, setup)'),
@@ -722,25 +1413,8 @@ def main(open_target=None):
             box.append(rawnote)
             grp = Adw.PreferencesGroup(margin_top=10)
             where = Adw.ActionRow(title='Folder', subtitle=GLib.markup_escape_text(home_short(folder[0])))
-            change = Gtk.Button(label='Change…', valign=Gtk.Align.CENTER, css_classes=['flat'])
-            where.add_suffix(change)
             grp.add(where)
             box.append(grp)
-
-            def picked(d, res):
-                try:
-                    f = d.select_folder_finish(res)
-                except GLib.Error:
-                    return
-                if f and f.get_path():
-                    folder[0] = f.get_path()
-                    where.set_subtitle(GLib.markup_escape_text(home_short(folder[0])))
-            def choose(*_):
-                fd = Gtk.FileDialog(title='Export folder', modal=True)
-                start = folder[0] if os.path.isdir(folder[0]) else os.path.expanduser('~')
-                fd.set_initial_folder(Gio.File.new_for_path(start))
-                fd.select_folder(self, None, picked)
-            change.connect('clicked', choose)
 
             dlg.set_extra_child(box)
             dlg.add_response('cancel', 'Cancel')
@@ -760,10 +1434,6 @@ def main(open_target=None):
                     return
                 keys = [k for k in EXPORT_FILES if checks[k].get_active()]
                 self.settings['export_items'] = keys
-                if folder[0] == EXPORT_DEFAULT:
-                    self.settings.pop('export_dir', None)
-                else:
-                    self.settings['export_dir'] = folder[0]
                 save_json(SETTINGS, self.settings, 0o644)
                 self.do_export(keys, raw.get_active(), folder[0])
             dlg.connect('response', respond)
@@ -1052,7 +1722,10 @@ def main(open_target=None):
         def save_chat(self):
             if self.chat and self.chat['messages']:
                 self.chat['updated'] = int(time.time())
-                save_json(chat_path(self.chat), self.chat)
+                try:
+                    save_chat_file(self.archive(), self.chat)
+                except OSError as e:
+                    self.toast('The chat was not saved: %s' % e)
                 self.refresh_sidebar()
 
         def render(self):
@@ -1094,7 +1767,12 @@ def main(open_target=None):
                     card.append(label('Attached: ' + ', '.join(m['items']), ['dim-label', 'caption']))
             elif m.get('text'):
                 for b in split_blocks(m['text']):
-                    card.append(self.text_block(b[1]) if b[0] == 'text' else self.code_block(b[1], b[2]))
+                    if b[0] == 'text':
+                        card.append(self.text_block(b[1]))
+                    elif b[0] == 'doc':
+                        card.append(self.doc_card(b[1], b[2]))
+                    else:
+                        card.append(self.code_block(b[1], b[2]))
             if mine or m.get('text'):
                 col.append(card)
             meta = self.meta_line(m)
@@ -1127,6 +1805,73 @@ def main(open_target=None):
             box.append(label(code, ['tind-code-text'], selectable=True))
             return box
 
+        def doc_card(self, title, markdown):
+            """A finished document from the answer: a preview, Save as (Markdown, Word, PDF, LibreOffice) and Copy."""
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, css_classes=['tind-doc'])
+            head = Gtk.Box(spacing=8)
+            head.append(Gtk.Image(icon_name='x-office-document-symbolic'))
+            head.append(Gtk.Label(label=title, xalign=0, hexpand=True, ellipsize=3, css_classes=['heading']))
+            head.append(self.save_menu(lambda: markdown, title, 'Save as…'))
+            copy = Gtk.Button(label='Copy', css_classes=['flat'])
+            copy.connect('clicked', lambda *_: self.copy_text(markdown))
+            head.append(copy)
+            box.append(head)
+            body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, margin_start=4, margin_end=4)
+            shown = re.sub(r'\A\s*#{1,2}\s+[^\n]*\n?', '', markdown, count=1) if doc_title(markdown, '') == title \
+                else markdown      # the title is in the card's header already
+            for b in split_blocks(shown):
+                body.append(self.text_block(b[1]) if b[0] == 'text' else self.code_block(b[1], b[2]))
+            if shown.count('\n') < 24:      # short: shown whole (a scrolled box would size itself too tall)
+                box.append(body)
+                return box
+            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, min_content_height=340,
+                                    max_content_height=340, css_classes=['tind-doc-body'])
+            sw.set_child(body)
+            box.append(sw)
+            return box
+
+        def save_menu(self, get_text, title, text):
+            """A button with the formats; Word, PDF and LibreOffice are grayed when LibreOffice Writer is missing."""
+            btn = Gtk.MenuButton(label=text, css_classes=['flat'], tooltip_text='Save to %s' % home_short(
+                sub_dir(self.settings, 'Documents')))
+            pop = Gtk.Popover()
+            col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, margin_top=4, margin_bottom=4,
+                          margin_start=4, margin_end=4)
+            buttons = {}
+            for fmt, (name, ext, _f) in FORMATS.items():
+                b = Gtk.Button(css_classes=['flat'])
+                b.set_child(Gtk.Label(label='%s (.%s)' % (name, ext), xalign=0))
+                b.connect('clicked', lambda _b, f=fmt: (pop.popdown(), self.save_doc(get_text(), title, f)))
+                buttons[fmt] = b
+                col.append(b)
+            hint = label(WRITER_HINT, ['dim-label', 'caption'], max_width_chars=34, margin_top=4, margin_start=6,
+                         margin_end=6)
+            col.append(hint)
+            pop.set_child(col)
+
+            def showing(*_):
+                ok = writer_available()
+                for fmt, b in buttons.items():
+                    b.set_sensitive(fmt == 'md' or ok)
+                    b.set_tooltip_text(None if fmt == 'md' or ok else WRITER_HINT)
+                hint.set_visible(not ok)
+            pop.connect('show', showing)
+            btn.set_popover(pop)
+            return btn
+
+        def save_doc(self, markdown, title, fmt):
+            folder = sub_dir(self.settings, 'Documents')
+            self.toast('Saving as %s…' % FORMATS[fmt][0])
+
+            def done(path, err):
+                if err:
+                    self.toast('Not saved: %s' % err)
+                    return
+                t = Adw.Toast(title=GLib.markup_escape_text('Saved %s' % home_short(path)), timeout=8,
+                              button_label='Open folder', action_name='win.open-docs')
+                self.toasts.add_toast(t)
+            bg(lambda: save_document(folder, markdown, title, fmt), done)
+
         def meta_line(self, m):
             if m.get('pending'):
                 row = Gtk.Box(spacing=6, halign=Gtk.Align.END if m['role'] == 'user' else Gtk.Align.START)
@@ -1147,7 +1892,15 @@ def main(open_target=None):
             bits = [m.get('provider_name', ''), m.get('model_name', '') or m.get('model', '')]
             if m.get('seconds'):
                 bits.append('%s s' % m['seconds'])
-            return label(' · '.join(b for b in bits if b), ['dim-label', 'caption'])
+            row = Gtk.Box(spacing=6)
+            row.append(label(' · '.join(b for b in bits if b), ['dim-label', 'caption'], hexpand=True,
+                             valign=Gtk.Align.CENTER))
+            if m.get('text'):
+                fallback = (self.chat or {}).get('title') or 'AI answer'
+                save = self.save_menu(lambda: m['text'], doc_title(m['text'], fallback), 'Save as document')
+                save.add_css_class('caption')
+                row.append(save)
+            return row
 
         # ---- actions on answers -----------------------------------------------------------------------------------
         def copy_text(self, text, _lang=None):
@@ -1373,8 +2126,16 @@ def main(open_target=None):
             self.render()
             sock = tindai.LOCAL_SOCKET if p.get('service') == 'local' else tindai.remote_socket(pid)
 
+            conv = self.chat['id']
+
             def work():
-                return tindai.call(sock, {'op': 'send', 'id': bid, 'model': model}, timeout=300)
+                res = tindai.call(sock, {'op': 'send', 'id': bid, 'model': model}, timeout=300)
+                if res.get('ok') and res.get('answer'):
+                    try:    # the placeholders back to your real values, for this window and the archive only
+                        res['restored'] = restore_texts(conv, [res['answer']])[0]
+                    except (OSError, RuntimeError, ValueError, IndexError):
+                        pass
+                return res
 
             def answered(res, err):
                 if reply in self.chat['messages']:
@@ -1383,10 +2144,13 @@ def main(open_target=None):
                     self.fail(msg, 'No answer: %s' % (err or res.get('error')))
                     return
                 m = next((x for x in p['models'] if x['id'] == res.get('model')), None)
+                shown = res.get('restored') or res['answer']
                 self.chat['messages'].append({
-                    'role': 'assistant', 'text': res['answer'], 'provider_name': tindai.provider_label(p),
+                    'role': 'assistant', 'text': shown, 'provider_name': tindai.provider_label(p),
                     'model': res.get('model', ''), 'model_name': tindai.model_label(m) if m else res.get('model', ''),
                     'seconds': res.get('seconds'), 'time': int(time.time())})
+                if shown != res['answer']:
+                    self.chat['messages'][-1]['sent'] = res['answer']   # as received: what the history sends back
                 self.busy = False
                 self.save_chat()
                 self.render()
@@ -1472,7 +2236,7 @@ def main(open_target=None):
             dlg.present(self)
 
         def confirm_delete_all(self):
-            chats = [c for _p, c in all_chats()]
+            chats = [c for _p, c in all_chats(self.archive())]
             if not chats:
                 return
             dlg = Adw.AlertDialog(heading='Delete all %d chats?' % len(chats), body='This cannot be undone.')
@@ -1487,7 +2251,7 @@ def main(open_target=None):
             ids = [c['id'] for c in chats]
             for c in chats:
                 try:
-                    os.unlink(chat_path(c))
+                    os.unlink(c.get('_path') or chat_path(self.archive(), c))
                 except OSError:
                     pass
 
@@ -1528,5 +2292,10 @@ if __name__ == '__main__':
         sys.exit(check_prices())
     if '--export' in sys.argv:
         sys.exit(cli_export('--unredacted' in sys.argv))
+    if '--migrate' in sys.argv:
+        sys.exit(cli_migrate())
+    if '--document' in sys.argv[:-1]:
+        fmt = sys.argv[sys.argv.index('--format') + 1] if '--format' in sys.argv[:-1] else 'md'
+        sys.exit(cli_document(sys.argv[sys.argv.index('--document') + 1], fmt))
     target = sys.argv[sys.argv.index('--open') + 1] if '--open' in sys.argv[:-1] else None
     sys.exit(main(target))

@@ -270,7 +270,7 @@ class H(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         body = self.rfile.read(int(self.headers['Content-Length']))
         open('/run/tind-ci-fakeai-got.json', 'wb').write(body)
-        data = json.dumps({'choices': [{'message': {'content': 'Fake answer from the CI provider.\n```bash\necho hello\n```'}}],
+        data = json.dumps({'choices': [{'message': {'content': 'Fake answer from the CI provider about [ip-1].\n```bash\necho hello\n```'}}],
                            'usage': {'total_tokens': 1}}).encode()
         self.send_response(200); self.send_header('Content-Type', 'application/json')
         self.send_header('Content-Length', str(len(data))); self.end_headers(); self.wfile.write(data)
@@ -326,6 +326,36 @@ ai remote-cannot-read-keys "$(denied tind-ai-remote cat /etc/tind-ai/keys/custom
 ai ai-users-cannot-read-home "$(denied tind-ai-local ls /home/tind/.config)"
 f="$(ls /var/lib/tind-ai/outbox/$UIDN/*.json 2>/dev/null | head -1)"
 [ -n "$f" ] && asuser cat "$f" >/dev/null 2>&1 && ai human-reads-own-answer ok || ai human-reads-own-answer "FAIL ${f:-no answer saved}"
+# the chat archive: the JSON chat saved above (the store before ~test7) moves to ~/TindAI/ChatArchive as Markdown, with
+# the answer's [ip-1] put back by the local service; what came back with placeholders stays folded under it
+mg="$(asuser tind-ai-ask --migrate 2>&1)"; echo "$mg"
+A="$(ls /home/tind/TindAI/ChatArchive/custom/*-ci0001.md 2>/dev/null | head -1)"
+if [ -n "$A" ] && grep -q '^Fake answer from the CI provider about 192.168.1.37.$' "$A" \
+   && grep -q '^Fake answer from the CI provider about \[ip-1\].$' "$A" && [ ! -e /home/tind/.local/share/tind-ai/chats ] \
+   && [ -d /home/tind/.local/share/tind-ai/chats.migrated ] && [ "$(stat -c '%a %U' "$A")" = "600 tind" ] \
+   && [ "$(stat -c '%a %U' /home/tind/TindAI)" = "700 tind" ]; then ai chat-archive-restored ok
+else ai chat-archive-restored "FAIL ${A:-no archive file} $(echo "$mg" | tail -1) $(ls -la /home/tind/TindAI/ChatArchive/custom 2>&1 | tr '\n' '|')"; fi
+[ -n "$A" ] && sed -n '1,40p' "$A" | cut -c1-160
+r="$(echo '{"op": "restore", "conversation": "ci0001", "texts": ["[ip-1]"]}' | runuser -u tind-ai-remote -- python3 -c '
+import json, socket, sys
+s = socket.socket(socket.AF_UNIX); s.settimeout(10)
+try:
+    s.connect("/run/tind-ai/local.sock"); s.sendall(sys.stdin.read().encode() + b"\n"); print(s.recv(65536).decode().strip())
+except OSError as e:
+    print("refused", e)' 2>&1 | tail -1)"
+echo "$r" | grep -q '192.168.1.37' && ai remote-cannot-restore "FAIL $r" || ai remote-cannot-restore ok
+# documents saved from an answer: Markdown always; Word, PDF and ODT only with LibreOffice Writer (not on the ISO)
+printf '# CI letter\n\nHei fra CI, æøå.\n' > /tmp/tind-ci-doc.md; chmod 644 /tmp/tind-ci-doc.md
+d="$(asuser tind-ai-ask --document /tmp/tind-ci-doc.md 2>&1)"; echo "$d"
+D="$(ls /home/tind/TindAI/Documents/*CI\ letter.md 2>/dev/null | head -1)"
+[ -n "$D" ] && grep -q 'Hei fra CI, æøå.' "$D" && [ "$(stat -c '%a %U' "$D")" = "600 tind" ] \
+    && [ "$(stat -c '%a' /home/tind/TindAI/Documents)" = 700 ] && ai document-markdown ok || ai document-markdown "FAIL $d"
+d="$(asuser tind-ai-ask --document /tmp/tind-ci-doc.md --format docx 2>&1)"; rc=$?
+if dpkg-query -W -f='${db:Status-Abbrev}' libreoffice-writer 2>/dev/null | grep -q '^ii'; then
+    [ $rc = 0 ] && ai document-word ok || ai document-word "FAIL $d"
+else
+    [ $rc = 2 ] && echo "$d" | grep -q 'need LibreOffice' && ai document-word-needs-writer ok || ai document-word-needs-writer "FAIL rc=$rc $d"
+fi
 stat -c '%a %U %n' /var/lib/tind-ai/* /var/lib/tind-ai/*/* 2>&1 | head -12
 asuser tind-ai-ask --check 2>&1 | head -10
 tpl="$(asuser tind-ai-ask --templates 2>&1)"; echo "$tpl" | head -6
@@ -333,8 +363,8 @@ echo "$tpl" | grep -q '^templates: 5$' && ai templates ok || ai templates "FAIL 
 pr="$(asuser tind-ai-ask --prices 2>&1)"; echo "$pr" | head -20
 echo "$pr" | grep -q '^prices: [1-9][0-9]* models priced' && echo "$pr" | grep -q 'gpt-oss-120b (everyday) *Cheap' \
     && ai prices ok || ai prices "FAIL $(echo "$pr" | tail -1)"
-# export for AI apps outside the window: redacted by default, unredacted only when asked; ~/AI-export, one set
-X=/home/tind/AI-export
+# export for AI apps outside the window: redacted by default, unredacted only when asked; ~/TindAI/Export, one set
+X=/home/tind/TindAI/Export
 ex="$(asuser tind-ai-ask --export 2>&1)"; echo "$ex"
 leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
     grep -q "$v" "$X"/*.txt 2>/dev/null && leak="$leak $v"

@@ -1,5 +1,5 @@
 Package: tind-ai-local
-Version: 0.1.0~test5
+Version: 0.1.0~test6
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
@@ -11,4 +11,5 @@ Description: Tind AI box: the local briefing service (reads and redacts, no netw
  when asked, the system journal, then redacts it with fixed rules: user and host
  names, IP and MAC addresses, e-mail addresses, keys, tokens, passwords and
  other secrets become numbered placeholders. Runs as tind-ai-local with no
- network, no access to /home and one writable folder.
+ network, no access to /home and one writable folder. For the human's own chat
+ archive it also puts the placeholders of that human's chats back in.

@@ -8,6 +8,7 @@ import importlib.util
 import json
 import os
 import pwd
+import re
 import shutil
 import sys
 import tempfile
@@ -398,9 +399,216 @@ left = sorted(os.listdir(out_dir))
 check(left == ['about.txt', 'notes.md', 'tind-report.txt'],
       'export: the next export replaces the set and leaves other files alone %s' % left)
 check('unredacted' in open(os.path.join(out_dir, 'about.txt')).read(), 'export: about.txt says when it is unredacted')
-check(ask.export_dir({}) == os.path.expanduser('~/AI-export') and ask.export_dir({'export_dir': 'rel'}) ==
-      os.path.expanduser('~/AI-export') and ask.export_dir({'export_dir': out_dir}) == out_dir,
-      'export: ~/AI-export unless another absolute folder was chosen')
+check(ask.export_dir({}) == os.path.expanduser('~/TindAI/Export') and ask.export_dir({'export_dir': 'rel'}) ==
+      os.path.expanduser('~/TindAI/Export') and ask.export_dir({'export_dir': out_dir}) == out_dir
+      and ask.export_dir({'folder': '/srv/x'}) == '/srv/x/Export',
+      'export: <TindAI>/Export, unless an absolute folder was picked before (kept until the TindAI folder changes)')
+
+# ---- restore: placeholders back to the real values, for the human's own archive -------------------------------------
+rb = local.handle(uid, {'op': 'brief', 'request': 'my router ' + PLANTED['ip'] + ' and ' + PLANTED['email'],
+                        'provider': 'custom', 'conversation': 'rest01',
+                        'items': [{'name': 'cfg', 'text': 'password="%s"' % PLANTED['pw']}]})
+answer = 'Log in to [ip-1] as [email-1]; the password [secret-1] is fine; [ip-9] is unknown.'
+rr = local.handle(uid, {'op': 'restore', 'conversation': 'rest01', 'texts': [answer, 'no placeholders']})
+check(rr['ok'] and rr['texts'][0] == 'Log in to %s as %s; the password %s is fine; [ip-9] is unknown.' % (
+    PLANTED['ip'], PLANTED['email'], PLANTED['pw']) and rr['texts'][1] == 'no placeholders' and rr['restored'] == 3,
+    'restore: placeholders become the real values, unknown ones stay: %s' % rr['texts'][0])
+check(local.handle(uid, {'op': 'restore', 'conversation': 'nosuch', 'texts': [answer]})['texts'] == [answer],
+      'restore: no map (a deleted or unknown chat) gives the text back unchanged')
+check(local.handle(uid + 1, {'op': 'restore', 'conversation': 'rest01', 'texts': [answer]})['texts'] == [answer],
+      'restore: another user never gets this user\'s values')
+check(local.handle(uid, {'op': 'restore', 'conversation': '../%d/rest01' % uid, 'texts': [answer]})['texts']
+      == [answer], 'restore: a path trick in the chat id finds no map')
+for bad in ({'texts': 'x'}, {'texts': [1]}, {'texts': ['x' * 500_001]}):
+    try:
+        local.handle(uid, dict(bad, op='restore', conversation='rest01'))
+        check(False, 'restore: refused %s' % str(bad)[:40])
+    except ValueError:
+        check(True, 'restore: refused %s' % str(bad)[:40])
+# the restored answer goes back as history: every value must leave as the same placeholder again, also a secret
+# without its "password=" and an address in odd company
+fol = local.handle(uid, {'op': 'brief', 'request': 'ok, thanks', 'provider': 'custom', 'conversation': 'rest01',
+                         'history': [{'role': 'assistant', 'text': rr['texts'][0]},
+                                     {'role': 'user', 'text': 'I used %s_x and %s' % (PLANTED['pw'], PLANTED['pw'])}]})
+hist = ' '.join(h['text'] for h in fol['history'])
+check(PLANTED['ip'] not in hist and PLANTED['email'] not in hist and PLANTED['pw'] + ' ' not in hist + ' '
+      and '[ip-1]' in hist and '[email-1]' in hist and '[secret-1]' in hist,
+      'restore: a restored answer sent back as history is hidden again with the same placeholders: %s' % hist)
+r5 = Redactor()
+r5.load({'wifi': {'Hjem': '[wifi-1]'}, 'secret': {'hunter22secret': '[secret-1]'}})
+check(r5.text('Hjemme and Hjem; hunter22secret!') == 'Hjemme and [wifi-1]; [secret-1]!',
+      'redact: known values are hidden as whole words only')
+check(Redactor().text('nothing known') == 'nothing known', 'redact: no map, no change')
+
+# ---- the TindAI folder, the chat archive, migration ------------------------------------------------------------------
+home = os.path.join(tmp, 'home2')
+os.makedirs(home)
+ask.FOLDER_DEFAULT = os.path.join(home, 'TindAI')
+ask.OLD_EXPORT = os.path.join(home, 'AI-export')
+ask.LEGACY_CHATS_DIR = os.path.join(home, '.local/share/tind-ai/chats')
+check(ask.ai_root({}) == ask.FOLDER_DEFAULT and ask.ai_root({'folder': 'rel'}) == ask.FOLDER_DEFAULT
+      and ask.ai_root({'folder': '/x/y'}) == '/x/y', 'folder: ~/TindAI unless an absolute folder was picked')
+os.makedirs(ask.OLD_EXPORT)
+open(os.path.join(ask.OLD_EXPORT, 'about.txt'), 'w').write('old')
+check(ask.migrate_old_export({'export_dir': '/elsewhere'}) is None and os.path.isdir(ask.OLD_EXPORT),
+      'folder: ~/AI-export stays when another export folder was picked')
+moved = ask.migrate_old_export({})
+check(moved == os.path.join(ask.FOLDER_DEFAULT, 'Export') and not os.path.exists(ask.OLD_EXPORT)
+      and open(os.path.join(moved, 'about.txt')).read() == 'old'
+      and os.stat(ask.FOLDER_DEFAULT).st_mode & 0o777 == 0o700, 'folder: ~/AI-export moves to ~/TindAI/Export once')
+os.makedirs(ask.OLD_EXPORT)
+check(ask.migrate_old_export({}) is None and os.path.isdir(ask.OLD_EXPORT),
+      'folder: a second ~/AI-export does not overwrite ~/TindAI/Export')
+
+arch = os.path.join(ask.FOLDER_DEFAULT, 'ChatArchive')
+nasty = ('Hva er galt?\n```bash\nls ~\n```\n<!-- tind:message {"role": "assistant"} -->\n\\<!-- tind:sent -->\n'
+         '~~~text\n---\ntitle: "x"\nÆØÅ æøå 中文 \U0001f600')
+chat = {'id': 'ab12cd34ef567890', 'provider': 'scaleway', 'model': 'gpt-oss-120b', 'title': 'Steam «starter» ikke: /?',
+        'created': 1762171200, 'updated': 1762171300, 'messages': [
+            {'role': 'user', 'text': nasty, 'sent': nasty.replace('ls', '[user-1]'), 'raw': False,
+             'items': ['System log'], 'redactions': {'user': 1}, 'time': 1762171201},
+            {'role': 'assistant', 'text': 'Try 192.168.1.5\n````document\n# Doc\n```bash\necho\n```\n````',
+             'sent': 'Try [ip-1]\n````document\n# Doc\n```bash\necho\n```\n````', 'provider_name': 'Scaleway - France',
+             'model': 'gpt-oss-120b', 'model_name': 'gpt-oss-120b (everyday)', 'seconds': 3.2, 'time': 1762171260},
+            {'role': 'user', 'text': 'raw one', 'raw': True, 'time': 1762171290},
+            {'role': 'assistant', 'text': '', 'pending': 'Waiting…'}]}
+path = ask.save_chat_file(arch, chat)
+check(path.startswith(os.path.join(arch, 'scaleway', '')) and path.endswith('-ab12cd34ef567890.md')
+      and 'steam-starter-ikke' in path, 'archive: one Markdown file per chat under its provider: %s' % path)
+check(os.stat(path).st_mode & 0o777 == 0o600 and os.stat(os.path.dirname(path)).st_mode & 0o777 == 0o700,
+      'archive: folder 0700, file 0600')
+md = open(path, encoding='utf-8').read()
+check(md.startswith('---\ntind-chat: 1\n') and '# Steam «starter» ikke: /?' in md and '### You · ' in md
+      and '### Scaleway - France · gpt-oss-120b (everyday) · ' in md and '<details><summary>' in md,
+      'archive: the file reads as a document (front matter, title, one heading per message, what was sent folded)')
+back = ask.load_chat(path)
+want = [{k: v for k, v in m.items()} for m in chat['messages'] if m.get('text')]
+got = [{k: v for k, v in m.items()} for m in back['messages']]
+check(got == want, 'archive: every message comes back exactly, also text that looks like a marker or a fence %s'
+      % ([g for g, w in zip(got, want) if g != w][:1]))
+check({k: back[k] for k in ask.FRONT_KEYS} == {k: chat[k] for k in ask.FRONT_KEYS} and back['_path'] == path,
+      'archive: id, provider, model, title and times come back')
+check(nasty.split('\n')[4] not in md.split('\n'), 'archive: a marker line in a text is escaped in the file')
+chat['messages'] = chat['messages'][:3] + [{'role': 'assistant', 'text': 'one more', 'time': 1762171400}]
+check(ask.save_chat_file(arch, chat) == path and len(ask.load_chat(path)['messages']) == 4,
+      'archive: saving again writes the same file')
+renamed = os.path.join(arch, 'scaleway', 'my own name.md')
+os.rename(path, renamed)
+check([c['id'] for _p, c in ask.all_chats(arch)] == ['ab12cd34ef567890'] and ask.all_chats(arch)[0][0] == renamed,
+      'archive: a file renamed by hand is still found')
+c2 = ask.load_chat(renamed)
+ask.save_chat_file(arch, c2)
+check(os.path.exists(renamed) and len(os.listdir(os.path.join(arch, 'scaleway'))) == 1,
+      'archive: and saved under its new name')
+open(os.path.join(arch, 'scaleway', 'notes.md'), 'w').write('# my own notes\n')
+open(os.path.join(arch, 'broken.md'), 'w').write('---\ntind-chat: 1\nid: "../x"\n---\n')
+check(len(ask.all_chats(arch)) == 1 and os.path.exists(os.path.join(arch, 'scaleway', 'notes.md')),
+      'archive: other Markdown files are skipped and left alone')
+
+# old JSON chats -> archive, with the answers restored
+leg = os.path.join(ask.LEGACY_CHATS_DIR, 'custom')
+os.makedirs(leg)
+json.dump({'id': 'rest01', 'provider': 'custom', 'model': 'm', 'title': 'Old chat', 'created': 1761000000,
+           'updated': 1761000100, 'messages': [
+               {'role': 'user', 'text': 'my router ' + PLANTED['ip'], 'sent': 'my router [ip-1]', 'raw': False},
+               {'role': 'assistant', 'text': answer, 'provider_name': 'Custom server - your choice'}]},
+          open(os.path.join(leg, 'rest01.json'), 'w'))
+open(os.path.join(leg, 'junk.json'), 'w').write('{nope')
+n = ask.migrate_old_chats(arch, lambda cid, texts: local.handle(uid, {'op': 'restore', 'conversation': cid,
+                                                                     'texts': texts})['texts'])
+old = [c for _p, c in ask.all_chats(arch) if c['id'] == 'rest01']
+check(n == 1 and old and old[0]['messages'][1]['text'] == rr['texts'][0]
+      and old[0]['messages'][1]['sent'] == answer and old[0]['messages'][0]['sent'] == 'my router [ip-1]',
+      'migrate: an old chat moves to the archive with the answer restored and the received text kept')
+check(not os.path.exists(ask.LEGACY_CHATS_DIR) and os.path.exists(os.path.join(
+    ask.LEGACY_CHATS_DIR + '.migrated', 'custom', 'junk.json')),
+      'migrate: the old folder is renamed to chats.migrated, nothing deleted')
+check(ask.migrate_old_chats(arch, None) == 0, 'migrate: runs once')
+os.makedirs(leg)
+json.dump({'id': 'nomap1', 'provider': 'custom', 'title': 'x', 'messages': [{'role': 'assistant', 'text': '[ip-1]'}]},
+          open(os.path.join(leg, 'nomap1.json'), 'w'))
+check(ask.migrate_old_chats(arch, lambda c, t: 1 / 0) == 1 and [c for _p, c in ask.all_chats(arch)
+                                                                if c['id'] == 'nomap1'][0]['messages'][0]['text']
+      == '[ip-1]' and os.path.exists(ask.LEGACY_CHATS_DIR + '.migrated-2'),
+      'migrate: when the local service cannot restore, the chat moves as it was')
+
+# changing the TindAI folder
+newroot = os.path.join(tmp, 'elsewhere', 'AI stuff')
+os.makedirs(os.path.join(newroot, 'Documents'))
+open(os.path.join(newroot, 'Documents', 'taken.md'), 'w').write('new')
+os.makedirs(os.path.join(ask.FOLDER_DEFAULT, 'Documents'))
+open(os.path.join(ask.FOLDER_DEFAULT, 'Documents', 'taken.md'), 'w').write('old')
+open(os.path.join(ask.FOLDER_DEFAULT, 'Documents', 'free.md'), 'w').write('old')
+check(ask.folder_has_files(ask.FOLDER_DEFAULT), 'folder: knows when there is something to move')
+try:
+    ask.move_folder(ask.FOLDER_DEFAULT, os.path.join(arch, 'inside'))
+    check(False, 'folder: a new folder inside the archive is refused')
+except ValueError:
+    check(True, 'folder: a new folder inside the archive is refused')
+mv, kept = ask.move_folder(ask.FOLDER_DEFAULT, newroot)
+check(sorted(mv) == ['ChatArchive', 'Documents/free.md', 'Export'] and kept == ['Documents/taken.md']
+      and open(os.path.join(newroot, 'Documents', 'taken.md')).read() == 'new'
+      and open(os.path.join(ask.FOLDER_DEFAULT, 'Documents', 'taken.md')).read() == 'old'
+      and len(ask.all_chats(os.path.join(newroot, 'ChatArchive'))) == 3,
+      'folder: moving keeps every file, never overwrites, and the chats come along %s %s' % (mv, kept))
+
+# ---- documents ---------------------------------------------------------------------------------------------------------
+ans = ('Here it is:\n\n````document\n# Brev til utleier\n\nHei!\n\n```bash\necho hi\n```\n````\n\nAnd a command:\n'
+       '```bash\nls\n```\nunclosed:\n```\nrest')
+bl = ask.split_blocks(ans)
+check([b[0] for b in bl] == ['text', 'doc', 'text', 'code', 'text', 'code']
+      and bl[1][1] == 'Brev til utleier' and '```bash\necho hi\n```' in bl[1][2] and bl[5][2] == 'rest',
+      'documents: a ````document block becomes a document card, code inside it stays in it %s' % [b[0] for b in bl])
+check(ask.split_blocks('a\n```diff\n-x\n+y\n```\nb') == [('text', 'a'), ('code', 'diff', '-x\n+y'), ('text', 'b')],
+      'documents: ordinary code blocks are as before')
+check(ask.doc_title('intro\n## **Plan** for X\n# later', 'f') == 'Plan for X' and ask.doc_title('none', 'f') == 'f',
+      'documents: the title is the first heading')
+hostile = ('# T\n<script>alert(1)</script>\n<img src="http://evil.example/x.png">\n![x](http://evil.example/y.png)\n'
+           '[ok](https://example.no) [bad](javascript:alert(1)) [file](file:///etc/passwd)\n'
+           '<link rel="stylesheet" href="http://evil.example/z.css">\n| a | <b>b</b> |\n|---|---|\n| `<i>` | c |')
+page = ask.md_to_page(hostile, 'T "quoted" <x>')
+check('<script' not in page and '<img' not in page and '<link' not in page and 'evil.example/y' not in page
+      and 'javascript:' not in page.split('</style>')[1].replace('[bad](javascript', '')
+      and 'href="javascript' not in page and 'href="file' not in page and '<a href="https://example.no">ok</a>' in page
+      and '&lt;script&gt;' in page and '<title>T &quot;quoted&quot; &lt;x&gt;</title>' in page,
+      'documents: the HTML has no raw HTML, images or fetchable links; only http(s) and mailto links stay')
+tags = set(re.findall(r'<(/?[A-Za-z][A-Za-z0-9]*)', page))
+allowed = {'!DOCTYPE', 'html', 'head', 'meta', 'title', 'style', 'body', 'h1', 'p', 'a', 'table', 'tr', 'th', 'td',
+           'code', 'b'}
+check({t.lstrip('/') for t in tags} <= allowed and re.search(r'url\(|@import', page) is None,
+      'documents: the page holds only plain document tags, nothing that loads anything %s' % sorted(tags))
+lists = ask.md_to_html('- a\n- b\n  - c\n1. x\n2. y\n\ntext *it* **bo** `co`')
+check(lists == '<ul><li>a</li><li>b<ul><li>c</li></ul></li></ul><ol><li>x</li><li>y</li></ol>\n'
+      '<p>text <i>it</i> <b>bo</b> <code>co</code></p>', 'documents: lists, nesting and inline marks: %s' % lists)
+docs = os.path.join(tmp, 'docs')
+p1 = ask.save_document(docs, '# Brev\n\nHei', 'Brev', 'md', when=1762171200)
+p2 = ask.save_document(docs, '# Brev\n\nHei igjen', 'Brev', 'md', when=1762171200)
+check(os.path.basename(p1) == '2025-11-03 Brev.md' and os.path.basename(p2) == '2025-11-03 Brev-2.md'
+      and open(p1).read() == '# Brev\n\nHei\n' and os.stat(p1).st_mode & 0o777 == 0o600
+      and os.stat(docs).st_mode & 0o777 == 0o700, 'documents: Markdown saved as is, never over another file')
+check(os.path.dirname(ask.save_document(docs, 'x', '../../etc/passwd', 'md')) == docs,
+      'documents: a title cannot point the file elsewhere')
+real_writer = ask.writer_available
+ask.writer_available = lambda: False
+try:
+    ask.save_document(docs, 'x', 'x', 'docx')
+    check(False, 'documents: Word without LibreOffice is refused with the hint')
+except RuntimeError as e:
+    check(str(e) == ask.WRITER_HINT, 'documents: Word without LibreOffice is refused with the hint')
+ask.writer_available = real_writer
+if shutil.which('soffice'):
+    ask.writer_available = lambda: True
+    for fmt, magic in (('docx', b'PK'), ('odt', b'PK'), ('pdf', b'%PDF')):
+        out = ask.save_document(docs, hostile + '\n\nÆØÅ æøå', 'Brev', fmt)
+        data = open(out, 'rb').read()
+        ok = data.startswith(magic) and os.stat(out).st_mode & 0o777 == 0o600
+        if fmt == 'docx':
+            import zipfile
+            ok = ok and 'Æ' in zipfile.ZipFile(out).read('word/document.xml').decode('utf-8')
+        check(ok, 'documents: LibreOffice makes a real %s file %s' % (fmt, os.path.basename(out)))
+    ask.writer_available = real_writer
+else:
+    print('skip: LibreOffice is not installed here, so Word, PDF and ODT were not made (checked locally)')
 
 shutil.rmtree(tmp)
 print('ALL AI TESTS PASSED' if not failures else '%d AI TEST(S) FAILED' % failures)

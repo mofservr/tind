@@ -170,7 +170,22 @@ class Redactor:
             kind = self.names[word]
             pat = re.compile(r'(?<![A-Za-z0-9_])' + re.escape(word) + r'(?![A-Za-z0-9_])')
             s = pat.sub(lambda m, k=kind, w=word: self._ph(k, w), s)
-        return s
+        return self._known(s)
+
+    def _known(self, s):
+        """Values this conversation already hid, wherever they turn up again as plain words. A restored answer in the
+        chat history can carry a secret without its "password=" or an address the patterns would not see on its own;
+        it must go out as the same placeholder as before."""
+        values = {}
+        for kind, m in self.maps.items():
+            for value, ph in m.items():
+                if len(value) >= 4 and not (value.startswith('[') and value.endswith(']')):
+                    values[value] = (kind, ph)
+        if not values:
+            return s
+        pat = re.compile(r'(?<![A-Za-z0-9_])(?:%s)(?![A-Za-z0-9_])' % '|'.join(
+            re.escape(v) for v in sorted(values, key=len, reverse=True)))
+        return pat.sub(lambda mt: self._ph(values[mt.group(0)][0], mt.group(0)), s)
 
     def state(self):
         """The value -> placeholder maps, so the next message of the same conversation keeps the same numbers.
