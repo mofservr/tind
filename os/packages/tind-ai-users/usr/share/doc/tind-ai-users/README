@@ -28,4 +28,15 @@ computer runs with no network at all. It is grayed out until a local model is in
 Providers: /usr/share/tind-ai/providers.json (Scaleway is the default; Anthropic and OpenAI are marked as outside the
 EU). The custom endpoint (any OpenAI-compatible server; plain http only to 127.0.0.1) is kept in /etc/tind-ai/custom.json.
 
-Check from a terminal: tind-ai-ask --check
+Prices: /usr/share/tind-ai/prices.json (tind-ai-ui), per million tokens in the provider's currency, shipped with
+Tind updates and never fetched. A coloured mark by each model and the Prices page (window menu) show the band: blue
+free (this computer), green cheap, amber mid, red expensive, gray unknown (a custom server). The band uses 3 parts
+input to 1 part output, with the limits 1 and 10 from the same file.
+
+Export (window menu, or the + menu): the Tind report, the system log and the Steam and Proton logs written to
+~/AI-export (or a folder you pick) for AI apps outside the window, such as Claude Desktop. Those apps run as you,
+outside the walls, so the local service applies the fixed rules first unless Unredacted is ticked; nothing is saved
+in the briefing folder. Each export replaces the previous set; about.txt says when it was made and whether it is
+redacted. The folder is 0700, the files 0600.
+
+Check from a terminal: tind-ai-ask --check, tind-ai-ask --prices

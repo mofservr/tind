@@ -11,6 +11,9 @@ Request:  {"op": "brief", "request": "...", "provider": "scaleway", "model": "..
            "history": [{"role": "user"|"assistant", "text": "...", "raw": false}]}
           "raw": true sends this message as typed (the human's per-message choice); history items keep their own flag.
           {"op": "forget", "conversation": "<id>"} deletes that conversation's placeholder map (a deleted chat).
+          {"op": "export", "journal": true, "raw": false, "items": [{"file": "tind-report.txt", "text": "..."}]}
+          returns the files for the export folder (for AI apps outside the window) with the fixed rules applied, or
+          as they are with "raw": true. Nothing is saved here and no provider is involved.
           "conversation": "<hex id from the window, keeps placeholder numbers the same across a conversation>"
 Answer:   {"ok": true, "id": "...", "text": "<the exact text that would be sent>", "redactions": {"ip": 2, ...}}
 The briefing is saved as /var/lib/tind-ai/briefing/<uid>/<id>.json, readable by that human and tind-ai-remote only.
@@ -71,6 +74,28 @@ def map_path(uid, conv):
     return os.path.join(mapdir, conv + '.json')
 
 
+EXPORT_FILES = ('tind-report.txt', 'system-log.txt', 'steam-proton.txt')
+
+
+def export(uid, req):
+    """The files for the human's export folder. A fresh placeholder map per export, shared by its files, so the same
+    address is [ip-1] in every file of one export; it is not saved (an export is not a conversation)."""
+    raw = bool(req.get('raw'))
+    r = Redactor(extra_names=[pwd.getpwuid(uid).pw_name])
+    red = (lambda t: t) if raw else r.text
+    files = []
+    for item in req.get('items') or []:
+        name = str(item.get('file', ''))
+        if name not in EXPORT_FILES or name == 'system-log.txt':
+            raise ValueError('not an export file: %s' % name[:60])
+        files.append({'file': name, 'text': red(cut(str(item.get('text', '')), MAX_ITEM))})
+    if req.get('journal'):
+        files.append({'file': 'system-log.txt', 'text': red(journal())})
+    if not files:
+        raise ValueError('nothing to export')
+    return {'ok': True, 'files': files, 'raw': raw, 'redactions': {} if raw else r.summary()}
+
+
 def handle(uid, req):
     if req.get('op') == 'ping':
         return {'ok': True}
@@ -80,6 +105,8 @@ def handle(uid, req):
         if path and os.path.exists(path):
             os.unlink(path)
         return {'ok': True}
+    if req.get('op') == 'export':
+        return export(uid, req)
     if req.get('op') != 'brief':
         raise ValueError('unknown op')
     request = str(req.get('request', '')).strip()

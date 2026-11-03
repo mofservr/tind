@@ -5,6 +5,11 @@
   tind-ai-ask --open last  open the most recent chat (used by the CI self-test)
   tind-ai-ask --check      print whether the services answer and which providers have a key (no window)
   tind-ai-ask --templates  list the task templates (the chips above the input box; no window)
+  tind-ai-ask --prices     list every model's price and price band (no window)
+  tind-ai-ask --export [--unredacted]
+                           export the Tind report and the system log to the export folder, like the window's Export
+                           (no window; used by the CI self-test)
+  tind-ai-ask --open prices  open the window on the Prices page
 
 How a message travels (see /usr/share/doc/tind-ai-users/README):
   1. You type (Direct). Attaching system data (system log, Tind report, Steam logs, files) makes it Checked: the exact
@@ -14,6 +19,11 @@ How a message travels (see /usr/share/doc/tind-ai-users/README):
   3. The provider's remote service (tind-ai-remote@PROVIDER) sends that saved briefing and writes the answer to your
      outbox. Nothing in an answer runs by itself.
 Chats are kept in ~/.local/share/tind-ai/chats/<provider>/ (readable by you only) until you delete them.
+
+Export (header menu, or the + menu) writes the Tind report, the system log and the Steam and Proton logs to a folder in
+your home (~/AI-export unless you pick another), for AI apps outside this window such as Claude Desktop. Those apps
+run as you, outside the walls, so the fixed rules hide names, addresses and keys first unless you tick Unredacted.
+Every export replaces the previous one, so the folder always holds one current set.
 """
 import glob
 import json
@@ -38,6 +48,15 @@ MAX_FILE = 200_000
 SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
 TEMPLATES_FILE = '/usr/share/tind-ai/templates.json'
 ATTACH_KEYS = ('journal', 'report', 'steam')
+PRICES_FILE = '/usr/share/tind-ai/prices.json'
+BANDS = ('free', 'cheap', 'mid', 'expensive', 'unknown')
+BAND_NAMES = {'free': 'Free', 'cheap': 'Cheap', 'mid': 'Mid', 'expensive': 'Expensive', 'unknown': 'Price unknown'}
+CURRENCY = {'EUR': '€', 'USD': '$', 'GBP': '£', 'NOK': 'kr '}
+EXPORT_DEFAULT = os.path.expanduser('~/AI-export')
+# key in the window -> file in the export folder, and how it is described in about.txt
+EXPORT_FILES = {'report': ('tind-report.txt', 'Tind report'), 'journal': ('system-log.txt', 'system log'),
+                'steam': ('steam-proton.txt', 'Steam and Proton logs')}
+EXPORT_ABOUT = 'about.txt'
 
 GUIDE = (
     "This window lets an AI service help you with your computer: a setting, an error message, a program that will "
@@ -197,6 +216,180 @@ def compose_prompt(tpl, values, attached):
     return '\n'.join(tidy)
 
 
+# ---- prices (static data, no network) -------------------------------------------------------------------------------
+def load_prices(path=None):
+    """The shipped price list. A missing or broken file, or a broken entry, gives "price unknown", never an error."""
+    data = load_json(path or PRICES_FILE, {})
+    data = data if isinstance(data, dict) else {}
+    out = {'as_of': str(data.get('as_of', '')), 'free': set(), 'models': {}, 'blend': (3.0, 1.0),
+           'limits': (1.0, 10.0)}
+    try:
+        b, lim = data.get('blend', {}), data.get('limits', {})
+        out['blend'] = (float(b.get('input', 3)), float(b.get('output', 1)))
+        out['limits'] = (float(lim.get('cheap', 1)), float(lim.get('mid', 10)))
+    except (AttributeError, TypeError, ValueError):
+        pass
+    if sum(out['blend']) <= 0:
+        out['blend'] = (3.0, 1.0)
+    free = data.get('free')
+    out['free'] = {p for p in free if isinstance(p, str)} if isinstance(free, list) else set()
+    provs = data.get('providers', {})
+    for pid, models in (provs.items() if isinstance(provs, dict) else []):
+        for mid, e in (models.items() if isinstance(models, dict) else []):
+            try:
+                entry = {'input': float(e['input']), 'output': float(e['output']), 'currency': str(e['currency']),
+                         'note': str(e.get('note', '')), 'checked': e.get('checked', True) is not False}
+            except (KeyError, TypeError, ValueError):
+                continue
+            if entry['input'] >= 0 and entry['output'] >= 0:
+                out['models'][(str(pid), str(mid))] = entry
+    return out
+
+
+def price_of(prices, p, model_id):
+    """The price entry for this provider's model, {'free': True} for a free provider, or None (unknown)."""
+    if p.get('service') == 'local' or p.get('id') in prices['free']:
+        return {'free': True}
+    return prices['models'].get((p.get('id'), model_id))
+
+
+def blended(prices, entry):
+    wi, wo = prices['blend']
+    return (wi * entry['input'] + wo * entry['output']) / (wi + wo)
+
+
+def band(prices, entry):
+    """free, cheap, mid, expensive or unknown. Limits are applied to the 3:1 blend, whatever the currency."""
+    if entry is None:
+        return 'unknown'
+    if entry.get('free'):
+        return 'free'
+    x = blended(prices, entry)
+    if x == 0:
+        return 'free'
+    cheap, mid = prices['limits']
+    return 'cheap' if x < cheap else 'mid' if x < mid else 'expensive'
+
+
+def money(value, currency):
+    sym = CURRENCY.get(currency)
+    num = ('%.2f' % value) if value < 100 else ('%.0f' % value)
+    return sym + num if sym else '%s %s' % (num, currency)
+
+
+def price_text(entry):
+    """'€0.15 in · €0.60 out per million tokens', or the reason there is no price."""
+    if entry is None:
+        return 'Not on Tind\'s price list; check with the provider'
+    if entry.get('free'):
+        return 'Free: runs on this computer'
+    return '%s in · %s out per million tokens' % (money(entry['input'], entry['currency']),
+                                                   money(entry['output'], entry['currency']))
+
+
+def as_of_text(prices):
+    try:
+        return time.strftime('%-d %b %Y', time.strptime(prices['as_of'], '%Y-%m-%d'))
+    except ValueError:
+        return 'an unknown date'
+
+
+def check_prices():
+    prices = load_prices()
+    n = 0
+    for p in tindai.providers():
+        models = p['models'] or [{'id': '', 'name': '(no model yet)'}]
+        for m in models:
+            e = price_of(prices, p, m['id'])
+            n += e is not None and not e.get('free')
+            print('%-28s %-34s %-13s %s' % (tindai.provider_label(p)[:28], tindai.model_label(m)[:34],
+                                            BAND_NAMES[band(prices, e)], price_text(e)))
+    print('prices: %d models priced, list as of %s' % (n, prices['as_of'] or 'unknown'))
+    return 0 if n else 1
+
+
+# ---- export (for AI apps outside this window) -----------------------------------------------------------------------
+def home_short(path):
+    home = os.path.expanduser('~')
+    return '~' + path[len(home):] if path == home or path.startswith(home + os.sep) else path
+
+
+def export_dir(settings):
+    d = settings.get('export_dir')
+    return d if isinstance(d, str) and os.path.isabs(d) else EXPORT_DEFAULT
+
+
+def export_items(keys):
+    """What this window reads as you, for the export: [{'file', 'text'}]. The system log is added by the local
+    service (journal=True), which then applies the fixed rules to all of it."""
+    items = []
+    if 'report' in keys:
+        items.append({'file': EXPORT_FILES['report'][0], 'text': collect_report()})
+    if 'steam' in keys:
+        logs = collect_steam()
+        text = '\n\n'.join('## %s\n%s' % (n, b) for n, b in logs) if logs else '(no Steam or Proton logs found)'
+        items.append({'file': EXPORT_FILES['steam'][0], 'text': text})
+    return items
+
+
+def write_export(folder, files, raw, redactions=None, when=None):
+    """Write one export set into folder, replacing the previous one: files of the set that are not in this export
+    are removed (other files in the folder are left alone), so the folder never mixes two exports. The folder is
+    made 0700 and the files 0600. Returns the names written, about.txt last."""
+    os.makedirs(folder, mode=0o700, exist_ok=True)
+    names = {f['file'] for f in files}
+    known = {v[0] for v in EXPORT_FILES.values()}
+    if not names or not names <= known:
+        raise ValueError('nothing to export')
+    for name in known - names:
+        try:
+            os.unlink(os.path.join(folder, name))
+        except FileNotFoundError:
+            pass
+    order = [v[0] for v in EXPORT_FILES.values()]
+    written = []
+    for f in sorted(files, key=lambda f: order.index(f['file'])):
+        _write_text(os.path.join(folder, f['file']), f['text'])
+        written.append(f['file'])
+    stamp = time.strftime('%Y-%m-%d %H:%M', time.localtime(when or time.time()))
+    if raw:
+        how = 'unredacted (exactly as on the system)'
+    else:
+        how = 'redacted (names, addresses and keys are placeholders such as [ip-1])'
+    _write_text(os.path.join(folder, EXPORT_ABOUT), 'Tind export, %s: %s; %s.' % (stamp, how, ', '.join(written)))
+    return written + [EXPORT_ABOUT]
+
+
+def _write_text(path, text):
+    tmp = path + '.tmp'
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    with os.fdopen(fd, 'w', encoding='utf-8') as f:
+        f.write(text if text.endswith('\n') else text + '\n')
+    os.rename(tmp, path)
+
+
+def run_export(keys, raw, folder):
+    """Collect, redact (unless raw) in the local service, write. Returns (folder, names written, redactions)."""
+    res = tindai.call(tindai.LOCAL_SOCKET, {'op': 'export', 'journal': 'journal' in keys, 'raw': bool(raw),
+                                            'items': export_items(keys)}, timeout=180)
+    if not res.get('ok'):
+        raise RuntimeError(res.get('error') or 'the local service did not answer')
+    return folder, write_export(folder, res['files'], raw), res.get('redactions') or {}
+
+
+def cli_export(raw):
+    folder = export_dir(load_json(SETTINGS, {}))
+    try:
+        folder, names, red = run_export(['report', 'journal'], raw, folder)
+    except (OSError, RuntimeError, ValueError) as e:
+        print('export failed: %s' % e)
+        return 1
+    print('exported to %s: %s' % (folder, ', '.join(names)))
+    print('hidden: %s' % (', '.join('%d %s' % (n, k) for k, n in sorted(red.items())) or
+                          ('nothing (unredacted)' if raw else 'nothing')))
+    return 0
+
+
 def check_templates():
     tpls = load_templates()
     for t in tpls:
@@ -238,6 +431,13 @@ def main(open_target=None):
     .tind-composer { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 6px; }
     .tind-composer textview, .tind-composer textview text { background: transparent; }
     .tind-chip { font-size: 0.9em; padding: 0 4px; }
+    /* price bands: libadwaita's own colours; the band's name is always written next to or under the mark */
+    .tind-dot { font-size: 0.8em; }
+    .tind-band-free { color: #3584e4; }
+    .tind-band-cheap { color: @success_color; }
+    .tind-band-mid { color: @warning_color; }
+    .tind-band-expensive { color: @error_color; }
+    .tind-band-unknown { color: alpha(currentColor, 0.4); }
     """
 
     def bg(work, done):
@@ -249,6 +449,11 @@ def main(open_target=None):
                 res, err = None, e
             GLib.idle_add(lambda: (done(res, err), False)[1])
         threading.Thread(target=run, daemon=True).start()
+
+    def dot(b):
+        """The coloured mark for a price band."""
+        return Gtk.Label(label='●', css_classes=['tind-dot', 'tind-band-' + b], tooltip_text=BAND_NAMES[b],
+                         valign=Gtk.Align.CENTER)
 
     def label(text='', classes=(), **kw):
         lab = Gtk.Label(label=text, xalign=0, wrap=True, css_classes=list(classes), **kw)
@@ -265,6 +470,8 @@ def main(open_target=None):
             self.attach = {'journal': False, 'report': False, 'steam': False, 'files': []}
             self.busy = False
             self.templates = load_templates()
+            self.prices = load_prices()
+            self.back_to = 'chat'
             self.tpl, self.tpl_views, self.tpl_checks = None, {}, {}
 
             self.toasts = Adw.ToastOverlay()
@@ -281,6 +488,9 @@ def main(open_target=None):
             self.refresh_sidebar()
             if not os.path.exists(ACCEPTED):
                 self.show_guide()
+            elif open_target == 'prices':
+                self.new_chat()
+                self.show_prices()
             elif open_target == 'last' and all_chats():
                 self.open_chat(all_chats()[0][1])
             else:
@@ -348,10 +558,27 @@ def main(open_target=None):
             self.pbtn = Gtk.MenuButton(tooltip_text='Provider (a chat stays with its provider)')
             self.pbtn.set_popover(self.build_provider_popover())
             head.pack_start(self.pbtn)
+            menu = Gio.Menu()
+            menu.append('Prices', 'win.prices')
+            menu.append('Export logs to a folder…', 'win.export')
+            for name, fn in (('prices', lambda *_: self.show_prices()), ('export', lambda *_: self.export_dialog()),
+                             ('open-export', lambda *_: self.open_export_folder())):
+                act = Gio.SimpleAction.new(name, None)
+                act.connect('activate', fn)
+                self.add_action(act)
+            head.pack_end(Gtk.MenuButton(icon_name='open-menu-symbolic', menu_model=menu, tooltip_text='Menu'))
             keybtn = Gtk.Button(icon_name='dialog-password-symbolic', tooltip_text='API key for this provider')
             keybtn.connect('clicked', lambda *_: self.key_dialog())
             head.pack_end(keybtn)
-            self.mbtn = Gtk.MenuButton(tooltip_text='Model')
+            self.mbtn = Gtk.MenuButton(tooltip_text='Model and price')
+            if hasattr(self.mbtn, 'set_always_show_arrow'):     # GTK 4.4+
+                self.mbtn.set_always_show_arrow(True)
+            mbox = Gtk.Box(spacing=6)
+            self.mdot = dot('unknown')
+            self.mlabel = Gtk.Label()
+            mbox.append(self.mdot)
+            mbox.append(self.mlabel)
+            self.mbtn.set_child(mbox)
             head.pack_end(self.mbtn)
             view.add_top_bar(head)
 
@@ -363,6 +590,7 @@ def main(open_target=None):
             self.stack.add_named(self.scroll, 'chat')
             self.stack.add_named(self.build_guide(), 'guide')
             self.stack.add_named(self.build_template_page(), 'template')
+            self.stack.add_named(self.build_prices_page(), 'prices')
             view.set_content(self.stack)
             self.composer = self.build_composer()
             view.add_bottom_bar(self.composer)
@@ -389,11 +617,180 @@ def main(open_target=None):
             lb = Gtk.ListBox(css_classes=['boxed-list'], selection_mode=Gtk.SelectionMode.NONE, margin_top=6,
                              margin_bottom=6, margin_start=6, margin_end=6)
             for m in p['models']:
-                row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.model_label(m)), activatable=True)
+                e = price_of(self.prices, p, m['id'])
+                b = band(self.prices, e)
+                row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.model_label(m)), activatable=True,
+                                    subtitle=GLib.markup_escape_text('%s · %s' % (BAND_NAMES[b], price_text(e))))
+                row.add_prefix(dot(b))
                 row.connect('activated', lambda _r, mid=m['id']: (pop.popdown(), self.pick_model(mid)))
                 lb.append(row)
-            pop.set_child(lb)
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            box.append(lb)
+            allp = Gtk.Button(label='All prices…', css_classes=['flat'], margin_bottom=4)
+            allp.connect('clicked', lambda *_: (pop.popdown(), self.show_prices()))
+            box.append(allp)
+            pop.set_child(box)
             return pop
+
+        # ---- prices (the shipped list; nothing is looked up) -----------------------------------------------------
+        def build_prices_page(self):
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12, margin_top=24, margin_bottom=24,
+                          margin_start=24, margin_end=24)
+            box.append(label('Prices', ['title-2']))
+            box.append(label('Per million tokens, input and output, in the provider\'s own currency, before VAT. '
+                             'A token is about three quarters of a word. Tind\'s list is from %s and comes with Tind '
+                             'updates; providers change their prices, so check their page before you rely on it.'
+                             % as_of_text(self.prices), ['dim-label']))
+            cheap, mid = self.prices['limits']
+            num = lambda x: ('%g' % x)  # noqa: E731
+            legend = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, column_spacing=18, row_spacing=4,
+                                 max_children_per_line=5, homogeneous=False)
+            for b, text in (('free', 'Free'), ('cheap', 'Cheap: under %s' % num(cheap)),
+                            ('mid', 'Mid: %s to %s' % (num(cheap), num(mid))),
+                            ('expensive', 'Expensive: over %s' % num(mid)), ('unknown', 'Price unknown')):
+                item = Gtk.Box(spacing=6)
+                item.append(dot(b))
+                item.append(Gtk.Label(label=text, css_classes=['caption']))
+                legend.append(item)
+            box.append(legend)
+            box.append(label('The colour counts 3 parts input to 1 part output, the usual mix in a chat; € and $ are '
+                             'treated alike. Free means a model on this computer.', ['dim-label', 'caption']))
+            for p in self.providers:
+                grp = Adw.PreferencesGroup(title=GLib.markup_escape_text(tindai.provider_label(p)))
+                models = p['models'] or [{'id': '', 'name': 'No model yet' if p.get('service') == 'local'
+                                          else 'The model you set'}]
+                for m in models:
+                    e = price_of(self.prices, p, m['id'])
+                    b = band(self.prices, e)
+                    sub = price_text(e)
+                    if e and e.get('note'):
+                        sub += '\n' + e['note']
+                    row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.model_label(m)),
+                                        subtitle=GLib.markup_escape_text(sub))
+                    row.add_prefix(dot(b))
+                    row.add_suffix(Gtk.Label(label=BAND_NAMES[b], css_classes=['dim-label', 'caption']))
+                    grp.add(row)
+                box.append(grp)
+            sw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
+            sw.set_child(Adw.Clamp(maximum_size=640, child=box))
+            actions = Gtk.Box(halign=Gtk.Align.END, margin_top=8, margin_bottom=12, margin_start=24, margin_end=24)
+            back = Gtk.Button(label='Back', css_classes=['pill'])
+            back.connect('clicked', lambda *_: self.close_prices())
+            actions.append(back)
+            page = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            page.append(sw)
+            page.append(Gtk.Separator())
+            page.append(Adw.Clamp(maximum_size=640, child=actions))
+            return page
+
+        def show_prices(self):
+            if self.stack.get_visible_child_name() == 'prices':
+                return
+            self.back_to = self.stack.get_visible_child_name()
+            self.stack.set_visible_child_name('prices')
+            self.composer.set_visible(False)
+            self.update_templates()
+
+        def close_prices(self):
+            self.stack.set_visible_child_name(self.back_to or 'chat')
+            self.composer.set_visible(self.back_to != 'template')
+            self.update_templates()
+
+        # ---- export (for AI apps outside this window) -------------------------------------------------------------
+        def export_dialog(self):
+            if not os.path.exists(ACCEPTED):
+                self.toast('Accept the guide first.')
+                return
+            folder = [export_dir(self.settings)]
+            last = self.settings.get('export_items')
+            ticked = [k for k in last if k in EXPORT_FILES] if isinstance(last, list) else ['report', 'journal']
+            dlg = Adw.AlertDialog(heading='Export logs to a folder',
+                                  body='For AI apps outside this window, such as Claude Desktop: point them at the '
+                                       'folder. Each export replaces the previous one.')
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
+            checks = {}
+            for key, text in (('report', 'Tind report (hardware, drivers, setup)'),
+                              ('journal', 'System log (this boot, warnings and errors)'),
+                              ('steam', 'Steam and Proton logs')):
+                checks[key] = Gtk.CheckButton(label=text, active=key in ticked)
+                box.append(checks[key])
+            raw = Gtk.CheckButton(label='Unredacted: keep names, addresses and keys', margin_top=8)
+            rawnote = label('Those apps run outside the walls and can send the files on exactly as they are.',
+                            ['error', 'caption'], visible=False)
+            raw.connect('toggled', lambda b: rawnote.set_visible(b.get_active()))
+            box.append(raw)
+            box.append(rawnote)
+            grp = Adw.PreferencesGroup(margin_top=10)
+            where = Adw.ActionRow(title='Folder', subtitle=GLib.markup_escape_text(home_short(folder[0])))
+            change = Gtk.Button(label='Change…', valign=Gtk.Align.CENTER, css_classes=['flat'])
+            where.add_suffix(change)
+            grp.add(where)
+            box.append(grp)
+
+            def picked(d, res):
+                try:
+                    f = d.select_folder_finish(res)
+                except GLib.Error:
+                    return
+                if f and f.get_path():
+                    folder[0] = f.get_path()
+                    where.set_subtitle(GLib.markup_escape_text(home_short(folder[0])))
+            def choose(*_):
+                fd = Gtk.FileDialog(title='Export folder', modal=True)
+                start = folder[0] if os.path.isdir(folder[0]) else os.path.expanduser('~')
+                fd.set_initial_folder(Gio.File.new_for_path(start))
+                fd.select_folder(self, None, picked)
+            change.connect('clicked', choose)
+
+            dlg.set_extra_child(box)
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('export', 'Export')
+            dlg.set_response_appearance('export', Adw.ResponseAppearance.SUGGESTED)
+            dlg.set_default_response('export')
+            dlg.set_close_response('cancel')
+
+            def update(*_):
+                dlg.set_response_enabled('export', any(c.get_active() for c in checks.values()))
+            for c in checks.values():
+                c.connect('toggled', update)
+            update()
+
+            def respond(_d, r):
+                if r != 'export':
+                    return
+                keys = [k for k in EXPORT_FILES if checks[k].get_active()]
+                self.settings['export_items'] = keys
+                if folder[0] == EXPORT_DEFAULT:
+                    self.settings.pop('export_dir', None)
+                else:
+                    self.settings['export_dir'] = folder[0]
+                save_json(SETTINGS, self.settings, 0o644)
+                self.do_export(keys, raw.get_active(), folder[0])
+            dlg.connect('response', respond)
+            dlg.present(self)
+
+        def do_export(self, keys, raw, folder):
+            self.toast('Exporting…')
+
+            def done(res, err):
+                if err:
+                    self.toast('Not exported: %s' % err)
+                    return
+                path, names, red = res
+                hidden = 'nothing hidden' if raw else ('hidden: ' + ', '.join(
+                    '%d %s' % (n, k) for k, n in sorted(red.items())) if red else 'nothing needed hiding')
+                t = Adw.Toast(title=GLib.markup_escape_text('Exported %d files to %s (%s)' % (
+                    len(names), home_short(path), hidden)), timeout=8, button_label='Open folder',
+                    action_name='win.open-export')
+                self.toasts.add_toast(t)
+            bg(lambda: run_export(keys, raw, folder), done)
+
+        def open_export_folder(self):
+            path = export_dir(self.settings)
+            try:
+                Gio.AppInfo.launch_default_for_uri(Gio.File.new_for_path(path).get_uri(), None)
+            except GLib.Error as e:
+                self.toast('Could not open %s: %s' % (home_short(path), e.message))
 
         def build_guide(self):
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14, margin_top=24, margin_bottom=24,
@@ -585,6 +982,12 @@ def main(open_target=None):
             f.get_child().set_xalign(0)
             f.connect('clicked', lambda *_: (pop.popdown(), self.pick_files()))
             box.append(f)
+            box.append(Gtk.Separator(margin_top=2, margin_bottom=2))
+            ex = Gtk.Button(label='Export logs to a folder…', css_classes=['flat'],
+                            tooltip_text='For AI apps outside this window, such as Claude Desktop')
+            ex.get_child().set_xalign(0)
+            ex.connect('clicked', lambda *_: (pop.popdown(), self.export_dialog()))
+            box.append(ex)
             pop.set_child(box)
             return pop
 
@@ -606,7 +1009,11 @@ def main(open_target=None):
             m = next((x for x in p['models'] if x['id'] == mid), None)
             self.mbtn.set_visible(bool(m))
             if m:
-                self.mbtn.set_label(tindai.model_label(m))
+                e = price_of(self.prices, p, mid)
+                b = band(self.prices, e)
+                self.mlabel.set_label(tindai.model_label(m))
+                self.mdot.set_css_classes(['tind-dot', 'tind-band-' + b])
+                self.mdot.set_tooltip_text('%s: %s' % (BAND_NAMES[b], price_text(e)))
                 self.mbtn.set_popover(self.build_model_popover(p))
             self.wtitle.set_title((self.chat or {}).get('title') or 'New chat')
             self.wtitle.set_subtitle(tindai.provider_label(p))
@@ -854,7 +1261,9 @@ def main(open_target=None):
         def on_window_key(self, _ctl, keyval, _code, state):
             ctrl = state & Gdk.ModifierType.CONTROL_MASK
             if keyval == Gdk.KEY_Escape:
-                if self.tpl is not None:
+                if self.stack.get_visible_child_name() == 'prices':
+                    self.close_prices()
+                elif self.tpl is not None:
                     self.close_template()
                 else:
                     self.close()
@@ -1115,5 +1524,9 @@ if __name__ == '__main__':
         sys.exit(check())
     if '--templates' in sys.argv:
         sys.exit(check_templates())
+    if '--prices' in sys.argv:
+        sys.exit(check_prices())
+    if '--export' in sys.argv:
+        sys.exit(cli_export('--unredacted' in sys.argv))
     target = sys.argv[sys.argv.index('--open') + 1] if '--open' in sys.argv[:-1] else None
     sys.exit(main(target))

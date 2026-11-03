@@ -36,6 +36,10 @@ systemd-run --unit=tind-ci-ai-accept --collect \
 systemd-run --unit=tind-ci-ai-open --collect \
     sh -c "sleep 262; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus WAYLAND_DISPLAY=wayland-0 timeout 60 tind-ai-ask --open last" \
     >/dev/null 2>&1 || true
+# and at ~325 s (after the chat window above has closed) open the Prices page; the boot job screenshots it at ~338 s
+systemd-run --unit=tind-ci-ai-prices --collect \
+    sh -c "sleep 325; runuser -u tind -- env XDG_RUNTIME_DIR=/run/user/$UIDN DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$UIDN/bus WAYLAND_DISPLAY=wayland-0 timeout 40 tind-ai-ask --open prices" \
+    >/dev/null 2>&1 || true
 echo "=====TIND-SELFTEST-BEGIN====="
 sec os-release; cat /etc/os-release
 sec tind packages; dpkg -l 'tind-*' | tail -n +6 | awk '{print $1, $2, $3}'
@@ -326,6 +330,23 @@ stat -c '%a %U %n' /var/lib/tind-ai/* /var/lib/tind-ai/*/* 2>&1 | head -12
 asuser tind-ai-ask --check 2>&1 | head -10
 tpl="$(asuser tind-ai-ask --templates 2>&1)"; echo "$tpl" | head -6
 echo "$tpl" | grep -q '^templates: 5$' && ai templates ok || ai templates "FAIL $(echo "$tpl" | tail -1)"
+pr="$(asuser tind-ai-ask --prices 2>&1)"; echo "$pr" | head -20
+echo "$pr" | grep -q '^prices: [1-9][0-9]* models priced' && echo "$pr" | grep -q 'gpt-oss-120b (everyday) *Cheap' \
+    && ai prices ok || ai prices "FAIL $(echo "$pr" | tail -1)"
+# export for AI apps outside the window: redacted by default, unredacted only when asked; ~/AI-export, one set
+X=/home/tind/AI-export
+ex="$(asuser tind-ai-ask --export 2>&1)"; echo "$ex"
+leak=""; for v in hunter22ci ghp_cicicicicicicicicicicicicicicicicici99 10.11.12.13 ola.ci@example.no; do
+    grep -q "$v" "$X"/*.txt 2>/dev/null && leak="$leak $v"
+done
+grep -q 'planted for the AI test' "$X/system-log.txt" 2>/dev/null && [ -s "$X/tind-report.txt" ] && [ -z "$leak" ] \
+    && grep -q ': redacted' "$X/about.txt" && [ "$(stat -c '%a %U' "$X")" = "700 tind" ] && ai export-redacted ok \
+    || ai export-redacted "FAIL ${leak:+leaked$leak }$(echo "$ex" | tail -1) $(ls -l "$X" 2>&1 | tr '\n' '|')"
+ex="$(asuser tind-ai-ask --export --unredacted 2>&1)"
+grep -q 'hunter22ci' "$X/system-log.txt" 2>/dev/null && grep -q ': unredacted' "$X/about.txt" && ai export-unredacted ok \
+    || ai export-unredacted "FAIL $(echo "$ex" | tail -1)"
+asuser tind-ai-ask --export >/dev/null 2>&1 || true   # leave the folder redacted
+ls -l "$X"; cat "$X/about.txt"
 systemctl stop tind-ci-fakeai >/dev/null 2>&1 || true
 fi
 # daily-machine checks (roadmap d1): one DAILY line per check, "ok" or "FAIL <why>". The installer test prints them

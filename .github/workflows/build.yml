@@ -325,6 +325,9 @@ jobs:
             settings_shot settings-light 268
             sleep $(( 288 - ( $(date +%s) - T0 ) )) || true
             ai_shot ai-chat-light
+            # the guest opens the AI window's Prices page at ~325 s (tind-selftest); Escape closes it
+            settings_shot ai-prices-light 338
+            echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop

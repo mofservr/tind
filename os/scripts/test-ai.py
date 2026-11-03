@@ -326,6 +326,82 @@ odd = ask.load_templates(junk)
 check([t['id'] for t in odd] == ['a'] and odd[0]['attach'] == ['report'],
       'templates: a malformed, duplicate or half-empty entry is skipped and unknown data names are dropped')
 
+# ---- prices (the shipped list, colour bands) ---------------------------------------------------------------------
+PRICES = os.path.join(ROOT, 'tind-ai-ui/usr/share/tind-ai/prices.json')
+pr = ask.load_prices(PRICES)
+check(pr['as_of'] and pr['limits'] == (1.0, 10.0) and pr['blend'] == (3.0, 1.0),
+      'prices: the list has a date, the limits 1 and 10 and the 3:1 blend')
+missing = [(p['id'], m['id']) for p in tindai.providers() if p['service'] == 'remote' and p['id'] != 'custom'
+           for m in p['models'] if ask.price_of(pr, p, m['id']) is None]
+check(not missing, 'prices: every listed model of a known provider has a price %s' % missing)
+bands = {(p['id'], m['id']): ask.band(pr, ask.price_of(pr, p, m['id'])) for p in tindai.providers()
+         for m in p['models']}
+check(bands[('scaleway', 'gpt-oss-120b')] == 'cheap', 'prices: the default model is cheap')
+check(bands[('openai', 'gpt-5.6-sol')] == 'expensive', 'prices: GPT-5.6 Sol is expensive')
+check(bands[('anthropic', 'claude-sonnet-5-5')] == 'mid', 'prices: Claude Sonnet 5.5 is mid')
+check(ask.band(pr, ask.price_of(pr, tindai.provider('local'), '')) == 'free', 'prices: this computer is free')
+check(ask.band(pr, ask.price_of(pr, tindai.provider('custom'), 'anything')) == 'unknown',
+      'prices: a custom server is price unknown')
+check(ask.band(pr, {'input': 0.1, 'output': 3.0, 'currency': 'EUR'}) == 'cheap'
+      and ask.band(pr, {'input': 1.0, 'output': 1.0, 'currency': 'EUR'}) == 'mid'
+      and ask.band(pr, {'input': 9.0, 'output': 13.0, 'currency': 'USD'}) == 'expensive',
+      'prices: the band uses the blend (3 in : 1 out), not the output price alone')
+check(ask.price_text(pr['models'][('scaleway', 'gpt-oss-120b')]) == '€0.15 in · €0.60 out per million tokens',
+      'prices: shown per million tokens in the provider\'s currency')
+check(ask.price_text(pr['models'][('openai', 'gpt-5.6-sol')]).startswith('$5.00 in'), 'prices: dollars as $')
+check(ask.load_prices(os.path.join(tmp, 'missing.json'))['models'] == {}, 'prices: a missing file means unknown')
+with open(junk, 'w') as f:
+    f.write('{not json')
+check(ask.load_prices(junk)['models'] == {}, 'prices: a broken file means unknown, not a crash')
+json.dump({'limits': 'x', 'blend': {'input': 0, 'output': 0}, 'free': 'local',
+           'providers': {'scaleway': {'gpt-oss-120b': {'input': 'cheap'}, 'ok': {'input': 1, 'output': 2,
+                                                                                 'currency': 'EUR'}}}},
+          open(junk, 'w'))
+odd = ask.load_prices(junk)
+check(list(odd['models']) == [('scaleway', 'ok')] and odd['limits'] == (1.0, 10.0) and odd['blend'] == (3.0, 1.0)
+      and odd['free'] == set(), 'prices: a broken entry or setting is skipped and the defaults stay')
+
+# ---- export (for AI apps outside the window) -----------------------------------------------------------------------
+ex = local.handle(uid, {'op': 'export', 'journal': True,
+                        'items': [{'file': 'tind-report.txt', 'text': 'report from ' + PLANTED['ip']},
+                                  {'file': 'steam-proton.txt', 'text': log}]})
+names = [f['file'] for f in ex['files']]
+check(ex['ok'] and names == ['tind-report.txt', 'steam-proton.txt', 'system-log.txt'],
+      'export: the local service returns the three files')
+alltext = ''.join(f['text'] for f in ex['files'])
+for k, v in PLANTED.items():
+    check(v not in alltext, 'export: planted %s is not in the export' % k)
+check(all('[ip-1]' in f['text'] for f in ex['files'] if f['file'] != 'steam-proton.txt'),
+      'export: the same address is the same placeholder in every file of one export')
+before = sorted(os.listdir(os.path.join(tindai.BRIEF_DIR, str(uid))))
+rawex = local.handle(uid, {'op': 'export', 'raw': True, 'items': [{'file': 'tind-report.txt', 'text': log}]})
+check(PLANTED['pw'] in rawex['files'][0]['text'] and rawex['redactions'] == {}, 'export: unredacted keeps the file as is')
+check(sorted(os.listdir(os.path.join(tindai.BRIEF_DIR, str(uid)))) == before, 'export: no briefing is saved')
+for bad in ({'items': [{'file': '../.ssh/id_ed25519', 'text': 'x'}]},
+            {'items': [{'file': 'system-log.txt', 'text': 'fake journal'}]}, {}):
+    try:
+        local.handle(uid, dict(bad, op='export'))
+        check(False, 'export: refused %s' % bad)
+    except ValueError:
+        check(True, 'export: refused %s' % (bad or 'an empty export'))
+out_dir = os.path.join(tmp, 'home', 'AI-export')
+w = ask.write_export(out_dir, ex['files'], False, when=0)
+check(w == ['tind-report.txt', 'system-log.txt', 'steam-proton.txt', 'about.txt'], 'export: files written in order %s' % w)
+check(os.stat(out_dir).st_mode & 0o777 == 0o700 and all(
+    os.stat(os.path.join(out_dir, n)).st_mode & 0o777 == 0o600 for n in w), 'export: folder 0700, files 0600')
+about = open(os.path.join(out_dir, 'about.txt')).read()
+check(about.count('\n') == 1 and 'redacted' in about and 'unredacted' not in about and 'system-log.txt' in about,
+      'export: about.txt is one line saying it is redacted and what is in it: %s' % about.strip())
+open(os.path.join(out_dir, 'notes.md'), 'w').close()
+ask.write_export(out_dir, rawex['files'], True)
+left = sorted(os.listdir(out_dir))
+check(left == ['about.txt', 'notes.md', 'tind-report.txt'],
+      'export: the next export replaces the set and leaves other files alone %s' % left)
+check('unredacted' in open(os.path.join(out_dir, 'about.txt')).read(), 'export: about.txt says when it is unredacted')
+check(ask.export_dir({}) == os.path.expanduser('~/AI-export') and ask.export_dir({'export_dir': 'rel'}) ==
+      os.path.expanduser('~/AI-export') and ask.export_dir({'export_dir': out_dir}) == out_dir,
+      'export: ~/AI-export unless another absolute folder was chosen')
+
 shutil.rmtree(tmp)
 print('ALL AI TESTS PASSED' if not failures else '%d AI TEST(S) FAILED' % failures)
 sys.exit(1 if failures else 0)
