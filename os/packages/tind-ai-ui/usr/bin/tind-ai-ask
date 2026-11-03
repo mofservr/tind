@@ -153,8 +153,22 @@ def sub_dir(settings, name):
 
 
 def make_dir(path):
-    """Create path (and missing parents) readable by you only."""
-    os.makedirs(path, mode=0o700, exist_ok=True)
+    """Create path and every missing parent readable by you only (os.makedirs gives its mode to the last folder
+    only; the parents would get the umask's 755). Folders that already exist are left as they are."""
+    missing = []
+    p = os.path.abspath(path)
+    while not os.path.isdir(p):
+        missing.append(p)
+        parent = os.path.dirname(p)
+        if parent == p:
+            break
+        p = parent
+    for d in reversed(missing):
+        try:
+            os.mkdir(d, 0o700)
+        except FileExistsError:
+            continue
+        os.chmod(d, 0o700)
     return path
 
 

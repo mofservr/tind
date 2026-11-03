@@ -479,8 +479,13 @@ chat = {'id': 'ab12cd34ef567890', 'provider': 'scaleway', 'model': 'gpt-oss-120b
 path = ask.save_chat_file(arch, chat)
 check(path.startswith(os.path.join(arch, 'scaleway', '')) and path.endswith('-ab12cd34ef567890.md')
       and 'steam-starter-ikke' in path, 'archive: one Markdown file per chat under its provider: %s' % path)
-check(os.stat(path).st_mode & 0o777 == 0o600 and os.stat(os.path.dirname(path)).st_mode & 0o777 == 0o700,
-      'archive: folder 0700, file 0600')
+check(os.stat(path).st_mode & 0o777 == 0o600 and all(os.stat(d).st_mode & 0o777 == 0o700 for d in (
+    os.path.dirname(path), arch, ask.FOLDER_DEFAULT)), 'archive: the file 0600, and every folder made for it 0700')
+deep = os.path.join(tmp, 'fresh', 'TindAI', 'Documents')
+os.umask(0o022)
+ask.make_dir(deep)
+check(all(os.stat(d).st_mode & 0o777 == 0o700 for d in (deep, os.path.dirname(deep), os.path.dirname(
+    os.path.dirname(deep)))), 'folder: every folder make_dir creates is 0700, not only the last one')
 md = open(path, encoding='utf-8').read()
 check(md.startswith('---\ntind-chat: 1\n') and '# Steam «starter» ikke: /?' in md and '### You · ' in md
       and '### Scaleway - France · gpt-oss-120b (everyday) · ' in md and '<details><summary>' in md,
