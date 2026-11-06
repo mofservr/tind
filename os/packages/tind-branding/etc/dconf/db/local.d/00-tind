@@ -112,7 +112,7 @@ show-screen-recording-ui=['<Ctrl><Shift><Alt>R', '<Super>r']
 current-workspace-only=true
 
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai/']
 control-center=['<Super>s']
 calculator=['<Super>c']
 mic-mute=['<Super>m']
@@ -137,6 +137,12 @@ binding='<Super>b'
 name='Private browser window'
 command='firefox-esr --private-window'
 binding='<Super><Control>b'
+
+# Super+Ctrl+T: the terminal cheat sheet (an app variant of the Terminal), decided 6 Nov 2026
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-help]
+name='Terminal commands'
+command='tind-hotkeys --terminal'
+binding='<Super><Control>t'
 
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor]
 name='Writer or Text Editor'
