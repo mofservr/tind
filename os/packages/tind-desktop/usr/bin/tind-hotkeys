@@ -1,14 +1,17 @@
 #!/usr/bin/python3
 # tind-hotkeys: Tind's hotkey overview (Super+H), plus two command line modes used by the CI self-test.
 #
-#   tind-hotkeys          open the one-page overview; running it again while it is open closes it (Super+H toggles);
-#                         its "All shortcuts" button opens the full list
-#   tind-hotkeys --list   print every hotkey that is bound right now, one per line (no window)
-#   tind-hotkeys --check  exit 1 and print the clashes if one key combination is bound to two actions
+#   tind-hotkeys             open the one-page overview; running it again while it is open closes it (Super+H toggles);
+#                            its "All shortcuts" button opens the full list
+#   tind-hotkeys --terminal  open the terminal cheat sheet (Super+Ctrl+T toggles it the same way)
+#   tind-hotkeys --list      print every hotkey that is bound right now, one per line (no window)
+#   tind-hotkeys --check     exit 1 and print the clashes if one key combination is bound to two actions
 #
-# Everything is read live from the settings (GNOME Shell, mutter, gnome-settings-daemon, Dash to Dock, Caffeine and
-# the custom keybindings), so the window is right even after a user has changed a key in Settings. Nothing in here is
-# a fixed list of keys. The only fixed things are a few friendlier action names and the window's group order.
+# Everything in the overview is read live from the settings (GNOME Shell, mutter, gnome-settings-daemon, Dash to
+# Dock, Caffeine and the custom keybindings), so the window is right even after a user has changed a key in Settings.
+# The only fixed things there are a few friendlier action names and the window's group order. The terminal cheat
+# sheet is the exception: it is a fixed list of commands (TERMINAL below), plus the terminal's own keys, which belong
+# to gnome-terminal and are not in the desktop's settings.
 import re
 import sys
 
@@ -350,6 +353,7 @@ SHEET = [
      ('Apps', 'Super+Ctrl', [
         ('Dock app', [(DOCK_SCHEMA, 'app-hotkey-#')], None),
         ('Private browser window', [(CUSTOM, 'tind-browser-private')], None),
+        ('Terminal commands', [(CUSTOM, 'tind-terminal-help')], None),
      ])],
     [('Commands', 'Super+letter', 'LETTERS')],
     [('Switching', None, [
@@ -391,7 +395,73 @@ CSS = b"""
                background: alpha(currentColor, 0.06); }
 .tind-hk-key.letter { min-width: 18px; }
 .tind-hk-footer { font-size: 0.9em; }
+.tind-hk-cmd { font-family: monospace; font-size: 0.9em; padding: 1px 6px; border-radius: 5px;
+               background: alpha(currentColor, 0.08); }
 """
+
+# The terminal cheat sheet (Super+Ctrl+T): the commands new users need most, in English because most help online is.
+# Long texts are broken by hand with \n: wrapping labels made GTK size the window far too tall.
+# Columns of (title, kind, rows); kind 'keys' rows are ([keycaps], text), kind 'cmds' rows are (command, text) or
+# (command, text, 'warn') for commands that cannot be undone. Decided with Morten on 6 Nov 2026; add to it as needed.
+TERMINAL = [
+    [('Keys in the terminal', 'keys', [
+        (['Ctrl', 'Shift', 'C'], 'Copy'),
+        (['Ctrl', 'Shift', 'V'], 'Paste'),
+        (['Ctrl', 'C'], 'Stop the running command'),
+        (['Tab'], 'Complete a file or command name'),
+        (['↑'], 'Repeat an earlier command'),
+        (['Ctrl', 'R'], 'Search earlier commands'),
+        (['Ctrl', 'L'], 'Clear the screen (or: clear)'),
+     ]),
+     ('Moving around', 'cmds', [
+        ('pwd', 'Which folder am I in'),
+        ('ls', 'List the files here'),
+        ('ls -la', 'List with hidden files and details'),
+        ('cd Folder', 'Go into a folder'),
+        ('cd ..', 'Up one folder'),
+        ('cd ~', 'Home folder'),
+        ('cd -', 'Back to the previous folder'),
+     ])],
+    [('Files', 'cmds', [
+        ('mkdir name', 'New folder'),
+        ('cp a b', 'Copy a file'),
+        ('cp -r a b', 'Copy a folder'),
+        ('mv a b', 'Move or rename'),
+        ('rm file', 'Delete a file: no bin, no undo', 'warn'),
+        ('rm -r folder', 'Delete a folder: no bin, no undo', 'warn'),
+        ('nano file', 'Edit a text file\n(Ctrl+O saves, Ctrl+X quits)'),
+        ('cat file', 'Show a file'),
+        ('less file', 'Show a long file (q quits)'),
+     ]),
+     ('Finding things', 'cmds', [
+        ('find . -name "*.pdf"', 'Find files by name'),
+        ('grep -ri "text" .', 'Find text inside files'),
+     ]),
+     ('Help', 'cmds', [
+        ('man command', 'The manual (q quits)'),
+        ('command --help', 'Short help'),
+        ('sudo command', 'Run as administrator. The password\ndoes not show while you type'),
+     ])],
+    [('Software and updates', 'cmds', [
+        ('sudo apt update && sudo apt upgrade', 'Update the system'),
+        ('apt search name', 'Look for a program'),
+        ('sudo apt install name', 'Install a program'),
+        ('sudo apt remove name', 'Remove a program'),
+        ('flatpak update', 'Update Flatpak apps'),
+        ('flatpak list', 'List Flatpak apps'),
+     ]),
+     ('System and troubleshooting', 'cmds', [
+        ('df -h', 'Free disk space'),
+        ('free -h', 'Memory use'),
+        ('top', 'What is using the CPU (q quits)'),
+        ('ip a', 'Network addresses'),
+        ('ping -c 4 debian.org', 'Is the internet up'),
+        ('sudo journalctl -b -p err', 'Errors since start-up'),
+        ('tind-report', 'System report file for a\nbug report or a chat'),
+        ('reboot', 'Restart'),
+        ('poweroff', 'Shut down'),
+     ])],
+]
 
 
 def sheet_accels(schema, key):
@@ -540,22 +610,83 @@ def run_window():
         keys.connect('key-pressed', on_key)
         win.add_controller(keys)
 
+    def terminal_card(title, kind, rows):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, css_classes=['card', 'tind-hk-card'])
+        box.append(Gtk.Label(label=title, xalign=0, css_classes=['heading']))
+        grid = Gtk.Grid(column_spacing=12, row_spacing=5)
+        for i, row in enumerate(rows):
+            what, text = row[0], row[1]
+            if kind == 'keys':
+                left = keycaps(Gtk, what)
+                left.set_halign(Gtk.Align.START)
+            else:
+                left = Gtk.Label(label=what, xalign=0, halign=Gtk.Align.START, valign=Gtk.Align.START,
+                                 css_classes=['tind-hk-cmd'])
+            grid.attach(left, 0, i, 1, 1)
+            desc = Gtk.Label(label=text, xalign=0, hexpand=True, valign=Gtk.Align.START)
+            if len(row) > 2 and row[2] == 'warn':
+                desc.add_css_class('error')
+            grid.attach(desc, 1, i, 1, 1)
+        box.append(grid)
+        return box
+
     class App(Adw.Application):
         def __init__(self):
-            super().__init__(application_id='no.servr.TindHotkeys')
-            self.win = None
+            super().__init__(application_id='no.servr.TindHotkeys',
+                             flags=Gio.ApplicationFlags.HANDLES_COMMAND_LINE)
+            self.wins = {}
+            self.css_done = False
+
+        def do_command_line(self, cmdline):
+            self.toggle('terminal' if '--terminal' in cmdline.get_arguments()[1:] else 'overview')
+            return 0
 
         def do_activate(self):
+            self.toggle('overview')
+
+        def toggle(self, which):
             # a second start while the window is open closes it, so the same key opens and closes the window
-            if self.win is not None and self.win.get_visible():
-                self.win.close()
+            win = self.wins.get(which)
+            if win is not None and win.get_visible():
+                win.close()
                 return
-            css = Gtk.CssProvider()
-            css.load_from_data(CSS)
-            Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
-                                                      Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            self.win = self.build_overview()
-            self.win.present()
+            if not self.css_done:
+                css = Gtk.CssProvider()
+                css.load_from_data(CSS)
+                Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
+                                                          Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+                self.css_done = True
+            self.wins[which] = self.build_terminal() if which == 'terminal' else self.build_overview()
+            self.wins[which].present()
+
+        def build_terminal(self):
+            win = Adw.ApplicationWindow(application=self, title='Terminal commands', resizable=False)
+            view = Adw.ToolbarView()
+            header = Adw.HeaderBar()
+            header.set_title_widget(Adw.WindowTitle(title='Terminal commands',
+                                                    subtitle='The commands you need most, for the Terminal (Super+T)'))
+            view.add_top_bar(header)
+            # not homogeneous: the columns differ in width, and equal columns would not fit a 1366 px screen
+            columns = Gtk.Box(spacing=12, margin_start=12, margin_end=12, margin_top=6)
+            for column in TERMINAL:
+                col = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+                for title, kind, rows in column:
+                    col.append(terminal_card(title, kind, rows))
+                columns.append(col)
+            outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin_bottom=12)
+            outer.append(columns)
+            foot = Gtk.Box(spacing=12, margin_start=16, margin_end=12)
+            foot.append(Gtk.Label(label='Words like name, file and folder stand for your own. Names are case '
+                                        'sensitive, and a name with spaces goes in quotes: cd "My folder".',
+                                  xalign=0, hexpand=True, wrap=True, css_classes=['dim-label', 'tind-hk-footer']))
+            button = Gtk.Button(label='Hotkey overview…')
+            button.connect('clicked', lambda _b: self.toggle('overview'))
+            foot.append(button)
+            outer.append(foot)
+            view.set_content(outer)
+            win.set_content(view)
+            close_on_esc(win)
+            return win
 
         def build_overview(self):
             win = Adw.ApplicationWindow(application=self, title='Hotkey overview', resizable=False)
@@ -575,6 +706,9 @@ def run_window():
             foot.append(Gtk.Label(label='Volume, brightness and media keys work as printed on the key. '
                                         'Change any hotkey in Settings › Keyboard › View and Customise Shortcuts.',
                                   xalign=0, hexpand=True, wrap=True, css_classes=['dim-label', 'tind-hk-footer']))
+            term = Gtk.Button(label='Terminal commands…')
+            term.connect('clicked', lambda _b: self.toggle('terminal'))
+            foot.append(term)
             button = Gtk.Button(label='All shortcuts…')
             button.connect('clicked', lambda _b: self.build_full(win).present())
             foot.append(button)
@@ -624,7 +758,7 @@ def run_window():
             row.add_suffix(lab)
             return row
 
-    return App().run(None)
+    return App().run(sys.argv)
 
 
 def main(argv):
