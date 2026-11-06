@@ -1,5 +1,3 @@
-extensions.json present: yes
-formautofill@mozilla.org active=true location=app-builtin-addons
 ipp-activator@mozilla.com active=true location=app-builtin-addons
 newtab@mozilla.org active=true location=app-builtin-addons
 pictureinpicture@mozilla.org active=true location=app-builtin-addons
@@ -14,8 +12,8 @@ policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "cb68384f-38d7-4dfd-856b-3276d9689527");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "26317d9a-5da3-4a58-a55f-458c00283abd");
+user_pref("toolkit.telemetry.cachedClientID", "2857e742-26f9-4024-bfd5-e0332af6158f");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "9e73bae3-9425-439c-8f6f-d4be9022ab4f");
 user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
@@ -54,7 +52,7 @@ tind-enroll apply: no shell errors
 tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (5bcb5eb8-e52e-4479-b6d7-a81255189ea1) successfully deleted.
+Connection 'tind-servr' (887869ec-4da4-4748-862e-5c125f1aca1e) successfully deleted.
 Removed this device's private key.
 
 ##### wireguard watchdog
@@ -77,8 +75,8 @@ grep: /usr/share/applications/calamares-install-debian.desktop: No such file or 
 ##### optins
 communication.optin  developer.optin	  gaming.optin	  productivity.optin
 creative.optin	     entertainment.optin  hardware.optin  security.optin
--rwxr-xr-x 1 root root 2927 Nov  1 22:34 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 1246 Nov  1 22:34 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 2927 Nov  6 08:59 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Nov  6 08:59 /usr/lib/tind/optin-install
 
 ##### nextcloud config
 # Tind: global Nextcloud desktop client defaults.
@@ -146,7 +144,7 @@ The following NEW packages will be installed:
 Need to get 3,812 kB of archives.
 After this operation, 6,112 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 hunspell-no all 1:25.2.3-1 [3,812 kB]
-Fetched 3,812 kB in 0s (42.6 MB/s)
+Fetched 3,812 kB in 0s (24.0 MB/s)
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading
 Removing myspell-nb (2.2-4) ...
 Removing myspell-nn (2.2-4) ...
@@ -194,7 +192,7 @@ no NVIDIA GPU
 	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
 	driverName         = llvmpipe
 vm.max_map_count=1048576
-nvidia-current/550.163.01, 6.12.113+deb13-amd64, x86_64: installed
+nvidia-current/550.163.01, 6.12.115+deb13.1-amd64, x86_64: installed
 550.163.01
 nvidia-current-drm.ko.xz
 nvidia-current.ko.xz
@@ -224,16 +222,16 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov  1 23:31 /var/lib/tind/apt-refreshed
-51
+-rw-r--r-- 1 root root 0 Nov  6 10:04 /var/lib/tind/apt-refreshed
+52
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
 APT::Periodic::AutocleanInterval "7";
 enabled
 enabled
+Percentage:	100
 Status: 	Querying
 Status: 	Loading cache
-Percentage:	0
 Percentage:	10
 Percentage:	100
 Status: 	Finished
@@ -246,12 +244,12 @@ lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
 Y
 ● apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
-     Active: active (exited) since Sun 2026-11-01 23:31:39 CET; 2min 24s ago
- Invocation: 0e0738073f9f4f8593e6c904dae2e357
+     Active: active (exited) since Fri 2026-11-06 10:04:23 CET; 2min 22s ago
+ Invocation: beed9393ea0c43f99c0ec6e97c2a1e36
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
-    Process: 531 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
-   Main PID: 531 (code=exited, status=0/SUCCESS)
+    Process: 529 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
+   Main PID: 529 (code=exited, status=0/SUCCESS)
 apparmor module is loaded.
 142 profiles are loaded.
 20 profiles are in enforce mode.
@@ -269,11 +267,11 @@ tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
 udp 0.0.0.0:5353
-udp 0.0.0.0:54742
+udp 0.0.0.0:54002
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
+udp [::]:43044
 udp [::]:5353
-udp [::]:60052
 
 ##### hardware basics
 active
@@ -290,7 +288,7 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-698 /tmp/tind-report-test.txt
+696 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -328,7 +326,7 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 126696	libllvm19
 119815	libreoffice-core
 114123	firmware-iwlwifi
-108828	linux-image-6.12.113+deb13-amd64
+108906	linux-image-6.12.115+deb13.1-amd64
 100560	libwebkit2gtk-4.1-0
 97239	firmware-atheros
 91908	firmware-amd-graphics
@@ -338,41 +336,43 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 71212	nvidia-kernel-dkms
 68460	gcc-14-x86-64-linux-gnu
 64591	firmware-nvidia-graphics
-61466	linux-headers-6.12.113+deb13-common
+61527	linux-headers-6.12.115+deb13.1-common
 60869	firmware-nvidia-tesla-535-gsp
 60698	firmware-nvidia-gsp
 60463	firmware-marvell-prestera
 57308	libqt6webengine6-data
 48558	libreoffice-common
+sort: write failed: 'standard output': Broken pipe
+sort: write error
 installed packages: 1621
 
 ##### journal errors (this boot)
-Nov 01 23:31:40 tindtest gdm-autologin][1097]: gkr-pam: couldn't unlock the login keyring.
-Nov 01 23:31:43 tindtest systemd[1106]: Failed to start app-gnome-tind\x2dgpu\x2dnotify-1485.scope - Application launched by gnome-session-binary.
-Nov 01 23:31:43 tindtest systemd[1106]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1488.scope - Application launched by gnome-session-binary.
+Nov 06 10:04:24 tindtest gdm-autologin][1095]: gkr-pam: couldn't unlock the login keyring.
+Nov 06 10:04:25 tindtest systemd[1104]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1334.scope - Application launched by gnome-session-binary.
+Nov 06 10:04:28 tindtest systemd[1104]: Failed to start app-gnome-im\x2dlaunch-1479.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Nov 01 23:31:41 tindtest gnome-shell[1350]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 01 23:31:41 tindtest gnome-shell[1350]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 01 23:31:41 tindtest gnome-shell[1350]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 01 23:31:41 tindtest gnome-shell[1350]: pci id for fd 12: 1234:1111, driver (null)
-Nov 01 23:31:41 tindtest gnome-shell[1350]: pci id for fd 13: 1234:1111, driver (null)
-Nov 01 23:31:41 tindtest gnome-shell[1350]: kmsro: driver missing
-Nov 01 23:31:41 tindtest gnome-shell[1350]: Thread 'KMS thread' will be using high priority scheduling
-Nov 01 23:31:41 tindtest gnome-shell[1350]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Created gbm renderer for '/dev/dri/card0'
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Using public X11 display :0, (using :1 for managed services)
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Using Wayland display name 'wayland-0'
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 01 23:31:42 tindtest gnome-shell[1350]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 01 23:31:44 tindtest gnome-shell[1350]: Will monitor session 1
-Nov 01 23:31:44 tindtest gnome-shell[1350]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 01 23:31:50 tindtest gnome-shell[1350]: GNOME Shell started at Sun Nov 01 2026 23:31:43 GMT+0100 (Central European Standard Time)
-Nov 01 23:31:50 tindtest gnome-shell[1350]: Registering session with GDM
-Nov 01 23:32:13 tindtest gnome-shell[1350]: Error calling StartServiceByName for org.freedesktop.UPower.PowerProfiles: Timeout was reached
-Nov 01 23:32:44 tindtest gnome-shell[1350]: Received property Actions with type aa{sv} does not match expected type as in the expected interface
+Nov 06 10:04:25 tindtest gnome-shell[1349]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 06 10:04:25 tindtest gnome-shell[1349]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 06 10:04:25 tindtest gnome-shell[1349]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 06 10:04:26 tindtest gnome-shell[1349]: pci id for fd 12: 1234:1111, driver (null)
+Nov 06 10:04:26 tindtest gnome-shell[1349]: pci id for fd 13: 1234:1111, driver (null)
+Nov 06 10:04:26 tindtest gnome-shell[1349]: kmsro: driver missing
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Thread 'KMS thread' will be using high priority scheduling
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Created gbm renderer for '/dev/dri/card0'
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Using public X11 display :0, (using :1 for managed services)
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Using Wayland display name 'wayland-0'
+Nov 06 10:04:26 tindtest gnome-shell[1349]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 06 10:04:27 tindtest gnome-shell[1349]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 06 10:04:28 tindtest gnome-shell[1349]: Will monitor session 1
+Nov 06 10:04:28 tindtest gnome-shell[1349]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 06 10:04:30 tindtest gnome-shell[1349]: GNOME Shell started at Fri Nov 06 2026 10:04:27 GMT+0100 (Central European Standard Time)
+Nov 06 10:04:30 tindtest gnome-shell[1349]: Registering session with GDM
+Nov 06 10:04:56 tindtest gnome-shell[1349]: Error calling StartServiceByName for org.freedesktop.UPower.PowerProfiles: Timeout was reached
+Nov 06 10:05:26 tindtest gnome-shell[1349]: Received property Actions with type aa{sv} does not match expected type as in the expected interface
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -394,7 +394,7 @@ DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 
 ##### wired profile rename test
-[32mWired connection 1[0m:[32mb8f40445-8d54-340c-9dc0-b13159c9d173[0m:[32m802-3-ethernet[0m:[32menp1s0[0m:[32m/run/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
-[32;2mlo[0m:[32;2m0d8724e7-97aa-4f93-886d-637fe485c124[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
-RENAME-SETUP saved b8f40445-8d54-340c-9dc0-b13159c9d173 on enp1s0: interface-name=enp1s0 mac=
+[32mWired connection 1[0m:[32mafbc4ad9-cd4a-3770-a6b0-5d569835215b[0m:[32m802-3-ethernet[0m:[32menp1s0[0m:[32m/run/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
+[32;2mlo[0m:[32;2m8edacaa6-a909-42e4-ae7a-0b67d95f2772[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
+RENAME-SETUP saved afbc4ad9-cd4a-3770-a6b0-5d569835215b on enp1s0: interface-name=enp1s0 mac=
 =====TIND-SELFTEST-END=====
