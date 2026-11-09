@@ -19,4 +19,11 @@ for d in tind-*/; do
     dpkg-deb --root-owner-group -Zxz --build "$pkg" "$OUT/${pkg}_${ver}_all.deb" >/dev/null
     echo "built ${pkg}_${ver}_all.deb"
 done
-cp "$OUT"/*.deb "$LB"/
+# live-build installs every .deb in packages.chroot, whatever the package lists say. Opt-in boxes served from
+# apt.servr.no only (Tind Apps installs them) stay off the ISO: the AI assistant (tind-ai and its parts).
+for deb in "$OUT"/*.deb; do
+    case "$(basename "$deb")" in
+        tind-ai_*|tind-ai-*) echo "not on the ISO: $(basename "$deb")" ;;
+        *) cp "$deb" "$LB"/ ;;
+    esac
+done
