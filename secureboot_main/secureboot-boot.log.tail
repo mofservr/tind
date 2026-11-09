@@ -2,30 +2,30 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 4368
--rw-r--r-- 1 runner runner   7006 Nov  9 22:08 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Nov  9 22:09 secboot-s02.png
--rw-r--r-- 1 runner runner 544867 Nov  9 22:09 secboot-s03.png
--rw-r--r-- 1 runner runner 544958 Nov  9 22:10 secboot-s04.png
--rw-r--r-- 1 runner runner 545649 Nov  9 22:10 secboot-s05.png
--rw-r--r-- 1 runner runner 550945 Nov  9 22:11 secboot-s06.png
--rw-r--r-- 1 runner runner 550385 Nov  9 22:11 secboot-s07.png
--rw-r--r-- 1 runner runner 550392 Nov  9 22:12 secboot-s08.png
--rw-r--r-- 1 runner runner 550406 Nov  9 22:12 secboot-s09.png
--rw-r--r-- 1 runner runner 550418 Nov  9 22:13 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Nov  9 22:08 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Nov  9 22:08 secureboot-inspect.log
--rw-r----- 1 runner runner  40185 Nov  9 22:11 serial-secboot.log
-AI prices ok
-exported to /home/tind/TindAI/Export: tind-report.txt, system-log.txt, about.txt
-hidden: 10 blob, 1 email, 11 ip, 2 secret, 1 token, 17 uuid
-AI export-redacted ok
-AI export-unredacted ok
-total 48
--rw------- 1 tind tind   134 Nov  9 23:11 about.txt
--rw------- 1 tind tind  7472 Nov  9 23:11 system-log.txt
--rw------- 1 tind tind 32860 Nov  9 23:11 tind-report.txt
-Tind export, 2026-11-09 23:11: redacted (names, addresses and keys are placeholders such as [ip-1]); tind-report.txt, system-log.txt.
+total 4352
+-rw-r--r-- 1 runner runner   7006 Nov  9 23:39 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Nov  9 23:40 secboot-s02.png
+-rw-r--r-- 1 runner runner 544478 Nov  9 23:40 secboot-s03.png
+-rw-r--r-- 1 runner runner 544460 Nov  9 23:41 secboot-s04.png
+-rw-r--r-- 1 runner runner 545107 Nov  9 23:41 secboot-s05.png
+-rw-r--r-- 1 runner runner 550872 Nov  9 23:42 secboot-s06.png
+-rw-r--r-- 1 runner runner 550603 Nov  9 23:42 secboot-s07.png
+-rw-r--r-- 1 runner runner 550653 Nov  9 23:43 secboot-s08.png
+-rw-r--r-- 1 runner runner 549912 Nov  9 23:43 secboot-s09.png
+-rw-r--r-- 1 runner runner 549657 Nov  9 23:44 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Nov  9 23:39 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Nov  9 23:39 secureboot-inspect.log
+-rw-r----- 1 runner runner  32163 Nov  9 23:42 serial-secboot.log
+Nov 10 00:40:30 tind gnome-shell[1748]: Created gbm renderer for '/dev/dri/card0'
+Nov 10 00:40:30 tind gnome-shell[1748]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 10 00:40:30 tind gnome-shell[1748]: Using public X11 display :0, (using :1 for managed services)
+Nov 10 00:40:30 tind gnome-shell[1748]: Using Wayland display name 'wayland-0'
+Nov 10 00:40:30 tind gnome-shell[1748]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 10 00:40:31 tind gnome-shell[1748]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 10 00:40:32 tind gnome-shell[1748]: Will monitor session 1
+Nov 10 00:40:33 tind gnome-shell[1748]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 10 00:40:38 tind gnome-shell[1748]: GNOME Shell started at Tue Nov 10 2026 00:40:31 GMT+0100 (Central European Standard Time)
+Nov 10 00:40:38 tind gnome-shell[1748]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
