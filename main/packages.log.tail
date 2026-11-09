@@ -1,24 +1,3 @@
-app/com.valvesoftware.Steam/x86_64/stable
-app/com.valvesoftware.SteamLink/x86_64/stable
-app/io.github.benjamimgois.goverlay/x86_64/stable
-app/net.davidotek.pupgui2/x86_64/stable
-app/net.lutris.Lutris/x86_64/stable
-runtime/com.valvesoftware.Steam.CompatibilityTool.Boxtron/x86_64/stable
-runtime/com.valvesoftware.Steam.CompatibilityTool.Proton-GE/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.InhibitScreensaver/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.slonfig/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.steamtinkerlaunch/x86_64/stable
-runtime/com.valvesoftware.Steam.Utility.thcrap_steam_proton_wrapper/x86_64/stable
-runtime/org.freedesktop.Platform.GL32.nvidia-550-100/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-107-02/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-120/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-127-05/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-127-08/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-135/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-142/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-144-03/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-163-01/x86_64/1.4
-runtime/org.freedesktop.Platform.GL32.nvidia-550-40-07/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-53/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-55/x86_64/1.4
 runtime/org.freedesktop.Platform.GL32.nvidia-550-40-59/x86_64/1.4
@@ -167,7 +146,7 @@ org.kde.Platform
 dpkg-query: no packages found matching xpadneo-dkms
 dpkg-query: no packages found matching xone-dkms
 hplip 3.22.10+dfsg0-8.1+deb13u1 ii 
-libreoffice-writer 4:25.2.3-2+deb13u8 ii 
+libreoffice-writer 4:25.2.3-2+deb13u9 ii 
 mtr 0.95-1.1+b1 ii 
 nextcloud-desktop 3.16.7-1~deb13u1 ii 
 nmap 7.95+dfsg-3 ii 
@@ -180,7 +159,7 @@ telegram-desktop 5.7.2+ds-2~bpo13+2 ii
 virt-manager 1:5.0.0-5+deb13u1 ii 
 vlc 3.0.24-0+deb13u1 ii 
 wireshark 4.4.19-0+deb13u1 ii 
-code 1.145.1-1793903106 ii 
+code 1.145.2-1793945276 ii 
 gamemode 1.8.2-2 ii 
 gh 2.46.0-3 ii 
 git 1:2.47.3-0+deb13u1 ii 
@@ -191,8 +170,8 @@ steam-installer 1:1.0.0.83~ds-3 ii
 wine 10.0~repack-6 ii 
 wine32 10.0~repack-6 ii 
 winetricks 20250102-1 ii 
-1.145.1
-6bab64e2d12b04d04c0d99c27ff166023efd1dda
+1.145.2
+c4453f8ea430795f941c1b2ff6c9321135a74a02
 bp.list
 claude-desktop.sources
 debian.sources
@@ -206,6 +185,24 @@ Components: main
 Architectures: amd64
 Signed-By: /usr/share/keyrings/microsoft.gpg
 vm.max_map_count = 2147483642
+== AI box: the packages install in a plain trixie (users, folders, units), without the window
+uid=989(tind-ai-local) gid=989(tind-ai-local) groups=989(tind-ai-local)
+uid=988(tind-ai-remote) gid=988(tind-ai-remote) groups=988(tind-ai-remote)
+755 root:root /var/lib/tind-ai
+711 tind-ai-local:tind-ai-local /var/lib/tind-ai/briefing
+700 tind-ai-local:tind-ai-local /var/lib/tind-ai/local
+711 tind-ai-remote:tind-ai-remote /var/lib/tind-ai/outbox
+755 root:root /etc/tind-ai
+700 root:root /etc/tind-ai/keys
+tind-ai-local.socket
+tind-ai-remote@anthropic.socket
+tind-ai-remote@custom.socket
+tind-ai-remote@ionos.socket
+tind-ai-remote@mistral.socket
+tind-ai-remote@openai.socket
+tind-ai-remote@scaleway.socket
+netlink: Error: cache initialization failed: Operation not permitted
+firewall table: not checkable in this container (checked in the booted ISO)
 == verify-on-debian (informational)
 == release
 Debian GNU/Linux 13 (trixie)
@@ -308,6 +305,7 @@ ok       mesa-vulkan-drivers
 ok       mokutil
 ok       nautilus
 ok       network-manager
+ok       nftables
 ok       nvidia-detect
 ok       nvidia-driver
 ok       nvidia-kernel-dkms
@@ -317,6 +315,7 @@ ok       orca
 ok       packagekit
 ok       papers
 ok       papirus-icon-theme
+ok       passwd
 ok       pciutils
 ok       pipewire-audio
 ok       pkexec
@@ -325,6 +324,7 @@ ok       python3-gi
 ok       system-config-printer
 ok       system-config-printer-common
 ok       system-config-printer-udev
+ok       systemd
 ok       systemd-resolved
 ok       systemd-timesyncd
 ok       thunderbird
