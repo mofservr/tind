@@ -1,0 +1,10 @@
+#!/bin/sh
+# The "test" update channel was removed on 9 Nov 2026. A computer still set to it ("Suites: next test")
+# follows next from now on. Every other channel is left as the user set it.
+set -e
+SRC=/etc/apt/sources.list.d/tind.sources
+if [ "$1" = configure ] && [ -f "$SRC" ] && grep -q '^Suites:[[:space:]]*next[[:space:]]\+test[[:space:]]*$' "$SRC"; then
+    sed -i 's/^Suites:.*/Suites: next/' "$SRC"
+    echo "tind-archive-keyring: the test channel is gone; this computer now follows next."
+fi
+exit 0

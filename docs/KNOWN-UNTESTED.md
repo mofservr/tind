@@ -36,9 +36,10 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   small permanent numbers left of the dock icons and the running dots under the icons. They reach into Dash to Dock's
   private code (Debian ships 100-2) and were checked against its source, not on a running shell. If Dash to Dock's own
   "keyboard shortcuts" are switched on in its settings, log out and in again so the two do not fight over the keys.
-- **The AI assistant box** (test channel, `ai-box` branch, from 28 Oct): the walls (two system users, the `tind_ai`
-  firewall table, the sandboxed services), redaction and one request end to end are checked in the build's virtual
-  machine against a fake provider. The window opens on real hardware (Morten, 29 Oct, laptop). Not yet run against a
+- **The AI assistant box** (an opt-in box in Tind Apps since 9 Nov; built on the `ai-box` branch from 28 Oct): the
+  walls (two system users, the `tind_ai` firewall table, the sandboxed services), redaction and one request end to end
+  were checked in the build's virtual machine against a fake provider until the merge. The ISO does not carry the box,
+  so builds since then check it with unit tests and an install in a plain trixie container only. The window opens on real hardware (Morten, 29 Oct, laptop). Not yet run against a
   real provider (Scaleway, IONOS, Mistral, Claude, OpenAI). The chat window (29 Oct) is checked under Xvfb and in the
   build's screenshots only. The task templates (chips above the input box, 2 Nov) are checked by unit tests and under
   Xvfb, not on a real machine. The `~/TindAI` folder (3 Nov: the Markdown chat archive with names and addresses put

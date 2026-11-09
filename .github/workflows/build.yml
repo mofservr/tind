@@ -291,8 +291,8 @@ jobs:
               [ -f "shots/$1.ppm" ] && convert "shots/$1.ppm" "logs/$1.png"
               echo "sendkey meta_l-h" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             }
-            ai_shot() {
-              # Super+K opens the AI assistant's Ask window (the guide on first use); Escape closes it
+            superk_shot() {
+              # Super+K without the AI box opens Tind Apps, where the box is; Escape closes it
               echo "sendkey meta_l-k" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 8
               echo "screendump $PWD/shots/$1.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone ($1)"
               sleep 1
@@ -316,18 +316,13 @@ jobs:
             hk_shot hotkeys-dark
             settings_shot settings-dark 85
             sleep $(( 108 - ( $(date +%s) - T0 ) )) || true
-            ai_shot ai-guide-dark
+            superk_shot superk-tind-apps-dark
             sleep $(( 215 - ( $(date +%s) - T0 ) )) || true
             echo "screendump $PWD/shots/desktop-light.ppm" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || echo "monitor gone (desktop-light)"
             sleep 1; [ -f shots/desktop-light.ppm ] && convert shots/desktop-light.ppm logs/desktop-light.png
             qs_shot quickpanel-light
             hk_shot hotkeys-light
             settings_shot settings-light 268
-            sleep $(( 288 - ( $(date +%s) - T0 ) )) || true
-            ai_shot ai-chat-light
-            # the guest opens the AI window's Prices page at ~325 s (tind-selftest); Escape closes it
-            settings_shot ai-prices-light 338
-            echo "sendkey esc" | socat - UNIX-CONNECT:$PWD/mon.sock >/dev/null || true; sleep 2
             for i in $(seq 1 14); do
               sleep 45
               # leave the overview once so the later screenshots show the plain desktop

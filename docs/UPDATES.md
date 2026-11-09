@@ -11,10 +11,9 @@ Debian's own updates are unchanged.
 |---|---|---|
 | `stable` | a package version **14 days** after it first appeared on `next` | every ISO install (the default) |
 | `next` | every version built from `main`, at once | Morten's own computers |
-| `test` | `next`, plus the packages a test branch (`ai-box`) changed | Morten's test machine, for a feature not yet on `main` |
 
-Show or change the channel: `tind-channel`, `sudo tind-channel next`, `sudo tind-channel stable`,
-`sudo tind-channel test` (then `sudo apt update`). Updates install silently through unattended-upgrades (the Tind origin is added in
+Show or change the channel: `tind-channel`, `sudo tind-channel next`, `sudo tind-channel stable`
+(then `sudo apt update`). Updates install silently through unattended-upgrades (the Tind origin is added in
 `/etc/apt/apt.conf.d/52tind-unattended-upgrades`); nothing reboots by itself, and a new shell theme or
 extension shows after the next login.
 
@@ -34,20 +33,12 @@ extension shows after the next login.
 GitHub pauses scheduled workflows after 60 days without any repository activity. If that ever happens,
 promotions simply stop and `stable` stays where it is (open the Actions tab and re-enable the workflow).
 
-## The test channel
+## The old test channel
 
-- `sudo tind-channel test` sets `Suites: next test`, so the computer keeps following `next` and gets the test
-  branch's packages on top. `sudo tind-channel next` goes back; packages installed from `test` stay until `main`
-  ships a newer version.
-- After every green `build` on a test branch (listed in `TEST_BRANCHES` and `branches` in
-  `.github/workflows/publish-apt.yml`), `publish-apt` rebuilds `next` and `stable` from `main` as usual and puts the
-  branch's changed packages on `test`. Publishes from `main` keep `test` as it is, minus every package `next` has
-  caught up with.
-- Only the packages whose version differs from `next` go on `test`, and each such version must contain `~test`
-  (for example `0.1.0~test3`): `~` sorts lower, so the real version from `main` always wins later. A branch package
-  with `next`'s version but other contents is refused.
-- Empty it by hand: Actions > publish-apt > Run workflow > tick *clear_test*.
-- Nothing from a test branch reaches `next` or `stable`: those are built from `main` only.
+A third channel, `test` (`next` plus a test branch's packages), was used for the AI box on branch `ai-box`
+from 29 Oct to 9 Nov 2026 and removed when the branch was merged. The publisher still writes an empty, signed
+`test` suite so a computer still set to `Suites: next test` updates without an apt error, and
+tind-archive-keyring 0.1.2 moves such a computer to `next`. The empty suite goes once no computer is left on it.
 
 ## Computers installed before the repository existed
 

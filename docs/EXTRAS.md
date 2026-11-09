@@ -7,6 +7,7 @@ Eight boxes: Games, Developer tools, Entertainment, Creative, Communication, Pro
 - The choice is written to `/tmp/tind-extras-choice`; the `tindextras` Calamares job copies it to `/var/lib/tind/pending-extras` on the installed system.
 - First boot: `tind-extras.service` waits for internet, runs the chosen setup scripts, writes `/var/lib/tind/extras-status` (running, done, offline, failed:...) and logs to `/var/log/tind-extras.log`. An autostart notification tells the user how it went. If offline, the marker stays and it retries at next boot.
 - Later: the same eight entries exist in Tind Apps (`tind-optins`) and call the same scripts. Marker words: `gaming dev entertainment creative communication productivity hardware security`.
+- Tind Apps also has a ninth entry, AI assistant (`ai.optin`), which installs `tind-ai` from apt.servr.no. It is not offered in the installer.
 - One launcher at a time: the live session shows only "Install Tind" (`tind-installer` ships `/usr/local/share/applications/tind-optins.desktop` with `NoDisplay=true` to hide Tind Apps, which could only install into RAM there). After installing, `tind-installer` is removed, which removes that override and the installer entry, so only Tind Apps is left.
 
 ## What the scripts install
