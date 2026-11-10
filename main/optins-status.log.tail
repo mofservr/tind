@@ -1,0 +1,54 @@
+
+ai               [missing]  AI assistant (0/1 installed)
+  ai:tind-ai                   [ ]          AI assistant
+
+communication    [installed] Communication (2/2 installed)
+  communication:signal         [installed]  Signal
+  communication:telegram       [installed]  Telegram
+
+creative         [missing]  Creative (0/8 installed)
+  creative:gimp                [ ]          GIMP
+  creative:inkscape            [ ]          Inkscape
+  creative:krita               [ ]          Krita
+  creative:kdenlive            [ ]          Kdenlive
+  creative:audacity            [ ]          Audacity
+  creative:obs                 [ ]          OBS Studio
+  creative:blender             [ ]          Blender
+  creative:upscayl             [ ]          Upscayl
+
+developer        [installed] Developer tools (8/8 installed)
+  developer:basics             [installed]  Command-line basics
+  developer:vscode             [installed]  VS Code
+  developer:claude             [installed]  Claude Desktop
+  developer:wireshark          [installed]  Wireshark
+  developer:nmap               [installed]  nmap
+  developer:mtr                [installed]  mtr
+  developer:remmina            [installed]  Remmina
+  developer:virt-manager       [installed]  virt-manager
+
+entertainment    [partial]  Entertainment (2/3 installed)
+  entertainment:vlc            [installed]  VLC
+  entertainment:strawberry     [installed]  Strawberry
+  entertainment:spotify        [ ]          Spotify
+
+gaming           [installed] Games (7/7 installed)
+  gaming:steam                 [installed]  Steam
+  gaming:lutris                [installed]  Lutris
+  gaming:wine                  [installed]  Wine
+  gaming:discord               [installed]  Discord
+  gaming:protonup              [installed]  ProtonUp-Qt
+  gaming:gamemode              [installed]  GameMode
+  gaming:mangohud              [installed]  MangoHud
+
+hardware         [installed] Printers and scanners (2/2 installed)
+  hardware:hp                  [installed]  HP printers
+  hardware:scanners            [installed]  Scanners
+
+productivity     [installed] Productivity and cloud (2/2 installed)
+  productivity:libreoffice     [installed]  LibreOffice
+  productivity:nextcloud       [installed]  Nextcloud
+
+security         [installed] Security (2/2 installed)
+  security:bitwarden           [installed]  Bitwarden
+  security:protonvpn           [installed]  Proton VPN
+
