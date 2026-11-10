@@ -2,3 +2,16 @@ NAME="Creative"
 DESC="GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender and Upscayl (needs internet, large)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-creative"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+gimp|GIMP|Photo editing|apt:gimp
+inkscape|Inkscape|Vector drawing|apt:inkscape
+krita|Krita|Digital painting|apt:krita
+kdenlive|Kdenlive|Video editing|apt:kdenlive
+audacity|Audacity|Audio editing|apt:audacity
+obs|OBS Studio|Screen recording and streaming|apt:obs-studio
+blender|Blender|3D modelling and animation|apt:blender
+upscayl|Upscayl|AI image upscaler|flatpak:org.upscayl.Upscayl
+"

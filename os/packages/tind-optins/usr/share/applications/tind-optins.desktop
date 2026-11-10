@@ -6,3 +6,4 @@ Exec=tind-optins
 Icon=tind-logo
 Terminal=false
 Categories=System;Settings;
+StartupWMClass=no.servr.TindApps

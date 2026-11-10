@@ -3,3 +3,4 @@ Type=Application
 Name=Tind Apps
 Exec=tind-optins
 NoDisplay=true
+StartupWMClass=no.servr.TindApps

@@ -1,35 +1,45 @@
 #!/bin/bash
-# Developer base set: git, compilers, Python tooling, GitHub CLI, network and admin tools, VS Code
-# (Microsoft apt repository) and Claude Desktop (Anthropic apt repository).
+# Developer tools: command-line basics (git, compilers, Python tooling, GitHub CLI), VS Code (Microsoft apt repository),
+# Claude Desktop (Anthropic apt repository), Wireshark, nmap, mtr, Remmina and virt-manager.
+#   setup-dev               the whole box
+#   setup-dev vscode,nmap   only those apps (ids: see pick_apps below and developer.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "basics vscode claude wireshark nmap mtr remmina virt-manager" "$@"
 echo "== Tind: developer tools setup"
 # Fingerprint of Microsoft's package signing key; the key is refused if it does not match.
 MS_FPR="BC528686B50D79E339D3721CEB3E94ADBE1229CF"
 apt-get update
-apt_install git build-essential python3-pip python3-venv pipx curl jq tmux openssh-client gh
-# Network and admin tools: Wireshark (capture without root), nmap, mtr, Remmina (RDP, VNC, SSH) and virt-manager.
-echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
-apt_install wireshark nmap mtr remmina remmina-plugin-rdp remmina-plugin-vnc remmina-plugin-secret \
-    virt-manager libvirt-daemon-system qemu-system-x86
-# let the regular users capture packets and manage VMs (takes effect at their next login)
-for u in $(awk -F: '$3>=1000 && $3<60000 {print $1}' /etc/passwd); do
-    for g in wireshark libvirt; do
-        if getent group "$g" >/dev/null; then usermod -aG "$g" "$u"; fi
-    done
-done
-tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
-curl -fsSL https://packages.microsoft.com/keys/microsoft.asc -o "$tmp/ms.asc"
-got="$(gpg --show-keys --with-colons "$tmp/ms.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
-if [ "$got" != "$MS_FPR" ]; then
-    echo "Microsoft signing key fingerprint mismatch: got $got" >&2; exit 1
+if want basics; then
+    apt_install git build-essential python3-pip python3-venv pipx curl jq tmux openssh-client gh
 fi
+# Network and admin tools: Wireshark (capture without root), nmap, mtr, Remmina (RDP, VNC, SSH) and virt-manager.
+if want wireshark; then
+    echo "wireshark-common wireshark-common/install-setuid boolean true" | debconf-set-selections
+    apt_install wireshark
+    add_users_to_group wireshark   # capture without root, from the users' next login
+fi
+if want nmap; then apt_install nmap; fi
+if want mtr; then apt_install mtr; fi
+if want remmina; then apt_install remmina remmina-plugin-rdp remmina-plugin-vnc remmina-plugin-secret; fi
+if want virt-manager; then
+    apt_install virt-manager libvirt-daemon-system qemu-system-x86
+    add_users_to_group libvirt     # manage VMs without root, from the users' next login
+fi
+
+tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 install -d -m 0755 /usr/share/keyrings
-gpg --dearmor < "$tmp/ms.asc" > /usr/share/keyrings/microsoft.gpg
-chmod 0644 /usr/share/keyrings/microsoft.gpg
-cat > /etc/apt/sources.list.d/vscode.sources <<'SRC'
+if want vscode; then
+    curl -fsSL https://packages.microsoft.com/keys/microsoft.asc -o "$tmp/ms.asc"
+    got="$(gpg --show-keys --with-colons "$tmp/ms.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+    if [ "$got" != "$MS_FPR" ]; then
+        echo "Microsoft signing key fingerprint mismatch: got $got" >&2; exit 1
+    fi
+    gpg --dearmor < "$tmp/ms.asc" > /usr/share/keyrings/microsoft.gpg
+    chmod 0644 /usr/share/keyrings/microsoft.gpg
+    cat > /etc/apt/sources.list.d/vscode.sources <<'SRC'
 Types: deb
 URIs: https://packages.microsoft.com/repos/code
 Suites: stable
@@ -37,20 +47,22 @@ Components: main
 Architectures: amd64
 Signed-By: /usr/share/keyrings/microsoft.gpg
 SRC
-# the code package would otherwise add its own duplicate repository entry
-echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
-apt-get update
-apt_install code
-
-# Claude Desktop (beta) from Anthropic's own apt repository. The key is refused if it does not match.
-CLAUDE_FPR="31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE"
-curl -fsSL https://downloads.claude.ai/claude-desktop/key.asc -o "$tmp/claude.asc"
-got="$(gpg --show-keys --with-colons "$tmp/claude.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
-if [ "$got" != "$CLAUDE_FPR" ]; then
-    echo "Anthropic signing key fingerprint mismatch: got $got" >&2; exit 1
+    # the code package would otherwise add its own duplicate repository entry
+    echo "code code/add-microsoft-repo boolean false" | debconf-set-selections
+    apt-get update
+    apt_install code
 fi
-install -m 0644 "$tmp/claude.asc" /usr/share/keyrings/claude-desktop-archive-keyring.asc
-cat > /etc/apt/sources.list.d/claude-desktop.sources <<'SRC'
+
+if want claude; then
+    # Claude Desktop (beta) from Anthropic's own apt repository. The key is refused if it does not match.
+    CLAUDE_FPR="31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE"
+    curl -fsSL https://downloads.claude.ai/claude-desktop/key.asc -o "$tmp/claude.asc"
+    got="$(gpg --show-keys --with-colons "$tmp/claude.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+    if [ "$got" != "$CLAUDE_FPR" ]; then
+        echo "Anthropic signing key fingerprint mismatch: got $got" >&2; exit 1
+    fi
+    install -m 0644 "$tmp/claude.asc" /usr/share/keyrings/claude-desktop-archive-keyring.asc
+    cat > /etc/apt/sources.list.d/claude-desktop.sources <<'SRC'
 Types: deb
 URIs: https://downloads.claude.ai/claude-desktop/apt/stable
 Suites: stable
@@ -58,23 +70,24 @@ Components: main
 Architectures: amd64 arm64
 Signed-By: /usr/share/keyrings/claude-desktop-archive-keyring.asc
 SRC
-apt-get update
-# Without recommends: with them the install pulled in the KDE Frameworks stack (systemsettings, kde-cli-tools,
-# kwallet6: 156 packages, 822 MB) that a GNOME desktop does not need. QEMU is installed above; add
-# the pieces the Cowork tab uses (OVMF firmware, virtiofsd, socat, uidmap) and a keyring for stored secrets.
-# Its Depends line is an alternative: kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs. apt picks the
-# first one, which drags in the whole KDE Frameworks stack, so install an alternative that is not KDE first.
-apt_install libglib2.0-bin gvfs
-apt_install claude-desktop
-apt_install ovmf virtiofsd socat uidmap gnome-keyring libpam-gnome-keyring
-# Informational: what the package asks for, and whether any KDE Frameworks libraries came in anyway.
-apt-cache show claude-desktop | grep -E '^(Depends|Recommends|Suggests):' | cut -c1-600 || true
-echo "KDE Frameworks libraries installed: $(dpkg-query -W -f='${Package}\n' 'libkf6*' 2>/dev/null | wc -l)"
-# The claude-desktop package ships its own repository entry (claude-desktop.list). Ours was only needed to
-# install it, and two entries for one repository make every apt update warn. Drop ours when theirs has a key.
-cd_list=/etc/apt/sources.list.d/claude-desktop.list
-if [ -f "$cd_list" ]; then
-    cd_key="$(sed -n 's/.*signed-by=\([^] ]*\).*/\1/p' "$cd_list" | head -1)"
-    if [ -n "$cd_key" ] && [ -s "$cd_key" ]; then rm -f /etc/apt/sources.list.d/claude-desktop.sources; fi
+    apt-get update
+    # Without recommends: with them the install pulled in the KDE Frameworks stack (systemsettings, kde-cli-tools,
+    # kwallet6: 156 packages, 822 MB) that a GNOME desktop does not need. The Cowork tab needs QEMU, OVMF firmware,
+    # virtiofsd, socat and uidmap, and a keyring for stored secrets.
+    # Its Depends line is an alternative: kde-cli-tools | kde-runtime | trash-cli | libglib2.0-bin | gvfs. apt picks the
+    # first one, which drags in the whole KDE Frameworks stack, so install an alternative that is not KDE first.
+    apt_install libglib2.0-bin gvfs
+    apt_install claude-desktop
+    apt_install qemu-system-x86 ovmf virtiofsd socat uidmap gnome-keyring libpam-gnome-keyring
+    # Informational: what the package asks for, and whether any KDE Frameworks libraries came in anyway.
+    apt-cache show claude-desktop | grep -E '^(Depends|Recommends|Suggests):' | cut -c1-600 || true
+    echo "KDE Frameworks libraries installed: $(dpkg-query -W -f='${Package}\n' 'libkf6*' 2>/dev/null | wc -l)"
+    # The claude-desktop package ships its own repository entry (claude-desktop.list). Ours was only needed to
+    # install it, and two entries for one repository make every apt update warn. Drop ours when theirs has a key.
+    cd_list=/etc/apt/sources.list.d/claude-desktop.list
+    if [ -f "$cd_list" ]; then
+        cd_key="$(sed -n 's/.*signed-by=\([^] ]*\).*/\1/p' "$cd_list" | head -1)"
+        if [ -n "$cd_key" ] && [ -s "$cd_key" ]; then rm -f /etc/apt/sources.list.d/claude-desktop.sources; fi
+    fi
 fi
 echo "== Tind: developer tools setup done"

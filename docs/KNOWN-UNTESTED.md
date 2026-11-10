@@ -46,6 +46,12 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   back, saved documents, the export moved in) is checked by unit tests, under Xvfb and in the build's virtual machine
   with a fake provider; moving real old chats and `~/AI-export` on a used machine is not. Word, PDF and ODT are made by
   LibreOffice Writer, which is not on the ISO: checked outside the build only, not opened in a real Word.
+- **Tind Apps with single apps** (10 Nov): each box opens a list of its apps; installed apps are grey and locked, a
+  box with everything installed is locked too, and one password covers everything ticked. The status check and single
+  installs (Nextcloud alone, Telegram alone, MangoHud alone) run in the build's container, and the window is checked under
+  Xvfb (an older GTK than trixie's) and in the build's live-session screenshot only. Not yet run on a real machine: the
+  window on trixie's GTK, the password prompt, the refresh after an install, and the Flathub apps (Spotify, Bitwarden)
+  shown as installed after a real install. The Xbox controller drivers are not in Debian 13, so their tick is hidden.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".

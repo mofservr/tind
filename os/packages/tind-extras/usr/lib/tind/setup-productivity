@@ -1,20 +1,27 @@
 #!/bin/bash
 # Productivity and cloud: LibreOffice (Writer, Calc, Impress, Norwegian) and the Nextcloud client.
+#   setup-productivity             the whole box
+#   setup-productivity nextcloud   only those apps (ids: libreoffice nextcloud, as in productivity.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "libreoffice nextcloud" "$@"
 echo "== Tind: productivity setup"
 apt-get update
-apt_install libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-gtk3 nextcloud-desktop
-optional "LibreOffice language packs" apt_install libreoffice-l10n-nb libreoffice-l10n-nn libreoffice-help-en-us hunspell-en-us
-for p in hunspell-no myspell-nb; do
-    if apt-cache show "$p" >/dev/null 2>&1; then optional "Norwegian spell-check" apt_install "$p"; break; fi
-done
-# keep the app grid lean: the office suite's Draw and Math launchers stay out of it (same as the image build did)
-for f in libreoffice-draw.desktop libreoffice-math.desktop; do
-    if [ -f "/usr/share/applications/$f" ] && ! grep -q '^NoDisplay=true' "/usr/share/applications/$f"; then
-        echo "NoDisplay=true" >> "/usr/share/applications/$f"
-    fi
-done
+# the Nextcloud client comes preconfigured for lagrr.servr.no (/etc/Nextcloud/nextcloud.cfg from tind-optins)
+if want nextcloud; then apt_install nextcloud-desktop; fi
+if want libreoffice; then
+    apt_install libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-gtk3
+    optional "LibreOffice language packs" apt_install libreoffice-l10n-nb libreoffice-l10n-nn libreoffice-help-en-us hunspell-en-us
+    for p in hunspell-no myspell-nb; do
+        if apt-cache show "$p" >/dev/null 2>&1; then optional "Norwegian spell-check" apt_install "$p"; break; fi
+    done
+    # keep the app grid lean: the office suite's Draw and Math launchers stay out of it (same as the image build did)
+    for f in libreoffice-draw.desktop libreoffice-math.desktop; do
+        if [ -f "/usr/share/applications/$f" ] && ! grep -q '^NoDisplay=true' "/usr/share/applications/$f"; then
+            echo "NoDisplay=true" >> "/usr/share/applications/$f"
+        fi
+    done
+fi
 echo "== Tind: productivity setup done"

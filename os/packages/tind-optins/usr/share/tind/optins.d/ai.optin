@@ -2,3 +2,9 @@ NAME="AI assistant"
 DESC="Ask an AI service about this computer on Super+K. You see exactly what is sent; European providers by default, Claude and ChatGPT optional. Needs an API key from the provider (needs internet)"
 STATUS="ready"
 APT_PACKAGES="tind-ai"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+tind-ai|AI assistant||apt:tind-ai
+"

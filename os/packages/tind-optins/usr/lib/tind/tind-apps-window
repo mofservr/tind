@@ -1,0 +1,326 @@
+#!/usr/bin/python3
+"""Tind Apps: the window of tind-optins (10 Nov 2026).
+
+Each box (Games, Developer tools, ...) is a row with a tick; tapping the row opens its apps, each with its own tick.
+Ticking a box ticks every app in it that is not installed yet. Installed apps are grey, ticked and locked; a box
+with everything installed has its tick locked too. One Install button installs everything ticked with one password
+prompt (pkexec /usr/lib/tind/optin-install box:app,app ...), then the window checks again and stays open.
+What is installed comes from `tind-optins --status` (no root, no network); the window has no list of its own.
+"""
+import os
+import re
+import shutil
+import subprocess
+import sys
+
+import gi
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+from gi.repository import Adw, Gio, GLib, Gtk  # noqa: E402
+
+HELPER = '/usr/lib/tind/optin-install'
+LOG = '/var/log/tind-optins.log'
+APP_ID = 'no.servr.TindApps'
+
+
+def optins_bin():
+    return shutil.which('tind-optins') or '/usr/bin/tind-optins'
+
+
+def read_status():
+    """[(box dict with 'apps' list)] from tind-optins --status."""
+    out = subprocess.run([optins_bin(), '--status'], capture_output=True, text=True, timeout=60, check=True).stdout
+    boxes, by_id = [], {}
+    for line in out.splitlines():
+        f = line.split('\t')
+        if f[0] == 'box' and len(f) >= 6:
+            box = {'id': f[1], 'state': f[2], 'name': f[4], 'desc': f[5], 'apps': []}
+            boxes.append(box)
+            by_id[box['id']] = box
+        elif f[0] == 'app' and len(f) >= 6 and f[1] in by_id:
+            by_id[f[1]]['apps'].append({'id': f[2], 'installed': f[3] == 'installed', 'name': f[4], 'about': f[5]})
+    # a box with nothing to offer in this release is left out
+    return [b for b in boxes if b['apps']]
+
+
+def names_line(apps):
+    names = [a['name'] for a in apps]
+    if len(names) <= 4:
+        return names[0] if len(names) == 1 else ', '.join(names[:-1]) + ' and ' + names[-1]
+    return ', '.join(names[:4]) + f' and {len(names) - 4} more'
+
+
+def plain_desc(desc):
+    # the box descriptions end in "(needs internet)"; the window says that once, at the bottom
+    return re.sub(r'\s*\(needs internet[^)]*\)\s*$', '', desc).strip()
+
+
+class BoxRow:
+    """One box: its tick, its rows and its apps' ticks."""
+
+    def __init__(self, win, box):
+        self.win, self.box = win, box
+        self.guard = False
+        self.checks = {}          # app id -> CheckButton, only apps that are not installed
+        missing = [a for a in box['apps'] if not a['installed']]
+        installed = len(box['apps']) - len(missing)
+        self.check = Gtk.CheckButton(valign=Gtk.Align.CENTER)
+        self.check.update_property([Gtk.AccessibleProperty.LABEL], [f'Choose all of {box["name"]}'])
+        if len(box['apps']) == 1:
+            app = box['apps'][0]
+            self.row = Adw.ActionRow(title=box['name'], subtitle=plain_desc(box['desc']) or app['about'])
+            self.row.set_subtitle_lines(3)
+        else:
+            if not missing:
+                sub = 'All installed'
+            elif installed:
+                sub = f'{installed} of {len(box["apps"])} installed'
+            else:
+                sub = names_line(box['apps'])
+            self.row = Adw.ExpanderRow(title=box['name'], subtitle=sub)
+            for app in box['apps']:
+                self.row.add_row(self.app_row(app))
+        self.row.add_prefix(self.check)
+        if not missing:
+            self.lock(self.check, self.row if len(box['apps']) == 1 else None)
+        else:
+            self.check.connect('toggled', self.on_box_toggled)
+            if len(box['apps']) == 1:
+                self.row.set_activatable_widget(self.check)
+                self.checks[box['apps'][0]['id']] = self.check
+
+    def app_row(self, app):
+        row = Adw.ActionRow(title=app['name'], subtitle=app['about'])
+        check = Gtk.CheckButton(valign=Gtk.Align.CENTER)
+        row.add_prefix(check)
+        if app['installed']:
+            self.lock(check, row)
+        else:
+            row.set_activatable_widget(check)
+            check.connect('toggled', self.on_app_toggled)
+            self.checks[app['id']] = check
+        return row
+
+    @staticmethod
+    def lock(check, row):
+        """Installed: ticked, greyed and locked, with a plain 'Installed' at the end of the row."""
+        check.set_active(True)
+        check.set_sensitive(False)
+        if row is not None:
+            row.add_suffix(Gtk.Label(label='Installed', css_classes=['dim-label', 'caption']))
+            row.set_sensitive(False)
+
+    def single(self):
+        return len(self.box['apps']) == 1
+
+    def chosen(self):
+        return [a for a, c in self.checks.items() if c.get_active()]
+
+    def on_box_toggled(self, _check):
+        if self.guard:
+            return
+        if self.single():
+            self.win.update_button()
+            return
+        # unticked or partly ticked: tick all; all ticked: untick all
+        everything = len(self.chosen()) == len(self.checks)
+        self.guard = True
+        for c in self.checks.values():
+            c.set_active(not everything)
+        self.guard = False
+        self.sync_box()
+
+    def on_app_toggled(self, _check):
+        if not self.guard:
+            self.sync_box()
+
+    def sync_box(self):
+        n, total = len(self.chosen()), len(self.checks)
+        self.guard = True
+        self.check.set_inconsistent(0 < n < total)
+        self.check.set_active(n == total)
+        self.guard = False
+        self.win.update_button()
+
+    def spec(self):
+        apps = self.chosen()
+        if not apps:
+            return None
+        return self.box['id'] if self.single() else self.box['id'] + ':' + ','.join(apps)
+
+
+class Window(Adw.ApplicationWindow):
+    def __init__(self, app):
+        super().__init__(application=app, title='Tind Apps', default_width=600, default_height=660)
+        self.installing = False
+        self.rows = []
+        self.toasts = Adw.ToastOverlay()
+        view = Adw.ToolbarView()
+        header = Adw.HeaderBar()
+        header.set_title_widget(Adw.WindowTitle(title='Tind Apps', subtitle='Add apps one by one or a whole box at a time'))
+        view.add_top_bar(header)
+
+        self.scroller = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, vexpand=True)
+        view.set_content(self.scroller)
+
+        bar = Gtk.Box(spacing=12, margin_start=16, margin_end=12, margin_top=10, margin_bottom=10)
+        self.info = Gtk.Label(label='Needs internet. Big boxes like Games can take a while.', xalign=0, hexpand=True,
+                              wrap=True, css_classes=['dim-label'])
+        bar.append(self.info)
+        self.spinner = Gtk.Spinner(visible=False)
+        bar.append(self.spinner)
+        self.button = Gtk.Button(label='Install', css_classes=['suggested-action', 'pill'], sensitive=False)
+        self.button.connect('clicked', self.on_install)
+        bar.append(self.button)
+        view.add_bottom_bar(bar)
+
+        self.toasts.set_child(view)
+        self.set_content(self.toasts)
+        self.connect('close-request', self.on_close_request)
+        keys = Gtk.ShortcutController()
+        keys.add_shortcut(Gtk.Shortcut.new(Gtk.ShortcutTrigger.parse_string('Escape'),
+                                           Gtk.CallbackAction.new(lambda *_a: self.close() or True)))
+        self.add_controller(keys)
+        self.refresh()
+
+    def refresh(self, keep_open=()):
+        try:
+            boxes = read_status()
+        except Exception as err:  # noqa: BLE001 - shown to the user instead of a crash
+            page = Adw.StatusPage(icon_name='dialog-warning-symbolic', title='Could not check what is installed',
+                                  description=f'tind-optins --status failed: {err}')
+            self.scroller.set_child(page)
+            self.rows = []
+            self.update_button()
+            return
+        group = Adw.PreferencesGroup(description='Tick what you want and press Install. Nothing is installed '
+                                                 'before that. Tap a box to choose single apps.')
+        self.rows = []
+        for box in boxes:
+            r = BoxRow(self, box)
+            if box['id'] in keep_open and isinstance(r.row, Adw.ExpanderRow):
+                r.row.set_expanded(True)
+            group.add(r.row)
+            self.rows.append(r)
+        clamp = Adw.Clamp(maximum_size=640, margin_start=12, margin_end=12, margin_top=12, margin_bottom=18)
+        clamp.set_child(group)
+        self.scroller.set_child(clamp)
+        self.update_button()
+
+    def chosen_count(self):
+        return sum(len(r.chosen()) for r in self.rows)
+
+    def update_button(self):
+        if self.installing:
+            return
+        n = self.chosen_count()
+        self.button.set_label('Install' if n == 0 else f'Install {n} app' + ('' if n == 1 else 's'))
+        self.button.set_sensitive(n > 0)
+
+    def on_close_request(self, _win):
+        if self.installing:
+            self.toasts.add_toast(Adw.Toast(title='Installing; the window closes when it is done', timeout=3))
+            return True
+        return False
+
+    def set_busy(self, busy, text=None):
+        self.installing = busy
+        self.scroller.set_sensitive(not busy)
+        self.spinner.set_visible(busy)
+        self.spinner.set_spinning(busy)
+        self.button.set_sensitive(not busy)
+        self.info.set_label(text or 'Needs internet. Big boxes like Games can take a while.')
+        if busy:
+            self.button.set_label('Installing…')
+
+    def on_install(self, _button):
+        specs = [s for s in (r.spec() for r in self.rows) if s]
+        if not specs:
+            return
+        self.names = {r.box['id']: r.box['name'] for r in self.rows}
+        self.open_boxes = [r.box['id'] for r in self.rows
+                           if isinstance(r.row, Adw.ExpanderRow) and r.row.get_expanded()]
+        self.failed = []
+        try:
+            self.log_start = os.path.getsize(LOG)
+        except OSError:
+            self.log_start = 0
+        self.set_busy(True, 'Waiting for your password…')
+        try:
+            proc = Gio.Subprocess.new(['pkexec', HELPER] + specs,
+                                      Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_MERGE)
+        except GLib.Error as err:
+            self.set_busy(False)
+            self.show_error('Could not start the install', err.message)
+            return
+        stream = Gio.DataInputStream.new(proc.get_stdout_pipe())
+        stream.read_line_async(GLib.PRIORITY_DEFAULT, None, self.on_line, (proc, stream))
+
+    def on_line(self, stream, result, data):
+        proc, _ = data
+        try:
+            line, _len = stream.read_line_finish_utf8(result)
+        except GLib.Error:
+            line = None
+        if line is None:
+            proc.wait_async(None, self.on_done)
+            return
+        m = re.match(r'^=== (box|failed): ([a-z0-9-]+)', line)
+        if m and m.group(1) == 'box':
+            self.info.set_label(f'Installing {self.names.get(m.group(2), m.group(2))}…')
+        elif m:
+            self.failed.append(self.names.get(m.group(2), m.group(2)))
+        stream.read_line_async(GLib.PRIORITY_DEFAULT, None, self.on_line, data)
+
+    def on_done(self, proc, result):
+        try:
+            proc.wait_finish(result)
+        except GLib.Error:
+            pass
+        code = proc.get_exit_status() if proc.get_if_exited() else 1
+        self.set_busy(False)
+        self.refresh(keep_open=self.open_boxes)
+        if code in (126, 127) and not self.failed:
+            return                                      # password prompt dismissed or refused: nothing ran
+        if code == 0:
+            self.toasts.add_toast(Adw.Toast(title='Installed', timeout=4))
+            return
+        self.show_error('Could not install: ' + (', '.join(self.failed) or 'see the log'), self.log_excerpt())
+
+    def log_excerpt(self):
+        # this run's error lines (or its last lines when none look like errors), kept short
+        try:
+            with open(LOG, 'rb') as fh:
+                fh.seek(self.log_start)
+                run = fh.read().decode('utf-8', 'replace').replace('\r', '').splitlines()
+        except OSError:
+            run = []
+        why = [ln for ln in run if re.search(r'^(E:|Err:|error|W: .*fail)|failed|denied|not found|unable|could not',
+                                             ln, re.I) and not ln.startswith('=== ')][-6:]
+        why = why or run[-6:]
+        text = '\n'.join(ln[:160] for ln in why) or 'No details were logged.'
+        return f'{text}\n\nThe full log is in {LOG}'
+
+    def show_error(self, heading, body):
+        if hasattr(Adw, 'AlertDialog'):
+            dlg = Adw.AlertDialog(heading=heading, body=body)
+            dlg.add_response('ok', 'OK')
+            dlg.present(self)
+        else:
+            dlg = Adw.MessageDialog(transient_for=self, heading=heading, body=body)
+            dlg.add_response('ok', 'OK')
+            dlg.present()
+
+
+class App(Adw.Application):
+    def __init__(self):
+        super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.DEFAULT_FLAGS
+                         if hasattr(Gio.ApplicationFlags, 'DEFAULT_FLAGS') else Gio.ApplicationFlags.FLAGS_NONE)
+
+    def do_activate(self):
+        win = self.get_active_window() or Window(self)
+        win.present()
+
+
+if __name__ == '__main__':
+    sys.exit(App().run(sys.argv[:1]))

@@ -1,13 +1,28 @@
 #!/bin/bash
 # Creative apps, all from Debian: GIMP, Inkscape, Krita, Kdenlive, Audacity, OBS Studio, Blender, plus Upscayl from Flathub.
+#   setup-creative              the whole box
+#   setup-creative gimp,krita   only those apps (ids: see pick_apps below and creative.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "gimp inkscape krita kdenlive audacity obs blender upscayl" "$@"
 echo "== Tind: creative setup"
-apt-get update
-# frei0r-plugins gives Kdenlive its effects; breeze-icon-theme gives KDE apps their icons under GNOME.
-apt_install gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender
+pkgs=()
+if want gimp; then pkgs+=(gimp); fi
+if want inkscape; then pkgs+=(inkscape); fi
+if want krita; then pkgs+=(krita); fi
+# frei0r-plugins gives Kdenlive its effects
+if want kdenlive; then pkgs+=(kdenlive frei0r-plugins); fi
+# breeze-icon-theme gives the KDE apps (Krita, Kdenlive) their icons under GNOME
+if want krita kdenlive; then pkgs+=(breeze-icon-theme); fi
+if want audacity; then pkgs+=(audacity); fi
+if want obs; then pkgs+=(obs-studio); fi
+if want blender; then pkgs+=(blender); fi
+if [ "${#pkgs[@]}" -gt 0 ]; then
+    apt-get update
+    apt_install "${pkgs[@]}"
+fi
 # AI image upscaler for generated artwork and old photos (Flathub).
-optional "Upscayl" flatpak_install org.upscayl.Upscayl
+if want upscayl; then optional "Upscayl" flatpak_install org.upscayl.Upscayl; fi
 echo "== Tind: creative setup done"

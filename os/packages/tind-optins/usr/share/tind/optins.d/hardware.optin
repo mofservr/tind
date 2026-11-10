@@ -2,3 +2,10 @@ NAME="Printers and scanners"
 DESC="HP printer support (HPLIP) and scanner support (SANE) (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-hardware"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+hp|HP printers|HP printer support (HPLIP)|apt:hplip
+scanners|Scanners|Scanner support (SANE), including network scanners|apt:sane-utils+sane-airscan
+"

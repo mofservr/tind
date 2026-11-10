@@ -1,38 +1,63 @@
 #!/bin/bash
-# Native gaming stack from Debian packages: Steam, Lutris, Wine, 32-bit graphics, GameMode, MangoHud,
-# plus Xbox controller drivers and Flathub apps (Discord, ProtonUp-Qt). Lutris also covers GOG and Epic, so there is no separate Heroic.
+# Games: native Steam, Lutris, Wine, 32-bit graphics, GameMode, MangoHud from Debian, Xbox controller drivers
+# when Debian ships them, and Discord and ProtonUp-Qt from Flathub. Lutris also covers GOG and Epic, so there is no
+# separate Heroic.
+#   setup-gaming              the whole box
+#   setup-gaming steam,discord  only those apps (ids: see pick_apps below and gaming.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "steam lutris wine discord protonup gamemode mangohud xbox" "$@"
+# Lutris runs Windows games through Wine, so choosing Lutris brings Wine too
+if want lutris; then WANT+="wine "; fi
 echo "== Tind: gaming setup"
-ensure_components
-dpkg --add-architecture i386
-# Steam's licence question has to be answered in advance for an unattended install.
-echo "steam steam/question select I AGREE" | debconf-set-selections
-echo "steam steam/license note" | debconf-set-selections
-apt-get update
-pkgs=(steam-installer steam-devices lutris wine wine32:i386 winetricks gamemode mangohud vulkan-tools
-      libgl1-mesa-dri:i386 mesa-vulkan-drivers:i386 libvulkan1:i386)
-# match the installed NVIDIA driver with its 32-bit libraries
-if dpkg -s nvidia-driver >/dev/null 2>&1; then pkgs+=(nvidia-driver-libs:i386); fi
-apt_install "${pkgs[@]}"
+
+if want steam lutris wine gamemode mangohud xbox; then
+    ensure_components
+    if want steam lutris wine; then dpkg --add-architecture i386; fi
+    if want steam; then
+        # Steam's licence question has to be answered in advance for an unattended install.
+        echo "steam steam/question select I AGREE" | debconf-set-selections
+        echo "steam steam/license note" | debconf-set-selections
+    fi
+    apt-get update
+fi
+
+pkgs=()
+if want steam lutris wine; then
+    # 32-bit graphics for Steam and Wine, matching the installed NVIDIA driver with its 32-bit libraries
+    pkgs+=(vulkan-tools libgl1-mesa-dri:i386 mesa-vulkan-drivers:i386 libvulkan1:i386)
+    if dpkg -s nvidia-driver >/dev/null 2>&1; then pkgs+=(nvidia-driver-libs:i386); fi
+fi
+if want steam; then pkgs+=(steam-installer steam-devices); fi
+if want lutris; then pkgs+=(lutris); fi
+if want wine; then pkgs+=(wine wine32:i386 winetricks); fi
+if want gamemode; then pkgs+=(gamemode); fi
+if want mangohud; then pkgs+=(mangohud); fi
+if [ "${#pkgs[@]}" -gt 0 ]; then apt_install "${pkgs[@]}"; fi
+
 # Xbox controllers beyond the kernel's built-in wired support: xpadneo (Bluetooth) and xone (wireless dongle),
 # when this Debian release ships them. Both are DKMS modules, so under Secure Boot they load only after
 # the machine key has been enrolled (tind-gpu secureboot), the same step the NVIDIA driver needs.
-for p in xpadneo-dkms xone-dkms; do
-    if apt-cache show "$p" >/dev/null 2>&1; then
-        optional "$p" apt_install "$p"
-    else
-        echo "NOTE: $p is not in this Debian release; skipping"
-    fi
-done
+if want xbox; then
+    for p in xpadneo-dkms xone-dkms; do
+        if apt-cache show "$p" >/dev/null 2>&1; then
+            optional "$p" apt_install "$p"
+        else
+            echo "NOTE: $p is not in this Debian release; skipping"
+        fi
+    done
+fi
+
 # Small apps from Flathub: Discord and ProtonUp-Qt (custom Proton versions).
-for app in com.discordapp.Discord net.davidotek.pupgui2; do
-    optional "$app" flatpak_install "$app"
-done
-# Many Proton games need a higher memory-map limit than the Linux default (same value as SteamOS).
-install -D -m 0644 /usr/share/tind/extras/99-tind-gaming.conf /etc/sysctl.d/99-tind-gaming.conf
-sysctl --system >/dev/null 2>&1 || true
-udevadm control --reload >/dev/null 2>&1 || true
+if want discord; then optional "com.discordapp.Discord" flatpak_install com.discordapp.Discord; fi
+if want protonup; then optional "net.davidotek.pupgui2" flatpak_install net.davidotek.pupgui2; fi
+
+if want steam lutris wine; then
+    # Many Proton games need a higher memory-map limit than the Linux default (same value as SteamOS).
+    install -D -m 0644 /usr/share/tind/extras/99-tind-gaming.conf /etc/sysctl.d/99-tind-gaming.conf
+    sysctl --system >/dev/null 2>&1 || true
+    udevadm control --reload >/dev/null 2>&1 || true
+fi
 echo "== Tind: gaming setup done"

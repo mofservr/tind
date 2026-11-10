@@ -2,3 +2,10 @@ NAME="Productivity and cloud"
 DESC="LibreOffice and Nextcloud (preconfigured for lagrr.servr.no) (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-productivity"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+libreoffice|LibreOffice|Writer, Calc and Impress, with Norwegian spell-check|apt:libreoffice-writer+libreoffice-calc+libreoffice-impress
+nextcloud|Nextcloud|File sync, preconfigured for lagrr.servr.no|apt:nextcloud-desktop
+"

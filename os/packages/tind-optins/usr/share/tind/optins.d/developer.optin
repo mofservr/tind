@@ -2,3 +2,16 @@ NAME="Developer tools"
 DESC="git, compilers, Python tools, GitHub CLI, VS Code, Claude Desktop, Wireshark, nmap, mtr, Remmina and virt-manager (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-dev"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+basics|Command-line basics|git, compilers, Python tools, GitHub CLI, jq, tmux|apt:git+build-essential+pipx+gh
+vscode|VS Code|Code editor, from Microsoft’s repository|apt:code
+claude|Claude Desktop|Claude app (beta), from Anthropic’s repository|apt:claude-desktop
+wireshark|Wireshark|Network traffic capture, without root|apt:wireshark
+nmap|nmap|Network scanner|apt:nmap
+mtr|mtr|Traceroute and ping in one|apt:mtr
+remmina|Remmina|Remote desktop: RDP, VNC and SSH|apt:remmina
+virt-manager|virt-manager|Virtual machines with QEMU and libvirt|apt:virt-manager
+"

@@ -2,3 +2,10 @@ NAME="Communication"
 DESC="Signal and Telegram (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-communication"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+signal|Signal|Private messenger, from Signal’s repository|apt:signal-desktop
+telegram|Telegram|Messenger|apt:telegram-desktop flatpak:org.telegram.desktop
+"

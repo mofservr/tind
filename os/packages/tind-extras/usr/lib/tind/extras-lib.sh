@@ -46,6 +46,37 @@ optional() {
     "$@" || echo "WARNING: $what failed; continuing" >&2
 }
 
+# Per-app choice (Tind Apps, 10 Nov 2026). A box script names its apps once:  pick_apps "steam lutris" "$@"
+# With no arguments the whole box is chosen (installer first boot, CI, `tind-optins install <box>`); otherwise only the
+# named apps (commas or spaces). An unknown name stops the script before anything is installed.
+# The ids must match the APPS lines of the box's .optin file (checked in CI by os/scripts/test-optins.sh).
+WANT=" "
+pick_apps() {
+    local all=" $1 " a list; shift
+    if [ "$#" -eq 0 ]; then WANT="$all"; return 0; fi
+    WANT=" "; list="$*"; list="${list//,/ }"
+    for a in $list; do
+        case "$all" in
+            *" $a "*) WANT+="$a " ;;
+            *) echo "unknown app for this box: $a (known: ${all# })" >&2; exit 2 ;;
+        esac
+    done
+    echo "Apps chosen:${WANT% }"
+}
+# want APP...: true when any of the named apps was chosen
+want() {
+    local a
+    for a in "$@"; do [[ "$WANT" == *" $a "* ]] && return 0; done
+    return 1
+}
+
+# add the regular users to a group (takes effect at their next login)
+add_users_to_group() {
+    local u
+    getent group "$1" >/dev/null || return 0
+    for u in $(awk -F: '$3>=1000 && $3<60000 {print $1}' /etc/passwd); do usermod -aG "$1" "$u"; done
+}
+
 # apt_or_flatpak PACKAGE FLATPAK_ID: Debian's package when this release has one, Flathub otherwise.
 apt_or_flatpak() {
     if apt-cache show "$1" >/dev/null 2>&1; then apt_install "$1"; else flatpak_install "$2"; fi

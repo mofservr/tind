@@ -1,22 +1,31 @@
 #!/bin/bash
 # Entertainment: VLC, Strawberry (local library and Subsonic servers such as Navidrome) and Spotify (Flathub).
+#   setup-entertainment             the whole box
+#   setup-entertainment spotify     only those apps (ids: vlc strawberry spotify, as in entertainment.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "vlc strawberry spotify" "$@"
 echo "== Tind: entertainment setup"
-ensure_components
-apt-get update
-apt_install vlc gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav
-apt_or_flatpak strawberry org.strawberrymusicplayer.strawberry
+if want vlc strawberry; then
+    ensure_components
+    apt-get update
+    # the GStreamer plugin sets: codecs for VLC's audio output and for Strawberry's playback
+    apt_install gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav
+fi
+if want vlc; then apt_install vlc; fi
+if want strawberry; then apt_or_flatpak strawberry org.strawberrymusicplayer.strawberry; fi
 # Spotify is a nice-to-have: its Flatpak runs an apply_extra download that can fail; log it and carry on.
 # Its window frame: on Wayland Spotify draws Chromium's own Windows-style title bar, so tind-extras ships a
 # system override (var/lib/flatpak/overrides/com.spotify.Client) that runs it on X11 with the GNOME frame.
 # apply_extra runs inside bubblewrap, which needs user namespaces. The CI sandbox does not allow them, so there
 # the install always fails; say so in one line instead of logging a failed install.
-if unshare --user true 2>/dev/null; then
-    optional "Spotify" flatpak_install com.spotify.Client
-else
-    echo "NOTE: Spotify skipped, user namespaces are not available here (expected in CI, not on real hardware)"
+if want spotify; then
+    if unshare --user true 2>/dev/null; then
+        optional "Spotify" flatpak_install com.spotify.Client
+    else
+        echo "NOTE: Spotify skipped, user namespaces are not available here (expected in CI, not on real hardware)"
+    fi
 fi
 echo "== Tind: entertainment setup done"

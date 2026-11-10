@@ -1,15 +1,16 @@
 Package: tind-optins
-Version: 0.1.8
+Version: 0.1.9
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
 Priority: optional
-Depends: zenity, pkexec, flatpak, curl, ca-certificates, tind-extras
+Depends: python3, python3-gi, gir1.2-gtk-4.0, gir1.2-adw-1, pkexec, flatpak, curl, ca-certificates, tind-extras (>= 0.1.10)
 Installed-Size: 96
 Description: Tind Apps: opt-in application installer
- A small checklist tool for the apps Tind does not install by default: the
- app boxes from the installer (games, developer tools, entertainment, creative,
- communication, productivity and cloud, printers and scanners, security).
- Apps are described by small files in /usr/share/tind/optins.d, installed from
- apt, Flathub or a setup script, and each can also be installed from the
- command line.
+ A small window for the apps Tind does not install by default: the app boxes
+ from the installer (games, developer tools, entertainment, creative,
+ communication, productivity and cloud, printers and scanners, security) and
+ the AI assistant. Each box opens a list of its apps, so single apps can be
+ installed; installed apps are shown greyed out. Boxes are described by small
+ files in /usr/share/tind/optins.d, and everything can also be installed from
+ the command line (tind-optins --list, tind-optins install box:app).

@@ -1,71 +1,125 @@
 #!/bin/bash
-# tind-optins: choose extra apps to install.
-#   tind-optins                 checklist window
-#   tind-optins --list          print available opt-ins
-#   tind-optins install ID...   install from the command line
+# tind-optins: Tind Apps, choose extra apps to install, one by one or a whole box at a time.
+#   tind-optins                          the Tind Apps window
+#   tind-optins --list                   every box and app, and whether it is installed
+#   tind-optins --status                 the same, tab-separated, for the window (see status below)
+#   tind-optins install SPEC...          install from the command line; SPEC is a box (productivity) or
+#                                        a box with some of its apps (productivity:nextcloud, gaming:steam,discord)
+# The boxes are the files in /usr/share/tind/optins.d; their APPS lines name the apps and how to tell they are installed.
 set -euo pipefail
-DIR=/usr/share/tind/optins.d
+DIR="${TIND_OPTINS_DIR:-/usr/share/tind/optins.d}"   # override only for tests; the root helper always reads the real one
 HELPER=/usr/lib/tind/optin-install
+WINDOW=/usr/lib/tind/tind-apps-window
 
-field() { # field ID NAME
-    ( unset NAME DESC STATUS; # shellcheck disable=SC1090
-      . "$DIR/$1.optin"; printf '%s' "${!2:-}" )
+ids() { local f; for f in "$DIR"/*.optin; do [ -e "$f" ] && basename "$f" .optin; done; }
+# box_vars ID: print NAME, DESC and APPS of one box as three NUL-terminated strings
+box_vars() {
+    ( unset NAME DESC STATUS APPS; # shellcheck disable=SC1090
+      . "$DIR/$1.optin"; printf '%s\0%s\0%s\0' "${NAME:-$1}" "${DESC:-}" "${APPS:-}" )
 }
-ids() { local f; for f in "$DIR"/*.optin; do basename "$f" .optin; done; }
 
-as_root() { if [ "$(id -u)" -eq 0 ]; then "$@"; else pkexec "$@"; fi; }
-
-LOG=/var/log/tind-optins.log
-failed=""   # names of opt-ins that did not install (read by the window after install_ids)
-cancelled=0
-
-install_ids() {
-    local id rc
-    failed=""; cancelled=0
-    for id in "$@"; do
-        echo "Installing $(field "$id" NAME) ..."
-        rc=0; as_root "$HELPER" "$id" || rc=$?
-        if [ "$rc" -eq 126 ] && [ "$(id -u)" -ne 0 ]; then cancelled=1; return 1; fi   # password prompt dismissed
-        [ "$rc" -eq 0 ] || failed="${failed:+$failed, }$(field "$id" NAME)"
+# status: one line per box and per app, tab-separated:
+#   box  ID   installed|partial|missing  N/M  NAME  DESC
+#   app  BOX  APP  installed|missing  NAME  ABOUT
+# An app is installed when any of its check alternatives is fully there (dpkg status "ii", or a Flatpak app in any
+# installation). An app whose only alternatives are apt? packages this Debian release does not have is left out.
+# No root, no network: one dpkg-query call, one flatpak call, apt-cache only for apt? packages.
+status() {
+    local id name desc apps app aname about check alt kind pkgs p ok any avail n_all n_inst state
+    local -A dpkg_ok=() flat_ok=() apt_avail=()
+    local -a apt_names=() maybe=() rows=()
+    local -A box_name=() box_desc=() box_apps=()
+    for id in $(ids); do
+        { IFS= read -r -d '' name; IFS= read -r -d '' desc; IFS= read -r -d '' apps; } < <(box_vars "$id")
+        box_name[$id]="$name"; box_desc[$id]="$desc"; box_apps[$id]="$apps"
+        while IFS='|' read -r app aname about check; do
+            [ -n "$app" ] || continue
+            for alt in $check; do
+                kind="${alt%%:*}"; pkgs="${alt#*:}"
+                case "$kind" in
+                    apt|apt\?) for p in ${pkgs//+/ }; do
+                                   apt_names+=("$p")
+                                   if [ "$kind" = 'apt?' ]; then maybe+=("$p"); fi
+                               done ;;
+                esac
+            done
+        done <<< "$apps"
     done
-    [ -z "$failed" ]
+    if [ "${#apt_names[@]}" -gt 0 ]; then
+        while read -r p st; do
+            if [ "$st" = ii ]; then dpkg_ok[$p]=1; fi
+        done < <(dpkg-query -W -f='${Package} ${db:Status-Abbrev}\n' "${apt_names[@]}" 2>/dev/null || true)
+    fi
+    if command -v flatpak >/dev/null 2>&1; then
+        while read -r p; do if [ -n "$p" ]; then flat_ok[$p]=1; fi; done \
+            < <(flatpak list --app --columns=application 2>/dev/null || true)
+    fi
+    for p in "${maybe[@]}"; do
+        if apt-cache show "$p" >/dev/null 2>&1; then apt_avail[$p]=1; fi
+    done
+    for id in $(ids); do
+        n_all=0; n_inst=0; rows=()
+        while IFS='|' read -r app aname about check; do
+            [ -n "$app" ] || continue
+            any=0; avail=0
+            for alt in $check; do
+                kind="${alt%%:*}"; pkgs="${alt#*:}"; ok=1
+                for p in ${pkgs//+/ }; do
+                    case "$kind" in
+                        apt) avail=1; if [ -z "${dpkg_ok[$p]:-}" ]; then ok=0; fi ;;
+                        apt\?) if [ -n "${apt_avail[$p]:-}" ]; then avail=1; fi
+                              if [ -z "${dpkg_ok[$p]:-}" ]; then ok=0; fi ;;
+                        flatpak) avail=1; if [ -z "${flat_ok[$p]:-}" ]; then ok=0; fi ;;
+                        *) ok=0 ;;
+                    esac
+                done
+                if [ "$ok" = 1 ]; then any=1; fi
+            done
+            if [ "$any" = 1 ]; then avail=1; fi
+            [ "$avail" = 1 ] || continue     # nothing to install in this release, so not offered
+            n_all=$((n_all + 1))
+            if [ "$any" = 1 ]; then n_inst=$((n_inst + 1)); state=installed; else state=missing; fi
+            rows+=("$(printf 'app\t%s\t%s\t%s\t%s\t%s' "$id" "$app" "$state" "$aname" "$about")")
+        done <<< "${box_apps[$id]}"
+        if [ "$n_all" -gt 0 ] && [ "$n_inst" = "$n_all" ]; then state=installed
+        elif [ "$n_inst" -gt 0 ]; then state=partial
+        else state=missing; fi
+        printf 'box\t%s\t%s\t%s/%s\t%s\t%s\n' "$id" "$state" "$n_inst" "$n_all" "${box_name[$id]}" "${box_desc[$id]}"
+        [ "${#rows[@]}" -eq 0 ] || printf '%s\n' "${rows[@]}"
+    done
+}
+
+list() {
+    local kind a b c d _rest
+    while IFS=$'\t' read -r kind a b c d _rest; do
+        if [ "$kind" = box ]; then
+            printf '\n%-16s %-10s %s (%s installed)\n' "$a" "[$b]" "$d" "$c"
+        else
+            printf '  %-28s %-12s %s\n' "$a:$b" "$([ "$c" = installed ] && echo '[installed]' || echo '[ ]')" "$d"
+        fi
+    done < <(status)
+    echo
+}
+
+install_specs() {
+    local s rc
+    for s in "$@"; do
+        [[ "$s" =~ ^[a-z0-9-]+(:[a-z0-9-]+(,[a-z0-9-]+)*)?$ ]] || { echo "invalid: $s (use box or box:app,app)" >&2; return 1; }
+        [ -r "$DIR/${s%%:*}.optin" ] || { echo "unknown box: ${s%%:*} (tind-optins --list shows them)" >&2; return 1; }
+    done
+    rc=0
+    if [ "$(id -u)" -eq 0 ]; then "$HELPER" "$@" || rc=$?; else pkexec "$HELPER" "$@" || rc=$?; fi
+    [ "$rc" -ne 126 ] || echo "cancelled: no password given" >&2
+    return "$rc"
 }
 
 case "${1:-}" in
-    --list)
-        for id in $(ids); do printf '%-16s %-14s %s\n' "$id" "[$(field "$id" STATUS)]" "$(field "$id" DESC)"; done ;;
+    --status) status ;;
+    --list) list ;;
     install)
-        shift; [ "$#" -gt 0 ] || { echo "usage: tind-optins install ID..." >&2; exit 1; }
-        install_ids "$@" ;;
+        shift; [ "$#" -gt 0 ] || { echo "usage: tind-optins install BOX[:APP,APP]..." >&2; exit 1; }
+        install_specs "$@" ;;
     "")
-        command -v zenity >/dev/null 2>&1 || { echo "zenity is not installed; use: tind-optins --list" >&2; exit 1; }
-        rows=()
-        for id in $(ids); do
-            rows+=(FALSE "$id" "$(field "$id" NAME)" "$(field "$id" DESC)")
-        done
-        sel="$(zenity --list --checklist --title="Tind Apps" --width=640 --height=420 \
-            --text="Choose what to add. Nothing is installed until you press OK." \
-            --column="" --column="id" --column="App" --column="About" --hide-column=2 \
-            --separator=" " "${rows[@]}")" || exit 0
-        [ -n "$sel" ] || exit 0
-        start="$(wc -l < "$LOG" 2>/dev/null || echo 0)"
-        # shellcheck disable=SC2086
-        if install_ids $sel; then
-            zenity --info --no-markup --text="Done."
-        elif [ "$cancelled" -eq 1 ]; then
-            exit 0
-        else
-            # this run's error lines (or its last lines when none look like errors), kept short
-            run="$(tail -n +"$((start + 1))" "$LOG" 2>/dev/null | tr -d '\r' || true)"
-            why="$(grep -aiE '^(E:|Err:|error|W: .*fail)|failed|denied|not found|unable|could not' <<<"$run" | tail -n 6 | cut -c1-160 || true)"
-            [ -n "$why" ] || why="$(tail -n 6 <<<"$run" | cut -c1-160)"
-            zenity --error --no-markup --width=560 \
-                --text="Could not install: $failed.
-
-${why:-No details were logged.}
-
-The full log is in $LOG"
-        fi
-        ;;
-    *) echo "usage: tind-optins [--list | install ID...]" >&2; exit 1 ;;
+        exec /usr/bin/python3 "$WINDOW" ;;
+    *) echo "usage: tind-optins [--list | --status | install BOX[:APP,APP]...]" >&2; exit 1 ;;
 esac

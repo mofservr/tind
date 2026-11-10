@@ -154,6 +154,7 @@ sec installer launcher
 ls -l /usr/share/applications/tind-install.desktop 2>&1; grep -E '^(Name|Exec|Icon|NoDisplay)=' /usr/share/applications/tind-install.desktop 2>&1
 echo "-- original:"; grep -E '^(Name|NoDisplay)=' /usr/share/applications/calamares-install-debian.desktop 2>&1
 sec optins; ls /usr/share/tind/optins.d 2>&1; ls -l /usr/bin/tind-optins /usr/lib/tind/optin-install 2>&1
+echo "-- tind-optins --list (what Tind Apps shows as installed):"; timeout 60 tind-optins --list 2>&1 | head -60
 sec nextcloud config; cat /etc/Nextcloud/nextcloud.cfg 2>&1
 sec plymouth; plymouth-set-default-theme 2>&1; ls /usr/share/plymouth/themes | tr '\n' ' '; echo
 sec grub defaults; ls /etc/default/grub.d 2>&1

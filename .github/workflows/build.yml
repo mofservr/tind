@@ -51,6 +51,8 @@ jobs:
             os/scripts/test-uplink-dns.sh || rc=1
             echo "== saved wired settings follow a renamed network card (wired-profiles)"
             os/scripts/test-wired-profiles.sh || rc=1
+            echo "== Tind Apps: APPS lines match the box scripts, the status check, per-app choice (test-optins)"
+            os/scripts/test-optins.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"
@@ -138,6 +140,13 @@ jobs:
             apt-cache depends lutris || true
             echo "== tind-extras: real run of the setup scripts"
             apt-get install -y ./os/dist/tind-extras_*_all.deb >/dev/null 2>&1 || { echo "tind-extras install FAILED"; rc=1; }
+            echo "== Tind Apps: a single app installs only itself (before the whole boxes below)"
+            /usr/lib/tind/setup-productivity nextcloud > logs/single-nextcloud.log 2>&1 && echo "setup-productivity nextcloud: OK" || { echo "setup-productivity nextcloud: FAILED"; tail -25 logs/single-nextcloud.log; rc=1; }
+            if dpkg -s nextcloud-desktop >/dev/null 2>&1 && ! dpkg -s libreoffice-writer >/dev/null 2>&1; then echo "single app: Nextcloud without LibreOffice: ok"; else echo "single app: Nextcloud without LibreOffice: FAILED"; rc=1; fi
+            /usr/lib/tind/setup-communication telegram > logs/single-telegram.log 2>&1 && echo "setup-communication telegram: OK" || { echo "setup-communication telegram: FAILED"; tail -25 logs/single-telegram.log; rc=1; }
+            if { dpkg -s telegram-desktop >/dev/null 2>&1 || flatpak info --system org.telegram.desktop >/dev/null 2>&1; } && ! dpkg -s signal-desktop >/dev/null 2>&1 && [ ! -e /etc/apt/sources.list.d/signal-desktop.sources ]; then echo "single app: Telegram without Signal's repository: ok"; else echo "single app: Telegram without Signal's repository: FAILED"; rc=1; fi
+            /usr/lib/tind/setup-gaming mangohud > logs/single-mangohud.log 2>&1 && echo "setup-gaming mangohud: OK" || { echo "setup-gaming mangohud: FAILED"; tail -25 logs/single-mangohud.log; rc=1; }
+            if dpkg -s mangohud >/dev/null 2>&1 && ! dpkg -s steam-installer >/dev/null 2>&1 && ! dpkg -s wine >/dev/null 2>&1; then echo "single app: MangoHud without Steam and Wine: ok"; else echo "single app: MangoHud without Steam and Wine: FAILED"; rc=1; fi
             /usr/lib/tind/setup-dev > logs/setup-dev.log 2>&1 && echo "setup-dev: OK" || { echo "setup-dev: FAILED"; tail -25 logs/setup-dev.log; rc=1; }
             /usr/lib/tind/setup-gaming > logs/setup-gaming.log 2>&1 && echo "setup-gaming: OK" || { echo "setup-gaming: FAILED"; tail -25 logs/setup-gaming.log; rc=1; }
             # the runner container has no systemd; some post-install scripts (Proton VPN daemon) call systemctl and fail
@@ -151,6 +160,16 @@ jobs:
             rm -f /usr/bin/systemctl /usr/sbin/policy-rc.d; dpkg-divert --local --rename --remove /usr/bin/systemctl >/dev/null
             echo "== creative: simulated install only (a full install is too large for the runner)"
             apt-get install -s gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender >/dev/null 2>&1 && echo "setup-creative packages: OK (simulated)" || { echo "setup-creative packages: FAILED"; rc=1; }
+            echo "== Tind Apps: the status check sees what the box runs installed"
+            TIND_OPTINS_DIR=os/packages/tind-optins/usr/share/tind/optins.d bash os/packages/tind-optins/usr/bin/tind-optins --list > logs/optins-status.log 2>&1 || { echo "tind-optins --list FAILED"; rc=1; }
+            cat logs/optins-status.log
+            st=$(TIND_OPTINS_DIR=os/packages/tind-optins/usr/share/tind/optins.d bash os/packages/tind-optins/usr/bin/tind-optins --status 2>/dev/null || true)
+            # Creative is a simulated install and the AI box is not installed here; Flathub apps are optional steps
+            missing=$(awk -F'\t' '$1=="app" && $4=="missing" {print $2":"$3}' <<<"$st" | grep -vE '^(creative:|ai:)' || true)
+            hard=$(grep -vE ':(discord|protonup|spotify|bitwarden|upscayl)$' <<<"$missing" || true)
+            soft=$(grep -E ':(discord|protonup|spotify|bitwarden|upscayl)$' <<<"$missing" || true)
+            if [ -n "$hard" ]; then echo "status: installed but shown as missing: $(echo $hard)"; rc=1; else echo "status: every installed apt app is seen as installed"; fi
+            if [ -n "$soft" ]; then echo "NOTE: Flathub apps not installed here (optional steps): $(echo $soft)"; fi
             echo "== app boxes: things to check by eye"
             grep -E "Signal apt signing key|WARNING|NOTE:" logs/setup-*.log | head -20 || true
             cat /etc/apt/sources.list.d/signal-desktop.sources 2>&1 | head -10 || true

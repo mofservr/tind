@@ -1,5 +1,5 @@
 Package: tind-extras
-Version: 0.1.9
+Version: 0.1.10
 Architecture: all
 Maintainer: Morten <morten@servr.no>
 Section: admin
@@ -11,4 +11,5 @@ Description: Tind optional app boxes: games, developer, entertainment and more
  developer tools, entertainment, creative, communication,
  productivity and cloud (LibreOffice, Nextcloud) and
  printers and scanners, and security (Bitwarden, Proton VPN). They run from the installer's tick boxes on first boot,
- or later from Tind Apps. Nothing here is on the ISO; all of it needs internet.
+ or later from Tind Apps, a whole box or single apps (setup-<box> app,app).
+ Nothing here is on the ISO; all of it needs internet.

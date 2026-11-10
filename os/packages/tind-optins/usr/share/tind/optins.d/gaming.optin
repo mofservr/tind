@@ -2,3 +2,16 @@ NAME="Games"
 DESC="Steam, Lutris and Wine set up natively, plus Discord, ProtonUp-Qt, GameMode, MangoHud and Xbox controller drivers (needs internet, about 2 GB)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-gaming"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+steam|Steam|Valve’s game store and launcher, native|apt:steam-installer
+lutris|Lutris|GOG, Epic and other launchers in one place; brings Wine|apt:lutris
+wine|Wine|Runs Windows programs, with winetricks|apt:wine
+discord|Discord|Voice and text chat for gaming|flatpak:com.discordapp.Discord
+protonup|ProtonUp-Qt|Installs custom Proton versions for Steam and Lutris|flatpak:net.davidotek.pupgui2
+gamemode|GameMode|Tunes the computer for speed while a game runs|apt:gamemode
+mangohud|MangoHud|Shows frame rate and temperatures over the game|apt:mangohud
+xbox|Xbox controller drivers|Bluetooth (xpadneo) and wireless dongle (xone)|apt?:xpadneo-dkms apt?:xone-dkms
+"

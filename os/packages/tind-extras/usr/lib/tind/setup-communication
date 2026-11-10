@@ -1,29 +1,34 @@
 #!/bin/bash
 # Communication: Signal (Signal's own apt repository) and Telegram (Debian, Flathub if Debian lacks it).
+#   setup-communication            the whole box
+#   setup-communication telegram   only those apps (ids: signal telegram, as in communication.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
+pick_apps "signal telegram" "$@"
 echo "== Tind: communication setup"
 tmp="$(mktemp -d)"; trap 'rm -rf "$tmp"' EXIT
 
-# Signal publishes its apt key and sources file on https://signal.org/download/ but no fingerprint for it.
-# SIGNAL_FPR is the fingerprint CI logged for that key (2026-10-18); the script refuses any other key.
-# If Signal ever rotates the key, this stops with a mismatch and the new value has to be checked by hand.
-SIGNAL_FPR="DBA36B5181D0C816F630E889D980A17457F6FB06"
-curl -fsSL https://updates.signal.org/desktop/apt/keys.asc -o "$tmp/signal.asc"
-got="$(gpg --show-keys --with-colons "$tmp/signal.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
-echo "Signal apt signing key fingerprint: $got"
-if [ -n "$SIGNAL_FPR" ] && [ "$got" != "$SIGNAL_FPR" ]; then
-    echo "Signal signing key fingerprint mismatch: got $got" >&2; exit 1
+if want signal; then
+    # Signal publishes its apt key and sources file on https://signal.org/download/ but no fingerprint for it.
+    # SIGNAL_FPR is the fingerprint CI logged for that key (2026-10-18); the script refuses any other key.
+    # If Signal ever rotates the key, this stops with a mismatch and the new value has to be checked by hand.
+    SIGNAL_FPR="DBA36B5181D0C816F630E889D980A17457F6FB06"
+    curl -fsSL https://updates.signal.org/desktop/apt/keys.asc -o "$tmp/signal.asc"
+    got="$(gpg --show-keys --with-colons "$tmp/signal.asc" | awk -F: '$1=="fpr"{print $10; exit}')"
+    echo "Signal apt signing key fingerprint: $got"
+    if [ -n "$SIGNAL_FPR" ] && [ "$got" != "$SIGNAL_FPR" ]; then
+        echo "Signal signing key fingerprint mismatch: got $got" >&2; exit 1
+    fi
+    install -d -m 0755 /usr/share/keyrings
+    gpg --dearmor < "$tmp/signal.asc" > /usr/share/keyrings/signal-desktop-keyring.gpg
+    chmod 0644 /usr/share/keyrings/signal-desktop-keyring.gpg
+    curl -fsSL https://updates.signal.org/static/desktop/apt/signal-desktop.sources -o /etc/apt/sources.list.d/signal-desktop.sources
+    echo "-- signal-desktop.sources:"; cat /etc/apt/sources.list.d/signal-desktop.sources
 fi
-install -d -m 0755 /usr/share/keyrings
-gpg --dearmor < "$tmp/signal.asc" > /usr/share/keyrings/signal-desktop-keyring.gpg
-chmod 0644 /usr/share/keyrings/signal-desktop-keyring.gpg
-curl -fsSL https://updates.signal.org/static/desktop/apt/signal-desktop.sources -o /etc/apt/sources.list.d/signal-desktop.sources
-echo "-- signal-desktop.sources:"; cat /etc/apt/sources.list.d/signal-desktop.sources
 
 apt-get update
-apt_install signal-desktop
-apt_or_flatpak telegram-desktop org.telegram.desktop
+if want signal; then apt_install signal-desktop; fi
+if want telegram; then apt_or_flatpak telegram-desktop org.telegram.desktop; fi
 echo "== Tind: communication setup done"

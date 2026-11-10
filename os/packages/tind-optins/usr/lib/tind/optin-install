@@ -1,33 +1,57 @@
 #!/bin/bash
-# Root helper for tind-optins: install one opt-in by id. Called through pkexec or sudo.
+# Root helper for Tind Apps: install boxes, or some apps of a box, in one go (one password prompt for all of them).
+# Called through pkexec or sudo:  optin-install SPEC...   SPEC = box (whole box) or box:app,app (only those apps)
 # Output goes to the terminal and to /var/log/tind-optins.log (the Tind Apps window shows its tail on failure).
+# Progress lines for the window: "=== box: ID", then "=== done: ID" or "=== failed: ID". Exit 0 only if all worked.
 set -euo pipefail
 DIR=/usr/share/tind/optins.d
 LOG=/var/log/tind-optins.log
-id="${1:-}"
-[[ "$id" =~ ^[a-z0-9-]+$ ]] || { echo "invalid opt-in id" >&2; exit 1; }
-file="$DIR/$id.optin"
-[ -r "$file" ] || { echo "unknown opt-in: $id" >&2; exit 1; }
+[ "$#" -gt 0 ] || { echo "usage: optin-install BOX[:APP,APP]..." >&2; exit 1; }
+# check every spec before installing anything
+for spec in "$@"; do
+    [[ "$spec" =~ ^[a-z0-9-]+(:[a-z0-9-]+(,[a-z0-9-]+)*)?$ ]] || { echo "invalid opt-in: $spec" >&2; exit 1; }
+    id="${spec%%:*}"
+    [ -r "$DIR/$id.optin" ] || { echo "unknown opt-in: $id" >&2; exit 1; }
+    if [[ "$spec" == *:* ]]; then
+        known=" $( (unset APPS; # shellcheck disable=SC1090
+                   . "$DIR/$id.optin"; printf '%s\n' "${APPS:-}") | cut -d'|' -f1 | tr '\n' ' ') "
+        IFS=, read -ra apps <<< "${spec#*:}"
+        for a in "${apps[@]}"; do
+            [[ "$known" == *" $a "* ]] || { echo "unknown app in $id: $a" >&2; exit 1; }
+        done
+    fi
+done
 touch "$LOG"; chmod 644 "$LOG"
 exec > >(tee -a "$LOG") 2>&1
-echo "=== $(date -Is) tind-optins: $id"
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh   # apt-get that waits for the dpkg lock, Debian components
-unset NAME DESC STATUS APT_PACKAGES FLATPAK_REF SCRIPT
-# shellcheck disable=SC1090
-. "$file"
-if [ -n "${APT_PACKAGES:-}" ]; then
-    ensure_components
-    apt-get update
-    read -ra pkgs <<< "$APT_PACKAGES"
-    apt-get install -y "${pkgs[@]}"
-fi
-if [ -n "${FLATPAK_REF:-}" ]; then
-    flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-    read -ra refs <<< "$FLATPAK_REF"
-    flatpak install --system -y --noninteractive flathub "${refs[@]}"
-fi
-if [ -n "${SCRIPT:-}" ]; then
-    bash "$SCRIPT"
-fi
-echo "=== done: $id"
+failed=0
+for spec in "$@"; do
+    id="${spec%%:*}"; apps=()
+    if [[ "$spec" == *:* ]]; then IFS=, read -ra apps <<< "${spec#*:}"; fi
+    echo "=== $(date -Is) tind-optins: $spec"
+    echo "=== box: $id"
+    rc=0
+    (
+        set -euo pipefail
+        unset NAME DESC STATUS APT_PACKAGES FLATPAK_REF SCRIPT APPS
+        # shellcheck disable=SC1090
+        . "$DIR/$id.optin"
+        if [ -n "${APT_PACKAGES:-}" ]; then
+            ensure_components
+            apt-get update
+            read -ra pkgs <<< "$APT_PACKAGES"
+            apt-get install -y "${pkgs[@]}"
+        fi
+        if [ -n "${FLATPAK_REF:-}" ]; then
+            flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+            read -ra refs <<< "$FLATPAK_REF"
+            flatpak install --system -y --noninteractive flathub "${refs[@]}"
+        fi
+        if [ -n "${SCRIPT:-}" ]; then
+            bash "$SCRIPT" "${apps[@]}"
+        fi
+    ) || rc=$?
+    if [ "$rc" -eq 0 ]; then echo "=== done: $id"; else echo "=== failed: $id"; failed=1; fi
+done
+exit "$failed"

@@ -2,3 +2,11 @@ NAME="Entertainment"
 DESC="VLC, Strawberry music player (local files and Navidrome) and Spotify (needs internet)"
 STATUS="ready"
 SCRIPT="/usr/lib/tind/setup-entertainment"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+vlc|VLC|Video and music player|apt:vlc
+strawberry|Strawberry|Music player for local files and Navidrome|apt:strawberry flatpak:org.strawberrymusicplayer.strawberry
+spotify|Spotify|Music streaming|flatpak:com.spotify.Client
+"
