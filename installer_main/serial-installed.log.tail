@@ -1,3 +1,131 @@
+extensions.json present: yes
+formautofill@mozilla.org active=true location=app-builtin-addons
+ipp-activator@mozilla.com active=true location=app-builtin-addons
+newtab@mozilla.org active=true location=app-builtin-addons
+pictureinpicture@mozilla.org active=true location=app-builtin-addons
+addons-search-detection@mozilla.com active=true location=app-builtin-addons
+webcompat@mozilla.org active=true location=app-builtin-addons
+langpack-nn-NO@firefox-esr.mozilla.org active=true location=app-global
+langpack-nb-NO@firefox-esr.mozilla.org active=true location=app-global
+uBlock0@raymondhill.net active=true location=app-system-share
+default-theme@mozilla.org active=true location=app-builtin
+user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
+policy keys:
+AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
+user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
+user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
+user_pref("toolkit.telemetry.cachedClientID", "37d08b2a-f128-430b-af99-de7b2983e74a");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "745aed9d-076a-4e71-995e-57344f2e753a");
+user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+
+##### thunderbird policies
+thunderbird policies.json: valid JSON
+
+##### accent names, Mozilla accent defaults, Spotify frame override
+/usr/share/locale/en_US/LC_MESSAGES/gnome-control-center-2.0.mo: present
+/usr/lib/firefox-esr/defaults/pref/tind-accent.js: present
+/usr/lib/thunderbird/defaults/pref/tind-accent.js: present
+/var/lib/flatpak/overrides/com.spotify.Client: present
+accent tooltip for the green slot: Aurora
+
+##### tind-enroll
+tind-enroll: set up this device's WireGuard split tunnel to servr.no.
+
+  sudo tind-enroll init              create this device's key pair, print the public key
+  sudo tind-enroll apply [FILE]      install the tunnel from the enrolment block the server admin sends
+                                     back (paste it, or pass a file; end a paste with Ctrl-D)
+  sudo tind-enroll status            show tunnel state
+  sudo tind-enroll refresh           look the endpoint up again through this network's DNS
+  sudo tind-enroll remove [--purge-key]
+DNS_DOMAIN="servr.no"
+KEEPALIVE="25"
+CONNECTION_NAME="tind-servr"
+
+##### enroll init/apply smoke test
+
+The admin will reply with an enrolment block (a few KEY=value lines).
+Then run:  sudo tind-enroll apply      and paste it, or:  sudo tind-enroll apply FILE
+tind-enroll: ADDRESS is missing from the enrolment block
+Only traffic to 10.99.99.0/24 and names under servr.no uses it.
+Endpoint 192.0.2.1 is 192.0.2.1 on this network.
+The watchdog checks this every minute and follows you between networks.
+tind-enroll apply: no shell errors
+tind-enroll apply: temp dir removed
+  persistent keepalive: every 25 seconds
+Link 3 (tind-servr): ~servr.no
+Connection 'tind-servr' (d73cc598-66bb-488a-a933-a464f5e8384f) successfully deleted.
+Removed this device's private key.
+
+##### wireguard watchdog
+enabled
+watchdog with no tunnel installed: exit 0
+
+##### gnome-tour removed?
+dpkg-query: no packages found matching gnome-tour
+
+##### calamares branding
+grep: /etc/calamares/settings.conf: No such file or directory
+ls: cannot access '/usr/share/calamares/branding/tind': No such file or directory
+
+##### installer launcher
+ls: cannot access '/usr/share/applications/tind-install.desktop': No such file or directory
+grep: /usr/share/applications/tind-install.desktop: No such file or directory
+-- original:
+grep: /usr/share/applications/calamares-install-debian.desktop: No such file or directory
+
+##### optins
+ai.optin	     developer.optin	  hardware.optin
+communication.optin  entertainment.optin  productivity.optin
+creative.optin	     gaming.optin	  security.optin
+-rwxr-xr-x 1 root root 2927 Nov 10 00:01 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 1246 Nov 10 00:01 /usr/lib/tind/optin-install
+
+##### nextcloud config
+# Tind: global Nextcloud desktop client defaults.
+# Pre-fills the server address in the account wizard. Users still log in themselves.
+[General]
+overrideServerUrl=https://lagrr.servr.no
+
+##### plymouth
+tind
+bgrt ceratopsian debian-theme details emerald fade-in futureprototype glow homeworld joy lines moonlight script softwaves solar spacefun spinfinity spinner text tind tribar 
+
+##### grub defaults
+90-tind.cfg
+
+##### boot mode and bootloader
+booted via: UEFI
+grub-efi-amd64 2.12-9+deb13u2 ii 
+grub-efi-amd64-bin 2.12-9+deb13u2 ii 
+grub-pc  un 
+grub-pc-bin 2.12-9+deb13u2 ii 
+ntfs-3g 1:2022.10.3-5+deb13u3 ii 
+os-prober 1.83 ii 
+offline grub-pc files: ls: cannot access '/usr/share/tind/offline': No such file or directory 
+grub-pc debconf: 
+#GRUB_DISABLE_OS_PROBER=false
+GRUB_DISABLE_OS_PROBER=false
+fonts grub.cfg grubenv locale themes unicode.pf2 x86_64-efi 
+9
+NAME    SIZE FSTYPE MOUNTPOINT
+sr0    1024M        
+vda      30G        
+├─vda1  300M vfat   /boot/efi
+├─vda2 21.4G ext4   /
+└─vda3  8.3G swap   [SWAP]
+
+##### extras chosen in the installer
+cat: /var/lib/tind/pending-extras: No such file or directory
+done
+Preparing to unpack .../4-node-prismjs_1.29.0+dfsg+~1.26.0-1_all.deb ...
+Unpacking node-prismjs (1.29.0+dfsg+~1.26.0-1) ...
+Selecting previously unselected package libreoffice-help-common.
+Preparing to unpack .../5-libreoffice-help-common_4%3a25.2.3-2+deb13u9_all.deb ...
+Unpacking libreoffice-help-common (4:25.2.3-2+deb13u9) ...
+Selecting previously unselected package libreoffice-help-en-us.
+Preparing to unpack .../6-libreoffice-help-en-us_4%3a25.2.3-2+deb13u9_all.deb ...
+Unpacking libreoffice-help-en-us (4:25.2.3-2+deb13u9) ...
 Setting up libreoffice-l10n-nn (4:25.2.3-2+deb13u9) ...
 Setting up node-clipboard (2.0.11+ds+~cs9.6.11-1) ...
 Setting up libreoffice-l10n-nb (4:25.2.3-2+deb13u9) ...
@@ -19,7 +147,7 @@ The following NEW packages will be installed:
 Need to get 3,812 kB of archives.
 After this operation, 6,112 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 hunspell-no all 1:25.2.3-1 [3,812 kB]
-Fetched 3,812 kB in 0s (44.3 MB/s)
+Fetched 3,812 kB in 0s (57.9 MB/s)
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading
 Removing myspell-nb (2.2-4) ...
 Removing myspell-nn (2.2-4) ...
@@ -97,7 +225,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov  9 23:33 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov 10 01:04 /var/lib/tind/apt-refreshed
 52
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -119,12 +247,12 @@ lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
 Y
 ● apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
-     Active: active (exited) since Mon 2026-11-09 23:32:57 CET; 2min 25s ago
- Invocation: b1fe6c64d17248b6b2705df8d64ea9af
+     Active: active (exited) since Tue 2026-11-10 01:04:45 CET; 2min 26s ago
+ Invocation: a4ae9b0bfb884d839debdaeb274c2d22
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
-    Process: 528 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
-   Main PID: 528 (code=exited, status=0/SUCCESS)
+    Process: 529 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
+   Main PID: 529 (code=exited, status=0/SUCCESS)
 apparmor module is loaded.
 142 profiles are loaded.
 20 profiles are in enforce mode.
@@ -141,12 +269,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:37885
+udp 0.0.0.0:43462
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
+udp [::]:40270
 udp [::]:5353
-udp [::]:55965
 
 ##### hardware basics
 active
@@ -163,13 +291,12 @@ intel-microcode 3.20251111.1~deb13u1 ii
 microcode	: 0xffffffff
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-702 /tmp/tind-report-test.txt
+697 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
 
 ##### desktop entries shown in the app grid (name, package)
-Name=AI assistant | tind-ai-ui | no.servr.TindAI.desktop
 Name=Calculator | gnome-calculator | org.gnome.Calculator.desktop
 Name=Camera | gnome-snapshot | org.gnome.Snapshot.desktop
 Name=Disks | gnome-disk-utility | org.gnome.DiskUtility.desktop
@@ -218,161 +345,34 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 60463	firmware-marvell-prestera
 57308	libqt6webengine6-data
 48558	libreoffice-common
-installed packages: 1626
+installed packages: 1621
 
 ##### journal errors (this boot)
-Nov 09 23:32:58 tindtest gdm-autologin][1096]: gkr-pam: couldn't unlock the login keyring.
-Nov 09 23:32:59 tindtest systemd[1105]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1351.scope - Application launched by gnome-session-binary.
+Nov 10 01:04:47 tindtest gdm-autologin][1095]: gkr-pam: couldn't unlock the login keyring.
+Nov 10 01:04:50 tindtest systemd[1104]: Failed to start app-gnome-im\x2dlaunch-1467.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Nov 09 23:32:59 tindtest gnome-shell[1350]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 09 23:32:59 tindtest gnome-shell[1350]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 09 23:32:59 tindtest gnome-shell[1350]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 09 23:33:00 tindtest gnome-shell[1350]: pci id for fd 12: 1234:1111, driver (null)
-Nov 09 23:33:00 tindtest gnome-shell[1350]: pci id for fd 14: 1234:1111, driver (null)
-Nov 09 23:33:00 tindtest gnome-shell[1350]: kmsro: driver missing
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Thread 'KMS thread' will be using high priority scheduling
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Created gbm renderer for '/dev/dri/card0'
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Using public X11 display :0, (using :1 for managed services)
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Using Wayland display name 'wayland-0'
-Nov 09 23:33:00 tindtest gnome-shell[1350]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 09 23:33:01 tindtest gnome-shell[1350]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 09 23:33:02 tindtest gnome-shell[1350]: Will monitor session 1
-Nov 09 23:33:02 tindtest gnome-shell[1350]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 09 23:33:06 tindtest gnome-shell[1350]: GNOME Shell started at Mon Nov 09 2026 23:33:01 GMT+0100 (Central European Standard Time)
-Nov 09 23:33:06 tindtest gnome-shell[1350]: Registering session with GDM
-Nov 09 23:33:31 tindtest gnome-shell[1350]: Error calling StartServiceByName for org.freedesktop.UPower.PowerProfiles: Timeout was reached
-Nov 09 23:34:04 tindtest gnome-shell[1350]: Received property Actions with type aa{sv} does not match expected type as in the expected interface
-
-##### ai box
-AI users ok
-AI probe-control ok
-AI firewall-loaded ok
-AI local-no-network ok
-AI local-no-loopback ok
-AI remote-closed-by-default ok
-AI tind-ai-local-sandbox ok
-AI tind-ai-remote-sandbox ok
-AI local-private-network ok
-socket units: active active active 
-setkey: key stored for custom
-{"brief_ok": true, "error": null, "id": "20261109-233551-84b8df57", "redactions": {"email": 1, "host": 34, "ip": 2, "secret": 1, "token": 1}}
-{"send_ok": true, "error": null, "answer": "Fake answer from the CI provider about [ip-1].\n```bash\necho "}
-AI brief ok
-AI send-and-answer ok
-AI journal-in-briefing ok
-## System journal, this boot, warnings and errors (last 300 lines)
-```
-2026-11-09T23:32:53+01:00 [host-1] kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
-2026-11-09T23:32:53+01:00 [host-1] kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html for 
-2026-11-09T23:32:53+01:00 [host-1] kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
-2026-11-09T23:32:53+01:00 [host-1] kernel: ata3.00: LPM support broken, forcing max_power
-2026-11-09T23:32:53+01:00 [host-1] kernel: ata3.00: LPM support broken, forcing max_power
-2026-11-09T23:32:58+01:00 [host-1] udisksd[971]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data ret
-AI nothing-planted-left-the-computer ok
-AI remote-only-its-host-and-port ok
-AI local-cannot-read-outbox ok
-AI remote-cannot-read-local-state ok
-AI remote-cannot-read-keys ok
-AI ai-users-cannot-read-home ok
-AI human-reads-own-answer ok
-chats migrated: 1
-AI chat-archive-restored ok
----
-tind-chat: 1
-id: "ci0001"
-provider: "custom"
-model: "ci-model"
-title: "CI test: why does Steam not start? My laptop is 192.168.1.37"
-created: 1794263751
-updated: 1794263751
----
-
-# CI test: why does Steam not start? My laptop is 192.168.1.37
-
-<!-- tind:message {"role": "user", "raw": false, "items": ["System log"], "redactions": {"email": 1, "host": 34, "ip": 2, "secret": 1, "token": 1}} -->
-### You
-
-CI test: why does Steam not start? My laptop is 192.168.1.37.
-
-<!-- tind:sent -->
-<details><summary>Sent with placeholders (hidden: 1 email, 34 host, 2 ip, 1 secret, 1 token)</summary>
-
-~~~text
-CI test: why does Steam not start? My laptop is [ip-1].
-
-## System journal, this boot, warnings and errors (last 300 lines)
-```
-2026-11-09T23:32:53+01:00 [host-1] kernel: Speculative Return Stack Overflow: IBPB-extending microcode not applied!
-2026-11-09T23:32:53+01:00 [host-1] kernel: Speculative Return Stack Overflow: WARNING: See https://kernel.org/doc/html/latest/admin-guide/hw-vuln/srso.html for 
-2026-11-09T23:32:53+01:00 [host-1] kernel: amd_pstate: the _CPC object is not present in SBIOS or ACPI disabled
-2026-11-09T23:32:53+01:00 [host-1] kernel: ata3.00: LPM support broken, forcing max_power
-2026-11-09T23:32:53+01:00 [host-1] kernel: ata3.00: LPM support broken, forcing max_power
-2026-11-09T23:32:58+01:00 [host-1] udisksd[971]: Error probing device: Error sending ATA command IDENTIFY PACKET DEVICE to '/dev/sr0': Unexpected sense data ret
-                                                 0000: f0 00 0b 00  58 00 01 0a  00 00 00 00  00 00 00 00    ....X...........
-                                                 0010: 00 00 00 00  00 00 00 00  00 00 00 00  00 00 00 00    ................
-                                                  (g-io-error-quark, 0)
-2026-11-09T23:32:58+01:00 [host-1] gdm-autologin][1096]: gkr-pam: no password is available for user
-2026-11-09T23:32:58+01:00 [host-1] gdm-autologin][1096]: gkr-pam: couldn't unlock the login keyring.
-2026-11-09T23:32:59+01:00 [host-1] wireplumber[1133]: default: Failed to get percentage from UPower: org.freedesktop.DBus.Error.NameHasNoOwner
-2026-11-09T23:32:59+01:00 [host-1] wireplumber[1133]: spa.bluez5: BlueZ system service is not available
-2026-11-09T23:32:59+01:00 [host-1] gnome-keyring-daemon[1343]: discover_other_daemon: 1
-2026-11-09T23:32:59+01:00 [host-1] gnome-keyring-daemon[1344]: discover_other_daemon: 1
-AI remote-cannot-restore ok
-saved /home/tind/TindAI/Documents/2026-11-09 CI letter.md
-AI document-markdown ok
-AI document-word ok
-711 tind-ai-local /var/lib/tind-ai/briefing
-700 tind-ai-local /var/lib/tind-ai/local
-711 tind-ai-remote /var/lib/tind-ai/outbox
-750 tind-ai-local /var/lib/tind-ai/briefing/1000
-700 tind-ai-local /var/lib/tind-ai/local/1000
-750 tind-ai-remote /var/lib/tind-ai/outbox/1000
-local service: ok
-scaleway   Scaleway - France              no key yet
-ionos      IONOS - Germany                no key yet
-mistral    Mistral - France               no key yet
-anthropic  Anthropic - USA                no key yet
-openai     OpenAI - USA                   no key yet
-local      This computer - local          No local model is installed on this computer yet
-custom     Custom server - your choice    key set
-TindAI folder: ~/TindAI
-saved chats: 1
-fix      Fix a problem            3 fields, pre-attached: report, journal
-error    Explain this error       2 fields, pre-attached: nothing
-script   Write a script           2 fields, pre-attached: nothing
-setting  Help with a setting      2 fields, pre-attached: report
-system   Ask about my system      2 fields, pre-attached: report
-templates: 5
-AI templates ok
-Scaleway - France            gpt-oss-120b (everyday)            Cheap         €0.15 in · €0.60 out per million tokens
-Scaleway - France            Mistral Medium 3.5 (coding)        Mid           $1.68 in · $8.41 out per million tokens
-IONOS - Germany              Mistral Small 24B (quick)          Cheap         €0.10 in · €0.30 out per million tokens
-IONOS - Germany              gpt-oss-120b (everyday)            Cheap         €0.15 in · €0.65 out per million tokens
-Mistral - France             Mistral Small (quick)              Cheap         $0.15 in · $0.60 out per million tokens
-Mistral - France             Mistral Medium (coding)            Mid           $1.50 in · $7.50 out per million tokens
-Anthropic - USA              Claude Haiku 5.5 (quick)           Cheap         $0.10 in · $0.50 out per million tokens
-Anthropic - USA              Claude Sonnet 5.5 (everyday)       Mid           $2.00 in · $10.00 out per million tokens
-Anthropic - USA              Claude Opus 5.5 (coding)           Mid           $4.00 in · $20.00 out per million tokens
-OpenAI - USA                 GPT-5.6 Luna (quick)               Cheap         $0.20 in · $1.20 out per million tokens
-OpenAI - USA                 GPT-5.6 Terra (everyday)           Mid           $2.00 in · $12.00 out per million tokens
-OpenAI - USA                 GPT-5.6 Sol (coding)               Expensive     $5.00 in · $30.00 out per million tokens
-This computer - local        (no model yet)                     Free          Free: runs on this computer
-Custom server - your choice  ci-model (everyday)                Price unknown Not on Tind's price list; check with the provider
-prices: 12 models priced, list as of 2026-11-03
-AI prices ok
-exported to /home/tind/TindAI/Export: tind-report.txt, system-log.txt, about.txt
-hidden: 10 blob, 1 email, 51 host, 10 ip, 2 secret, 1 token, 20 uuid
-AI export-redacted ok
-AI export-unredacted ok
-total 48
--rw------- 1 tind tind   134 Nov  9 23:36 about.txt
--rw------- 1 tind tind  7696 Nov  9 23:36 system-log.txt
--rw------- 1 tind tind 33062 Nov  9 23:36 tind-report.txt
-Tind export, 2026-11-09 23:36: redacted (names, addresses and keys are placeholders such as [ip-1]); tind-report.txt, system-log.txt.
+Nov 10 01:04:47 tindtest gnome-shell[1348]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 10 01:04:48 tindtest gnome-shell[1348]: pci id for fd 12: 1234:1111, driver (null)
+Nov 10 01:04:48 tindtest gnome-shell[1348]: pci id for fd 13: 1234:1111, driver (null)
+Nov 10 01:04:48 tindtest gnome-shell[1348]: kmsro: driver missing
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Thread 'KMS thread' will be using high priority scheduling
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Created gbm renderer for '/dev/dri/card0'
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Using public X11 display :0, (using :1 for managed services)
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Using Wayland display name 'wayland-0'
+Nov 10 01:04:48 tindtest gnome-shell[1348]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 10 01:04:49 tindtest gnome-shell[1348]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 10 01:04:50 tindtest gnome-shell[1348]: Will monitor session 1
+Nov 10 01:04:50 tindtest gnome-shell[1348]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 10 01:04:53 tindtest gnome-shell[1348]: GNOME Shell started at Tue Nov 10 2026 01:04:49 GMT+0100 (Central European Standard Time)
+Nov 10 01:04:53 tindtest gnome-shell[1348]: Registering session with GDM
+Nov 10 01:05:19 tindtest gnome-shell[1348]: Error calling StartServiceByName for org.freedesktop.UPower.PowerProfiles: Timeout was reached
+Nov 10 01:05:52 tindtest gnome-shell[1348]: Received property Actions with type aa{sv} does not match expected type as in the expected interface
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -394,7 +394,7 @@ DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 
 ##### wired profile rename test
-[32mWired connection 1[0m:[32mea4d9080-9d54-3179-b194-931d7c35e620[0m:[32m802-3-ethernet[0m:[32menp1s0[0m:[32m/run/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
-[32;2mlo[0m:[32;2ma792ef3b-5b05-426b-bde4-04cd0b8f3fc3[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
-RENAME-SETUP saved ea4d9080-9d54-3179-b194-931d7c35e620 on enp1s0: interface-name=enp1s0 mac=
+[32mWired connection 1[0m:[32m4b1a6b09-432a-3c93-8ad2-73529fdb6fb9[0m:[32m802-3-ethernet[0m:[32menp1s0[0m:[32m/run/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
+[32;2mlo[0m:[32;2m763d22cb-0860-4383-bc3c-231553edc5a1[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
+RENAME-SETUP saved 4b1a6b09-432a-3c93-8ad2-73529fdb6fb9 on enp1s0: interface-name=enp1s0 mac=
 =====TIND-SELFTEST-END=====
