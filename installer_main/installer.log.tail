@@ -96,7 +96,7 @@ Secure Boot: ON (OVMF secboot code, Microsoft keys)
 90 {'shot': '50-install-16'}
 91 {'wait': 60}
 92 {'shot': '50-install-17'}
-disk used after install: 7884931072 bytes
+disk used after install: 7736127488 bytes
 == phase 2: boot the installed disk
 0 {'wait': 150}
 1 {'shot': '600-installed-00'}
@@ -109,8 +109,8 @@ disk used after install: 7884931072 bytes
 8 {'wait': 90}
 9 {'shot': '604-installed-04'}
 10 {'wait': 90}
-disk size: 9 GiB
-    disk size: 9 GiB
+disk size: 8.66 GiB
+    disk size: 8.66 GiB
 == daily-machine checks of the installed system (roadmap d1; the installer test fails if one is not ok)
 DAILY failed-units ok
 DAILY silent-updates-configured ok
@@ -123,10 +123,10 @@ DAILY uplink-dns ok
 DAILY wired-profiles ok
 DAILY info autostart-update-entries: none
 == phase 3: boot again with the network card renamed (an extra PCIe root port in front of it)
-RENAME-SETUP saved 4b1a6b09-432a-3c93-8ad2-73529fdb6fb9 on enp1s0: interface-name=enp1s0 mac=
+RENAME-SETUP saved ebd038f0-7787-39d4-afe6-0213370f3e85 on enp1s0: interface-name=enp1s0 mac=
 DAILY uplink-dns ok
 wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp2s0)
-wired-profiles: moved earlier: 2026-11-10 01:15 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
+wired-profiles: moved earlier: 2026-11-10 11:39 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
 DAILY wired-profiles ok
-saved profile 4b1a6b09-432a-3c93-8ad2-73529fdb6fb9 was on enp1s0, active now on: enp2s0
+saved profile ebd038f0-7787-39d4-afe6-0213370f3e85 was on enp1s0, active now on: enp2s0
 RENAME-TEST ok enp1s0 -> enp2s0, saved settings moved and active
