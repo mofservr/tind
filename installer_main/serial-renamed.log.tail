@@ -1,9 +1,3 @@
-
-##### wireguard watchdog
-enabled
-watchdog with no tunnel installed: exit 0
-
-##### gnome-tour removed?
 dpkg-query: no packages found matching gnome-tour
 
 ##### calamares branding
@@ -20,8 +14,8 @@ grep: /usr/share/applications/calamares-install-debian.desktop: No such file or 
 ai.optin	     developer.optin	  hardware.optin
 communication.optin  entertainment.optin  productivity.optin
 creative.optin	     gaming.optin	  security.optin
--rwxr-xr-x 1 root root 6106 Nov 10 10:27 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 2551 Nov 10 10:27 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 6106 Nov 16 09:29 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 2551 Nov 16 09:29 /usr/lib/tind/optin-install
 -- tind-optins --list (what Tind Apps shows as installed):
 
 ai               [missing]  AI assistant (0/1 installed)
@@ -144,7 +138,7 @@ The following NEW packages will be installed:
 Need to get 3,812 kB of archives.
 After this operation, 6,112 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 hunspell-no all 1:25.2.3-1 [3,812 kB]
-Fetched 3,812 kB in 0s (32.1 MB/s)
+Fetched 3,812 kB in 0s (35.2 MB/s)
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading
 Removing myspell-nb (2.2-4) ...
 Removing myspell-nn (2.2-4) ...
@@ -192,7 +186,7 @@ no NVIDIA GPU
 	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
 	driverName         = llvmpipe
 vm.max_map_count=1048576
-nvidia-current/550.163.01, 6.12.116+deb13-amd64, x86_64: installed
+nvidia-current/550.163.01, 6.12.117+deb13-amd64, x86_64: installed
 550.163.01
 nvidia-current-drm.ko.xz
 nvidia-current.ko.xz
@@ -222,7 +216,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov 10 11:29 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov 16 10:32 /var/lib/tind/apt-refreshed
 52
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -244,12 +238,12 @@ lsm: lockdown,capability,landlock,yama,apparmor,tomoyo,bpf,ipe,ima,evm
 Y
 ● apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
-     Active: active (exited) since Tue 2026-11-10 11:39:34 CET; 1min 43s ago
- Invocation: 6a1920ca6434402b91cf26cca3502072
+     Active: active (exited) since Mon 2026-11-16 10:42:31 CET; 1min 38s ago
+ Invocation: 904c1d6f21a24a54be28b5722eb34510
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
-    Process: 563 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
-   Main PID: 563 (code=exited, status=0/SUCCESS)
+    Process: 589 ExecStart=/lib/apparmor/apparmor.systemd reload (code=exited, status=0/SUCCESS)
+   Main PID: 589 (code=exited, status=0/SUCCESS)
 apparmor module is loaded.
 142 profiles are loaded.
 20 profiles are in enforce mode.
@@ -266,11 +260,11 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:44996
+udp 0.0.0.0:35914
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:42707
+udp [::]:35158
 udp [::]:5353
 
 ##### hardware basics
@@ -285,10 +279,10 @@ firmware-brcm80211 20250410-2 ii
 firmware-mediatek 20250410-2 ii 
 fwupd 2.0.20-1~deb13u1 ii 
 intel-microcode 3.20251111.1~deb13u1 ii 
-microcode	: 0xffffffff
+microcode	: 0x1000434
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-702 /tmp/tind-report-test.txt
+765 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -317,8 +311,8 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 Name=Tind Apps | tind-optins | tind-optins.desktop
 
 ##### largest installed packages
-309769	thunderbird
-301610	firefox-esr
+309603	thunderbird
+301531	firefox-esr
 187357	papirus-icon-theme
 186162	libqt6webenginecore6
 143940	firmware-netronome
@@ -326,7 +320,7 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 126696	libllvm19
 119815	libreoffice-core
 114123	firmware-iwlwifi
-108893	linux-image-6.12.116+deb13-amd64
+108901	linux-image-6.12.117+deb13-amd64
 100560	libwebkit2gtk-4.1-0
 97239	firmware-atheros
 91908	firmware-amd-graphics
@@ -336,38 +330,42 @@ Name=Tind Apps | tind-optins | tind-optins.desktop
 71212	nvidia-kernel-dkms
 68460	gcc-14-x86-64-linux-gnu
 64591	firmware-nvidia-graphics
-61527	linux-headers-6.12.116+deb13-common
+61566	linux-headers-6.12.117+deb13-common
 60869	firmware-nvidia-tesla-535-gsp
 60698	firmware-nvidia-gsp
 60463	firmware-marvell-prestera
 57308	libqt6webengine6-data
 48558	libreoffice-common
-installed packages: 1621
+installed packages: 1616
 
 ##### journal errors (this boot)
-Nov 10 11:39:35 tindtest gdm-autologin][916]: gkr-pam: couldn't unlock the login keyring.
-Nov 10 11:39:36 tindtest systemd[925]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1185.scope - Application launched by gnome-session-binary.
+Nov 16 10:42:32 tindtest gdm-autologin][942]: gkr-pam: couldn't unlock the login keyring.
+Nov 16 10:42:32 tindtest systemd[952]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1102.scope - Application launched by gnome-session-binary.
+Nov 16 10:42:32 tindtest systemd[952]: Failed to start app-gnome-gnome\x2dkeyring\x2dsecrets-1099.scope - Application launched by gnome-session-binary.
+Nov 16 10:42:32 tindtest systemd[952]: Failed to start app-gnome-xdg\x2duser\x2ddirs-1117.scope - Application launched by gnome-session-binary.
+Nov 16 10:42:33 tindtest systemd[952]: Failed to start app-gnome-tind\x2dgpu\x2dnotify-1400.scope - Application launched by gnome-session-binary.
+Nov 16 10:42:33 tindtest systemd[952]: Failed to start app-gnome-user\x2ddirs\x2dupdate\x2dgtk-1377.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Thread 'KMS thread' will be using high priority scheduling
-Nov 10 11:39:36 tindtest gnome-shell[1200]: pci id for fd 12: 1234:1111, driver (null)
-Nov 10 11:39:36 tindtest gnome-shell[1200]: pci id for fd 13: 1234:1111, driver (null)
-Nov 10 11:39:36 tindtest gnome-shell[1200]: kmsro: driver missing
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Created gbm renderer for '/dev/dri/card0'
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Using public X11 display :0, (using :1 for managed services)
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Using Wayland display name 'wayland-0'
-Nov 10 11:39:36 tindtest gnome-shell[1200]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 10 11:39:37 tindtest gnome-shell[1200]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 10 11:39:37 tindtest gnome-shell[1200]: Will monitor session 1
-Nov 10 11:39:38 tindtest gnome-shell[1200]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 10 11:39:40 tindtest gnome-shell[1200]: GNOME Shell started at Tue Nov 10 2026 11:39:37 GMT+0100 (Central European Standard Time)
-Nov 10 11:39:40 tindtest gnome-shell[1200]: Registering session with GDM
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Thread 'KMS thread' will be using high priority scheduling
+Nov 16 10:42:32 tindtest gnome-shell[1116]: pci id for fd 12: 1234:1111, driver (null)
+Nov 16 10:42:32 tindtest gnome-shell[1116]: pci id for fd 13: 1234:1111, driver (null)
+Nov 16 10:42:32 tindtest gnome-shell[1116]: kmsro: driver missing
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Created gbm renderer for '/dev/dri/card0'
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Using public X11 display :0, (using :1 for managed services)
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Using Wayland display name 'wayland-0'
+Nov 16 10:42:32 tindtest gnome-shell[1116]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 16 10:42:33 tindtest gnome-shell[1116]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 16 10:42:33 tindtest gnome-shell[1116]: Will monitor session 1
+Nov 16 10:42:33 tindtest gnome-shell[1116]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 16 10:42:35 tindtest gnome-shell[1116]: GNOME Shell started at Mon Nov 16 2026 10:42:33 GMT+0100 (Central European Standard Time)
+Nov 16 10:42:35 tindtest gnome-shell[1116]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -384,17 +382,19 @@ DAILY debian-non-free ok
 uplink-dns: enp2s0: 10.0.2.3
 DAILY uplink-dns ok
 wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp2s0)
-wired-profiles: moved earlier: 2026-11-10 11:39 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
+wired-profiles: moved earlier: 2026-11-16 10:42 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
 DAILY wired-profiles ok
+caffeine: package not known, unit enabled, stamp yes
+DAILY no-caffeine ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 
 ##### wired profile rename test
-[32mWired connection 1[0m:[32mebd038f0-7787-39d4-afe6-0213370f3e85[0m:[32m802-3-ethernet[0m:[32menp2s0[0m:[32m/etc/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
-[32;2mlo[0m:[32;2mc194f4b5-4f5f-4bea-a7da-50cb5373d73e[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
-Wired connection 2:a3148725-f173-309a-9ddb-682e76c8f2d2:802-3-ethernet::/run/NetworkManager/system-connections/Wired connection 2.nmconnection
-saved profile ebd038f0-7787-39d4-afe6-0213370f3e85 was on enp1s0, active now on: enp2s0
-Nov 10 11:39:36 tindtest tind-wired-profiles[1143]: moved 'Wired connection 1' from enp1s0 to enp2s0: the card got a new name; the settings are now tied to its MAC address
-2026-11-10 11:39 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
+[32mWired connection 1[0m:[32m2b243229-7951-3c8d-b455-f065be780415[0m:[32m802-3-ethernet[0m:[32menp2s0[0m:[32m/etc/NetworkManager/system-connections/Wired connection 1.nmconnection[0m
+[32;2mlo[0m:[32;2m5a7a3b5f-8ec3-4cc6-90fa-35735ec9dd37[0m:[32;2mloopback[0m:[32;2mlo[0m:[32;2m/run/NetworkManager/system-connections/lo.nmconnection[0m
+Wired connection 2:b67e91ed-4dc4-394d-81db-80f59492d5f7:802-3-ethernet::/run/NetworkManager/system-connections/Wired connection 2.nmconnection
+saved profile 2b243229-7951-3c8d-b455-f065be780415 was on enp1s0, active now on: enp2s0
+Nov 16 10:42:32 tindtest tind-wired-profiles[1240]: moved 'Wired connection 1' from enp1s0 to enp2s0: the card got a new name; the settings are now tied to its MAC address
+2026-11-16 10:42 'Wired connection 1' moved from enp1s0 to enp2s0 (now tied to the card's MAC address)
 RENAME-TEST ok enp1s0 -> enp2s0, saved settings moved and active
 =====TIND-SELFTEST-END=====

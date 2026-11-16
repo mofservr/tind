@@ -1,13 +1,10 @@
-user_pref("browser.search.region", "CA");
-user_pref("browser.search.serpEventTelemetryCategorization.regionEnabled", false);
 policy keys:
 AIControls, DisableFirefoxStudies, DisableTelemetry, DontCheckDefaultBrowser, EnableTrackingProtection, ExtensionSettings, FirefoxHome, Homepage, OverrideFirstRunPage, SearchEngines, UserMessaging
-user_pref("browser.search.region", "CA");
 user_pref("datareporting.dau.cachedUsageProfileGroupID", "b0bacafe-b0ba-cafe-b0ba-cafeb0bacafe");
 user_pref("datareporting.dau.cachedUsageProfileID", "beefbeef-beef-beef-beef-beeefbeefbee");
-user_pref("toolkit.telemetry.cachedClientID", "9db03b47-ed85-4df7-8fde-c16e9bc1dd90");
-user_pref("toolkit.telemetry.cachedProfileGroupID", "230fce36-52d6-4fc3-84ae-857c74cd81dd");
-user_pref("toolkit.telemetry.previousBuildID", "20261022211647");
+user_pref("toolkit.telemetry.cachedClientID", "edae1a57-ce3d-48d7-8905-fbdbb726967f");
+user_pref("toolkit.telemetry.cachedProfileGroupID", "3da892ee-f7c9-46e8-bfa2-65887883d723");
+user_pref("toolkit.telemetry.previousBuildID", "20261103151912");
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 
 ##### thunderbird policies
@@ -45,7 +42,7 @@ tind-enroll apply: no shell errors
 tind-enroll apply: temp dir removed
   persistent keepalive: every 25 seconds
 Link 3 (tind-servr): ~servr.no
-Connection 'tind-servr' (b18bebc9-2f0c-4b19-8b03-8882f635bb04) successfully deleted.
+Connection 'tind-servr' (3d7cbfdc-a224-4b93-96b7-31181ee5de52) successfully deleted.
 Removed this device's private key.
 
 ##### wireguard watchdog
@@ -64,7 +61,7 @@ show.qml
 welcome.png
 
 ##### installer launcher
--rw-r--r-- 1 root root 227 Nov 10 10:27 /usr/share/applications/tind-install.desktop
+-rw-r--r-- 1 root root 227 Nov 16 09:29 /usr/share/applications/tind-install.desktop
 Name=Install Tind
 Exec=/usr/lib/tind/install-launcher
 Icon=tind-logo
@@ -76,8 +73,8 @@ NoDisplay=true
 ai.optin	     developer.optin	  hardware.optin
 communication.optin  entertainment.optin  productivity.optin
 creative.optin	     gaming.optin	  security.optin
--rwxr-xr-x 1 root root 6106 Nov 10 10:27 /usr/bin/tind-optins
--rwxr-xr-x 1 root root 2551 Nov 10 10:27 /usr/lib/tind/optin-install
+-rwxr-xr-x 1 root root 6106 Nov 16 09:29 /usr/bin/tind-optins
+-rwxr-xr-x 1 root root 2551 Nov 16 09:29 /usr/lib/tind/optin-install
 -- tind-optins --list (what Tind Apps shows as installed):
 
 ai               [missing]  AI assistant (0/1 installed)
@@ -207,7 +204,7 @@ no NVIDIA GPU
 	deviceName         = llvmpipe (LLVM 19.1.7, 256 bits)
 	driverName         = llvmpipe
 vm.max_map_count=1048576
-nvidia-current/550.163.01, 6.12.116+deb13-amd64, x86_64: installed
+nvidia-current/550.163.01, 6.12.117+deb13-amd64, x86_64: installed
 550.163.01
 nvidia-current-drm.ko.xz
 nvidia-current.ko.xz
@@ -237,7 +234,7 @@ NTPSynchronized=yes
 enabled
 static
 inactive
--rw-r--r-- 1 root root 0 Nov 10 11:05 /var/lib/tind/apt-refreshed
+-rw-r--r-- 1 root root 0 Nov 16 10:08 /var/lib/tind/apt-refreshed
 57
 APT::Periodic::Update-Package-Lists "1";
 APT::Periodic::Unattended-Upgrade "1";
@@ -260,7 +257,7 @@ Y
 ○ apparmor.service - Load AppArmor profiles
      Loaded: loaded (/usr/lib/systemd/system/apparmor.service; enabled; preset: enabled)
      Active: inactive (dead)
-  Condition: start condition unmet at Tue 2026-11-10 11:05:12 CET; 1min 49s ago
+  Condition: start condition unmet at Mon 2026-11-16 10:08:08 CET; 1min 46s ago
              └─ ConditionPathExists=!/run/live/overlay/work was not met
        Docs: man:apparmor(7)
              https://gitlab.com/apparmor/apparmor/wikis/home/
@@ -279,12 +276,12 @@ tcp 127.0.0.1:631
 tcp 127.0.0.53%lo:53
 tcp 127.0.0.54:53
 tcp [::1]:631
-udp 0.0.0.0:43213
+udp 0.0.0.0:46847
 udp 0.0.0.0:5353
 udp 127.0.0.53%lo:53
 udp 127.0.0.54:53
-udp [::]:49245
 udp [::]:5353
+udp [::]:56024
 
 ##### hardware basics
 active
@@ -298,10 +295,10 @@ firmware-brcm80211 20250410-2 ii
 firmware-mediatek 20250410-2 ii 
 fwupd 2.0.20-1~deb13u1 ii 
 intel-microcode 3.20251111.1~deb13u1 ii 
-microcode	: 0xffffffff
+microcode	: 0x1000434
 Report written to: /tmp/tind-report-test.txt
 Attach that file when you ask for help.
-652 /tmp/tind-report-test.txt
+718 /tmp/tind-report-test.txt
 18
 tind.sources
 proton in the base image (expected: none, it is the Security box): 
@@ -325,14 +322,14 @@ Name=Text Editor | gnome-text-editor | org.gnome.TextEditor.desktop
 Name=Thunderbird | thunderbird | thunderbird.desktop
 
 ##### largest installed packages
-309769	thunderbird
-301610	firefox-esr
+309603	thunderbird
+301531	firefox-esr
 187357	papirus-icon-theme
 143940	firmware-netronome
 134337	ibus-data
 126696	libllvm19
 114123	firmware-iwlwifi
-108893	linux-image-6.12.116+deb13-amd64
+108901	linux-image-6.12.117+deb13-amd64
 100560	libwebkit2gtk-4.1-0
 97239	firmware-atheros
 91908	firmware-amd-graphics
@@ -342,7 +339,7 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 71212	nvidia-kernel-dkms
 68460	gcc-14-x86-64-linux-gnu
 64591	firmware-nvidia-graphics
-61527	linux-headers-6.12.116+deb13-common
+61566	linux-headers-6.12.117+deb13-common
 60869	firmware-nvidia-tesla-535-gsp
 60698	firmware-nvidia-gsp
 60463	firmware-marvell-prestera
@@ -350,34 +347,35 @@ Name=Thunderbird | thunderbird | thunderbird.desktop
 43166	libdnnl3.6
 42827	libnvidia-gpucomp
 42551	fonts-noto-core
-installed packages: 1650
+installed packages: 1645
 
 ##### journal errors (this boot)
-Nov 10 11:05:15 tind adduser[1102]: The group `powerdev' does not exist.
-Nov 10 11:05:15 tind adduser[1118]: The group `debian-tor' does not exist.
-Nov 10 11:05:21 tind gdm-autologin][1501]: gkr-pam: couldn't unlock the login keyring.
-Nov 10 11:05:22 tind systemd[1510]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1719.scope - Application launched by gnome-session-binary.
+Nov 16 10:08:10 tind adduser[1123]: The group `powerdev' does not exist.
+Nov 16 10:08:10 tind adduser[1139]: The group `debian-tor' does not exist.
+Nov 16 10:08:14 tind gdm-autologin][1529]: gkr-pam: couldn't unlock the login keyring.
+Nov 16 10:08:15 tind systemd[1537]: Failed to start app-gnome-gnome\x2dkeyring\x2dpkcs11-1747.scope - Application launched by gnome-session-binary.
+Nov 16 10:08:20 tind systemd[1537]: Failed to start app-gnome-tind\x2dlive\x2ddock-1914.scope - Application launched by gnome-session-binary.
 
 ##### gnome-shell journal
-Nov 10 11:05:23 tind gnome-shell[1738]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
-Nov 10 11:05:23 tind gnome-shell[1738]: Enabling experimental feature 'scale-monitor-framebuffer'
-Nov 10 11:05:23 tind gnome-shell[1738]: Enabling experimental feature 'xwayland-native-scaling'
-Nov 10 11:05:26 tind gnome-shell[1738]: pci id for fd 12: 1234:1111, driver (null)
-Nov 10 11:05:26 tind gnome-shell[1738]: Thread 'KMS thread' will be using high priority scheduling
-Nov 10 11:05:26 tind gnome-shell[1738]: pci id for fd 13: 1234:1111, driver (null)
-Nov 10 11:05:26 tind gnome-shell[1738]: kmsro: driver missing
-Nov 10 11:05:26 tind gnome-shell[1738]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
-Nov 10 11:05:26 tind gnome-shell[1738]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
-Nov 10 11:05:26 tind gnome-shell[1738]: Created gbm renderer for '/dev/dri/card0'
-Nov 10 11:05:26 tind gnome-shell[1738]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 10 11:05:27 tind gnome-shell[1738]: Using public X11 display :0, (using :1 for managed services)
-Nov 10 11:05:27 tind gnome-shell[1738]: Using Wayland display name 'wayland-0'
-Nov 10 11:05:27 tind gnome-shell[1738]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 10 11:05:28 tind gnome-shell[1738]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 10 11:05:29 tind gnome-shell[1738]: Will monitor session 1
-Nov 10 11:05:30 tind gnome-shell[1738]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 10 11:05:36 tind gnome-shell[1738]: GNOME Shell started at Tue Nov 10 2026 11:05:28 GMT+0100 (Central European Standard Time)
-Nov 10 11:05:36 tind gnome-shell[1738]: Registering session with GDM
+Nov 16 10:08:16 tind gnome-shell[1766]: Running GNOME Shell (using mutter 48.7) as a Wayland display server
+Nov 16 10:08:16 tind gnome-shell[1766]: Enabling experimental feature 'scale-monitor-framebuffer'
+Nov 16 10:08:16 tind gnome-shell[1766]: Enabling experimental feature 'xwayland-native-scaling'
+Nov 16 10:08:18 tind gnome-shell[1766]: Thread 'KMS thread' will be using high priority scheduling
+Nov 16 10:08:18 tind gnome-shell[1766]: pci id for fd 12: 1234:1111, driver (null)
+Nov 16 10:08:18 tind gnome-shell[1766]: pci id for fd 13: 1234:1111, driver (null)
+Nov 16 10:08:18 tind gnome-shell[1766]: kmsro: driver missing
+Nov 16 10:08:18 tind gnome-shell[1766]: Added device '/dev/dri/card0' (bochs-drm) using atomic mode setting.
+Nov 16 10:08:18 tind gnome-shell[1766]: Failed to initialize accelerated iGPU/dGPU framebuffer sharing: Not hardware accelerated
+Nov 16 10:08:18 tind gnome-shell[1766]: Created gbm renderer for '/dev/dri/card0'
+Nov 16 10:08:18 tind gnome-shell[1766]: Boot VGA GPU /dev/dri/card0 selected as primary
+Nov 16 10:08:19 tind gnome-shell[1766]: Using public X11 display :0, (using :1 for managed services)
+Nov 16 10:08:19 tind gnome-shell[1766]: Using Wayland display name 'wayland-0'
+Nov 16 10:08:19 tind gnome-shell[1766]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 16 10:08:19 tind gnome-shell[1766]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 16 10:08:21 tind gnome-shell[1766]: Will monitor session 1
+Nov 16 10:08:21 tind gnome-shell[1766]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 16 10:08:24 tind gnome-shell[1766]: GNOME Shell started at Mon Nov 16 2026 10:08:20 GMT+0100 (Central European Standard Time)
+Nov 16 10:08:24 tind gnome-shell[1766]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -395,6 +393,8 @@ uplink-dns: enp0s2: 10.0.2.3
 DAILY uplink-dns ok
 wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp0s2)
 DAILY wired-profiles ok
+caffeine: package not known, unit enabled, stamp yes
+DAILY no-caffeine ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====
