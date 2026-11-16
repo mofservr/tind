@@ -52,6 +52,12 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   Xvfb (an older GTK than trixie's) and in the build's live-session screenshot only. Not yet run on a real machine: the
   window on trixie's GTK, the password prompt, the refresh after an install, and the Flathub apps (Spotify, Bitwarden)
   shown as installed after a real install. The Xbox controller drivers are not in Debian 13, so their tick is hidden.
+- **Caffeine taken out** (16 Nov): Tind no longer ships the Caffeine extension, because it kept the machine from
+  suspending and the screen from blanking even when it was switched off. GNOME itself keeps the machine awake for
+  videos and games. Machines installed earlier remove it once at the next boot after the update (`tind-drop-caffeine`;
+  nothing else is removed with it), and it leaves the default extension list. Checked with faked commands and on a fresh
+  install in the build's virtual machine, not yet on an upgraded real machine. Claude Desktop on Linux can also block
+  suspend while a chat is linked to the computer; that is the app's own bug, not Tind's.
 - **32-bit and ARM machines**: not supported.
 
 When a friend with one of these setups reports that it works, the line moves up to "tested".

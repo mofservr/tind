@@ -1,0 +1,13 @@
+[Unit]
+Description=Tind: remove the Caffeine extension (once, machines installed before 16 Nov 2026)
+Documentation=file:///usr/lib/tind/drop-caffeine
+ConditionPathExists=!/var/lib/tind/caffeine-removed
+After=tind-debian-components.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/drop-caffeine
+TimeoutStartSec=420
+
+[Install]
+WantedBy=multi-user.target

@@ -53,6 +53,8 @@ jobs:
             os/scripts/test-wired-profiles.sh || rc=1
             echo "== Tind Apps: APPS lines match the box scripts, the status check, per-app choice (test-optins)"
             os/scripts/test-optins.sh || rc=1
+            echo "== Caffeine removed once from older machines, and nothing else with it (drop-caffeine)"
+            os/scripts/test-drop-caffeine.sh || rc=1
             echo "== package names exist in trixie (with contrib, non-free, non-free-firmware)"
             for f in /etc/apt/sources.list.d/*.sources; do
               sed -i 's/^Components: .*/Components: main contrib non-free non-free-firmware/' "$f"

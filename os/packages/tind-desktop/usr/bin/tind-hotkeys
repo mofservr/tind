@@ -8,7 +8,7 @@
 #   tind-hotkeys --check     exit 1 and print the clashes if one key combination is bound to two actions
 #
 # Everything in the overview is read live from the settings (GNOME Shell, mutter, gnome-settings-daemon, Dash to
-# Dock, Caffeine and the custom keybindings), so the window is right even after a user has changed a key in Settings.
+# Dock and the custom keybindings), so the window is right even after a user has changed a key in Settings.
 # The only fixed things there are a few friendlier action names and the window's group order. The terminal cheat
 # sheet is the exception: it is a fixed list of commands (TERMINAL below), plus the terminal's own keys, which belong
 # to gnome-terminal and are not in the desktop's settings.
@@ -26,7 +26,6 @@ SCHEMAS = [
     'org.gnome.shell.keybindings',
     'org.gnome.settings-daemon.plugins.media-keys',
     'org.gnome.shell.extensions.dash-to-dock',
-    'org.gnome.shell.extensions.caffeine',
 ]
 CUSTOM_SCHEMA = 'org.gnome.settings-daemon.plugins.media-keys.custom-keybinding'
 DOCK_SCHEMA = 'org.gnome.shell.extensions.dash-to-dock'
@@ -98,7 +97,6 @@ LABELS = {
     'app-shift-hotkey': 'Dock app # (shift behaviour)',
     'app-ctrl-hotkey': 'Dock app # (ctrl behaviour)',
     'shortcut': 'Show dock numbers',
-    'toggle-shortcut': 'Caffeine on / off',
     'switch-to-session': 'Switch to text console #',
     'touchpad-toggle-static': 'Touchpad on / off',
 }
@@ -175,8 +173,6 @@ def read_bindings():
             if schema_id == DOCK_SCHEMA and key.startswith(DOCK_ONLY_WITH_HOTKEYS) and not dock_hotkeys_on:
                 continue
             if schema_id == DOCK_SCHEMA and not (key.startswith('app-') and 'hotkey' in key or key == 'shortcut'):
-                continue
-            if schema_id == 'org.gnome.shell.extensions.caffeine' and key != 'toggle-shortcut':
                 continue
             if schema.get_key(key).get_value_type().dup_string() != 'as':
                 continue

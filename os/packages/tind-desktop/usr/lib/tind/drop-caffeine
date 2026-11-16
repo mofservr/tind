@@ -1,0 +1,34 @@
+#!/bin/sh
+# Remove the Caffeine extension from machines installed before tind-desktop 0.1.22 (16 Nov 2026).
+# Caffeine kept its suspend and idle lock after it was switched off (seen on the desktop on 16 Nov: the
+# lock stayed until a full logout), and it treated maximised windows as fullscreen. Stock GNOME already
+# keeps the machine awake for videos and games, so Tind no longer ships it.
+# Runs once at boot (tind-drop-caffeine.service). Removes Caffeine only: if apt would take anything else
+# with it, nothing is removed and the reason is logged. Safe to run again. Always exits 0.
+set -u
+PKG=gnome-shell-extension-caffeine
+STATE="${TIND_STATE_DIR:-/var/lib/tind}"
+
+finish() { mkdir -p "$STATE" && touch "$STATE/caffeine-removed"; exit 0; }
+
+status="$(dpkg-query -W -f='${db:Status-Abbrev}' "$PKG" 2>/dev/null || true)"
+case "$status" in
+    ii*) ;;
+    *) finish ;;   # not installed (fresh installs since 0.1.22), or only leftovers: nothing to do
+esac
+
+# apt must remove Caffeine and nothing else
+sim="$(apt-get -s purge "$PKG" 2>&1)"
+gone="$(printf '%s\n' "$sim" | awk '$1=="Purg" || $1=="Remv" {print $2}')"
+if [ "$gone" != "$PKG" ]; then
+    echo "tind-drop-caffeine: left in place, apt would also remove: $(printf '%s\n' "$gone" | grep -vx "$PKG" | tr '\n' ' ')"
+    finish
+fi
+
+if DEBIAN_FRONTEND=noninteractive apt-get -y -q -o DPkg::Lock::Timeout=300 purge "$PKG" >/dev/null 2>&1; then
+    echo "tind-drop-caffeine: removed $PKG"
+    finish
+fi
+# apt was busy or failed: try again at the next boot (no stamp)
+echo "tind-drop-caffeine: could not remove $PKG now, will try again at the next boot"
+exit 0

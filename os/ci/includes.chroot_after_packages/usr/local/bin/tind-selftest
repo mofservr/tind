@@ -92,7 +92,7 @@ asuser tind-hotkeys --list 2>&1 | head -80
 asuser tind-hotkeys --check 2>&1
 sec gnome-shell extensions; asuser gnome-extensions list --enabled 2>&1; asuser gnome-extensions info tind-ice@tind.no 2>&1 | head -8
 echo "extension dirs: $(ls /usr/share/gnome-shell/extensions | tr '\n' ' ')"
-for u in ubuntu-appindicators@ubuntu.com caffeine@patapon.info system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
+for u in ubuntu-appindicators@ubuntu.com system-monitor-panel@naimur multi-monitors-bar@frederykabryan; do
   d=/usr/share/gnome-shell/extensions/$u
   echo "$u: files $(test -e $d/metadata.json && echo present || echo MISSING), schema $(test -e $d/schemas/gschemas.compiled && echo compiled || echo none-or-NOT-COMPILED), $(asuser gnome-extensions list --enabled 2>&1 | grep -qx "$u" && echo ENABLED || echo NOT-ENABLED)"
   asuser gnome-extensions info "$u" 2>&1 | grep -iE 'state|error|version' | head -4
@@ -424,6 +424,10 @@ echo "$ud" | sed 's/^/uplink-dns: /'
 wp="$(/usr/lib/tind/wired-profiles check 2>&1)"; wprc=$?
 echo "$wp" | sed 's/^/wired-profiles: /'
 [ "$wprc" = 0 ] && daily wired-profiles ok || daily wired-profiles "FAIL $(echo "$wp" | head -2 | tr '\n' '|')"
+# Caffeine is not shipped since tind-desktop 0.1.22 (16 Nov 2026): it kept a suspend lock after being switched off
+cf="$(dpkg-query -W -f='${db:Status-Abbrev}' gnome-shell-extension-caffeine 2>/dev/null || true)"
+echo "caffeine: package ${cf:-not known}, unit $(systemctl is-enabled tind-drop-caffeine.service 2>&1), stamp $(test -e /var/lib/tind/caffeine-removed && echo yes || echo no)"
+case "$cf" in ii*) daily no-caffeine "FAIL (gnome-shell-extension-caffeine is installed)" ;; *) daily no-caffeine ok ;; esac
 nag="$(find /etc/xdg/autostart -maxdepth 1 -type f 2>/dev/null | grep -iE 'update-notifier|gnome-software|packagekit' | tr '\n' ' ')"
 echo "DAILY info autostart-update-entries: ${nag:-none}"
 echo "INFO vulkan-nvidia-icd: tind diversions=$(dpkg-divert --list 2>/dev/null | grep -c 'tind-no-nvidia' || true) nvidia icd files=$(find /usr/share/vulkan/icd.d /etc/vulkan/icd.d -maxdepth 1 -name 'nvidia*' 2>/dev/null | tr '\n' ' ') vulkaninfo loader errors=$(vulkaninfo --summary 2>&1 | grep -c "Could not get 'vkCreateInstance'" || true)"
