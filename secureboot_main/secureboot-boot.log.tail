@@ -2,30 +2,28 @@
 /usr/share/OVMF/OVMF_CODE_4M.secboot.fd
 /usr/share/OVMF/OVMF_VARS_4M.ms.fd
 KVM: yes
-total 3868
--rw-r--r-- 1 runner runner   7006 Nov 10 10:05 secboot-s01.png
--rw-r--r-- 1 runner runner   3153 Nov 10 10:05 secboot-s02.png
--rw-r--r-- 1 runner runner  41926 Nov 10 10:06 secboot-s03.png
--rw-r--r-- 1 runner runner 544798 Nov 10 10:06 secboot-s04.png
--rw-r--r-- 1 runner runner 544663 Nov 10 10:07 secboot-s05.png
--rw-r--r-- 1 runner runner 550652 Nov 10 10:07 secboot-s06.png
--rw-r--r-- 1 runner runner 550815 Nov 10 10:08 secboot-s07.png
--rw-r--r-- 1 runner runner 550578 Nov 10 10:08 secboot-s08.png
--rw-r--r-- 1 runner runner 550571 Nov 10 10:09 secboot-s09.png
--rw-r--r-- 1 runner runner 549851 Nov 10 10:09 secboot-s10.png
--rw-r--r-- 1 runner runner    119 Nov 10 10:04 secureboot-boot.log
--rw-r--r-- 1 runner runner   3286 Nov 10 10:04 secureboot-inspect.log
--rw-r----- 1 runner runner  34512 Nov 10 10:07 serial-secboot.log
-Nov 10 11:06:01 tind gnome-shell[1725]: Created gbm renderer for '/dev/dri/card0'
-Nov 10 11:06:01 tind gnome-shell[1725]: Boot VGA GPU /dev/dri/card0 selected as primary
-Nov 10 11:06:01 tind gnome-shell[1725]: Using public X11 display :0, (using :1 for managed services)
-Nov 10 11:06:01 tind gnome-shell[1725]: Using Wayland display name 'wayland-0'
-Nov 10 11:06:01 tind gnome-shell[1725]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
-Nov 10 11:06:02 tind gnome-shell[1725]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
-Nov 10 11:06:04 tind gnome-shell[1725]: Will monitor session 1
-Nov 10 11:06:05 tind gnome-shell[1725]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
-Nov 10 11:06:12 tind gnome-shell[1725]: GNOME Shell started at Tue Nov 10 2026 11:06:03 GMT+0100 (Central European Standard Time)
-Nov 10 11:06:12 tind gnome-shell[1725]: Registering session with GDM
+total 5796
+-rw-r--r-- 1 runner runner   7006 Nov 16 09:06 secboot-s01.png
+-rw-r--r-- 1 runner runner   3153 Nov 16 09:06 secboot-s02.png
+-rw-r--r-- 1 runner runner  41926 Nov 16 09:07 secboot-s03.png
+-rw-r--r-- 1 runner runner 845959 Nov 16 09:07 secboot-s04.png
+-rw-r--r-- 1 runner runner 846106 Nov 16 09:08 secboot-s05.png
+-rw-r--r-- 1 runner runner 826374 Nov 16 09:08 secboot-s06.png
+-rw-r--r-- 1 runner runner 825935 Nov 16 09:09 secboot-s07.png
+-rw-r--r-- 1 runner runner 825935 Nov 16 09:09 secboot-s08.png
+-rw-r--r-- 1 runner runner 825133 Nov 16 09:10 secboot-s09.png
+-rw-r--r-- 1 runner runner 825133 Nov 16 09:10 secboot-s10.png
+-rw-r--r-- 1 runner runner    119 Nov 16 09:05 secureboot-boot.log
+-rw-r--r-- 1 runner runner   3286 Nov 16 09:05 secureboot-inspect.log
+-rw-r----- 1 runner runner  34128 Nov 16 09:08 serial-secboot.log
+Nov 16 10:06:51 tind gnome-shell[1734]: Using public X11 display :0, (using :1 for managed services)
+Nov 16 10:06:51 tind gnome-shell[1734]: Using Wayland display name 'wayland-0'
+Nov 16 10:06:51 tind gnome-shell[1734]: Couldn't find suitable cursor plane format for /dev/dri/card0, disabling HW cursor
+Nov 16 10:06:52 tind gnome-shell[1734]: Unset XDG_SESSION_ID, getCurrentSessionProxy() called outside a user session. Asking logind directly.
+Nov 16 10:06:54 tind gnome-shell[1734]: Will monitor session 1
+Nov 16 10:06:54 tind gnome-shell[1734]: Error looking up permission: GDBus.Error:org.freedesktop.portal.Error.NotFound: No entry for geolocation
+Nov 16 10:06:59 tind gnome-shell[1734]: GNOME Shell started at Mon Nov 16 2026 10:06:53 GMT+0100 (Central European Standard Time)
+Nov 16 10:06:59 tind gnome-shell[1734]: Registering session with GDM
 
 ##### daily machine checks
 DAILY failed-units ok
@@ -43,6 +41,8 @@ uplink-dns: enp0s2: 10.0.2.3
 DAILY uplink-dns ok
 wired-profiles: ok: every saved wired profile matches a card here (wired cards: enp0s2)
 DAILY wired-profiles ok
+caffeine: package not known, unit enabled, stamp yes
+DAILY no-caffeine ok
 DAILY info autostart-update-entries: none
 INFO vulkan-nvidia-icd: tind diversions=1 nvidia icd files=/usr/share/vulkan/icd.d/nvidia_icd.json.tind-no-nvidia  vulkaninfo loader errors=0
 =====TIND-SELFTEST-END=====
