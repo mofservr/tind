@@ -7,10 +7,10 @@ Get:42 http://deb.debian.org/debian trixie/main amd64 python3-freetype all 2.5.1
 Get:43 http://deb.debian.org/debian trixie/main amd64 python3-rlpycairo all 0.3.0-3 [9904 B]
 Get:44 http://deb.debian.org/debian trixie/main amd64 python3-reportlab all 4.3.1-1 [1158 kB]
 Get:45 http://deb.debian.org/debian trixie/main amd64 libpython3.13 amd64 3.13.5-2+deb13u5 [2160 kB]
-Get:46 http://deb.debian.org/debian-security trixie-security/main amd64 libheif-plugin-libde265 amd64 1.23.6-2~deb13u1 [20.9 kB]
-Get:47 http://deb.debian.org/debian-security trixie-security/main amd64 libheif-plugin-dav1d amd64 1.23.6-2~deb13u1 [23.4 kB]
-Get:48 http://deb.debian.org/debian-security trixie-security/main amd64 libheif1 amd64 1.23.6-2~deb13u1 [828 kB]
-Get:49 http://deb.debian.org/debian trixie/main amd64 libgd3 amd64 2.3.3-14~deb13u1 [126 kB]
+Get:46 http://deb.debian.org/debian trixie/main amd64 libheif-plugin-libde265 amd64 1.23.6-2~deb13u1 [20.9 kB]
+Get:47 http://deb.debian.org/debian trixie/main amd64 libheif-plugin-dav1d amd64 1.23.6-2~deb13u1 [23.4 kB]
+Get:48 http://deb.debian.org/debian trixie/main amd64 libheif1 amd64 1.23.6-2~deb13u1 [828 kB]
+Get:49 http://deb.debian.org/debian-security trixie-security/main amd64 libgd3 amd64 2.3.3-14~deb13u3 [127 kB]
 Get:50 http://deb.debian.org/debian trixie/main amd64 libgphoto2-port12t64 amd64 2.5.31-4 [137 kB]
 Get:51 http://deb.debian.org/debian trixie/main amd64 libgphoto2-6t64 amd64 2.5.31-4 [760 kB]
 Get:52 http://deb.debian.org/debian trixie/main amd64 libieee1284-3t64 amd64 0.2.11-14.1+b1 [28.2 kB]
@@ -18,9 +18,9 @@ Get:53 http://deb.debian.org/debian trixie/main amd64 libpoppler-glib8t64 amd64 
 Get:54 http://deb.debian.org/debian trixie/main amd64 libsane1 amd64 1.3.1-3+b1 [2651 kB]
 Get:55 http://deb.debian.org/debian trixie/main amd64 hplip amd64 3.22.10+dfsg0-8.1+deb13u1 [206 kB]
 Preconfiguring packages ...
-Fetched 43.4 MB in 0s (142 MB/s)
+Fetched 43.4 MB in 1s (75.6 MB/s)
 Selecting previously unselected package bc.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 63321 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 63345 files and directories currently installed.)
 Preparing to unpack .../00-bc_1.07.1-4_amd64.deb ...
 Unpacking bc (1.07.1-4) ...
 Selecting previously unselected package ssl-cert.
@@ -165,8 +165,8 @@ Selecting previously unselected package libheif1:amd64.
 Preparing to unpack .../47-libheif1_1.23.6-2~deb13u1_amd64.deb ...
 Unpacking libheif1:amd64 (1.23.6-2~deb13u1) ...
 Selecting previously unselected package libgd3:amd64.
-Preparing to unpack .../48-libgd3_2.3.3-14~deb13u1_amd64.deb ...
-Unpacking libgd3:amd64 (2.3.3-14~deb13u1) ...
+Preparing to unpack .../48-libgd3_2.3.3-14~deb13u3_amd64.deb ...
+Unpacking libgd3:amd64 (2.3.3-14~deb13u3) ...
 Selecting previously unselected package libgphoto2-port12t64:amd64.
 Preparing to unpack .../49-libgphoto2-port12t64_2.5.31-4_amd64.deb ...
 Unpacking libgphoto2-port12t64:amd64 (2.5.31-4) ...
@@ -350,7 +350,7 @@ Setting up cups (2.4.10-3+deb13u2) ...
 Setting up printer-driver-hpcups (3.22.10+dfsg0-8.1+deb13u1) ...
 Setting up libheif-plugin-dav1d:amd64 (1.23.6-2~deb13u1) ...
 Setting up libheif1:amd64 (1.23.6-2~deb13u1) ...
-Setting up libgd3:amd64 (2.3.3-14~deb13u1) ...
+Setting up libgd3:amd64 (2.3.3-14~deb13u3) ...
 Setting up libheif-plugin-libde265:amd64 (1.23.6-2~deb13u1) ...
 Setting up libgphoto2-6t64:amd64 (2.5.31-4) ...
 Setting up libsane1:amd64 (1.3.1-3+b1) ...
@@ -360,7 +360,7 @@ No diversion 'diversion of /lib/udev/rules.d/99-libsane1.rules to /lib/udev/rule
 Setting up hplip (3.22.10+dfsg0-8.1+deb13u1) ...
 Creating/updating hplip user account...
 Processing triggers for fontconfig (2.15.0-2.3) ...
-Processing triggers for libc-bin (2.41-12+deb13u4) ...
+Processing triggers for libc-bin (2.41-12+deb13u5) ...
 Processing triggers for dbus (1.16.2-2) ...
 Processing triggers for udev (257.13-1~deb13u1) ...
 Reading package lists...
@@ -374,16 +374,16 @@ Recommended packages:
   ipp-usb
 The following NEW packages will be installed:
   sane-airscan sane-utils update-inetd
-0 upgraded, 3 newly installed, 0 to remove and 0 not upgraded.
+0 upgraded, 3 newly installed, 0 to remove and 1 not upgraded.
 Need to get 375 kB of archives.
 After this operation, 1251 kB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 update-inetd all 4.53 [27.1 kB]
 Get:2 http://deb.debian.org/debian trixie/main amd64 sane-utils amd64 1.3.1-3+b1 [218 kB]
 Get:3 http://deb.debian.org/debian trixie/main amd64 sane-airscan amd64 0.99.35-1 [131 kB]
 Preconfiguring packages ...
-Fetched 375 kB in 0s (7797 kB/s)
+Fetched 375 kB in 0s (3086 kB/s)
 Selecting previously unselected package update-inetd.
-(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 67846 files and directories currently installed.)
+(Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 67870 files and directories currently installed.)
 Preparing to unpack .../update-inetd_4.53_all.deb ...
 Unpacking update-inetd (4.53) ...
 Selecting previously unselected package sane-utils.

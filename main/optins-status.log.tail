@@ -31,6 +31,9 @@ entertainment    [partial]  Entertainment (2/3 installed)
   entertainment:strawberry     [installed]  Strawberry
   entertainment:spotify        [ ]          Spotify
 
+feeds            [installed] News reader (1/1 installed)
+  feeds:liferea                [installed]  Liferea
+
 gaming           [installed] Games (7/7 installed)
   gaming:steam                 [installed]  Steam
   gaming:lutris                [installed]  Lutris
