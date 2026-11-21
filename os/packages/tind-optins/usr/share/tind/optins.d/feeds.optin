@@ -1,0 +1,10 @@
+NAME="News reader"
+DESC="Liferea reads nyhet'r, the household news server on servr.no, and any other feed. Opens on Super+W. Needs the home network or the Tind-VPN, and an account on the server (needs internet)"
+STATUS="ready"
+SCRIPT="/usr/lib/tind/setup-feeds"
+# APPS: one line per app the user can tick: id|name|about|check (Tind Apps, 10 Nov 2026).
+#   The ids are the ones the box script takes (pick_apps); check: space-separated alternatives, any one is enough;
+#   kind:pkg+pkg needs all of them; kinds apt, flatpak, and apt? (the app is hidden when this Debian release has none).
+APPS="
+liferea|Liferea|Feed reader, set up for nyhet'r. Unsubscribing a feed deletes its starred articles: mute it on the server's web page instead|apt:liferea
+"

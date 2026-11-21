@@ -1,0 +1,9 @@
+[Unit]
+Description=Sync Liferea with nyhet'r every 15 minutes while it is open
+
+[Timer]
+OnStartupSec=15min
+OnUnitActiveSec=15min
+
+[Install]
+WantedBy=timers.target

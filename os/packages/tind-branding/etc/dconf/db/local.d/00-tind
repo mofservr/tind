@@ -112,7 +112,7 @@ show-screen-recording-ui=['<Ctrl><Shift><Alt>R', '<Super>r']
 current-workspace-only=true
 
 [org/gnome/settings-daemon/plugins/media-keys]
-custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai/']
+custom-keybindings=['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-super/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-browser-private/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-terminal-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-editor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-files/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-steam/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-help/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-software/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-system-monitor/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-ai/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-feeds/']
 control-center=['<Super>s']
 calculator=['<Super>c']
 mic-mute=['<Super>m']
@@ -179,6 +179,12 @@ binding='<Primary><Shift>Escape'
 name='AI assistant'
 command='sh -c "command -v tind-ai-ask >/dev/null && exec tind-ai-ask || exec tind-optins"'
 binding='<Super>k'
+
+# Super+W: the feed reader (Liferea, from the News reader box in Tind Apps); without it tind-feeds opens Tind Apps
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-feeds]
+name='News reader'
+command='tind-feeds'
+binding='<Super>w'
 
 [org/gnome/desktop/input-sources]
 sources=[('xkb', 'no')]

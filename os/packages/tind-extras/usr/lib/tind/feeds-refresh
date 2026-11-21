@@ -1,0 +1,15 @@
+#!/bin/bash
+# feeds-refresh: ask a running Liferea to sync with nyhet'r. Run by tind-feeds-refresh.timer every 15 minutes
+# (user timer, enabled by setup-feeds). Liferea 1.15 syncs a Google Reader source at start and by hand only, so
+# without this an open Liferea goes stale.
+# It does nothing unless Liferea is running (the name is checked first, so the call never starts Liferea) and the
+# server answers: a failed login would show Liferea's password box again, and off the home network or the
+# Tind-VPN the server drops the connection without an answer.
+SERVER="https://nyhetr.servr.no/api/greader.php/"
+command -v gdbus >/dev/null 2>&1 || exit 0
+has="$(gdbus call --session --dest org.freedesktop.DBus --object-path /org/freedesktop/DBus \
+        --method org.freedesktop.DBus.NameHasOwner org.gnome.feed.Reader 2>/dev/null)" || exit 0
+case "$has" in *true*) ;; *) exit 0 ;; esac
+curl -sS -o /dev/null --max-time 6 "$SERVER" 2>/dev/null || exit 0
+gdbus call --session --dest org.gnome.feed.Reader --object-path /org/gnome/feed/Reader \
+    --method org.gnome.feed.Reader.Refresh >/dev/null 2>&1 || true

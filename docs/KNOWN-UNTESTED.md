@@ -52,6 +52,12 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   Xvfb (an older GTK than trixie's) and in the build's live-session screenshot only. Not yet run on a real machine: the
   window on trixie's GTK, the password prompt, the refresh after an install, and the Flathub apps (Spotify, Bitwarden)
   shown as installed after a real install. The Xbox controller drivers are not in Debian 13, so their tick is hidden.
+- **The News reader box** (Liferea and nyhet'r, 21 Nov): the seeded first-start list, the login box that asks for the
+  username and API password, and the 15-minute refresh were checked with Liferea 1.15.4 (Ubuntu's build; trixie has
+  1.15.8) against a mock Google Reader server under Xvfb, and the scripts with faked commands. Not run: against the real
+  server, with the password stored in the real GNOME keyring (Liferea's plugin keeps it in a separate keyring named
+  "liferea", which may ask to be unlocked), on trixie's Liferea, from outside the home network and the Tind-VPN (Liferea
+  cannot tell an unreachable server from a wrong password and shows the login box), and with the home internet unplugged.
 - **Caffeine taken out** (16 Nov): Tind no longer ships the Caffeine extension, because it kept the machine from
   suspending and the screen from blanking even when it was switched off. GNOME itself keeps the machine awake for
   videos and games. Machines installed earlier remove it once at the next boot after the update (`tind-drop-caffeine`;

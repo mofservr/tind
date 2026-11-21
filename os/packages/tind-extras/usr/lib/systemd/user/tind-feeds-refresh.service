@@ -1,0 +1,6 @@
+[Unit]
+Description=Ask Liferea to sync with nyhet'r (only if it is running)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/tind/feeds-refresh

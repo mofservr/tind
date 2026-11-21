@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Tind: the preselected feeds, NRK first (Morten, 4 Nov 2026). Import once on the news server's web page
+     (nyhetr.servr.no > Subscription management > Import / export); FreshRSS skips feeds the user already has.
+     Feed URLs verified from the server by serv'r on 21 Nov 2026. -->
+<opml version="2.0">
+<head>
+<title>Tind: NRK</title>
+</head>
+<body>
+<outline text="NRK" title="NRK">
+<outline type="rss" text="NRK Norge" title="NRK Norge" xmlUrl="https://www.nrk.no/norge/toppsaker.rss" htmlUrl="https://www.nrk.no/norge/"/>
+<outline type="rss" text="NRK Stor-Oslo" title="NRK Stor-Oslo" xmlUrl="https://www.nrk.no/stor-oslo/toppsaker.rss" htmlUrl="https://www.nrk.no/stor-oslo/"/>
+<outline type="rss" text="NRK Buskerud" title="NRK Buskerud" xmlUrl="https://www.nrk.no/buskerud/toppsaker.rss" htmlUrl="https://www.nrk.no/buskerud/"/>
+<outline type="rss" text="NRK Østfold" title="NRK Østfold" xmlUrl="https://www.nrk.no/ostfold/toppsaker.rss" htmlUrl="https://www.nrk.no/ostfold/"/>
+<outline type="rss" text="NRK Urix" title="NRK Urix" xmlUrl="https://www.nrk.no/urix/toppsaker.rss" htmlUrl="https://www.nrk.no/urix/"/>
+</outline>
+</body>
+</opml>
