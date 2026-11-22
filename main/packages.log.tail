@@ -1,4 +1,3 @@
-  Depends: cabextract
     cabextract:i386
   Depends: curl
     curl:i386
@@ -94,7 +93,7 @@ entertainment    [partial]  Entertainment (2/3 installed)
   entertainment:spotify        [ ]          Spotify
 
 feeds            [installed] News reader (1/1 installed)
-  feeds:liferea                [installed]  Liferea
+  feeds:newsflash              [installed]  NewsFlash
 
 gaming           [installed] Games (7/7 installed)
   gaming:steam                 [installed]  Steam
@@ -132,6 +131,8 @@ Architectures: amd64
 Signed-By: /usr/share/keyrings/signal-desktop-keyring.gpg
 com.bitwarden.desktop
 com.discordapp.Discord
+com.github.rafostar.Clapper.Enhancers
+io.gitlab.news_flash.NewsFlash
 net.davidotek.pupgui2
 org.freedesktop.Platform
 org.freedesktop.Platform.GL.default
@@ -140,14 +141,13 @@ org.freedesktop.Platform.GL.default
 org.freedesktop.Platform.GL.default
 org.freedesktop.Platform.codecs-extra
 org.freedesktop.Platform.codecs-extra
+org.gnome.Platform
 org.kde.KStyle.Adwaita
 org.kde.Platform
 dpkg-query: no packages found matching xpadneo-dkms
 dpkg-query: no packages found matching xone-dkms
-gir1.2-secret-1 0.21.7-1 ii 
 hplip 3.22.10+dfsg0-8.1+deb13u1 ii 
 libreoffice-writer 4:25.2.3-2+deb13u12 ii 
-liferea 1.15.8-2+b1 ii 
 mtr 0.95-1.1+b1 ii 
 nextcloud-desktop 3.16.7-1~deb13u1 ii 
 nmap 7.95+dfsg-3 ii 
@@ -209,7 +209,7 @@ firewall table: not checkable in this container (checked in the booted ISO)
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/mapper/cow-root  145G   69G   77G  48% /__w
+/dev/root       145G   73G   73G  51% /__w
 
 == KVM
 not available (VM tests will be slow)

@@ -32,7 +32,7 @@ entertainment    [partial]  Entertainment (2/3 installed)
   entertainment:spotify        [ ]          Spotify
 
 feeds            [installed] News reader (1/1 installed)
-  feeds:liferea                [installed]  Liferea
+  feeds:newsflash              [installed]  NewsFlash
 
 gaming           [installed] Games (7/7 installed)
   gaming:steam                 [installed]  Steam
