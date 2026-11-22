@@ -180,7 +180,7 @@ name='AI assistant'
 command='sh -c "command -v tind-ai-ask >/dev/null && exec tind-ai-ask || exec tind-optins"'
 binding='<Super>k'
 
-# Super+W: the feed reader (Liferea, from the News reader box in Tind Apps); without it tind-feeds opens Tind Apps
+# Super+W: the feed reader (NewsFlash, from the News reader box in Tind Apps); without it tind-feeds opens Tind Apps
 [org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/tind-feeds]
 name='News reader'
 command='tind-feeds'

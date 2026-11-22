@@ -8,4 +8,6 @@ if [ -f "$cd_list" ] && [ -f /etc/apt/sources.list.d/claude-desktop.sources ]; t
     cd_key="$(sed -n 's/.*signed-by=\([^] ]*\).*/\1/p' "$cd_list" | head -1)"
     if [ -n "$cd_key" ] && [ -s "$cd_key" ]; then rm -f /etc/apt/sources.list.d/claude-desktop.sources; fi
 fi
+# 0.1.12: the news reader no longer has a 15-minute refresh timer; drop the link 0.1.11 enabled for all users.
+rm -f /etc/systemd/user/timers.target.wants/tind-feeds-refresh.timer
 exit 0

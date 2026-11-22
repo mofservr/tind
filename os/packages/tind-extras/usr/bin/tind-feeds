@@ -1,12 +1,11 @@
 #!/bin/bash
-# tind-feeds: open the news reader (Super+W). Without Liferea it opens Tind Apps, where the News reader box is.
-# nyhet'r is reachable from the home network and the Tind-VPN only; from anywhere else the connection is dropped
-# without an answer. Liferea cannot tell that from a wrong password (it asks for the login again), so say it first.
-SERVER="https://nyhetr.servr.no/api/greader.php/"
-command -v liferea >/dev/null 2>&1 || exec tind-optins
-# any HTTP answer counts as reachable (401, 404 and so on); a dropped connection, a timeout or no DNS does not
-if ! curl -sS -o /dev/null --max-time 6 "$SERVER" 2>/dev/null; then
-    notify-send -i network-offline "nyhet'r is not reachable from this network" \
-        "Use the home network or the Tind-VPN. If Liferea asks for a login, press Cancel: your password is not wrong. Articles already loaded stay readable." 2>/dev/null || true
+# tind-feeds: open the news reader (Super+W). Without NewsFlash it opens Tind Apps, where the News reader box is.
+# The first time, a notice gives the address of nyhet'r for NewsFlash's FreshRSS login (NewsFlash cannot be preset).
+APP="io.gitlab.news_flash.NewsFlash"
+SERVER="https://nyhetr.servr.no/api/greader.php"
+flatpak info "$APP" >/dev/null 2>&1 || exec tind-optins
+if [ ! -d "$HOME/.var/app/$APP" ]; then
+    notify-send -i "$APP" "Log in to nyhet'r" \
+        "In NewsFlash pick FreshRSS, enter $SERVER and your FreshRSS username and API password (not the web password). Needs the home network or the Tind-VPN." 2>/dev/null || true
 fi
-exec liferea "$@"
+exec flatpak run "$APP" "$@"

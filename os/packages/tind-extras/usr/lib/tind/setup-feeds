@@ -1,33 +1,14 @@
 #!/bin/bash
-# News reader: Liferea (Debian's package), set up for nyhet'r, the household feed server (FreshRSS).
-#   setup-feeds           the whole box
-#   setup-feeds liferea   only those apps (ids: liferea, as in feeds.optin)
-# What this adds to Debian's Liferea (all of it undone by removing the files named here):
-#   - its first-start feed list holds one source, nyhet'r (Google Reader API), so the user only logs in;
-#   - a user timer that asks a running Liferea to sync every 15 minutes (Liferea 1.15 syncs a Google Reader
-#     source at start and by hand only; tested 21 Nov 2026 against a mock server).
+# News reader: NewsFlash from Flathub (GTK 4 and libadwaita, follows the system's light and dark theme). It logs in to
+# nyhet'r, the household FreshRSS (https://nyhetr.servr.no/api/greader.php), with the FreshRSS username and the
+# separate API password; NewsFlash keeps them itself and syncs on its own. Not on the ISO; Tind Apps only.
+#   setup-feeds             the whole box
+#   setup-feeds newsflash   the same (ids: newsflash, as in feeds.optin)
 set -euo pipefail
 # shellcheck source=/dev/null
 . /usr/lib/tind/extras-lib.sh
 need_root
-pick_apps "liferea" "$@"
+pick_apps "newsflash" "$@"
 echo "== Tind: news reader setup"
-apt-get update
-if want liferea; then
-    # gir1.2-secret-1: Liferea's password plugin (stores the API password in the keyring) imports it, the package does not depend on it
-    apt_install liferea gir1.2-secret-1
-    # Liferea ships example feeds as its first-start list (feedlist_en.opml; Tind is English only). Divert it and put
-    # the list with nyhet'r in its place; the diversion survives Liferea updates.
-    default=/usr/share/liferea/opml/feedlist_en.opml
-    mine=/usr/share/tind/feeds/liferea-feedlist.opml
-    if [ -f "$default" ] && [ -f "$mine" ]; then
-        if ! dpkg-divert --list "$default" | grep -q .; then
-            dpkg-divert --local --rename --add "$default"
-        fi
-        install -m 644 "$mine" "$default"
-    else
-        echo "WARNING: Liferea's default feed list or Tind's was not found; nyhet'r is not pre-filled" >&2
-    fi
-    optional "the 15-minute sync timer" systemctl --global enable tind-feeds-refresh.timer
-fi
+if want newsflash; then optional "NewsFlash" flatpak_install io.gitlab.news_flash.NewsFlash; fi
 echo "== Tind: news reader setup done"

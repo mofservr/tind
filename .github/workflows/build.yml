@@ -53,7 +53,7 @@ jobs:
             os/scripts/test-wired-profiles.sh || rc=1
             echo "== Tind Apps: APPS lines match the box scripts, the status check, per-app choice (test-optins)"
             os/scripts/test-optins.sh || rc=1
-            echo "== News reader: first-start list, launcher, refresh helper, Super+W (test-feeds)"
+            echo "== News reader: box script, launcher, Super+W (test-feeds)"
             os/scripts/test-feeds.sh || rc=1
             echo "== Caffeine removed once from older machines, and nothing else with it (drop-caffeine)"
             os/scripts/test-drop-caffeine.sh || rc=1
@@ -117,7 +117,7 @@ jobs:
             curl -sI https://packages.microsoft.com/repos/code/dists/stable/InRelease | head -3 || true
             echo "== gaming and graphics candidates"
             dpkg --add-architecture i386; apt-get update >/dev/null
-            for p in nvidia-driver nvidia-detect nvidia-driver-libs nvidia-driver-libs-i386 nvidia-vulkan-icd nvidia-kernel-dkms nvidia-open-kernel-dkms nvidia-settings nvidia-tesla-470-driver nvidia-legacy-390xx-driver linux-headers-amd64 dkms game-devices-udev steam-devices steam-installer lutris gamemode mangohud wine wine32 libgl1-mesa-dri:i386 mesa-vulkan-drivers:i386 libvulkan1:i386 vulkan-tools xpadneo-dkms xone-dkms vlc strawberry gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender telegram-desktop libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-gtk3 libreoffice-l10n-nb libreoffice-l10n-nn hunspell-no myspell-nb nextcloud-desktop liferea gir1.2-secret-1 hplip sane-utils sane-airscan wireshark nmap mtr remmina remmina-plugin-rdp remmina-plugin-vnc remmina-plugin-secret virt-manager libvirt-daemon-system qemu-system-x86 mesa-utils libva-drm2 intel-media-va-driver-non-free mesa-va-drivers mesa-vdpau-drivers firmware-amd-graphics goverlay gamescope vkbasalt protontricks winetricks zenity; do
+            for p in nvidia-driver nvidia-detect nvidia-driver-libs nvidia-driver-libs-i386 nvidia-vulkan-icd nvidia-kernel-dkms nvidia-open-kernel-dkms nvidia-settings nvidia-tesla-470-driver nvidia-legacy-390xx-driver linux-headers-amd64 dkms game-devices-udev steam-devices steam-installer lutris gamemode mangohud wine wine32 libgl1-mesa-dri:i386 mesa-vulkan-drivers:i386 libvulkan1:i386 vulkan-tools xpadneo-dkms xone-dkms vlc strawberry gimp inkscape krita kdenlive frei0r-plugins breeze-icon-theme audacity obs-studio blender telegram-desktop libreoffice-writer libreoffice-calc libreoffice-impress libreoffice-gtk3 libreoffice-l10n-nb libreoffice-l10n-nn hunspell-no myspell-nb nextcloud-desktop hplip sane-utils sane-airscan wireshark nmap mtr remmina remmina-plugin-rdp remmina-plugin-vnc remmina-plugin-secret virt-manager libvirt-daemon-system qemu-system-x86 mesa-utils libva-drm2 intel-media-va-driver-non-free mesa-va-drivers mesa-vdpau-drivers firmware-amd-graphics goverlay gamescope vkbasalt protontricks winetricks zenity; do
               echo "-- $p: $(apt-cache policy $p 2>/dev/null | sed -n 's/^  Candidate: //p')"
             done
             echo "== nvidia-driver depends/recommends"
@@ -170,15 +170,15 @@ jobs:
             st=$(TIND_OPTINS_DIR=os/packages/tind-optins/usr/share/tind/optins.d bash os/packages/tind-optins/usr/bin/tind-optins --status 2>/dev/null || true)
             # Creative is a simulated install and the AI box is not installed here; Flathub apps are optional steps
             missing=$(awk -F'\t' '$1=="app" && $4=="missing" {print $2":"$3}' <<<"$st" | grep -vE '^(creative:|ai:)' || true)
-            hard=$(grep -vE ':(discord|protonup|spotify|bitwarden|upscayl)$' <<<"$missing" || true)
-            soft=$(grep -E ':(discord|protonup|spotify|bitwarden|upscayl)$' <<<"$missing" || true)
+            hard=$(grep -vE ':(discord|protonup|spotify|bitwarden|upscayl|newsflash)$' <<<"$missing" || true)
+            soft=$(grep -E ':(discord|protonup|spotify|bitwarden|upscayl|newsflash)$' <<<"$missing" || true)
             if [ -n "$hard" ]; then echo "status: installed but shown as missing: $(echo $hard)"; rc=1; else echo "status: every installed apt app is seen as installed"; fi
             if [ -n "$soft" ]; then echo "NOTE: Flathub apps not installed here (optional steps): $(echo $soft)"; fi
             echo "== app boxes: things to check by eye"
             grep -E "Signal apt signing key|WARNING|NOTE:" logs/setup-*.log | head -20 || true
             cat /etc/apt/sources.list.d/signal-desktop.sources 2>&1 | head -10 || true
             flatpak list --system --columns=application 2>&1 | head -20 || true
-            dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' liferea gir1.2-secret-1 vlc strawberry telegram-desktop signal-desktop libreoffice-writer nextcloud-desktop hplip sane-utils sane-airscan wireshark nmap mtr remmina virt-manager xpadneo-dkms xone-dkms 2>&1 | head -30 || true
+            dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' vlc strawberry telegram-desktop signal-desktop libreoffice-writer nextcloud-desktop hplip sane-utils sane-airscan wireshark nmap mtr remmina virt-manager xpadneo-dkms xone-dkms 2>&1 | head -30 || true
             dpkg-query -W -f='${Package} ${Version} ${db:Status-Abbrev}\n' git gh code steam-installer lutris wine wine32:i386 winetricks gamemode mangohud steam-devices 2>&1 | head -20 || true
             code --version --no-sandbox --user-data-dir /tmp/codetest 2>&1 | head -2 || true
             ls /etc/apt/sources.list.d/ ; cat /etc/apt/sources.list.d/vscode.sources
