@@ -1,3 +1,7 @@
+    python3:i386
+    python3
+  Depends: 7zip
+  Depends: cabextract
     cabextract:i386
   Depends: curl
     curl:i386
@@ -160,7 +164,7 @@ telegram-desktop 5.7.2+ds-2~bpo13+2 ii
 virt-manager 1:5.0.0-5+deb13u1 ii 
 vlc 3.0.24-0+deb13u1 ii 
 wireshark 4.4.19-0+deb13u1 ii 
-code 1.147.0-1794903003 ii 
+code 1.148.0-1795526052 ii 
 gamemode 1.8.2-2 ii 
 gh 2.46.0-3 ii 
 git 1:2.47.3-0+deb13u1 ii 
@@ -171,8 +175,8 @@ steam-installer 1:1.0.0.83~ds-3 ii
 wine 10.0~repack-6 ii 
 wine32 10.0~repack-6 ii 
 winetricks 20250102-1 ii 
-1.147.0
-8a14f0cc1b08d531eb83255ea3764ae22aa932b5
+1.148.0
+661626d0e72f97806550790a98fb87116c9db825
 bp.list
 claude-desktop.sources
 debian.sources
@@ -196,11 +200,7 @@ uid=988(tind-ai-remote) gid=988(tind-ai-remote) groups=988(tind-ai-remote)
 755 root:root /etc/tind-ai
 700 root:root /etc/tind-ai/keys
 tind-ai-local.socket
-tind-ai-remote@anthropic.socket
 tind-ai-remote@custom.socket
-tind-ai-remote@ionos.socket
-tind-ai-remote@mistral.socket
-tind-ai-remote@openai.socket
 tind-ai-remote@scaleway.socket
 netlink: Error: cache initialization failed: Operation not permitted
 firewall table: not checkable in this container (checked in the booted ISO)
@@ -209,7 +209,7 @@ firewall table: not checkable in this container (checked in the booted ISO)
 Debian GNU/Linux 13 (trixie)
 
 == disk (need ~25 GB free here)
-/dev/root       145G   73G   73G  51% /__w
+/dev/root       145G   73G   73G  50% /__w
 
 == KVM
 not available (VM tests will be slow)
