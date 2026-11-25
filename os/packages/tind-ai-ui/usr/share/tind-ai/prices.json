@@ -9,26 +9,6 @@
    "gpt-oss-120b": {"input": 0.15, "output": 0.60, "currency": "EUR", "note": "The first million tokens are free."},
    "mistral-medium-3.5-128b": {"input": 1.68, "output": 8.41, "currency": "USD", "checked": false,
                                "note": "Not on Scaleway's own price page on 3 Nov 2026; figure from a third-party list."}
-  },
-  "ionos": {
-   "mistralai/Mistral-Small-24B-Instruct": {"input": 0.10, "output": 0.30, "currency": "EUR"},
-   "openai/gpt-oss-120b": {"input": 0.15, "output": 0.65, "currency": "EUR"}
-  },
-  "mistral": {
-   "mistral-small-latest": {"input": 0.15, "output": 0.60, "currency": "USD", "note": "Mistral Small 4."},
-   "mistral-medium-latest": {"input": 1.50, "output": 7.50, "currency": "USD", "checked": false,
-                             "note": "Mistral Medium 3.5, which Mistral retired on 31 Oct 2026; figure from a third-party list."}
-  },
-  "anthropic": {
-   "claude-haiku-5-5": {"input": 0.10, "output": 0.50, "currency": "USD",
-                        "note": "For messages up to 100,000 tokens; longer ones cost five times as much."},
-   "claude-sonnet-5-5": {"input": 2.00, "output": 10.00, "currency": "USD"},
-   "claude-opus-5-5": {"input": 4.00, "output": 20.00, "currency": "USD"}
-  },
-  "openai": {
-   "gpt-5.6-luna": {"input": 0.20, "output": 1.20, "currency": "USD"},
-   "gpt-5.6-terra": {"input": 2.00, "output": 12.00, "currency": "USD"},
-   "gpt-5.6-sol": {"input": 5.00, "output": 30.00, "currency": "USD"}
   }
  }
 }

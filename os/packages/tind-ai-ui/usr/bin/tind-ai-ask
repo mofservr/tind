@@ -60,6 +60,7 @@ SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
 TEMPLATES_FILE = '/usr/share/tind-ai/templates.json'
 ATTACH_KEYS = ('journal', 'report', 'steam')
 PRICES_FILE = '/usr/share/tind-ai/prices.json'
+ICONS_DIR = '/usr/share/tind-ai/icons'   # provider icons; the icon theme is searched after it
 BANDS = ('free', 'cheap', 'mid', 'expensive', 'unknown')
 BAND_NAMES = {'free': 'Free', 'cheap': 'Cheap', 'mid': 'Mid', 'expensive': 'Expensive', 'unknown': 'Price unknown'}
 CURRENCY = {'EUR': '€', 'USD': '$', 'GBP': '£', 'NOK': 'kr '}
@@ -1023,6 +1024,7 @@ def main(open_target=None):
     .tind-composer { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 6px; }
     .tind-composer textview, .tind-composer textview text { background: transparent; }
     .tind-chip { font-size: 0.9em; padding: 0 4px; }
+    flowbox.tind-tpl > flowboxchild { padding: 0; }
     .tind-doc { background: @card_bg_color; border: 1px solid alpha(currentColor, 0.15); border-radius: 10px;
                 padding: 8px 12px 10px 12px; }
     /* price bands: libadwaita's own colours; the band's name is always written next to or under the mark */
@@ -1047,6 +1049,12 @@ def main(open_target=None):
     def dot(b):
         """The coloured mark for a price band."""
         return Gtk.Label(label='●', css_classes=['tind-dot', 'tind-band-' + b], tooltip_text=BAND_NAMES[b],
+                         valign=Gtk.Align.CENTER)
+
+    def provider_icon(p, size):
+        """A provider's icon (providers.json 'icon', found in ICONS_DIR or the icon theme); symbolic ones follow the
+        text colour, so they work in both themes."""
+        return Gtk.Image(icon_name=p.get('icon') or 'network-server-symbolic', pixel_size=size,
                          valign=Gtk.Align.CENTER)
 
     def label(text='', classes=(), **kw):
@@ -1221,9 +1229,11 @@ def main(open_target=None):
             if before is not None and before.pid == row.pid:
                 row.set_header(None)
                 return
-            p = next((x for x in self.providers if x['id'] == row.pid), {'name': row.pid, 'country': ''})
-            row.set_header(label(tindai.provider_label(p), ['heading'], margin_top=10, margin_start=10,
-                                 margin_bottom=2))
+            p = next((x for x in self.providers if x['id'] == row.pid), {'name': row.pid})
+            head = Gtk.Box(spacing=8, margin_top=10, margin_start=10, margin_bottom=2)
+            head.append(provider_icon(p, 16))
+            head.append(label(tindai.provider_label(p), ['heading']))
+            row.set_header(head)
 
         def refresh_sidebar(self):
             order = {p['id']: i for i, p in enumerate(self.providers)}
@@ -1255,6 +1265,14 @@ def main(open_target=None):
             self.wtitle = Adw.WindowTitle(title='AI assistant')
             head.set_title_widget(self.wtitle)
             self.pbtn = Gtk.MenuButton(tooltip_text='Provider (a chat stays with its provider)')
+            if hasattr(self.pbtn, 'set_always_show_arrow'):     # GTK 4.4+
+                self.pbtn.set_always_show_arrow(True)
+            pbox = Gtk.Box(spacing=8)
+            self.picon = Gtk.Image(pixel_size=16)
+            self.plabel = Gtk.Label()
+            pbox.append(self.picon)
+            pbox.append(self.plabel)
+            self.pbtn.set_child(pbox)
             self.pbtn.set_popover(self.build_provider_popover())
             head.pack_start(self.pbtn)
             menu = Gio.Menu()
@@ -1307,6 +1325,7 @@ def main(open_target=None):
                              margin_bottom=6, margin_start=6, margin_end=6)
             for p in self.providers:
                 row = Adw.ActionRow(title=GLib.markup_escape_text(tindai.provider_label(p)), activatable=True)
+                row.add_prefix(provider_icon(p, 24))
                 if p.get('unavailable'):
                     row.set_subtitle(GLib.markup_escape_text(p['unavailable']))
                     row.set_sensitive(False)          # grayed: this computer cannot do it (yet)
@@ -1529,16 +1548,16 @@ def main(open_target=None):
 
         # ---- task templates (static text, no model call) ---------------------------------------------------------
         def build_template_chips(self):
-            row = Gtk.Box(spacing=6)
-            row.append(Gtk.Label(label='Start from:', css_classes=['dim-label', 'caption']))
+            # the buttons wrap onto a second line in a narrow window: no scroll bar to cover them (25 Nov)
+            row = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, column_spacing=6, row_spacing=6,
+                              max_children_per_line=len(self.templates) or 1, homogeneous=False, visible=False,
+                              css_classes=['tind-tpl'])
             for t in self.templates:
                 b = Gtk.Button(label=t['title'], css_classes=['pill', 'tind-chip'], tooltip_text=t['hint'] or None)
                 b.connect('clicked', lambda _b, t=t: self.open_template(t))
                 row.append(b)
-            sw = Gtk.ScrolledWindow(vscrollbar_policy=Gtk.PolicyType.NEVER, hscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
-                                    propagate_natural_height=True, visible=False)
-            sw.set_child(row)
-            return sw
+                b.get_parent().set_focusable(False)    # one tab stop per template: the button, not its flowbox slot
+            return row
 
         def build_template_page(self):
             self.tpl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin_top=24, margin_bottom=24,
@@ -1679,7 +1698,8 @@ def main(open_target=None):
         # ---- state ------------------------------------------------------------------------------------------------
         def prov(self):
             pid = self.chat['provider'] if self.chat else self.default_pid
-            return next((p for p in self.providers if p['id'] == pid), self.providers[0])
+            return next((p for p in self.providers if p['id'] == pid),
+                        next((p for p in self.providers if p['id'] == self.default_pid), self.providers[0]))
 
         def model(self):
             p = self.prov()
@@ -1689,7 +1709,8 @@ def main(open_target=None):
 
         def update_header(self):
             p = self.prov()
-            self.pbtn.set_label(tindai.provider_label(p))
+            self.plabel.set_label(tindai.provider_label(p))
+            self.picon.set_from_icon_name(p.get('icon') or 'network-server-symbolic')
             mid = self.model()
             m = next((x for x in p['models'] if x['id'] == mid), None)
             self.mbtn.set_visible(bool(m))
@@ -2289,6 +2310,7 @@ def main(open_target=None):
             css.load_from_string(CSS)
             Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
                                                       Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+            Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(ICONS_DIR)
 
         def do_activate(self):
             if not self.win:

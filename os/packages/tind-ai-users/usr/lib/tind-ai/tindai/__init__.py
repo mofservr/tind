@@ -43,12 +43,12 @@ def providers():
 
 
 def provider_label(p):
-    """How a provider is shown everywhere: 'Scaleway - France'."""
-    return '%s - %s' % (p['name'], p['country'])
+    """How a provider is shown everywhere: its name, 'Scaleway' (no country since 25 Nov)."""
+    return p['name']
 
 
 def model_label(m):
-    """How a model is shown everywhere: 'Claude Sonnet 5.5 (everyday)'."""
+    """How a model is shown everywhere: 'gpt-oss-120b (everyday)'."""
     return '%s (%s)' % (m['name'], m['use']) if m.get('use') else m['name']
 
 

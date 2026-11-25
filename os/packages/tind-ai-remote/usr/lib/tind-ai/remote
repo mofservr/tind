@@ -106,16 +106,7 @@ def openai_compatible(brief, model, key):
     return text, data.get('usage', {})
 
 
-def anthropic_native(brief, model, key):
-    msgs = [{'role': m['role'], 'content': m['text']} for m in brief.get('history', [])]
-    msgs.append({'role': 'user', 'content': brief['text']})
-    data = post('/messages', {'x-api-key': key, 'anthropic-version': '2023-06-01'},
-                {'model': model, 'system': brief['system'], 'messages': msgs, 'max_tokens': MAX_TOKENS})
-    text = ''.join(b.get('text', '') for b in data.get('content', []) if b.get('type') == 'text')
-    return text, data.get('usage', {})
-
-
-ADAPTERS = {'openai': openai_compatible, 'anthropic': anthropic_native}
+ADAPTERS = {'openai': openai_compatible}
 
 
 def handle(uid, req):
@@ -144,7 +135,7 @@ def handle(uid, req):
     t0 = time.time()
     text, usage = ADAPTERS[p['adapter']](brief, model, key)
     out = {'ok': True, 'id': bid, 'answer': text, 'provider': PROVIDER, 'provider_name': p['name'],
-           'country': p['country'], 'model': model, 'usage': usage, 'seconds': round(time.time() - t0, 1)}
+           'model': model, 'usage': usage, 'seconds': round(time.time() - t0, 1)}
     folder = tindai.user_dir(tindai.OUTBOX_DIR, uid, readers=[uid])
     tindai.write_json(os.path.join(folder, bid + '.json'), dict(out, created=int(time.time())))
     tindai.prune(folder)

@@ -54,7 +54,10 @@ in one block that opens with a line of four backticks and the word document (```
 four backticks (````), written in Markdown and starting with a "# Title" line. Code blocks inside it keep their usual \
 three backticks. Do not use that block for commands, code on its own or short answers; the user can save it as \
 Markdown, Word or PDF.
-Answer in the language of the request (often Norwegian), short and practical."""
+Answer questions about this computer from the attached data and the conversation: when the answer is there, give \
+it directly. Never invent example output, logs, hardware or settings. If something is not in the data, say so and \
+give the one command that shows it.
+Answer in English unless the user asks for another language. Keep it short and practical."""
 
 
 def journal():
@@ -73,6 +76,15 @@ def cut(text, limit):
     if len(text) <= limit:
         return text
     return '[... %d characters cut from the start ...]\n' % (len(text) - limit) + text[-limit:]
+
+
+def cut_middle(text, limit, head=12_000):
+    """For earlier turns: keep the start (the question, the top of the Tind report) and the end (the newest log
+    lines), drop the middle. Cutting from the start lost the question and the report from the second message on."""
+    if len(text) <= limit:
+        return text
+    return (text[:head] + '\n[... %d characters cut from the middle ...]\n' % (len(text) - limit)
+            + text[-(limit - head):])
 
 
 def map_path(uid, conv):
@@ -193,7 +205,7 @@ def handle(uid, req):
     history = []
     for h in (req.get('history') or [])[-24:]:
         role = 'assistant' if h.get('role') == 'assistant' else 'user'
-        body = cut(str(h.get('text', '')), 40_000)
+        body = cut_middle(str(h.get('text', '')), 40_000)
         history.append({'role': role, 'text': body if h.get('raw') else r.text(body)})
 
     bid = time.strftime('%Y%m%d-%H%M%S') + '-' + secrets.token_hex(4)

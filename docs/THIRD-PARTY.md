@@ -22,6 +22,10 @@
 | xpadneo, xone (Xbox controllers) | part of Games, if Debian ships them | Debian DKMS | availability to verify |
 | Claude Desktop | part of Developer tools | Anthropic's apt repository (`downloads.claude.ai`), key fingerprint `31DDDE24DDFAB679F42D7BD2BAA929FF1A7ECACE` pinned in `setup-dev` | installs in CI |
 
+## Third-party marks
+
+- AI assistant provider picker (`tind-ai-ui`, `/usr/share/tind-ai/icons/`): Scaleway's mark (a trademark of Scaleway SAS), path from Simple Icons (CC0) whose source is Scaleway's Ultraviolet design system, shown as a symbolic icon only to name the service; never changed or used as Tind's own. The tenk'r logo is serv'r's own (Morten's household AI). This computer and Custom server use stock GNOME icons.
+
 ## Rules used
 
 - Every third-party repository is checked against the vendor's own install page: a pinned key fingerprint (Microsoft, Anthropic) or a pinned package checksum (Proton). Tind's own packages come from `apt.servr.no`, signed with its own key (see UPDATES.md).

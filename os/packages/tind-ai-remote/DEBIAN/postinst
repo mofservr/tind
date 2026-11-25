@@ -1,8 +1,17 @@
 #!/bin/sh
 set -e
-PROVIDERS="scaleway ionos mistral anthropic openai custom"
+PROVIDERS="scaleway custom"
+# taken out on 25 Nov 2026 (0.1.x): their sockets go, and any key stored for them is deleted
+RETIRED="ionos mistral anthropic openai"
 if [ "$1" = configure ]; then
     install -d -m 0755 /etc/tind-ai/ready
+    for p in $RETIRED; do
+        if [ -d /run/systemd/system ]; then
+            systemctl stop "tind-ai-remote@$p.socket" "tind-ai-remote@$p.service" >/dev/null 2>&1 || true
+        fi
+        systemctl disable "tind-ai-remote@$p.socket" >/dev/null 2>&1 || true
+        rm -f "/etc/tind-ai/keys/$p" "/etc/tind-ai/ready/$p"
+    done
     systemctl daemon-reload >/dev/null 2>&1 || true
     for p in $PROVIDERS; do systemctl enable "tind-ai-remote@$p.socket" >/dev/null 2>&1 || true; done
     if [ -d /run/systemd/system ]; then

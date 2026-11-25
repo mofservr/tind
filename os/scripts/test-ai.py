@@ -159,6 +159,16 @@ check(PLANTED['ip'] in mix['history'][0]['text'] and PLANTED['email'] not in mix
       'local: history keeps each message\'s own choice')
 check(mix['redactions'] == {}, 'local: the summary counts only the new message, not the history')
 check(mix['text'] == 'thanks', 'local: a plain chat message is sent as is, with no headings')
+# a long first message (question, Tind report, then the journal) keeps its question, the report's top and the newest
+# log lines when it goes back as history (cutting from the start lost the question and the GPU, 25 Nov)
+big = ('QUESTION-START backup fails\n\n## Tind report\n```\nGPU: Radeon RX 6700 XT\n```\n\n## System journal\n```\n'
+       + ''.join('log line %05d\n' % i for i in range(6000)) + 'NEWEST-LINE\n```')
+long_turn = local.handle(uid, {'op': 'brief', 'request': 'which GPU?', 'provider': 'custom', 'conversation': 'abc123',
+                               'history': [{'role': 'user', 'text': big, 'raw': True}]})
+kept = long_turn['history'][0]['text']
+check(len(big) > 40_000 and 'QUESTION-START' in kept and 'RX 6700 XT' in kept and 'NEWEST-LINE' in kept
+      and 'cut from the middle' in kept and len(kept) < 40_100,
+      'local: a long earlier message keeps its start and end, the middle is cut')
 local.handle(uid, {'op': 'forget', 'conversation': 'abc123'})
 check(not os.path.exists(os.path.join(local.MAP_DIR, str(uid), 'abc123.json')),
       'local: deleting a chat forgets its placeholder map')
@@ -203,7 +213,7 @@ with open(os.path.join(creds, 'key'), 'w') as f:
 os.environ['CREDENTIALS_DIRECTORY'] = creds
 json.dump({'base_url': 'http://127.0.0.1:%d/v1' % port, 'model': 'test-model'}, open(tindai.CUSTOM_FILE, 'w'))
 
-for pid, adapter, want in (('custom', 'openai', 'compatible answer'), ('anthropic', 'anthropic', 'native answer')):
+for pid, adapter, want in (('custom', 'openai', 'compatible answer'), ('scaleway', 'openai', 'compatible answer')):
     json.dump({'provider': pid, 'scheme': 'http', 'host': '127.0.0.1', 'port': port, 'path': '/v1',
                'addresses': ['127.0.0.1']}, open(endpoint.hosts_file(pid), 'w'))
     remote = load_script(os.path.join(ROOT, 'tind-ai-remote/usr/lib/tind-ai/remote'), 'tind_ai_remote_' + pid, [pid])
@@ -212,14 +222,9 @@ for pid, adapter, want in (('custom', 'openai', 'compatible answer'), ('anthropi
     check(res['ok'] and res['answer'] == want, 'remote %s: the %s adapter returns the answer' % (pid, adapter))
     sent = json.dumps(seen['body'])
     check(PLANTED['ip'] not in sent and '[ip-1]' in sent, 'remote %s: only the redacted briefing is sent' % pid)
-    if adapter == 'openai':
-        check(seen['path'] == '/v1/chat/completions', 'remote custom: POST /v1/chat/completions')
-        check(seen['headers'].get('Authorization') == 'Bearer test-key-123', 'remote custom: the key goes as Bearer')
-        check(seen['body']['messages'][0]['role'] == 'system', 'remote custom: the system prompt comes first')
-    else:
-        check(seen['path'] == '/v1/messages', 'remote anthropic: POST /v1/messages (native Claude API)')
-        check(seen['headers'].get('x-api-key') == 'test-key-123', 'remote anthropic: the key goes as x-api-key')
-        check('Tind Linux' in seen['body'].get('system', ''), 'remote anthropic: the system prompt is the system field')
+    check(seen['path'] == '/v1/chat/completions', 'remote %s: POST /v1/chat/completions' % pid)
+    check(seen['headers'].get('Authorization') == 'Bearer test-key-123', 'remote %s: the key goes as Bearer' % pid)
+    check(seen['body']['messages'][0]['role'] == 'system', 'remote %s: the system prompt comes first' % pid)
     check(os.path.exists(os.path.join(tindai.OUTBOX_DIR, str(uid), b['id'] + '.json')),
           'remote %s: the answer is saved in the outbox' % pid)
     try:
@@ -257,13 +262,28 @@ for url, ok in (('https://api.scaleway.ai/v1', True), ('http://127.0.0.1:11434/v
 for p in tindai.providers():
     if p['base_url']:
         endpoint.parse(p['base_url'])
-check(tindai.provider('scaleway')['eu'] is True and tindai.provider('anthropic')['eu'] is False,
-      'providers: EU and non-EU providers are marked')
+# the list since 25 Nov: tenk'r (grayed until serv'r's gateway is up), Scaleway, this computer, a custom server
+check([p['id'] for p in tindai.providers()] == ['tenkr', 'scaleway', 'local', 'custom'],
+      'providers: tenk\'r, Scaleway, This computer, Custom server, in that order')
 labels = [tindai.provider_label(p) for p in tindai.providers()]
-check('Scaleway - France' in labels and 'Anthropic - USA' in labels, 'providers: shown as name - country')
+check(labels == ["tenk'r", 'Scaleway', 'This computer', 'Custom server'], 'providers: shown by name, no country')
+tk = tindai.provider('tenkr')
+check(tk.get('unavailable') == 'Not set up yet' and not tk['base_url'], 'providers: tenk\'r is grayed, no address yet')
+icons_dir = os.path.join(ROOT, 'tind-ai-ui/usr/share/tind-ai/icons')
+check(all(p.get('icon') for p in tindai.providers()), 'providers: every provider has an icon')
+own = [p['icon'] for p in tindai.providers() if p['icon'].startswith('tind-ai-')]
+check(own and all(os.path.exists(os.path.join(icons_dir, i + '.svg')) for i in own),
+      'providers: Tind\'s own provider icons are shipped: %s' % own)
+post = open(os.path.join(ROOT, 'tind-ai-remote/DEBIAN/postinst')).read()
+live = re.search(r'^PROVIDERS="([^"]*)"', post, re.M).group(1).split()
+retired = re.search(r'^RETIRED="([^"]*)"', post, re.M).group(1).split()
+check(sorted(live) == sorted(p['id'] for p in tindai.providers() if p['service'] == 'remote' and not p.get('unavailable')),
+      'providers: the remote package enables a socket for each remote provider that can be used')
+check(not set(retired) & {p['id'] for p in tindai.providers()} and 'anthropic' in retired,
+      'providers: the retired providers are cleaned up on upgrade')
 check(all(m.get('use') in ('quick', 'everyday', 'coding') for p in tindai.providers() if p['id'] != 'custom'
           for m in p['models']), 'providers: every model has a use (quick, everyday or coding)')
-check(tindai.model_label(tindai.provider('anthropic')['models'][1]) == 'Claude Sonnet 5.5 (everyday)',
+check(tindai.model_label(tindai.provider('scaleway')['models'][0]) == 'gpt-oss-120b (everyday)',
       'providers: models shown as name (use)')
 check(tindai.provider('local')['service'] == 'local', 'providers: this computer is served by the local service')
 check(json.load(open(tindai.PROVIDERS_FILE))['default'] == 'scaleway', 'providers: Scaleway is the default')
@@ -342,8 +362,7 @@ check(not missing, 'prices: every listed model of a known provider has a price %
 bands = {(p['id'], m['id']): ask.band(pr, ask.price_of(pr, p, m['id'])) for p in tindai.providers()
          for m in p['models']}
 check(bands[('scaleway', 'gpt-oss-120b')] == 'cheap', 'prices: the default model is cheap')
-check(bands[('openai', 'gpt-5.6-sol')] == 'expensive', 'prices: GPT-5.6 Sol is expensive')
-check(bands[('anthropic', 'claude-sonnet-5-5')] == 'mid', 'prices: Claude Sonnet 5.5 is mid')
+check(bands[('scaleway', 'mistral-medium-3.5-128b')] == 'mid', 'prices: Mistral Medium 3.5 is mid')
 check(ask.band(pr, ask.price_of(pr, tindai.provider('local'), '')) == 'free', 'prices: this computer is free')
 check(ask.band(pr, ask.price_of(pr, tindai.provider('custom'), 'anything')) == 'unknown',
       'prices: a custom server is price unknown')
@@ -353,7 +372,8 @@ check(ask.band(pr, {'input': 0.1, 'output': 3.0, 'currency': 'EUR'}) == 'cheap'
       'prices: the band uses the blend (3 in : 1 out), not the output price alone')
 check(ask.price_text(pr['models'][('scaleway', 'gpt-oss-120b')]) == '€0.15 in · €0.60 out per million tokens',
       'prices: shown per million tokens in the provider\'s currency')
-check(ask.price_text(pr['models'][('openai', 'gpt-5.6-sol')]).startswith('$5.00 in'), 'prices: dollars as $')
+check(ask.price_text(pr['models'][('scaleway', 'mistral-medium-3.5-128b')]).startswith('$1.68 in'),
+      'prices: dollars as $')
 check(ask.load_prices(os.path.join(tmp, 'missing.json'))['models'] == {}, 'prices: a missing file means unknown')
 with open(junk, 'w') as f:
     f.write('{not json')
