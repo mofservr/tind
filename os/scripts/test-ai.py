@@ -269,10 +269,12 @@ labels = [tindai.provider_label(p) for p in tindai.providers()]
 check(labels == ["tenk'r", 'Scaleway', 'This computer', 'Custom server'], 'providers: shown by name, no country')
 tk = tindai.provider('tenkr')
 check(tk.get('unavailable') == 'Not set up yet' and not tk['base_url'], 'providers: tenk\'r is grayed, no address yet')
-icons_dir = os.path.join(ROOT, 'tind-ai-ui/usr/share/tind-ai/icons')
+icons_dir = os.path.join(ROOT, 'tind-ai-ui/usr/share/icons/hicolor')
 check(all(p.get('icon') for p in tindai.providers()), 'providers: every provider has an icon')
 own = [p['icon'] for p in tindai.providers() if p['icon'].startswith('tind-ai-')]
-check(own and all(os.path.exists(os.path.join(icons_dir, i + '.svg')) for i in own),
+# in hicolor, so GTK finds them as themed icons: a -symbolic icon outside a theme is not recoloured (GTK 4.14)
+check(own and all(os.path.exists(os.path.join(icons_dir, 'symbolic/apps' if i.endswith('-symbolic') else 'scalable/apps',
+                                              i + '.svg')) for i in own),
       'providers: Tind\'s own provider icons are shipped: %s' % own)
 post = open(os.path.join(ROOT, 'tind-ai-remote/DEBIAN/postinst')).read()
 live = re.search(r'^PROVIDERS="([^"]*)"', post, re.M).group(1).split()

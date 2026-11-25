@@ -24,7 +24,7 @@
 
 ## Third-party marks
 
-- AI assistant provider picker (`tind-ai-ui`, `/usr/share/tind-ai/icons/`): Scaleway's mark (a trademark of Scaleway SAS), path from Simple Icons (CC0) whose source is Scaleway's Ultraviolet design system, shown as a symbolic icon only to name the service; never changed or used as Tind's own. The tenk'r logo is serv'r's own (Morten's household AI). This computer and Custom server use stock GNOME icons.
+- AI assistant provider picker (`tind-ai-ui`, `/usr/share/icons/hicolor/`): Scaleway's mark (a trademark of Scaleway SAS), path from Simple Icons (CC0) whose source is Scaleway's Ultraviolet design system, shown as a symbolic icon only to name the service; never changed or used as Tind's own. The tenk'r logo is serv'r's own (Morten's household AI). This computer and Custom server use stock GNOME icons.
 
 ## Rules used
 

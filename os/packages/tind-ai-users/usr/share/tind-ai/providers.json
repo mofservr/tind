@@ -1,5 +1,5 @@
 {
- "_comment": "Tind AI box providers, shown by name with their icon (icon: a name looked up in /usr/share/tind-ai/icons, then the icon theme). Models as 'name (use)', use one of quick, everyday, coding. 'default' is preselected for a new chat. 'service' says which system user talks to the model: 'remote' (tind-ai-remote, one host only) or 'local' (tind-ai-local, no network; for a model on this computer). 'unavailable' grays the entry with that text. Model ids can be changed per user in the window; these are the suggestions.",
+ "_comment": "Tind AI box providers, shown by name with their icon (icon: an icon-theme name; Tind's own, tind-ai-*, are in the hicolor theme, shipped by tind-ai-ui). Models as 'name (use)', use one of quick, everyday, coding. 'default' is preselected for a new chat. 'service' says which system user talks to the model: 'remote' (tind-ai-remote, one host only) or 'local' (tind-ai-local, no network; for a model on this computer). 'unavailable' grays the entry with that text. Model ids can be changed per user in the window; these are the suggestions.",
  "default": "scaleway",
  "providers": [
   {

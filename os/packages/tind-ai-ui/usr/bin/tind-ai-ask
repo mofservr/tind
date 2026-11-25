@@ -60,7 +60,6 @@ SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
 TEMPLATES_FILE = '/usr/share/tind-ai/templates.json'
 ATTACH_KEYS = ('journal', 'report', 'steam')
 PRICES_FILE = '/usr/share/tind-ai/prices.json'
-ICONS_DIR = '/usr/share/tind-ai/icons'   # provider icons; the icon theme is searched after it
 BANDS = ('free', 'cheap', 'mid', 'expensive', 'unknown')
 BAND_NAMES = {'free': 'Free', 'cheap': 'Cheap', 'mid': 'Mid', 'expensive': 'Expensive', 'unknown': 'Price unknown'}
 CURRENCY = {'EUR': '€', 'USD': '$', 'GBP': '£', 'NOK': 'kr '}
@@ -1052,8 +1051,8 @@ def main(open_target=None):
                          valign=Gtk.Align.CENTER)
 
     def provider_icon(p, size):
-        """A provider's icon (providers.json 'icon', found in ICONS_DIR or the icon theme); symbolic ones follow the
-        text colour, so they work in both themes."""
+        """A provider's icon (providers.json 'icon', from the icon theme; Tind's own are in hicolor). Symbolic ones
+        follow the text colour, so they work in both themes."""
         return Gtk.Image(icon_name=p.get('icon') or 'network-server-symbolic', pixel_size=size,
                          valign=Gtk.Align.CENTER)
 
@@ -2310,7 +2309,6 @@ def main(open_target=None):
             css.load_from_string(CSS)
             Gtk.StyleContext.add_provider_for_display(Gdk.Display.get_default(), css,
                                                       Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-            Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).add_search_path(ICONS_DIR)
 
         def do_activate(self):
             if not self.win:
