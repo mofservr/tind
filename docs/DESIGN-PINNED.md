@@ -19,6 +19,13 @@ The UI should draw no attention to itself: it is there, looks pleasant, and help
 
 Source: `os/packages/tind-branding/usr/share/gnome-shell/extensions/tind-ice@tind.no/stylesheet.css`.
 
+## AI assistant window
+
+- Task templates sit in two labelled rows with muted colours: **Computer** in slate blue (`#7a9ac6` at 22% behind, text mixed with `#5b7aa3`) and **Everyday** in sand (`#c6a672` at 24% behind, text mixed with `#a8834a`). The text colour is the window's own text colour mixed 45% with the group colour, so one rule reads well in the light and the dark theme. The template form's title carries the same small group tag.
+- Everything else in the window is stock libadwaita with the Tind accent; the price marks use libadwaita's standard colours.
+
+Source: the `CSS` block in `os/packages/tind-ai-ui/usr/bin/tind-ai-ask`.
+
 ## Logo
 
 - Three forms only: icon, stacked, horizontal (`docs/branding/logo/`). Single colour, no duo colours.
