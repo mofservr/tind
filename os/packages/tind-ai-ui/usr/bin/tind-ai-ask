@@ -59,6 +59,11 @@ MAX_FILE = 200_000
 SHELLS = ('bash', 'sh', 'shell', 'console', 'zsh')
 TEMPLATES_FILE = '/usr/share/tind-ai/templates.json'
 ATTACH_KEYS = ('journal', 'report', 'steam')
+# the answer language, chosen per chat (27 Nov): code, name in the menu, short name on the button, a note. The local
+# service turns the code into the instruction to the model; templates and Tind's own instructions stay in English.
+LANGUAGES = (('en', 'English', 'English', 'Cheapest and best for tech questions'),
+             ('nb', 'Norsk (bokmål)', 'Norsk', ''),
+             ('yue', '粵語 Cantonese', '粵語', 'Written Cantonese, Traditional characters'))
 PRICES_FILE = '/usr/share/tind-ai/prices.json'
 BANDS = ('free', 'cheap', 'mid', 'expensive', 'unknown')
 BAND_NAMES = {'free': 'Free', 'cheap': 'Cheap', 'mid': 'Mid', 'expensive': 'Expensive', 'unknown': 'Price unknown'}
@@ -237,7 +242,7 @@ ARCHIVE_VERSION = 1
 MARK = '<!-- tind:'
 MSG_RE = re.compile(r'^<!-- tind:message (\{.*\}) -->$')
 ESC_RE = re.compile(r'^(\\*)<!-- tind:', re.M)
-FRONT_KEYS = ('id', 'provider', 'model', 'title', 'created', 'updated')
+FRONT_KEYS = ('id', 'provider', 'model', 'title', 'created', 'updated', 'language')
 MSG_META = ('role', 'time', 'raw', 'items', 'redactions', 'provider_name', 'model', 'model_name', 'seconds')
 
 
@@ -486,6 +491,49 @@ def to_markup(text, escape):
     return '\n'.join(lines)
 
 
+def language(code):
+    """The LANGUAGES entry for a code; English for an empty or unknown one (chats from before 27 Nov have none)."""
+    return next((x for x in LANGUAGES if x[0] == code), LANGUAGES[0])
+
+
+FIELD_TYPES = ('text', 'number', 'choice', 'checks', 'check')
+GROUPS = (('computer', 'Computer'), ('everyday', 'Everyday'))
+
+
+def _field(f):
+    """A template field made safe to use, or None when it is not well formed (the template is then skipped)."""
+    if not isinstance(f, dict) or not re.fullmatch(r'\w+', str(f.get('id', ''))):
+        return None
+    f = dict(f)
+    f['type'] = f.get('type') if f.get('type') in FIELD_TYPES else 'text'
+    if f['type'] == 'number':
+        try:
+            f['min'], f['max'] = int(f.get('min', 0)), int(f.get('max', 99))
+            f['default'] = min(max(int(f.get('default', f['min'])), f['min']), f['max'])
+        except (TypeError, ValueError):
+            return None
+        if f['min'] > f['max']:
+            return None
+    elif f['type'] == 'choice':
+        opts = [o if isinstance(o, dict) else {'label': str(o), 'text': str(o)} for o in f.get('options', [])]
+        opts = [{'label': str(o.get('label', '')), 'text': str(o.get('text', o.get('label', '')))} for o in opts
+                if str(o.get('label', ''))]
+        if not opts:
+            return None
+        f['options'] = opts
+        f['default'] = f.get('default') if f.get('default') in [o['label'] for o in opts] else opts[0]['label']
+    elif f['type'] == 'checks':
+        f['options'] = [str(o) for o in f.get('options', []) if str(o)]
+        if not f['options']:
+            return None
+        f['default'] = [o for o in f.get('default', []) if o in f['options']] if isinstance(f.get('default'), list) \
+            else []
+    elif f['type'] == 'check':
+        f['default'] = bool(f.get('default'))
+        f['on'], f['off'] = str(f.get('on', '')), str(f.get('off', ''))
+    return f
+
+
 def load_templates(path=TEMPLATES_FILE):
     """The task templates (static data, no model call). A broken or missing file gives an empty list: the window then
     simply has no template chips. An entry that is not well formed is skipped, never fatal."""
@@ -493,16 +541,62 @@ def load_templates(path=TEMPLATES_FILE):
     out, seen = [], set()
     for t in data.get('templates', []) if isinstance(data, dict) else []:
         try:
-            fields = [f for f in t['fields'] if isinstance(f, dict) and re.fullmatch(r'\w+', str(f.get('id', '')))]
+            fields = [_field(f) for f in t['fields']]
             lines = [ln for ln in t['lines'] if isinstance(ln, (str, dict))]
-            if not (t['id'] and t['title'] and fields and lines) or t['id'] in seen:
+            if not (t['id'] and t['title'] and fields and lines) or None in fields or t['id'] in seen:
                 continue
         except (KeyError, TypeError):
             continue
+        ids = [f['id'] for f in fields]
+        if len(set(ids)) != len(ids):
+            continue
+        for f in fields:   # show_if must name a check field of the same template
+            if f.get('show_if') and not any(g['id'] == f['show_if'] and g['type'] == 'check' for g in fields):
+                f.pop('show_if')
         seen.add(t['id'])
+        group = t.get('group') if t.get('group') in dict(GROUPS) else 'computer'
         out.append({'id': str(t['id']), 'title': str(t['title']), 'hint': str(t.get('hint', '')), 'fields': fields,
-                    'attach': [k for k in t.get('attach', []) if k in ATTACH_KEYS], 'lines': lines})
+                    'group': group, 'system_data': t.get('system_data', True) is not False,
+                    'attach': [k for k in t.get('attach', []) if k in ATTACH_KEYS]
+                    if t.get('system_data', True) is not False else [], 'lines': lines})
     return out
+
+
+def field_value(f, raw):
+    """The text a field puts into the prompt. raw is what the form holds: a string (text), an int (number), the
+    chosen label (choice), a list of ticked labels (checks) or a bool (check). Empty means the line is left out."""
+    t = f['type']
+    if t == 'number':
+        try:
+            n = int(raw)
+        except (TypeError, ValueError):
+            return ''
+        return str(n) if n else ''
+    if t == 'choice':
+        return next((o['text'] for o in f['options'] if o['label'] == raw), '').strip()
+    if t == 'checks':
+        picked = [o for o in f['options'] if o in (raw or [])]
+        return ', '.join(picked[:1] + [o.lower() for o in picked[1:]])
+    if t == 'check':
+        return (f['on'] if raw else f['off']).strip()
+    return str(raw or '').strip()
+
+
+def default_values(tpl):
+    """What the form holds before the human changes anything, as field_value() reads it."""
+    out = {}
+    for f in tpl['fields']:
+        out[f['id']] = f.get('default', '') if f['type'] != 'text' else ''
+    return out
+
+
+def template_values(tpl, raw):
+    """{field: prompt text} for the whole form; a field hidden by show_if counts as empty."""
+    vals = {f['id']: field_value(f, raw.get(f['id'])) for f in tpl['fields']}
+    for f in tpl['fields']:
+        if f.get('show_if') and not raw.get(f['show_if']):
+            vals[f['id']] = ''
+    return vals
 
 
 def missing_required(tpl, values):
@@ -513,13 +607,17 @@ def missing_required(tpl, values):
 
 def compose_prompt(tpl, values, attached):
     """One English prompt from a template, the answers {field: text} and the attached data keys. A line with a field
-    that was left empty is dropped; a line with "if_attached" stays only when one of those is attached. Answers are
+    that was left empty is dropped; a line with "if_attached" stays only when one of those is attached, one with
+    "if_filled" only when one of those fields has an answer. Answers are
     inserted as they are (they are never read as placeholders) and go through the fixed redaction rules like any
     typed text."""
     entries = []
     for ln in tpl['lines']:
         text, cond = (ln, None) if isinstance(ln, str) else (str(ln.get('text', '')), ln.get('if_attached'))
         if cond and not any(k in attached for k in cond):
+            continue
+        filled = None if isinstance(ln, str) else ln.get('if_filled')
+        if filled and not any((values.get(k) or '').strip() for k in filled):
             continue
         names = re.findall(r'\{(\w+)\}', text)
         vals = {n: (values.get(n) or '').strip() for n in names}
@@ -714,8 +812,8 @@ def cli_export(raw):
 def check_templates():
     tpls = load_templates()
     for t in tpls:
-        print('%-8s %-24s %d fields, pre-attached: %s' % (t['id'], t['title'], len(t['fields']),
-                                                           ', '.join(t['attach']) or 'nothing'))
+        print('%-8s %-9s %-24s %2d fields, pre-attached: %s' % (t['id'], t['group'], t['title'], len(t['fields']),
+                                                               ', '.join(t['attach']) or 'nothing'))
     print('templates: %d' % len(tpls))
     return 0 if tpls else 1
 
@@ -1024,6 +1122,20 @@ def main(open_target=None):
     .tind-composer textview, .tind-composer textview text { background: transparent; }
     .tind-chip { font-size: 0.9em; padding: 0 4px; }
     flowbox.tind-tpl > flowboxchild { padding: 0; }
+    /* template groups (27 Nov, from Claude's mockup, OK'd by Morten): muted slate blue and sand, mixed with the
+       window's text colour so the same rule reads well in the light and the dark theme */
+    button.tind-chip.tind-group-computer { background-color: alpha(#7a9ac6, 0.22); color: mix(@window_fg_color, #5b7aa3, 0.45); }
+    button.tind-chip.tind-group-computer:hover { background-color: alpha(#7a9ac6, 0.32); }
+    button.tind-chip.tind-group-computer:active { background-color: alpha(#7a9ac6, 0.42); }
+    button.tind-chip.tind-group-everyday { background-color: alpha(#c6a672, 0.24); color: mix(@window_fg_color, #a8834a, 0.45); }
+    button.tind-chip.tind-group-everyday:hover { background-color: alpha(#c6a672, 0.34); }
+    button.tind-chip.tind-group-everyday:active { background-color: alpha(#c6a672, 0.44); }
+    .tind-group-label { font-size: 0.85em; font-weight: 600; }
+    .tind-group-label.tind-group-computer { color: mix(@window_fg_color, #6f8fbb, 0.55); }
+    .tind-group-label.tind-group-everyday { color: mix(@window_fg_color, #b8955c, 0.55); }
+    .tind-group-tag { font-size: 0.8em; font-weight: 600; padding: 2px 10px; border-radius: 10px; }
+    .tind-group-tag.tind-group-computer { background-color: alpha(#7a9ac6, 0.22); color: mix(@window_fg_color, #5b7aa3, 0.45); }
+    .tind-group-tag.tind-group-everyday { background-color: alpha(#c6a672, 0.24); color: mix(@window_fg_color, #a8834a, 0.45); }
     .tind-doc { background: @card_bg_color; border: 1px solid alpha(currentColor, 0.15); border-radius: 10px;
                 padding: 8px 12px 10px 12px; }
     /* price bands: libadwaita's own colours; the band's name is always written next to or under the mark */
@@ -1074,6 +1186,7 @@ def main(open_target=None):
             self.prices = load_prices()
             self.back_to = 'chat'
             self.tpl, self.tpl_views, self.tpl_checks = None, {}, {}
+            self.tpl_get, self.tpl_boxes, self.tpl_go = {}, {}, None
 
             self.toasts = Adw.ToastOverlay()
             self.split = Adw.NavigationSplitView(min_sidebar_width=230, max_sidebar_width=300)
@@ -1114,8 +1227,8 @@ def main(open_target=None):
                 if n:
                     GLib.idle_add(lambda: (self.toast('%d chats moved to %s' % (
                         n, home_short(self.archive()))), False)[1])
-            except OSError as e:
-                GLib.idle_add(lambda: (self.toast('Could not move the old chats: %s' % e), False)[1])
+            except OSError as e:     # the name e is gone once the except block ends: bind the text now
+                GLib.idle_add(lambda why=str(e): (self.toast('Could not move the old chats: %s' % why), False)[1])
 
         def open_path(self, path):
             try:
@@ -1245,8 +1358,9 @@ def main(open_target=None):
                 box = Gtk.Box(spacing=6)
                 texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True)
                 texts.append(Gtk.Label(label=chat.get('title') or 'New chat', xalign=0, ellipsize=3))
-                texts.append(Gtk.Label(label=time.strftime('%d %b %H:%M', time.localtime(chat.get('updated', 0))),
-                                       xalign=0, css_classes=['dim-label', 'caption']))
+                when = time.strftime('%d %b %H:%M', time.localtime(chat.get('updated', 0)))
+                texts.append(Gtk.Label(label='%s · %s' % (when, language(chat.get('language'))[1]), xalign=0,
+                                       ellipsize=3, css_classes=['dim-label', 'caption']))
                 box.append(texts)
                 trash = Gtk.Button(icon_name='user-trash-symbolic', css_classes=['flat'], valign=Gtk.Align.CENTER,
                                    tooltip_text='Delete this chat')
@@ -1530,13 +1644,25 @@ def main(open_target=None):
             isw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, propagate_natural_height=True,
                                      max_content_height=180, hexpand=True)
             isw.set_child(self.input)
+            self.lbtn = Gtk.MenuButton(valign=Gtk.Align.END, css_classes=['flat'],
+                                       tooltip_text='Answer language for this chat')
+            if hasattr(self.lbtn, 'set_always_show_arrow'):     # GTK 4.4+
+                self.lbtn.set_always_show_arrow(True)
+            if hasattr(self.lbtn, 'set_direction'):
+                self.lbtn.set_direction(Gtk.ArrowType.UP)
+            lbox = Gtk.Box(spacing=6)
+            lbox.append(Gtk.Image(icon_name='preferences-desktop-locale-symbolic'))
+            self.llabel = Gtk.Label(label='English')
+            lbox.append(self.llabel)
+            self.lbtn.set_child(lbox)
+            self.lbtn.set_popover(self.build_language_popover())
             self.rawbtn = Gtk.ToggleButton(label='Unredacted', valign=Gtk.Align.END, css_classes=['flat'],
                                            tooltip_text='Send the next message exactly as typed (nothing hidden)')
             self.rawbtn.connect('toggled', lambda b: self.rawnote.set_visible(b.get_active()))
             self.sendbtn = Gtk.Button(icon_name='go-up-symbolic', valign=Gtk.Align.END, tooltip_text='Send (Enter)',
                                       css_classes=['suggested-action', 'circular'])
             self.sendbtn.connect('clicked', lambda *_: self.on_send())
-            for w in (add, isw, self.rawbtn, self.sendbtn):
+            for w in (add, isw, self.lbtn, self.rawbtn, self.sendbtn):
                 box.append(w)
             for w in (self.tpl_row, self.chips, self.rawnote, box):
                 outer.append(w)
@@ -1547,16 +1673,30 @@ def main(open_target=None):
 
         # ---- task templates (static text, no model call) ---------------------------------------------------------
         def build_template_chips(self):
-            # the buttons wrap onto a second line in a narrow window: no scroll bar to cover them (25 Nov)
-            row = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, column_spacing=6, row_spacing=6,
-                              max_children_per_line=len(self.templates) or 1, homogeneous=False, visible=False,
-                              css_classes=['tind-tpl'])
-            for t in self.templates:
-                b = Gtk.Button(label=t['title'], css_classes=['pill', 'tind-chip'], tooltip_text=t['hint'] or None)
-                b.connect('clicked', lambda _b, t=t: self.open_template(t))
-                row.append(b)
-                b.get_parent().set_focusable(False)    # one tab stop per template: the button, not its flowbox slot
-            return row
+            # one row per group (Computer, Everyday), each with its own muted colour and a label in front; the buttons
+            # wrap onto a second line in a narrow window: no scroll bar to cover them (25 Nov)
+            outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8, visible=False)
+            for gid, gname in GROUPS:
+                tpls = [t for t in self.templates if t['group'] == gid]
+                if not tpls:
+                    continue
+                line = Gtk.Box(spacing=10)
+                head = Gtk.Label(label=gname, xalign=0, valign=Gtk.Align.START, margin_top=7,
+                                 css_classes=['tind-group-label', 'tind-group-' + gid])
+                head.set_size_request(78, -1)
+                line.append(head)
+                row = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, column_spacing=6, row_spacing=6,
+                                  max_children_per_line=len(tpls), homogeneous=False, hexpand=True,
+                                  css_classes=['tind-tpl'])
+                for t in tpls:
+                    b = Gtk.Button(label=t['title'], css_classes=['pill', 'tind-chip', 'tind-group-' + gid],
+                                   tooltip_text=t['hint'] or None)
+                    b.connect('clicked', lambda _b, t=t: self.open_template(t))
+                    row.append(b)
+                    b.get_parent().set_focusable(False)    # one tab stop per template: the button, not its slot
+                line.append(row)
+                outer.append(line)
+            return outer
 
         def build_template_page(self):
             self.tpl_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10, margin_top=24, margin_bottom=24,
@@ -1587,27 +1727,38 @@ def main(open_target=None):
             while (child := box.get_first_child()) is not None:
                 box.remove(child)
             self.tpl, self.tpl_views, self.tpl_checks = tpl, {}, {}
-            box.append(label(tpl['title'], ['title-2']))
+            self.tpl_get, self.tpl_boxes = {}, {}
+            title = Gtk.Box(spacing=10)
+            title.append(label(tpl['title'], ['title-2']))
+            gname = dict(GROUPS).get(tpl['group'], '')
+            title.append(Gtk.Label(label=gname, valign=Gtk.Align.CENTER,
+                                   css_classes=['tind-group-tag', 'tind-group-' + tpl['group']]))
+            box.append(title)
             if tpl['hint']:
                 box.append(label(tpl['hint'], ['dim-label']))
-            for i, f in enumerate(tpl['fields']):
-                box.append(label(f.get('label', f['id']) + ('' if f.get('required') else ' (optional)'),
-                                 ['heading'], margin_top=6))
-                tv = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, top_margin=8, bottom_margin=8, left_margin=8,
-                                  right_margin=8, accepts_tab=False)
-                if i == 0 and typed:                  # what was already typed becomes the first answer
-                    tv.get_buffer().set_text(typed)
-                tv.get_buffer().connect('changed', lambda *_: self.tpl_validate())
-                keys = Gtk.EventControllerKey()
-                keys.connect('key-pressed', self.on_template_key)
-                tv.add_controller(keys)
-                fsw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, css_classes=['card'],
-                                         min_content_height=max(1, int(f.get('lines', 2))) * 22 + 18)
-                fsw.set_child(tv)
-                box.append(fsw)
-                if f.get('example'):
-                    box.append(label('For example: ' + str(f['example']), ['dim-label', 'caption']))
-                self.tpl_views[f['id']] = tv
+            first_text = next((f['id'] for f in tpl['fields'] if f['type'] == 'text'), None)
+            row_box, row_key = None, None
+            for f in tpl['fields']:
+                block = self.template_field(f, typed if f['id'] == first_text else '')
+                self.tpl_boxes[f['id']] = block
+                if f.get('row') and f.get('row') == row_key and row_box is not None:
+                    row_box.append(block)
+                    continue
+                row_key = f.get('row')
+                if row_key:
+                    row_box = Gtk.Box(spacing=28)
+                    row_box.append(block)
+                    box.append(row_box)
+                else:
+                    row_box = None
+                    box.append(block)
+            for f in tpl['fields']:
+                if f.get('show_if'):
+                    self.tpl_shown(f)
+            if not tpl['system_data']:
+                self.tpl_actions_setup()
+                self.tpl_focus(first_text)
+                return
             box.append(label('Send along', ['heading'], margin_top=10))
             for key, text in (('report', 'Tind report (hardware, drivers, setup)'),
                               ('journal', 'System log (this boot, warnings and errors)'),
@@ -1617,6 +1768,10 @@ def main(open_target=None):
                 box.append(cb)
             box.append(label('Attached data is shown to you in full before anything is sent. Names, addresses and '
                              'keys are hidden first.', ['dim-label', 'caption']))
+            self.tpl_actions_setup()
+            self.tpl_focus(first_text)
+
+        def tpl_actions_setup(self):
             while (child := self.tpl_actions.get_first_child()) is not None:
                 self.tpl_actions.remove(child)
             back = Gtk.Button(label='Back', css_classes=['flat'])
@@ -1631,15 +1786,98 @@ def main(open_target=None):
             self.stack.set_visible_child_name('template')
             self.composer.set_visible(False)
             self.update_templates()
-            first = self.tpl_views[tpl['fields'][0]['id']]
-            first.grab_focus()
+
+        def tpl_focus(self, first_text):
+            if first_text:
+                self.tpl_views[first_text].grab_focus()
+            elif self.tpl_go is not None:
+                self.tpl_go.grab_focus()
+
+        def template_field(self, f, typed=''):
+            """One field of a template form: a heading and its widget. Sets self.tpl_get[id] to a function that reads
+            what the form holds (see field_value)."""
+            fid, kind = f['id'], f['type']
+            block = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, margin_top=6)
+            if f.get('heading'):
+                block.append(label(str(f['heading']), ['heading'], margin_top=6))
+            if kind != 'check':
+                opt = '' if f.get('required') or kind != 'text' else ' (optional)'
+                block.append(label(str(f.get('label', fid)) + opt, ['heading']))
+            changed = lambda *_: self.tpl_validate()   # noqa: E731
+            if kind == 'number':
+                spin = Gtk.SpinButton.new_with_range(f['min'], f['max'], 1)
+                spin.set_value(f['default'])
+                spin.set_halign(Gtk.Align.START)
+                spin.set_tooltip_text(str(f.get('label', fid)))
+                spin.connect('value-changed', changed)
+                block.append(spin)
+                self.tpl_get[fid] = spin.get_value_as_int
+            elif kind == 'choice':
+                group = Gtk.Box(css_classes=['linked'], halign=Gtk.Align.START)
+                buttons, lead = [], None
+                for o in f['options']:
+                    tb = Gtk.ToggleButton(label=o['label'], active=o['label'] == f['default'])
+                    if lead is None:
+                        lead = tb
+                    else:
+                        tb.set_group(lead)
+                    tb.connect('toggled', changed)
+                    buttons.append((o['label'], tb))
+                    group.append(tb)
+                block.append(group)
+                self.tpl_get[fid] = lambda bs=buttons: next((lab for lab, tb in bs if tb.get_active()), '')
+            elif kind == 'checks':
+                flow = Gtk.FlowBox(selection_mode=Gtk.SelectionMode.NONE, column_spacing=18, row_spacing=4,
+                                   max_children_per_line=len(f['options']), homogeneous=False, halign=Gtk.Align.START)
+                cbs = []
+                for o in f['options']:
+                    cb = Gtk.CheckButton(label=o, active=o in f['default'])
+                    cb.connect('toggled', changed)
+                    cbs.append((o, cb))
+                    flow.append(cb)
+                block.append(flow)
+                self.tpl_get[fid] = lambda cs=cbs: [o for o, cb in cs if cb.get_active()]
+            elif kind == 'check':
+                cb = Gtk.CheckButton(label=str(f.get('label', fid)), active=f['default'])
+                cb.connect('toggled', changed)
+                cb.connect('toggled', lambda *_: [self.tpl_shown(g) for g in self.tpl['fields']
+                                                  if g.get('show_if') == fid])
+                block.set_margin_top(0 if not f.get('heading') else 6)
+                block.append(cb)
+                self.tpl_get[fid] = cb.get_active
+            else:
+                tv = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, top_margin=8, bottom_margin=8, left_margin=8,
+                                  right_margin=8, accepts_tab=False)
+                if typed:                              # what was already typed becomes the first answer
+                    tv.get_buffer().set_text(typed)
+                tv.get_buffer().connect('changed', changed)
+                keys = Gtk.EventControllerKey()
+                keys.connect('key-pressed', self.on_template_key)
+                tv.add_controller(keys)
+                fsw = Gtk.ScrolledWindow(hscrollbar_policy=Gtk.PolicyType.NEVER, css_classes=['card'],
+                                         min_content_height=max(1, int(f.get('lines', 2))) * 22 + 18)
+                fsw.set_child(tv)
+                block.append(fsw)
+                if f.get('example'):
+                    block.append(label('For example: ' + str(f['example']), ['dim-label', 'caption']))
+                self.tpl_views[fid] = tv
+                self.tpl_get[fid] = lambda b=tv.get_buffer(): b.get_text(b.get_start_iter(), b.get_end_iter(), False)
+            if f.get('note'):
+                block.append(label(str(f['note']), ['dim-label', 'caption']))
+            return block
+
+        def tpl_shown(self, f):
+            """A field with show_if is visible only while that check is ticked."""
+            on = self.tpl_get.get(f['show_if'], lambda: True)()
+            box = self.tpl_boxes.get(f['id'])
+            if box is not None:
+                box.set_visible(bool(on))
+                box.set_margin_start(28)
 
         def tpl_values(self):
-            out = {}
-            for fid, tv in self.tpl_views.items():
-                b = tv.get_buffer()
-                out[fid] = b.get_text(b.get_start_iter(), b.get_end_iter(), False).strip()
-            return out
+            if self.tpl is None:
+                return {}
+            return template_values(self.tpl, {fid: get() for fid, get in self.tpl_get.items()})
 
         def tpl_validate(self):
             go = getattr(self, 'tpl_go', None)
@@ -1670,6 +1908,68 @@ def main(open_target=None):
             self.draw_chips()
             self.input.get_buffer().set_text(text)
             self.close_template()
+
+        def build_language_popover(self):
+            pop = Gtk.Popover()
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, margin_top=6, margin_bottom=6,
+                          margin_start=6, margin_end=6)
+            box.set_size_request(300, -1)
+            box.append(label('Answer language for this chat', ['heading'], margin_start=6, margin_bottom=4))
+            self.lchecks = {}
+            for code, name, _short, note in LANGUAGES:
+                b = Gtk.Button(css_classes=['flat'])
+                inner = Gtk.Box(spacing=10)
+                tick = Gtk.Image(icon_name='object-select-symbolic')
+                self.lchecks[code] = tick
+                inner.append(tick)
+                texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+                texts.append(Gtk.Label(label=name, xalign=0))
+                if note:
+                    texts.append(Gtk.Label(label=note, xalign=0, css_classes=['dim-label', 'caption']))
+                inner.append(texts)
+                b.set_child(inner)
+                b.connect('clicked', lambda _b, c=code: (pop.popdown(), self.pick_language(c)))
+                box.append(b)
+            box.append(Gtk.Separator(margin_top=4, margin_bottom=4))
+            row = Gtk.Box(spacing=12, margin_start=6, margin_end=6)
+            row.append(Gtk.Label(label='Use for my new chats', xalign=0, hexpand=True))
+            self.ldefault = Gtk.Switch(valign=Gtk.Align.CENTER)
+            self.ldefault_handler = self.ldefault.connect('notify::active', self.on_language_default)
+            row.append(self.ldefault)
+            box.append(row)
+            box.append(label('The AI is told the language by name, so Norwegian is never read as Danish. Templates '
+                             'and Tind\'s instructions stay in English; only the answer changes.',
+                             ['dim-label', 'caption'], margin_start=6, margin_end=6, margin_top=4, max_width_chars=40))
+            pop.set_child(box)
+            pop.connect('show', lambda *_: self.sync_language_popover())
+            return pop
+
+        def sync_language_popover(self):
+            cur = language((self.chat or {}).get('language'))[0]
+            for code, tick in self.lchecks.items():
+                tick.set_opacity(1 if code == cur else 0)
+            self.ldefault.handler_block(self.ldefault_handler)
+            self.ldefault.set_active(language(self.settings.get('language'))[0] == cur)
+            self.ldefault.handler_unblock(self.ldefault_handler)
+
+        def pick_language(self, code):
+            if self.chat is None:
+                return
+            self.chat['language'] = language(code)[0]
+            self.update_header()
+            if self.chat['messages']:
+                self.save_chat()
+                self.refresh_sidebar()
+
+        def on_language_default(self, sw, _pspec):
+            cur = language((self.chat or {}).get('language'))[0]
+            if sw.get_active():
+                self.settings['language'] = cur
+            elif cur != 'en':
+                self.settings['language'] = 'en'
+            else:            # English is the default when nothing else is: the switch cannot be turned off for it
+                GLib.idle_add(lambda: (self.sync_language_popover(), False)[1])
+            save_json(SETTINGS, self.settings, 0o644)
 
         def build_attach_popover(self):
             pop = Gtk.Popover()
@@ -1721,7 +2021,9 @@ def main(open_target=None):
                 self.mdot.set_tooltip_text('%s: %s' % (BAND_NAMES[b], price_text(e)))
                 self.mbtn.set_popover(self.build_model_popover(p))
             self.wtitle.set_title((self.chat or {}).get('title') or 'New chat')
-            self.wtitle.set_subtitle(tindai.provider_label(p))
+            lang = language((self.chat or {}).get('language'))
+            self.wtitle.set_subtitle('%s · %s' % (tindai.provider_label(p), lang[1]))
+            self.llabel.set_label(lang[2])
 
         def toast(self, text):
             self.toasts.add_toast(Adw.Toast(title=GLib.markup_escape_text(str(text)), timeout=6))
@@ -1740,7 +2042,8 @@ def main(open_target=None):
             if not any(p['id'] == pid and not p.get('unavailable') for p in self.providers):
                 pid = self.default_pid
             self.chat = {'id': secrets.token_hex(8), 'provider': pid, 'model': '', 'title': '',
-                         'created': int(time.time()), 'updated': int(time.time()), 'messages': []}
+                         'created': int(time.time()), 'updated': int(time.time()), 'messages': [],
+                         'language': language(self.settings.get('language'))[0]}
             self.chat['model'] = self.model()
             self.list.unselect_all()
             self.render()
@@ -2099,6 +2402,7 @@ def main(open_target=None):
             self.busy = True
             self.render()
             pid, model, conv = p['id'], self.model(), self.chat['id']
+            lang = language(self.chat.get('language'))[0]
 
             def work():
                 items = []
@@ -2111,6 +2415,7 @@ def main(open_target=None):
                     items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
                 return tindai.call(tindai.LOCAL_SOCKET, {
                     'op': 'brief', 'request': text, 'provider': pid, 'model': model, 'journal': att['journal'],
+                    'language': lang,
                     'raw': raw, 'items': items, 'history': history, 'conversation': conv}, timeout=180)
 
             def prepared(res, err):

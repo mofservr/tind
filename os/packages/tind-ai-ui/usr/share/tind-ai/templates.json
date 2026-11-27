@@ -1,5 +1,5 @@
 {
- "comment": "Task templates for the AI assistant window (tind-ai-ask). Static text, no model call: a template asks a few short questions and turns the answers into one prompt. Data, not code: add a template by adding an entry. A line is a string or {\"text\": ..., \"if_attached\": [\"report\", ...]}; {field} is replaced by the field's answer, and a line whose field is empty is left out. attach lists what is pre-ticked (journal, report, steam); the human can untick it, and whatever is attached still goes through the Checked preview.",
+ "comment": "Task templates for the AI assistant window (tind-ai-ask). Static text, no model call: a template asks a few questions and turns the answers into one English prompt. Data, not code: add a template by adding an entry. group is computer or everyday (the chip row and its colour); system_data false hides the Send along choices. A field is text (the default: label, example, lines, required, note), number (min, max, default; 0 counts as empty), choice (options of {label, text}; an empty text counts as empty), checks (options, default: the ticked labels joined by commas) or check (label, default, on, off: the text used when ticked or not). heading puts a heading above a field, row lays fields with the same row side by side, show_if hides a field (and empties it) while that check field is off. A line is a string or {\"text\": ..., \"if_attached\": [\"report\", ...]} or {\"text\": ..., \"if_filled\": [field, ...]}; {field} is replaced by the field's answer, and a line whose field is empty is left out. attach lists what is pre-ticked (journal, report, steam); the human can untick it, and whatever is attached still goes through the Checked preview.",
  "templates": [
   {
    "id": "fix",
@@ -19,7 +19,8 @@
     "",
     {"text": "Use the attached data where it helps.", "if_attached": ["report", "journal"]},
     "Find the most likely cause and give me the steps to fix it, one at a time. Say what each command does before I run it."
-   ]
+   ],
+   "group": "computer"
   },
   {
    "id": "error",
@@ -38,7 +39,8 @@
     "",
     {"text": "Use the attached data where it helps.", "if_attached": ["report", "journal", "steam"]},
     "Explain in plain words what it means and what usually causes it, then how to fix it."
-   ]
+   ],
+   "group": "computer"
   },
   {
    "id": "script",
@@ -55,7 +57,8 @@
     "Details: {details}",
     "",
     "Prefer bash, or Python if bash would be awkward. Keep it short, comment the tricky parts and tell me how to run it. Do not delete or overwrite anything without asking."
-   ]
+   ],
+   "group": "computer"
   },
   {
    "id": "setting",
@@ -72,7 +75,8 @@
     "Where: {where}",
     "",
     "Give the steps in GNOME Settings or the program's own menus first. Use the terminal only if there is no other way, and say what a command does before I run it."
-   ]
+   ],
+   "group": "computer"
   },
   {
    "id": "system",
@@ -90,6 +94,210 @@
     "What I am trying to do: {goal}",
     "",
     {"text": "Answer from the attached Tind report where you can, and say so when the report does not show it.", "if_attached": ["report"]}
+   ],
+   "group": "computer"
+  },
+  {
+   "id": "game",
+   "group": "computer",
+   "title": "Fix a game",
+   "hint": "A game will not start, crashes or runs badly. The Tind report and the Steam and Proton logs are added for you; untick them if you prefer.",
+   "fields": [
+    {"id": "game", "label": "Which game?", "example": "Cyberpunk 2077 on Steam", "lines": 1, "required": true},
+    {"id": "happened", "label": "What happens?", "example": "A black screen for a moment, then it closes", "lines": 3, "required": true},
+    {"id": "proton", "label": "Proton version or launch options, if you know", "example": "Proton Experimental", "lines": 1}
+   ],
+   "attach": ["report", "steam"],
+   "lines": [
+    "A game is not working on my computer.",
+    "The game: {game}",
+    "What happens: {happened}",
+    "Proton or launch options: {proton}",
+    "",
+    {"text": "Use the attached data where it helps.", "if_attached": ["report", "journal", "steam"]},
+    "Find the most likely cause and give me the steps to fix it, one at a time, easiest first (the game's and Steam's own settings before the terminal). Say what each command does before I run it."
+   ]
+  },
+  {
+   "id": "canrun",
+   "group": "computer",
+   "title": "Can my PC run this?",
+   "hint": "Check a game or program against this computer. The Tind report is added for you; untick it if you prefer.",
+   "fields": [
+    {"id": "what", "label": "Which game or program?", "example": "Baldur's Gate 3", "lines": 1, "required": true},
+    {"id": "how", "label": "How do you want to run it?", "example": "1440p at 60 fps, or just playable", "lines": 1}
+   ],
+   "attach": ["report"],
+   "lines": [
+    "Can my computer run this: {what}",
+    "How I want to run it: {how}",
+    "",
+    {"text": "Compare it with the hardware in the attached Tind report.", "if_attached": ["report"]},
+    "Start with a short yes, maybe or no, then the reason. Say whether it runs on Linux (natively or through Proton) and which settings to lower if it is close. If you are not sure of its requirements, say so instead of guessing."
+   ]
+  },
+  {
+   "id": "dinner",
+   "group": "everyday",
+   "title": "Make dinner",
+   "system_data": false,
+   "hint": "Tell it what you have and who is eating. Nothing from your computer is sent with this template.",
+   "fields": [
+    {"id": "have", "label": "What do you have?", "example": "500 g minced beef, 2 onions, rice, a tin of tomatoes, cheese", "lines": 3, "required": true},
+    {"id": "useup", "label": "Use up first", "example": "Half a broccoli, cream that runs out tomorrow", "lines": 1},
+    {"id": "adults", "type": "number", "label": "Adults eating", "min": 1, "max": 20, "default": 2, "row": "people"},
+    {"id": "children", "type": "number", "label": "Children eating", "min": 0, "max": 20, "default": 0, "row": "people"},
+    {"id": "diet", "type": "choice", "label": "Diet", "options": [{"label": "Anything", "text": ""}, {"label": "Flexitarian", "text": "mostly vegetarian, a little meat or fish is fine"}, {"label": "Pescetarian", "text": "pescetarian (fish and seafood, no meat)"}, {"label": "Vegetarian", "text": "vegetarian"}, {"label": "Vegan", "text": "vegan"}], "default": "Anything"},
+    {"id": "allergies", "label": "Allergies, intolerances and dislikes", "example": "Nut allergy, no coriander", "lines": 1, "note": "The answer will name every allergen it uses. Always check the labels on what you buy."},
+    {"id": "time", "type": "choice", "label": "Time", "options": [{"label": "15 min", "text": "15 minutes"}, {"label": "30 min", "text": "30 minutes"}, {"label": "1 hour", "text": "1 hour"}, {"label": "No rush", "text": ""}], "default": "30 min", "row": "timespice"},
+    {"id": "spice", "type": "choice", "label": "Spice", "options": [{"label": "Mild", "text": "mild"}, {"label": "Medium", "text": "medium"}, {"label": "Hot", "text": "hot"}], "default": "Mild", "row": "timespice"},
+    {"id": "equipment", "type": "checks", "label": "Equipment", "options": ["Stovetop", "Oven", "Microwave", "Air fryer", "Grill"], "default": ["Stovetop", "Oven", "Microwave"]},
+    {"id": "pantry", "type": "check", "heading": "Also", "label": "Assume a basic pantry (salt, pepper, oil, flour, sugar)", "default": true, "on": "I have the basics: salt, pepper, oil, flour and sugar.", "off": "Do not assume I have anything that is not listed, not even salt or oil."},
+    {"id": "leftovers", "type": "check", "label": "Make enough for leftovers tomorrow", "on": "Make enough for leftovers tomorrow."},
+    {"id": "store", "type": "check", "label": "I can go to the store for more", "default": true, "on": "I can go to the store for more. Put anything I need to buy in a short shopping list at the end.", "off": "I cannot go to the store: use only what I have."},
+    {"id": "storehow", "type": "choice", "label": "How much shopping?", "show_if": "store", "options": [{"label": "A few items", "text": "Keep the shopping to a few items."}, {"label": "A full shopping trip", "text": "A full shopping trip is fine."}], "default": "A few items"}
+   ],
+   "attach": [],
+   "lines": [
+    "Suggest a dinner I can make.",
+    "What I have: {have}",
+    "Use these up first: {useup}",
+    "Adults eating: {adults}",
+    "Children eating: {children}",
+    "Diet: {diet}",
+    "Allergies, intolerances and dislikes: {allergies}",
+    "Time I have: {time}",
+    "Spice level: {spice}",
+    "Equipment I have: {equipment}",
+    "{pantry}",
+    "{leftovers}",
+    "{store}",
+    "{storehow}",
+    "",
+    {"text": "Children are eating too, so keep it child-friendly: simple flavours, easy to eat.", "if_filled": ["children"]},
+    "Give one recipe, or two short alternatives if what I have allows it: the dish, the total time, metric amounts for the number of people, and the steps in order. Name every allergen the recipe contains. Use only what I listed plus the basics I said I have, unless I can go to the store."
+   ]
+  },
+  {
+   "id": "mealplan",
+   "group": "everyday",
+   "title": "Weekly meal plan",
+   "system_data": false,
+   "hint": "A plan for the week and one shopping list. Nothing from your computer is sent with this template.",
+   "fields": [
+    {"id": "days", "type": "number", "label": "Dinners to plan", "min": 1, "max": 7, "default": 5, "row": "plan"},
+    {"id": "adults", "type": "number", "label": "Adults", "min": 1, "max": 20, "default": 2, "row": "plan"},
+    {"id": "children", "type": "number", "label": "Children", "min": 0, "max": 20, "default": 0, "row": "plan"},
+    {"id": "diet", "type": "choice", "label": "Diet", "options": [{"label": "Anything", "text": ""}, {"label": "Flexitarian", "text": "mostly vegetarian, a little meat or fish is fine"}, {"label": "Pescetarian", "text": "pescetarian (fish and seafood, no meat)"}, {"label": "Vegetarian", "text": "vegetarian"}, {"label": "Vegan", "text": "vegan"}], "default": "Anything"},
+    {"id": "allergies", "label": "Allergies, intolerances and dislikes", "example": "Nut allergy, no coriander", "lines": 1, "note": "The answer will name every allergen it uses. Always check the labels on what you buy."},
+    {"id": "have", "label": "What do you already have?", "example": "Rice, pasta, frozen fish, potatoes", "lines": 2},
+    {"id": "time", "type": "choice", "label": "Time on a weekday", "options": [{"label": "15 min", "text": "15 minutes"}, {"label": "30 min", "text": "30 minutes"}, {"label": "1 hour", "text": "1 hour"}, {"label": "No rush", "text": ""}], "default": "30 min"},
+    {"id": "wishes", "label": "Wishes", "example": "Fish twice a week, taco on Friday", "lines": 1}
+   ],
+   "attach": [],
+   "lines": [
+    "Make me a dinner plan for {days} days.",
+    "Adults eating: {adults}",
+    "Children eating: {children}",
+    "Diet: {diet}",
+    "Allergies, intolerances and dislikes: {allergies}",
+    "What I already have: {have}",
+    "Time I have on a weekday: {time}",
+    "Wishes: {wishes}",
+    "",
+    {"text": "Children are eating too, so keep it child-friendly.", "if_filled": ["children"]},
+    "For each day give the dish, a one-line description and the time it takes. Reuse ingredients across the week so little goes to waste. Then give one combined shopping list grouped by shop section, with metric amounts, leaving out what I already have. Name the allergens in each dish."
+   ]
+  },
+  {
+   "id": "letter",
+   "group": "everyday",
+   "title": "Write a letter",
+   "system_data": false,
+   "hint": "A letter, an email or a short message, ready to send. Nothing from your computer is sent with this template.",
+   "fields": [
+    {"id": "kind", "type": "choice", "label": "What is it?", "options": [{"label": "Email", "text": "an email"}, {"label": "Letter", "text": "a letter"}, {"label": "Short message", "text": "a short message (text or chat)"}], "default": "Email"},
+    {"id": "to", "label": "Who is it for?", "example": "My landlord", "lines": 1, "required": true},
+    {"id": "say", "label": "What should it say?", "example": "The dishwasher has been broken for two weeks; I want it fixed by Friday", "lines": 4, "required": true},
+    {"id": "tone", "type": "choice", "label": "Tone", "options": [{"label": "Friendly", "text": "friendly"}, {"label": "Neutral", "text": "neutral"}, {"label": "Formal", "text": "formal"}, {"label": "Firm", "text": "firm"}], "default": "Neutral"}
+   ],
+   "attach": [],
+   "lines": [
+    "Please write {kind} for me.",
+    "Who it is for: {to}",
+    "What it should say: {say}",
+    "Tone: {tone}",
+    "",
+    "Write it ready to send, as short as it can be while saying everything above. Put the finished text in a ````document block. Leave clear placeholders like [date] for anything I did not give you."
+   ]
+  },
+  {
+   "id": "document",
+   "group": "everyday",
+   "title": "Explain a document",
+   "system_data": false,
+   "hint": "Paste the text below, or leave it empty and attach the file after \"Write the message\" (+, then Files…).",
+   "fields": [
+    {"id": "text", "label": "The text", "example": "Paste the letter, contract or terms here", "lines": 6},
+    {"id": "need", "type": "choice", "label": "What do you need?", "options": [{"label": "A summary", "text": "Summarise it in a few short points."}, {"label": "Plain words", "text": "Explain it in plain words, part by part."}, {"label": "What must I do?", "text": "Tell me what I need to do, by when, and what happens if I do not."}], "default": "A summary"},
+    {"id": "question", "label": "Anything in particular?", "example": "Can I cancel early, and what does it cost?", "lines": 2}
+   ],
+   "attach": [],
+   "lines": [
+    "Please help me with this document.",
+    "{text}",
+    "",
+    "{need}",
+    "My question: {question}",
+    "",
+    "Answer from the document only. If something is unclear or missing, say so instead of guessing. Tell me when I should ask a professional, such as a lawyer or an accountant."
+   ]
+  },
+  {
+   "id": "learn",
+   "group": "everyday",
+   "title": "Learn or quiz me",
+   "system_data": false,
+   "hint": "Learn a topic, or test yourself on it. Nothing from your computer is sent with this template.",
+   "fields": [
+    {"id": "topic", "label": "Topic", "example": "How DNS works", "lines": 2, "required": true},
+    {"id": "level", "type": "choice", "label": "Your level", "options": [{"label": "Beginner", "text": "a beginner"}, {"label": "Some knowledge", "text": "someone with some knowledge"}, {"label": "Advanced", "text": "advanced"}], "default": "Beginner"},
+    {"id": "how", "type": "choice", "label": "How", "options": [{"label": "Explain it", "text": "Explain it step by step with a simple example, then ask me one question to check that I understood."}, {"label": "Quiz me", "text": "Quiz me: ask one question at a time, wait for my answer, tell me whether it was right and why, then ask the next."}, {"label": "Both", "text": "Explain it briefly, then quiz me one question at a time and wait for each answer."}], "default": "Explain it"},
+    {"id": "goal", "label": "What is it for?", "example": "An exam next month", "lines": 1}
+   ],
+   "attach": [],
+   "lines": [
+    "I want to learn about: {topic}",
+    "My level: {level}",
+    "What it is for: {goal}",
+    "",
+    "{how}"
+   ]
+  },
+  {
+   "id": "buy",
+   "group": "everyday",
+   "title": "Buying help",
+   "system_data": false,
+   "hint": "Help choosing something to buy. Nothing from your computer is sent with this template.",
+   "fields": [
+    {"id": "what", "label": "What do you want to buy?", "example": "A quiet vacuum cleaner for a flat", "lines": 2, "required": true},
+    {"id": "use", "label": "What will you use it for?", "example": "Daily cleaning, a cat that sheds", "lines": 2},
+    {"id": "budget", "label": "Budget", "example": "Up to 3000 kr", "lines": 1, "row": "money"},
+    {"id": "where", "label": "Where do you shop?", "example": "Norway", "lines": 1, "row": "money"},
+    {"id": "condition", "type": "choice", "label": "New or used?", "options": [{"label": "Either", "text": ""}, {"label": "New only", "text": "new only"}, {"label": "Used is fine", "text": "used is fine"}], "default": "Either"},
+    {"id": "must", "label": "Must-haves and deal-breakers", "example": "Must have a HEPA filter; no app needed to use it", "lines": 2}
+   ],
+   "attach": [],
+   "lines": [
+    "Help me choose what to buy: {what}",
+    "What I will use it for: {use}",
+    "Budget: {budget}",
+    "Where I shop: {where}",
+    "New or used: {condition}",
+    "Must-haves and deal-breakers: {must}",
+    "",
+    "Give one clear pick and why it fits, then at most two alternatives for a different need or budget. Do not invent models or prices: say when you are not sure a model is still sold, and remind me to check the current price."
    ]
   }
  ]

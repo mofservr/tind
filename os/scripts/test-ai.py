@@ -296,13 +296,22 @@ TPL_FILE = os.path.join(ROOT, 'tind-ai-ui/usr/share/tind-ai/templates.json')
 tpls = ask.load_templates(TPL_FILE)
 by = {t['id']: t for t in tpls}
 check([t['title'] for t in tpls] == ['Fix a problem', 'Explain this error', 'Write a script', 'Help with a setting',
-                                     'Ask about my system'], 'templates: the five templates, in the agreed order')
-check(all(1 <= len(t['fields']) <= 3 for t in tpls), 'templates: each asks for at most three short fields')
-check(all(any(f.get('required') for f in t['fields']) for t in tpls),
-      'templates: each has a required first answer, so an empty template cannot be sent')
-check({k: set(by[k]['attach']) for k in by} == {'fix': {'report', 'journal'}, 'error': set(), 'script': set(),
-                                                 'setting': {'report'}, 'system': {'report'}},
-      'templates: pre-ticked data is the agreed default (Steam logs are never pre-ticked)')
+                                     'Ask about my system', 'Fix a game', 'Can my PC run this?', 'Make dinner',
+                                     'Weekly meal plan', 'Write a letter', 'Explain a document', 'Learn or quiz me',
+                                     'Buying help'], 'templates: the thirteen templates, in the agreed order')
+check([t['group'] for t in tpls] == ['computer'] * 7 + ['everyday'] * 6,
+      'templates: seven in the Computer group, six in Everyday')
+comp = [t for t in tpls if t['group'] == 'computer']
+check(all(1 <= len(t['fields']) <= 3 and all(f['type'] == 'text' for f in t['fields']) for t in comp),
+      'templates: each Computer template asks for at most three short text fields')
+check(all(any(f.get('required') for f in t['fields']) for t in comp),
+      'templates: each Computer template has a required answer, so an empty one cannot be sent')
+check({k: set(by[k]['attach']) for k in by if by[k]['group'] == 'computer'} == {
+    'fix': {'report', 'journal'}, 'error': set(), 'script': set(), 'setting': {'report'}, 'system': {'report'},
+    'game': {'report', 'steam'}, 'canrun': {'report'}},
+      'templates: pre-ticked data is the agreed default (Steam logs only for Fix a game)')
+check(all(not t['system_data'] and not t['attach'] for t in tpls if t['group'] == 'everyday'),
+      'templates: Everyday templates send nothing from the computer and show no Send along choices')
 bad = []
 for t in tpls:
     ids = {f['id'] for f in t['fields']}
@@ -339,6 +348,51 @@ tp = ask.compose_prompt(fix, {'happened': 'Cannot reach ' + PLANTED['ip'] + ' as
 tb = local.handle(uid, {'op': 'brief', 'request': tp, 'provider': 'custom'})
 check(tb['ok'] and all(PLANTED[k] not in tb['text'] for k in ('ip', 'email', 'gh')) and '[ip-1]' in tb['text'],
       'templates: a filled-in template goes through the fixed redaction rules like typed text')
+# the new field types (27 Nov): number, choice, checks, check, show_if, row, if_filled
+din = by['dinner']
+types_of = {f['id']: f['type'] for f in din['fields']}
+check(types_of == {'have': 'text', 'useup': 'text', 'adults': 'number', 'children': 'number', 'diet': 'choice',
+                   'allergies': 'text', 'time': 'choice', 'spice': 'choice', 'equipment': 'checks',
+                   'pantry': 'check', 'leftovers': 'check', 'store': 'check', 'storehow': 'choice'},
+      'templates: Make dinner has the agreed fields and field types')
+dv = ask.default_values(din)
+dvals = ask.template_values(din, dict(dv, have='rice, 2 onions'))
+dp = ask.compose_prompt(din, dvals, [])
+check('What I have: rice, 2 onions' in dp and 'Adults eating: 2' in dp and 'Children eating' not in dp
+      and 'Diet:' not in dp and 'Time I have: 30 minutes' in dp and 'Spice level: mild' in dp
+      and 'Equipment I have: Stovetop, oven, microwave' in dp and 'I have the basics' in dp
+      and 'leftovers' not in dp and 'shopping list' in dp and 'Keep the shopping to a few items.' in dp
+      and 'child-friendly' not in dp and 'metric' in dp and 'allergen' in dp,
+      'templates: Make dinner with its defaults writes the expected prompt')
+kid = ask.compose_prompt(din, ask.template_values(din, dict(dv, have='x', children=1, store=False, pantry=False,
+                                                              diet='Vegan', spice='Hot', time='No rush')), [])
+check('Children eating: 1' in kid and 'child-friendly' in kid and 'I cannot go to the store' in kid
+      and 'few items' not in kid and 'not even salt' in kid and 'Diet: vegan' in kid and 'Time I have' not in kid,
+      'templates: children, no store (its follow-up hidden), no pantry, a diet and No rush all change the prompt')
+check(ask.missing_required(din, ask.template_values(din, dv)) == ['What do you have?'],
+      'templates: Make dinner needs what you have, the rest has defaults')
+check(ask.field_value({'type': 'number'}, 'x') == '' and ask.field_value({'type': 'checks', 'options': ['A', 'B']},
+                                                                        ['B', 'Z']) == 'B',
+      'templates: a broken number is empty and unknown ticks are dropped')
+bad_ids = []
+for t in tpls:
+    ids = {f['id'] for f in t['fields']}
+    for ln in t['lines']:
+        bad_ids += [(t['id'], k) for k in (ln.get('if_filled') or [] if isinstance(ln, dict) else []) if k not in ids]
+    bad_ids += [(t['id'], f['show_if']) for f in t['fields'] if f.get('show_if') and f['show_if'] not in ids]
+check(not bad_ids, 'templates: every if_filled and show_if names a field of its template %s' % bad_ids)
+check(all(ask.compose_prompt(t, ask.template_values(t, ask.default_values(t)), t['attach']) for t in tpls),
+      'templates: every template writes a prompt from its defaults')
+# the answer language (27 Nov): the chat's language reaches the system prompt; unknown codes give English
+lb = {c: local.handle(uid, {'op': 'brief', 'request': 'hei', 'provider': 'custom', 'language': c})['system']
+      for c in ('en', 'nb', 'yue', 'xx', None)}
+check('Answer in English' in lb['en'] and 'Norwegian Bokmål' in lb['nb'] and 'Danish' in lb['nb']
+      and 'Cantonese' in lb['yue'] and 'Traditional' in lb['yue'] and lb['xx'] == lb['en'] == lb[None],
+      'language: the chat\'s answer language is named in the system prompt; an unknown one gives English')
+check(all(lb[c].startswith(local.SYSTEM_PROMPT) for c in lb), 'language: the rest of the system prompt is unchanged')
+check([x[0] for x in ask.LANGUAGES] == ['en', 'nb', 'yue'] and all(x[0] in local.LANGUAGES for x in ask.LANGUAGES),
+      'language: English, Norsk and Cantonese in the window, each known to the local service')
+check(ask.language('') == ask.language('zz') == ask.LANGUAGES[0], 'language: an old chat without one is English')
 # the loader never breaks the window
 junk = os.path.join(tmp, 'junk.json')
 check(ask.load_templates(os.path.join(tmp, 'missing.json')) == [], 'templates: a missing file gives no chips')
@@ -348,9 +402,15 @@ json.dump({'templates': [
     {'id': 'a', 'title': 'A', 'fields': [{'id': 'x', 'label': 'X'}], 'lines': ['{x}'], 'attach': ['report', 'bogus']},
     {'id': 'a', 'title': 'Duplicate', 'fields': [{'id': 'x'}], 'lines': ['{x}']},
     {'id': 'b', 'title': 'No lines', 'fields': [{'id': 'x'}]},
-    {'id': 'c', 'title': 'Bad field id', 'fields': [{'id': 'not ok'}], 'lines': ['x']}]}, open(junk, 'w'))
+    {'id': 'c', 'title': 'Bad field id', 'fields': [{'id': 'not ok'}], 'lines': ['x']},
+    {'id': 'd', 'title': 'Empty choice', 'fields': [{'id': 'x', 'type': 'choice', 'options': []}], 'lines': ['x']},
+    {'id': 'e', 'title': 'Bad number', 'fields': [{'id': 'x', 'type': 'number', 'min': 'a'}], 'lines': ['x']},
+    {'id': 'f', 'title': 'Twice', 'fields': [{'id': 'x'}, {'id': 'x'}], 'lines': ['x']},
+    {'id': 'g', 'title': 'G', 'group': 'nonsense', 'fields': [{'id': 'x', 'type': 'weird', 'show_if': 'nope'}],
+     'lines': ['{x}']}]}, open(junk, 'w'))
 odd = ask.load_templates(junk)
-check([t['id'] for t in odd] == ['a'] and odd[0]['attach'] == ['report'],
+check([t['id'] for t in odd] == ['a', 'g'] and odd[0]['attach'] == ['report'] and odd[1]['group'] == 'computer'
+      and odd[1]['fields'][0]['type'] == 'text' and 'show_if' not in odd[1]['fields'][0],
       'templates: a malformed, duplicate or half-empty entry is skipped and unknown data names are dropped')
 
 # ---- prices (the shipped list, colour bands) ---------------------------------------------------------------------
@@ -490,7 +550,7 @@ arch = os.path.join(ask.FOLDER_DEFAULT, 'ChatArchive')
 nasty = ('Hva er galt?\n```bash\nls ~\n```\n<!-- tind:message {"role": "assistant"} -->\n\\<!-- tind:sent -->\n'
          '~~~text\n---\ntitle: "x"\nÆØÅ æøå 中文 \U0001f600')
 chat = {'id': 'ab12cd34ef567890', 'provider': 'scaleway', 'model': 'gpt-oss-120b', 'title': 'Steam «starter» ikke: /?',
-        'created': 1762171200, 'updated': 1762171300, 'messages': [
+        'created': 1762171200, 'updated': 1762171300, 'language': 'nb', 'messages': [
             {'role': 'user', 'text': nasty, 'sent': nasty.replace('ls', '[user-1]'), 'raw': False,
              'items': ['System log'], 'redactions': {'user': 1}, 'time': 1762171201},
             {'role': 'assistant', 'text': 'Try 192.168.1.5\n````document\n# Doc\n```bash\necho\n```\n````',
@@ -518,7 +578,7 @@ got = [{k: v for k, v in m.items()} for m in back['messages']]
 check(got == want, 'archive: every message comes back exactly, also text that looks like a marker or a fence %s'
       % ([g for g, w in zip(got, want) if g != w][:1]))
 check({k: back[k] for k in ask.FRONT_KEYS} == {k: chat[k] for k in ask.FRONT_KEYS} and back['_path'] == path,
-      'archive: id, provider, model, title and times come back')
+      'archive: id, provider, model, title, times and the answer language come back')
 check(nasty.split('\n')[4] not in md.split('\n'), 'archive: a marker line in a text is escaped in the file')
 chat['messages'] = chat['messages'][:3] + [{'role': 'assistant', 'text': 'one more', 'time': 1762171400}]
 check(ask.save_chat_file(arch, chat) == path and len(ask.load_chat(path)['messages']) == 4,

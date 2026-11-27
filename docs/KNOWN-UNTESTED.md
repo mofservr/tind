@@ -42,7 +42,9 @@ installer setup, boot fixes, the NVIDIA setup and the update channels.
   so builds since then check it with unit tests and an install in a plain trixie container only. The window opens on real hardware (Morten, 29 Oct, laptop). Run against Scaleway
   (gpt-oss-120b) on Morten's desktop on 25 Nov: the key, the redaction preview and a log-based answer work. The chat window (29 Oct) is checked under Xvfb and in the
   build's screenshots only. The task templates (chips above the input box, 2 Nov) are checked by unit tests and under
-  Xvfb, not on a real machine. The `~/TindAI` folder (3 Nov: the Markdown chat archive with names and addresses put
+  Xvfb, not on a real machine; so are the two template groups (Computer, Everyday: 13 templates with number, choice and
+  tick-box fields, 27 Nov) and the answer language chosen per chat (English, Norsk, Cantonese), whose answers from a
+  real model are not checked yet. The `~/TindAI` folder (3 Nov: the Markdown chat archive with names and addresses put
   back, saved documents, the export moved in) is checked by unit tests, under Xvfb and in the build's virtual machine
   with a fake provider; moving real old chats and `~/AI-export` on a used machine is not. Word, PDF and ODT are made by
   LibreOffice Writer, which is not on the ISO: checked outside the build only, not opened in a real Word.

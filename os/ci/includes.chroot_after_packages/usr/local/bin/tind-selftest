@@ -360,7 +360,7 @@ fi
 stat -c '%a %U %n' /var/lib/tind-ai/* /var/lib/tind-ai/*/* 2>&1 | head -12
 asuser tind-ai-ask --check 2>&1 | head -10
 tpl="$(asuser tind-ai-ask --templates 2>&1)"; echo "$tpl" | head -6
-echo "$tpl" | grep -q '^templates: 5$' && ai templates ok || ai templates "FAIL $(echo "$tpl" | tail -1)"
+echo "$tpl" | grep -q '^templates: 13$' && ai templates ok || ai templates "FAIL $(echo "$tpl" | tail -1)"
 pr="$(asuser tind-ai-ask --prices 2>&1)"; echo "$pr" | head -20
 echo "$pr" | grep -q '^prices: [1-9][0-9]* models priced' && echo "$pr" | grep -q 'gpt-oss-120b (everyday) *Cheap' \
     && ai prices ok || ai prices "FAIL $(echo "$pr" | tail -1)"

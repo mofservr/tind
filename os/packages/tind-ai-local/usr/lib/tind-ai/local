@@ -57,7 +57,26 @@ Markdown, Word or PDF.
 Answer questions about this computer from the attached data and the conversation: when the answer is there, give \
 it directly. Never invent example output, logs, hardware or settings. If something is not in the data, say so and \
 give the one command that shows it.
-Answer in English unless the user asks for another language. Keep it short and practical."""
+Keep it short and practical."""
+
+# the answer language, chosen per chat in the window (27 Nov). The model is told the language by name: a small
+# model guessing from the text took Norwegian for Danish. The message itself may be English (a template writes
+# English), so the instruction says to answer in the chosen language anyway. Unknown codes fall back to English.
+LANGUAGES = {
+    'en': 'Answer in English unless the user asks for another language.',
+    'nb': 'Answer in Norwegian Bokmål (norsk bokmål), also when the message is written in English, unless the user '
+          'asks for another language. Never answer in Danish, Swedish or Nynorsk. Keep commands, file names, '
+          'settings and error messages exactly as they are.',
+    'yue': 'Answer in written Cantonese (粵語), as written in Hong Kong, with Traditional Chinese characters, also '
+           'when the message is written in English, unless the user asks for another language. Do not answer in '
+           'Mandarin or with Simplified characters. Keep commands, file names, settings and error messages exactly '
+           'as they are.',
+}
+
+
+def system_prompt(code):
+    """The system prompt with the answer language of this chat."""
+    return SYSTEM_PROMPT + '\n' + LANGUAGES.get(str(code or 'en'), LANGUAGES['en'])
 
 
 def journal():
@@ -208,12 +227,13 @@ def handle(uid, req):
         body = cut_middle(str(h.get('text', '')), 40_000)
         history.append({'role': role, 'text': body if h.get('raw') else r.text(body)})
 
+    system = system_prompt(req.get('language'))
     bid = time.strftime('%Y%m%d-%H%M%S') + '-' + secrets.token_hex(4)
     remote_uid = pwd.getpwnam('tind-ai-remote').pw_uid
     folder = tindai.user_dir(tindai.BRIEF_DIR, uid, readers=[uid, remote_uid])
     tindai.write_json(os.path.join(folder, bid + '.json'), {
         'id': bid, 'uid': uid, 'created': int(time.time()), 'provider': provider['id'],
-        'model': str(req.get('model', ''))[:120], 'system': SYSTEM_PROMPT, 'history': history, 'text': text,
+        'model': str(req.get('model', ''))[:120], 'system': system, 'history': history, 'text': text,
         'redactions': summary, 'raw': raw,
     })
     tindai.prune(folder)
@@ -223,7 +243,7 @@ def handle(uid, req):
             json.dump(r.state(), f)
         os.rename(mapfile + '.tmp', mapfile)
         tindai.prune(os.path.dirname(mapfile), keep=1000)
-    return {'ok': True, 'id': bid, 'text': text, 'history': history, 'system': SYSTEM_PROMPT,
+    return {'ok': True, 'id': bid, 'text': text, 'history': history, 'system': system,
             'redactions': summary, 'raw': raw}
 
 
