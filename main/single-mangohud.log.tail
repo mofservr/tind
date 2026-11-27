@@ -3,10 +3,7 @@ Apps chosen: mangohud
 Hit:1 http://deb.debian.org/debian trixie-backports InRelease
 Hit:2 http://deb.debian.org/debian trixie InRelease
 Hit:3 http://deb.debian.org/debian trixie-updates InRelease
-Get:4 http://deb.debian.org/debian-security trixie-security InRelease [43.4 kB]
-Get:5 http://deb.debian.org/debian-security trixie-security/main amd64 Packages [311 kB]
-Get:6 http://deb.debian.org/debian-security trixie-security/main i386 Packages [258 kB]
-Fetched 612 kB in 0s (1469 kB/s)
+Hit:4 http://deb.debian.org/debian-security trixie-security InRelease
 Reading package lists...
 Reading package lists...
 Building dependency tree...
@@ -25,7 +22,7 @@ After this operation, 11.2 MB of additional disk space will be used.
 Get:1 http://deb.debian.org/debian trixie/main amd64 libfmt10 amd64 10.1.1+ds1-4 [127 kB]
 Get:2 http://deb.debian.org/debian trixie/main amd64 libspdlog1.15 amd64 1:1.15.2+ds-2 [108 kB]
 Get:3 http://deb.debian.org/debian trixie/main amd64 mangohud amd64 0.7.2-2 [1720 kB]
-Fetched 1955 kB in 0s (15.3 MB/s)
+Fetched 1955 kB in 0s (60.5 MB/s)
 Selecting previously unselected package libfmt10:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 24947 files and directories currently installed.)
 Preparing to unpack .../libfmt10_10.1.1+ds1-4_amd64.deb ...
