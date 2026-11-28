@@ -193,7 +193,7 @@ Get:29 http://deb.debian.org/debian trixie/main amd64 vlc-plugin-base amd64 3.0.
 Get:30 http://deb.debian.org/debian trixie/main amd64 vlc-plugin-qt amd64 3.0.24-0+deb13u1 [1206 kB]
 Get:31 http://deb.debian.org/debian trixie/main amd64 vlc-plugin-video-output amd64 3.0.24-0+deb13u1 [235 kB]
 Get:32 http://deb.debian.org/debian trixie/main amd64 vlc amd64 3.0.24-0+deb13u1 [115 kB]
-Fetched 7738 kB in 0s (51.7 MB/s)
+Fetched 7738 kB in 0s (58.3 MB/s)
 Selecting previously unselected package libaribb24-0t64:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 48029 files and directories currently installed.)
 Preparing to unpack .../00-libaribb24-0t64_1.0.3-2.1+b2_amd64.deb ...
@@ -355,7 +355,7 @@ Get:6 http://deb.debian.org/debian trixie/main amd64 libkdsingleapplication-qt6-
 Get:7 http://deb.debian.org/debian trixie/main amd64 libqt6concurrent6 amd64 6.8.2+dfsg-9+deb13u2 [41.1 kB]
 Get:8 http://deb.debian.org/debian trixie/main amd64 sqlite3 amd64 3.46.1-7+deb13u2 [384 kB]
 Get:9 http://deb.debian.org/debian trixie/main amd64 strawberry amd64 1.2.10-2 [5913 kB]
-Fetched 6817 kB in 0s (20.2 MB/s)
+Fetched 6817 kB in 0s (69.6 MB/s)
 Selecting previously unselected package libplist-2.0-4:amd64.
 (Reading database ... (Reading database ... 5%(Reading database ... 10%(Reading database ... 15%(Reading database ... 20%(Reading database ... 25%(Reading database ... 30%(Reading database ... 35%(Reading database ... 40%(Reading database ... 45%(Reading database ... 50%(Reading database ... 55%(Reading database ... 60%(Reading database ... 65%(Reading database ... 70%(Reading database ... 75%(Reading database ... 80%(Reading database ... 85%(Reading database ... 90%(Reading database ... 95%(Reading database ... 100%(Reading database ... 48863 files and directories currently installed.)
 Preparing to unpack .../0-libplist-2.0-4_2.6.0-2+b1_amd64.deb ...
