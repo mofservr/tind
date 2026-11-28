@@ -1,12 +1,16 @@
 {
- "comment": "Price list for the AI assistant window (tind-ai-ask): the coloured mark next to each model and the Prices page. Data, not code; updated with Tind updates, never fetched. Prices are per million tokens, input and output, in the provider's own currency, before VAT. A model's band comes from a blend of 3 parts input to 1 part output: under limits.cheap is cheap, under limits.mid is mid, anything above is expensive. A provider listed under free costs nothing per token (this computer); a model with no entry here (for example a custom server's) is shown as price unknown. note is shown under the price; checked false means the figure is not on the provider's own price page.",
- "as_of": "2026-11-03",
+ "comment": "Price list for the AI assistant window (tind-ai-ask): the coloured mark next to each model and the Prices page. Data, not code; updated with Tind updates, never fetched. Prices are per million tokens, input and output, in the provider's own currency, before VAT. A model's band comes from a blend of 3 parts input to 1 part output: under limits.cheap is cheap, under limits.mid is mid, anything above is expensive. A provider listed under free costs nothing per token (this computer); a model with no entry here (for example a custom server's) is shown as price unknown. note is shown under the price; checked false means the figure is not on the provider's own price page. cached_input (optional) is the price for input the provider has cached from an earlier turn of the same chat; it is shown next to the input price and used for the cost estimate under each answer.",
+ "as_of": "2026-11-28",
  "blend": {"input": 3, "output": 1},
  "limits": {"cheap": 1, "mid": 10},
  "free": ["local"],
  "providers": {
   "scaleway": {
    "gpt-oss-120b": {"input": 0.15, "output": 0.60, "currency": "EUR", "note": "The first million tokens are free."},
+   "deepseek-v4-flash-0731": {"input": 0.40, "cached_input": 0.08, "output": 0.80, "currency": "EUR",
+                              "note": "Preview at Scaleway. From the Scaleway console, 28 Nov 2026."},
+   "deepseek-v4.1-flash-1017": {"input": 0.60, "cached_input": 0.12, "output": 1.80, "currency": "EUR",
+                                "note": "Preview at Scaleway. From the Scaleway console, 28 Nov 2026."},
    "mistral-medium-3.5-128b": {"input": 1.68, "output": 8.41, "currency": "USD", "checked": false,
                                "note": "Not on Scaleway's own price page on 3 Nov 2026; figure from a third-party list."}
   }

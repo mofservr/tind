@@ -22,6 +22,10 @@ How a message travels (see /usr/share/doc/tind-ai-users/README):
      saves the briefing. "Unredacted" skips the rules for one message.
   3. The provider's remote service (tind-ai-remote@PROVIDER) sends that saved briefing and writes the answer to your
      outbox. Nothing in an answer runs by itself.
+Long chats (28 Nov): your first message and its answer always go along; once a chat passes the model's limit, the
+provider's cheapest model writes a "chat so far" summary of the middle part (shown in the chat, Edit to correct it),
+and only the last turns after it go word for word. Reasoning (the gear button) is Auto or a level you pick per chat.
+Under each answer: tokens in and out and the estimated cost from Tind's price list; the chat's total is in the title.
 Everything the window keeps for you is in one folder, ~/TindAI unless you pick another (menu > TindAI folder):
   ChatArchive/<provider>/  every chat as a readable Markdown file, kept until you delete the chat; the sidebar reads
                            this folder. Names and addresses are put back in (the provider only ever saw placeholders),
@@ -242,8 +246,10 @@ ARCHIVE_VERSION = 1
 MARK = '<!-- tind:'
 MSG_RE = re.compile(r'^<!-- tind:message (\{.*\}) -->$')
 ESC_RE = re.compile(r'^(\\*)<!-- tind:', re.M)
-FRONT_KEYS = ('id', 'provider', 'model', 'title', 'created', 'updated', 'language')
-MSG_META = ('role', 'time', 'raw', 'items', 'redactions', 'provider_name', 'model', 'model_name', 'seconds')
+FRONT_KEYS = ('id', 'provider', 'model', 'title', 'created', 'updated', 'language', 'reasoning')
+MSG_META = ('role', 'time', 'raw', 'items', 'redactions', 'provider_name', 'model', 'model_name', 'seconds', 'usage',
+            'effort', 'cut')
+SUMMARY_META = ('covers', 'model', 'model_name', 'time', 'edited', 'usage')
 
 
 def _escape(text):
@@ -268,9 +274,15 @@ def chat_to_md(chat):
     for k in FRONT_KEYS:
         lines.append('%s: %s' % (k, json.dumps(chat.get(k, ''), ensure_ascii=False)))
     lines += ['---', '', '# ' + (chat.get('title') or 'New chat').replace('\n', ' '), '']
+    summ = chat.get('summary') if isinstance(chat.get('summary'), dict) and chat['summary'].get('text') else None
+    n = 0
     for m in chat.get('messages', []):
+        if summ and n == summ.get('covers'):
+            lines += summary_to_md(summ)
+            summ = None
         if m.get('pending') or not m.get('text'):
             continue
+        n += 1
         meta = {k: m[k] for k in MSG_META if k in m and m[k] not in (None, '', [], {})}
         meta['role'] = m['role']
         lines.append(MARK + 'message ' + json.dumps(meta, ensure_ascii=False) + ' -->')
@@ -291,7 +303,26 @@ def chat_to_md(chat):
             fence = _fence(sent)
             lines += [MARK + 'sent -->', '<details><summary>%s</summary>' % html.escape(summary), '',
                       fence + 'text', _escape(sent.strip('\n')), fence, '', '</details>', '']
+    if summ:
+        lines += summary_to_md(summ)
     return '\n'.join(lines) + '\n'
+
+
+def summary_to_md(summ):
+    """The "chat so far" block, between the messages it covers and the ones sent word for word after it."""
+    meta = {k: summ[k] for k in SUMMARY_META if k in summ and summ[k] not in (None, '', [], {})}
+    meta['role'] = 'summary'
+    by = summ.get('model_name') or summ.get('model') or 'AI'
+    head = '### Chat so far · %s%s%s' % (by, ' · edited by you' if summ.get('edited') else '',
+                                         ' · ' + _when(summ['time']) if summ.get('time') else '')
+    out = [MARK + 'message ' + json.dumps(meta, ensure_ascii=False) + ' -->', head, '',
+           _escape(summ['text'].strip('\n')), '']
+    sent = summ.get('sent')
+    if sent and sent != summ['text']:
+        fence = _fence(sent)
+        out += [MARK + 'sent -->', '<details><summary>As received, with placeholders</summary>', '',
+                fence + 'text', _escape(sent.strip('\n')), fence, '', '</details>', '']
+    return out
 
 
 def md_to_chat(text):
@@ -326,7 +357,7 @@ def md_to_chat(text):
         j = i + 1
         while j < len(lines) and not MSG_RE.match(lines[j]):
             j += 1
-        if isinstance(meta, dict) and meta.get('role') in ('user', 'assistant'):
+        if isinstance(meta, dict) and meta.get('role') in ('user', 'assistant', 'summary'):
             chunk = lines[i + 1:j]
             if chunk and chunk[0].startswith('### '):
                 chunk = chunk[1:]
@@ -340,11 +371,16 @@ def md_to_chat(text):
                         b = tail.index(fence, a + 1) if fence in tail[a + 1:] else len(tail)
                         sent = _unescape('\n'.join(tail[a + 1:b]))
                         break
-            m = {k: meta[k] for k in MSG_META if k in meta}
+            keys = SUMMARY_META if meta['role'] == 'summary' else MSG_META
+            m = {k: meta[k] for k in keys if k in meta}
             m['text'] = _unescape('\n'.join(chunk).strip('\n'))
             if sent is not None:
                 m['sent'] = sent
-            chat['messages'].append(m)
+            if meta['role'] == 'summary':
+                if m['text'] and isinstance(m.get('covers'), int):
+                    chat['summary'] = m
+            else:
+                chat['messages'].append(m)
         i = j
     return chat
 
@@ -655,6 +691,8 @@ def load_prices(path=None):
             try:
                 entry = {'input': float(e['input']), 'output': float(e['output']), 'currency': str(e['currency']),
                          'note': str(e.get('note', '')), 'checked': e.get('checked', True) is not False}
+                if e.get('cached_input') is not None:
+                    entry['cached_input'] = float(e['cached_input'])
             except (KeyError, TypeError, ValueError):
                 continue
             if entry['input'] >= 0 and entry['output'] >= 0:
@@ -699,8 +737,90 @@ def price_text(entry):
         return 'Not on Tind\'s price list; check with the provider'
     if entry.get('free'):
         return 'Free: runs on this computer'
-    return '%s in · %s out per million tokens' % (money(entry['input'], entry['currency']),
-                                                   money(entry['output'], entry['currency']))
+    cached = (' (%s cached)' % money(entry['cached_input'], entry['currency'])) if 'cached_input' in entry else ''
+    return '%s in%s · %s out per million tokens' % (money(entry['input'], entry['currency']), cached,
+                                                     money(entry['output'], entry['currency']))
+
+
+# ---- tokens, cost and long chats (28 Nov) ------------------------------------------------------------------------
+# reasoning levels as the window shows them; what each costs is in its note
+REASONING_NAMES = {'auto': 'Auto', 'none': 'None', 'low': 'Low', 'medium': 'Medium', 'high': 'High', 'max': 'Max'}
+REASONING_NOTES = {'none': 'Answers at once, no thinking', 'low': 'Fastest and cheapest thinking',
+                   'medium': 'Balanced', 'high': 'Thinks longer: slower, a little more output',
+                   'max': 'Longest thinking: slowest, most output'}
+KEEP_TURNS = 6          # the last three exchanges always go word for word, never into the summary
+
+
+def sendable(messages):
+    """The messages that go back as history, in order (the summary's "covers" counts these)."""
+    return [m for m in messages if m.get('role') in ('user', 'assistant') and m.get('text') and not m.get('pending')]
+
+
+def summary_covers(chat):
+    summ = chat.get('summary') if isinstance(chat.get('summary'), dict) else None
+    return summ['covers'] if summ and summ.get('text') and isinstance(summ.get('covers'), int) else 2
+
+
+def needs_summary(chat, model):
+    """(first, end): the messages to fold into a new "chat so far" (previous summary + msgs[first:end]), or None.
+    Made when the turns after the first exchange and the summary pass the model's limit; the last three exchanges
+    stay out of it."""
+    msgs = sendable(chat.get('messages', []))
+    first = summary_covers(chat)
+    tail = msgs[first:]
+    limit = int(model.get('summarise_after') or tindai.SUMMARISE_DEFAULT)
+    if len(tail) <= KEEP_TURNS or sum(len(m.get('sent') or m['text']) for m in tail) <= limit:
+        return None
+    end = len(msgs) - KEEP_TURNS
+    if msgs[end]['role'] != 'user':
+        end -= 1
+    return (first, end) if end > first else None
+
+
+def cheapest_model(prices, p):
+    """The provider's cheapest priced model (it writes the chat so far), or None when none has a price."""
+    priced = [(blended(prices, e), m['id']) for m in p.get('models', [])
+              for e in [price_of(prices, p, m['id'])] if e and not e.get('free')]
+    return min(priced)[1] if priced else None
+
+
+def tokens_text(n):
+    return '%d' % n if n < 1000 else ('%.1fk' % (n / 1000) if n < 100_000 else '%dk' % round(n / 1000))
+
+
+def usage_numbers(usage):
+    """(input, cached input, output) tokens from an OpenAI-style usage object; zeros for what is missing."""
+    u = usage if isinstance(usage, dict) else {}
+
+    def num(v):
+        return int(v) if isinstance(v, (int, float)) and v >= 0 else 0
+    cached = num((u.get('prompt_tokens_details') or {}).get('cached_tokens')
+                 if isinstance(u.get('prompt_tokens_details'), dict) else 0)
+    return num(u.get('prompt_tokens')), cached, num(u.get('completion_tokens'))
+
+
+def cost_of(entry, usage):
+    """The estimated cost of one answer from the price list, or None (no price, or free)."""
+    if not entry or entry.get('free'):
+        return None
+    tin, cached, tout = usage_numbers(usage)
+    if not (tin or tout):
+        return None
+    cached = min(cached, tin) if 'cached_input' in entry else 0
+    return ((tin - cached) * entry['input'] + cached * entry.get('cached_input', 0) + tout * entry['output']) / 1e6
+
+
+def add_usage(a, b):
+    """Two usage objects added up (input, cached input, output), for the summaries of one chat."""
+    x, y = usage_numbers(a), usage_numbers(b)
+    return {'prompt_tokens': x[0] + y[0], 'completion_tokens': x[2] + y[2],
+            'prompt_tokens_details': {'cached_tokens': x[1] + y[1]}}
+
+
+def money_small(value, currency):
+    sym = CURRENCY.get(currency)
+    num = ('%.3f' % value) if value < 0.1 else ('%.2f' % value)
+    return sym + num if sym else '%s %s' % (num, currency)
 
 
 def as_of_text(prices):
@@ -1117,6 +1237,8 @@ def main(open_target=None):
     .tind-code { background: alpha(currentColor, 0.07); border-radius: 8px; padding: 4px 10px 8px 10px; }
     .tind-code label.tind-code-text { font-family: monospace; font-size: 0.93em; }
     .tind-meta { font-size: 0.85em; }
+    .tind-sofar { border: 1px dashed alpha(currentColor, 0.25); border-radius: 12px; padding: 8px 12px; }
+    .tind-thought { font-size: 0.9em; }
     .tind-sent { font-family: monospace; font-size: 0.88em; }
     .tind-composer { background: alpha(currentColor, 0.05); border-radius: 14px; padding: 6px; }
     .tind-composer textview, .tind-composer textview text { background: transparent; }
@@ -1182,6 +1304,7 @@ def main(open_target=None):
             self.chat = None
             self.attach = {'journal': False, 'report': False, 'steam': False, 'files': []}
             self.busy = False
+            self.summarising = False
             self.templates = load_templates()
             self.prices = load_prices()
             self.back_to = 'chat'
@@ -1656,13 +1779,24 @@ def main(open_target=None):
             lbox.append(self.llabel)
             self.lbtn.set_child(lbox)
             self.lbtn.set_popover(self.build_language_popover())
+            self.rbtn = Gtk.MenuButton(valign=Gtk.Align.END, css_classes=['flat'], visible=False,
+                                       tooltip_text='How long the model thinks before it answers (this chat)')
+            if hasattr(self.rbtn, 'set_always_show_arrow'):     # GTK 4.4+
+                self.rbtn.set_always_show_arrow(True)
+            if hasattr(self.rbtn, 'set_direction'):
+                self.rbtn.set_direction(Gtk.ArrowType.UP)
+            rbox = Gtk.Box(spacing=6)
+            rbox.append(Gtk.Image(icon_name='emblem-system-symbolic'))
+            self.rlabel = Gtk.Label(label='Auto')
+            rbox.append(self.rlabel)
+            self.rbtn.set_child(rbox)
             self.rawbtn = Gtk.ToggleButton(label='Unredacted', valign=Gtk.Align.END, css_classes=['flat'],
                                            tooltip_text='Send the next message exactly as typed (nothing hidden)')
             self.rawbtn.connect('toggled', lambda b: self.rawnote.set_visible(b.get_active()))
             self.sendbtn = Gtk.Button(icon_name='go-up-symbolic', valign=Gtk.Align.END, tooltip_text='Send (Enter)',
                                       css_classes=['suggested-action', 'circular'])
             self.sendbtn.connect('clicked', lambda *_: self.on_send())
-            for w in (add, isw, self.lbtn, self.rawbtn, self.sendbtn):
+            for w in (add, isw, self.lbtn, self.rbtn, self.rawbtn, self.sendbtn):
                 box.append(w)
             for w in (self.tpl_row, self.chips, self.rawnote, box):
                 outer.append(w)
@@ -1971,6 +2105,68 @@ def main(open_target=None):
                 GLib.idle_add(lambda: (self.sync_language_popover(), False)[1])
             save_json(SETTINGS, self.settings, 0o644)
 
+        def long_chat(self):
+            """Long for Auto: the chat has a summary, or its turns are past half the model's summary limit."""
+            if not self.chat:
+                return False
+            m = tindai.model_entry(self.prov(), self.model())
+            msgs = sendable(self.chat['messages'])
+            return (summary_covers(self.chat) > 2 or sum(len(x.get('sent') or x['text']) for x in msgs)
+                    > int(m.get('summarise_after') or tindai.SUMMARISE_DEFAULT) // 2)
+
+        def build_reasoning_popover(self, m):
+            pop = Gtk.Popover()
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, margin_top=6, margin_bottom=6,
+                          margin_start=6, margin_end=6)
+            box.set_size_request(300, -1)
+            box.append(label('Reasoning for this chat', ['heading'], margin_start=6, margin_bottom=4))
+            cur = (self.chat or {}).get('reasoning') or 'auto'
+            r = m.get('reasoning') or {}
+            now = tindai.reasoning_for(m, 'auto', self.long_chat())
+            auto_note = '%s now. %s' % (
+                REASONING_NAMES.get(now, 'Provider default') if now else 'Provider default',
+                'More once the chat is long.' if r.get('long') != r.get('normal') else 'Tind picks per model.')
+            for level in ['auto'] + tindai.reasoning_levels(m):
+                b = Gtk.Button(css_classes=['flat'])
+                inner = Gtk.Box(spacing=10)
+                tick = Gtk.Image(icon_name='object-select-symbolic', opacity=1 if level == cur else 0)
+                inner.append(tick)
+                texts = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+                texts.append(Gtk.Label(label=REASONING_NAMES.get(level, level.title()), xalign=0))
+                note = auto_note if level == 'auto' else REASONING_NOTES.get(level, '')
+                if note:
+                    texts.append(Gtk.Label(label=note, xalign=0, css_classes=['dim-label', 'caption']))
+                inner.append(texts)
+                b.set_child(inner)
+                b.connect('clicked', lambda _b, lv=level: (pop.popdown(), self.pick_reasoning(lv)))
+                box.append(b)
+            box.append(Gtk.Separator(margin_top=4, margin_bottom=4))
+            row = Gtk.Box(spacing=12, margin_start=6, margin_end=6)
+            row.append(Gtk.Label(label='Use for my new chats', xalign=0, hexpand=True))
+            sw = Gtk.Switch(valign=Gtk.Align.CENTER, active=(self.settings.get('reasoning') or 'auto') == cur,
+                            sensitive=cur != 'auto' or (self.settings.get('reasoning') or 'auto') != 'auto')
+            sw.connect('notify::active', lambda w, _p: self.set_reasoning_default(cur if w.get_active() else 'auto'))
+            row.append(sw)
+            box.append(row)
+            box.append(label('Thinking is billed as output but never sent back, so it adds little to the cost of a '
+                             'chat; it mostly adds waiting time. A level the next model does not take falls back to '
+                             'Auto.', ['dim-label', 'caption'], margin_start=6, margin_end=6, margin_top=4,
+                             max_width_chars=40))
+            pop.set_child(box)
+            return pop
+
+        def pick_reasoning(self, level):
+            if self.chat is None:
+                return
+            self.chat['reasoning'] = level
+            self.update_header()
+            if self.chat['messages']:
+                self.save_chat()
+
+        def set_reasoning_default(self, level):
+            self.settings['reasoning'] = level
+            save_json(SETTINGS, self.settings, 0o644)
+
         def build_attach_popover(self):
             pop = Gtk.Popover()
             box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2, margin_top=4, margin_bottom=4)
@@ -2022,8 +2218,30 @@ def main(open_target=None):
                 self.mbtn.set_popover(self.build_model_popover(p))
             self.wtitle.set_title((self.chat or {}).get('title') or 'New chat')
             lang = language((self.chat or {}).get('language'))
-            self.wtitle.set_subtitle('%s · %s' % (tindai.provider_label(p), lang[1]))
+            bits = [tindai.provider_label(p), lang[1]]
+            total, cur = self.chat_cost()
+            if total:      # the provider is on the button next to it; the title has room for two parts
+                bits = [lang[1], '≈%s so far' % money_small(total, cur)]
+            self.wtitle.set_subtitle(' · '.join(bits))
             self.llabel.set_label(lang[2])
+            me = tindai.model_entry(p, mid)
+            self.rbtn.set_visible(bool(tindai.reasoning_levels(me)))
+            if self.rbtn.get_visible():
+                choice = (self.chat or {}).get('reasoning') or 'auto'
+                self.rlabel.set_label(REASONING_NAMES.get(choice if choice in tindai.reasoning_levels(me) else 'auto'))
+                self.rbtn.set_popover(self.build_reasoning_popover(me))
+
+        def chat_cost(self):
+            """(estimated cost of this chat's answers and summaries so far, currency), from the price list."""
+            total, cur = 0.0, None
+            p = self.prov()
+            for m in (self.chat or {}).get('messages', []) + [((self.chat or {}).get('summary') or {})]:
+                e = price_of(self.prices, p, m.get('model', '')) if m.get('usage') else None
+                c = cost_of(e, m.get('usage'))
+                if c:
+                    total += c
+                    cur = e['currency']
+            return total, cur or 'EUR'
 
         def toast(self, text):
             self.toasts.add_toast(Adw.Toast(title=GLib.markup_escape_text(str(text)), timeout=6))
@@ -2043,7 +2261,8 @@ def main(open_target=None):
                 pid = self.default_pid
             self.chat = {'id': secrets.token_hex(8), 'provider': pid, 'model': '', 'title': '',
                          'created': int(time.time()), 'updated': int(time.time()), 'messages': [],
-                         'language': language(self.settings.get('language'))[0]}
+                         'language': language(self.settings.get('language'))[0],
+                         'reasoning': self.settings.get('reasoning') or 'auto'}
             self.chat['model'] = self.model()
             self.list.unselect_all()
             self.render()
@@ -2082,8 +2301,19 @@ def main(open_target=None):
                 self.msgbox.append(Adw.StatusPage(
                     title='Ask about this computer', icon_name='dialog-question-symbolic',
                     description='%s Names, addresses and keys are hidden before anything is sent.' % where))
+            covers = summary_covers(self.chat)
+            n = 0
             for m in msgs:
                 self.msgbox.append(self.bubble(m))
+                if sendable([m]):
+                    n += 1
+                    if covers > 2 and n == covers:
+                        self.msgbox.append(self.summary_card())
+            if self.summarising:
+                row = Gtk.Box(spacing=6, halign=Gtk.Align.CENTER)
+                row.append(Gtk.Spinner(spinning=True))
+                row.append(label('Updating the chat so far…', ['dim-label', 'caption']))
+                self.msgbox.append(row)
             self.update_templates()
             GLib.idle_add(self.scroll_end)
 
@@ -2111,8 +2341,15 @@ def main(open_target=None):
                         card.append(self.doc_card(b[1], b[2]))
                     else:
                         card.append(self.code_block(b[1], b[2]))
+            if not mine and m.get('cut'):
+                card.append(label('The answer was cut at the length limit. Ask it to continue, or ask a narrower '
+                                  'question.', ['warning', 'caption']))
             if mine or m.get('text'):
                 col.append(card)
+            if not mine and m.get('thought'):
+                exp = Gtk.Expander(label='Reasoning', css_classes=['tind-meta', 'dim-label'])
+                exp.set_child(label(m['thought'], ['tind-thought', 'dim-label'], selectable=True, max_width_chars=90))
+                col.append(exp)
             meta = self.meta_line(m)
             if meta:
                 col.append(meta)
@@ -2230,6 +2467,15 @@ def main(open_target=None):
             bits = [m.get('provider_name', ''), m.get('model_name', '') or m.get('model', '')]
             if m.get('seconds'):
                 bits.append('%s s' % m['seconds'])
+            if m.get('effort'):
+                bits.append('reasoning %s' % REASONING_NAMES.get(m['effort'], m['effort']).lower())
+            tin, cached, tout = usage_numbers(m.get('usage'))
+            if tin or tout:
+                t = '%s in%s · %s out' % (tokens_text(tin), ' (%s cached)' % tokens_text(cached) if cached else '',
+                                          tokens_text(tout))
+                e = price_of(self.prices, self.prov(), m.get('model', ''))
+                c = cost_of(e, m.get('usage'))
+                bits.append(t + (' · ≈%s' % money_small(c, e['currency']) if c else ''))
             row = Gtk.Box(spacing=6)
             row.append(label(' · '.join(b for b in bits if b), ['dim-label', 'caption'], hexpand=True,
                              valign=Gtk.Align.CENTER))
@@ -2368,6 +2614,9 @@ def main(open_target=None):
             return False
 
         def on_send(self):
+            if self.summarising:
+                self.toast('Updating the chat so far… send again in a moment.')
+                return
             if self.busy or self.chat is None:
                 return
             buf = self.input.get_buffer()
@@ -2389,7 +2638,8 @@ def main(open_target=None):
             names = ([n for k, n in (('journal', 'System log'), ('report', 'Tind report'), ('steam', 'Steam logs'))
                       if att[k]] + [os.path.basename(f) for f in att['files']])
             history = [{'role': m['role'], 'text': m.get('sent') or m['text'], 'raw': bool(m.get('raw'))}
-                       for m in self.chat['messages'] if m.get('text') and not m.get('pending')]
+                       for m in sendable(self.chat['messages'])]
+            summ = self.chat.get('summary') if summary_covers(self.chat) > 2 else None
             msg = {'role': 'user', 'text': text, 'raw': raw, 'items': names, 'pending': 'Preparing on this computer…',
                    'time': int(time.time())}
             if not self.chat['title']:
@@ -2403,6 +2653,7 @@ def main(open_target=None):
             self.render()
             pid, model, conv = p['id'], self.model(), self.chat['id']
             lang = language(self.chat.get('language'))[0]
+            reasoning = self.chat.get('reasoning') or 'auto'
 
             def work():
                 items = []
@@ -2415,7 +2666,8 @@ def main(open_target=None):
                     items.append({'name': 'File ' + os.path.basename(f), 'text': tail_file(f)})
                 return tindai.call(tindai.LOCAL_SOCKET, {
                     'op': 'brief', 'request': text, 'provider': pid, 'model': model, 'journal': att['journal'],
-                    'language': lang,
+                    'language': lang, 'reasoning': reasoning,
+                    'summary': summ['text'] if summ else '', 'covers': summ['covers'] if summ else 0,
                     'raw': raw, 'items': items, 'history': history, 'conversation': conv}, timeout=180)
 
             def prepared(res, err):
@@ -2439,8 +2691,15 @@ def main(open_target=None):
             what = ', '.join('%d %s' % (n, k) for k, n in sorted(red.items())) or 'nothing'
             body = 'This exact text goes to %s, and nothing else.\nHidden on this computer: %s.' % (
                 tindai.provider_label(p), 'nothing (sent unredacted)' if res.get('raw') else what)
+            ctx = res.get('context') or {}
             if res.get('history'):
-                body += '\nThe earlier messages of this chat are sent too.'
+                if ctx.get('summary'):
+                    body += ('\nSent too: your first message and its answer, the chat so far, and the last %d '
+                             'messages.' % ctx.get('recent', 0))
+                else:
+                    body += '\nThe earlier messages of this chat are sent too.'
+                if ctx.get('dropped'):
+                    body += ' %d older messages are left out: the chat is too long for this model.' % ctx['dropped']
             dlg = Adw.AlertDialog(heading='Check before sending', body=body)
             if hasattr(dlg, 'set_prefer_wide_layout'):      # libadwaita 1.6+ (trixie has 1.7)
                 dlg.set_prefer_wide_layout(True)
@@ -2475,6 +2734,11 @@ def main(open_target=None):
                         res['restored'] = restore_texts(conv, [res['answer']])[0]
                     except (OSError, RuntimeError, ValueError, IndexError):
                         pass
+                if res.get('ok') and res.get('reasoning'):
+                    try:
+                        res['thought'] = restore_texts(conv, [res['reasoning']])[0]
+                    except (OSError, RuntimeError, ValueError, IndexError):
+                        res['thought'] = res['reasoning']
                 return res
 
             def answered(res, err):
@@ -2488,13 +2752,153 @@ def main(open_target=None):
                 self.chat['messages'].append({
                     'role': 'assistant', 'text': shown, 'provider_name': tindai.provider_label(p),
                     'model': res.get('model', ''), 'model_name': tindai.model_label(m) if m else res.get('model', ''),
-                    'seconds': res.get('seconds'), 'time': int(time.time())})
+                    'seconds': res.get('seconds'), 'time': int(time.time()), 'usage': res.get('usage') or {},
+                    'effort': res.get('effort'), 'cut': True if res.get('cut') else None,
+                    'thought': res.get('thought', '')})
                 if shown != res['answer']:
                     self.chat['messages'][-1]['sent'] = res['answer']   # as received: what the history sends back
                 self.busy = False
                 self.save_chat()
                 self.render()
+                self.maybe_summarise()
             bg(work, answered)
+
+        # ---- the chat so far (28 Nov) -------------------------------------------------------------------------------
+        def maybe_summarise(self):
+            if not self.chat or self.busy:
+                return
+            span = needs_summary(self.chat, tindai.model_entry(self.prov(), self.model()))
+            if span:
+                prev = self.chat.get('summary') if summary_covers(self.chat) > 2 else None
+                self.run_summary(span[0], span[1], prev['text'] if prev else '', prev)
+
+        def run_summary(self, first, end, previous, old, done_text='Chat so far updated'):
+            """Ask the provider's cheapest model for the new chat so far: previous + messages[first:end]."""
+            p = self.prov()
+            if not provider_ready(p):
+                return
+            chat = self.chat
+            model = cheapest_model(self.prices, p) or self.model()
+            msgs = sendable(chat['messages'])
+            turns = [{'role': m['role'], 'text': m.get('sent') or m['text'], 'raw': bool(m.get('raw'))}
+                     for m in msgs[first:end]]
+            sock = tindai.LOCAL_SOCKET if p.get('service') == 'local' else tindai.remote_socket(p['id'])
+            self.busy = self.summarising = True
+            self.render()
+
+            def work():
+                b = tindai.call(tindai.LOCAL_SOCKET, {'op': 'summary', 'provider': p['id'], 'model': model,
+                                                      'conversation': chat['id'], 'previous': previous,
+                                                      'history': turns}, timeout=120)
+                if not b.get('ok'):
+                    return b
+                res = tindai.call(sock, {'op': 'send', 'id': b['id'], 'model': model}, timeout=300)
+                if res.get('ok') and res.get('answer'):
+                    try:
+                        res['restored'] = restore_texts(chat['id'], [res['answer']])[0]
+                    except (OSError, RuntimeError, ValueError, IndexError):
+                        pass
+                return res
+
+            def finished(res, err):
+                self.busy = self.summarising = False
+                if err or not res.get('ok') or not (res.get('answer') or '').strip():
+                    self.toast('The chat so far was not updated: %s' % (err or res.get('error') or 'empty answer'))
+                    if self.chat is chat:
+                        self.render()
+                    return
+                m = tindai.model_entry(p, model)
+                shown = (res.get('restored') or res['answer']).strip()
+                summ = {'text': shown, 'covers': end, 'model': model, 'model_name': tindai.model_label(m),
+                        'time': int(time.time()), 'usage': res.get('usage') or {}}
+                if shown != res['answer'].strip():
+                    summ['sent'] = res['answer'].strip()
+                if old and old.get('usage'):            # the chat's total keeps the cost of earlier summaries
+                    summ['usage'] = add_usage(old['usage'], summ['usage'])
+                chat['summary'] = summ
+                if self.chat is chat:
+                    self.save_chat()
+                    self.render()
+                else:
+                    try:
+                        save_chat_file(self.archive(), chat)
+                    except OSError:
+                        pass
+                self.toast(done_text)
+            bg(work, finished)
+
+        def summary_dialog(self):
+            summ = (self.chat or {}).get('summary')
+            if not summ or self.busy:
+                return
+            dlg = Adw.AlertDialog(heading='Chat so far',
+                                  body='This replaces messages 3 to %d when the chat goes to the model. Correct anything '
+                                       'that was misunderstood; your text is sent from now on (names and addresses are '
+                                       'hidden again on the way out).' % summ['covers'])
+            if hasattr(dlg, 'set_prefer_wide_layout'):
+                dlg.set_prefer_wide_layout(True)
+            tv = Gtk.TextView(wrap_mode=Gtk.WrapMode.WORD_CHAR, top_margin=8, bottom_margin=8, left_margin=8,
+                              right_margin=8)
+            tv.get_buffer().set_text(summ['text'])
+            sw = Gtk.ScrolledWindow(min_content_height=360, min_content_width=560, css_classes=['card'])
+            sw.set_child(tv)
+            dlg.set_extra_child(sw)
+            dlg.add_response('cancel', 'Cancel')
+            dlg.add_response('again', 'Make it again')
+            dlg.add_response('save', 'Save')
+            dlg.set_response_appearance('save', Adw.ResponseAppearance.SUGGESTED)
+            dlg.set_default_response('save')
+            dlg.set_close_response('cancel')
+
+            def respond(_d, r):
+                if r == 'save':
+                    buf = tv.get_buffer()
+                    text = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False).strip()
+                    if text and text != summ['text']:
+                        summ['text'] = text
+                        summ['edited'] = True
+                        summ.pop('sent', None)
+                        summ['time'] = int(time.time())
+                        self.save_chat()
+                        self.render()
+                        self.toast('Chat so far saved')
+                elif r == 'again':
+                    self.run_summary(2, summ['covers'], '', summ, 'Chat so far made again')
+            dlg.connect('response', respond)
+            dlg.present(self)
+
+        def summary_card(self):
+            summ = self.chat.get('summary') or {}
+            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6, css_classes=['tind-sofar'])
+            head = Gtk.Box(spacing=8)
+            bits = ['messages 3–%d' % summ['covers'], summ.get('model_name') or summ.get('model', '')]
+            if summ.get('edited'):
+                bits.append('edited by you')
+            if summ.get('time'):
+                bits.append(_when(summ['time'], '%H:%M'))
+            exp = Gtk.Expander(hexpand=True)
+            exp.set_label_widget(label('<b>Chat so far</b> · ' + GLib.markup_escape_text(' · '.join(b for b in bits if b)),
+                                       ['caption'], use_markup=True))
+            exp.set_child(self.text_block(summ['text']))
+            head.append(exp)
+            edit = Gtk.Button(label='Edit', css_classes=['flat', 'caption'], valign=Gtk.Align.START,
+                              tooltip_text='Read, correct or remake the summary that is sent instead of the older messages')
+            edit.connect('clicked', lambda *_: self.summary_dialog())
+            head.append(edit)
+            box.append(head)
+            box.append(label('Sent to the model instead of the messages above, after your first message and its answer.',
+                             ['dim-label', 'caption']))
+            p = self.prov()
+            cur = tindai.model_entry(p, self.model())
+            longs = [m for m in p.get('models', []) if str(m.get('use', '')).startswith('long chats')]
+            if longs and not str(cur.get('use', '')).startswith('long chats'):
+                best = longs[-1]               # the list puts the stronger long-chat model last
+                sw = Gtk.Button(label='Switch to %s for this chat' % best['name'], css_classes=['flat', 'caption'],
+                                halign=Gtk.Align.START,
+                                tooltip_text='Better at long chats; the next message goes to it. Prices: All prices…')
+                sw.connect('clicked', lambda *_: self.pick_model(best['id']))
+                box.append(sw)
+            return box
 
         def fail(self, msg, why):
             """The message did not go out: take it back off the chat and put its text back in the box."""

@@ -327,6 +327,38 @@ ai remote-cannot-read-keys "$(denied tind-ai-remote cat /etc/tind-ai/keys/custom
 ai ai-users-cannot-read-home "$(denied tind-ai-local ls /home/tind/.config)"
 f="$(ls /var/lib/tind-ai/outbox/$UIDN/*.json 2>/dev/null | head -1)"
 [ -n "$f" ] && asuser cat "$f" >/dev/null 2>&1 && ai human-reads-own-answer ok || ai human-reads-own-answer "FAIL ${f:-no answer saved}"
+# long chats (28 Nov): a "chat so far" is made through both services, then a later message carries the first exchange,
+# the summary and the recent turns (with the rules footer at the end), and nothing planted reaches the provider
+cat > /run/tind-ci-ailong.py <<'PY'
+import json, sys
+sys.path.insert(0, '/usr/lib/tind-ai')
+import tindai
+first = 'CI long chat: backup fails. My NAS is 10.11.12.13 and my mail ola.ci@example.no'
+turns = [{'role': 'user', 'text': first}, {'role': 'assistant', 'text': 'answer 1'}]
+for i in range(2, 8):
+    turns += [{'role': 'user', 'text': 'question %d' % i}, {'role': 'assistant', 'text': 'answer %d' % i}]
+s = tindai.call(tindai.LOCAL_SOCKET, {'op': 'summary', 'provider': 'custom', 'model': 'ci-model',
+                                      'conversation': 'ci0002', 'previous': '', 'history': turns[2:10]})
+r = tindai.call(tindai.remote_socket('custom'), {'op': 'send', 'id': s['id'], 'model': 'ci-model'}) if s.get('ok') else s
+summary = (r.get('answer') or '') + '\n- password=hunter22ci on 192.168.1.37'
+b = tindai.call(tindai.LOCAL_SOCKET, {'op': 'brief', 'request': 'and now?', 'provider': 'custom', 'model': 'ci-model',
+                                      'conversation': 'ci0002', 'history': turns, 'summary': summary, 'covers': 10})
+a = tindai.call(tindai.remote_socket('custom'), {'op': 'send', 'id': b['id'], 'model': 'ci-model'}) if b.get('ok') else b
+got = json.load(open('/run/tind-ci-fakeai-got.json'))
+msgs = got.get('messages', [])
+print(json.dumps({'summary_ok': bool(s.get('ok') and r.get('ok')), 'brief_ok': b.get('ok'), 'send_ok': a.get('ok'),
+                  'context': b.get('context'), 'roles': [m['role'] for m in msgs], 'error': b.get('error') or s.get('error')}))
+ok = (b.get('context', {}).get('summary') and len(msgs) == 1 + 2 + 6 + 1 and 'CI long chat' in msgs[1]['content']
+      and msgs[3]['content'].startswith('Chat so far') and msgs[-1]['content'].startswith('and now?')
+      and '[Tind: answer in English' in msgs[-1]['content'])
+print('LONG-SHAPE ' + ('ok' if ok else 'bad'))
+PY
+out="$(asuser python3 /run/tind-ci-ailong.py 2>&1)"; echo "$out"
+leak=""; for v in hunter22ci 10.11.12.13 ola.ci@example.no 192.168.1.37; do
+    grep -q "$v" /run/tind-ci-fakeai-got.json 2>/dev/null && leak="$leak $v"
+done
+echo "$out" | grep -q '"summary_ok": true' && echo "$out" | grep -q '^LONG-SHAPE ok' && [ -z "$leak" ] && ai chat-summary ok \
+    || ai chat-summary "FAIL ${leak:+leaked:$leak }$(echo "$out" | tail -2 | tr '\n' '|')"
 # the chat archive: the JSON chat saved above (the store before ~test7) moves to ~/TindAI/ChatArchive as Markdown, with
 # the answer's [ip-1] put back by the local service; what came back with placeholders stays folded under it
 mg="$(asuser tind-ai-ask --migrate 2>&1)"; echo "$mg"

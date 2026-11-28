@@ -158,7 +158,8 @@ mix = local.handle(uid, {'op': 'brief', 'request': 'thanks', 'provider': 'custom
 check(PLANTED['ip'] in mix['history'][0]['text'] and PLANTED['email'] not in mix['history'][1]['text'],
       'local: history keeps each message\'s own choice')
 check(mix['redactions'] == {}, 'local: the summary counts only the new message, not the history')
-check(mix['text'] == 'thanks', 'local: a plain chat message is sent as is, with no headings')
+check(mix['text'].startswith('thanks\n\n[Tind: answer in English;') and '##' not in mix['text'],
+      'local: a plain chat message is sent as is with the rules footer, no headings')
 # a long first message (question, Tind report, then the journal) keeps its question, the report's top and the newest
 # log lines when it goes back as history (cutting from the start lost the question and the GPU, 25 Nov)
 big = ('QUESTION-START backup fails\n\n## Tind report\n```\nGPU: Radeon RX 6700 XT\n```\n\n## System journal\n```\n'
@@ -167,8 +168,8 @@ long_turn = local.handle(uid, {'op': 'brief', 'request': 'which GPU?', 'provider
                                'history': [{'role': 'user', 'text': big, 'raw': True}]})
 kept = long_turn['history'][0]['text']
 check(len(big) > 40_000 and 'QUESTION-START' in kept and 'RX 6700 XT' in kept and 'NEWEST-LINE' in kept
-      and 'cut from the middle' in kept and len(kept) < 40_100,
-      'local: a long earlier message keeps its start and end, the middle is cut')
+      and 'cut from the middle' in kept and len(kept) < 60_100,
+      'local: a long first message keeps its start and end, the middle is cut')
 local.handle(uid, {'op': 'forget', 'conversation': 'abc123'})
 check(not os.path.exists(os.path.join(local.MAP_DIR, str(uid), 'abc123.json')),
       'local: deleting a chat forgets its placeholder map')
@@ -250,6 +251,117 @@ except PermissionError:
     check(True, 'remote: the local provider is never sent through the remote service')
 srv.shutdown()
 
+# ---- long chats (28 Nov): first exchange kept, newest attachment only, chat so far, footer, reasoning --------------
+from tindai import history as chat_history  # noqa: E402
+REPORT = '## Tind report\n```\nGPU: Radeon RX 6700 XT\n```'
+turns = [{'role': 'user', 'text': 'Backup fails\n\n' + REPORT + local.footer('en')},
+         {'role': 'assistant', 'text': 'Answer 1'}]
+for i in range(2, 31):
+    turns += [{'role': 'user', 'text': 'question %d%s' % (i, local.footer('en'))}, {'role': 'assistant', 'text': 'answer %d' % i}]
+items, info = chat_history.assemble(turns)
+check(len(items) == 60 and 'RX 6700 XT' in items[0]['text'] and info['dropped'] == 0,
+      'history: after 30 rounds the first message (with the Tind report) is still sent, no 24-message window')
+check(not any('[Tind:' in x['text'] for x in items), 'history: the rules footer is taken off earlier turns')
+again = turns[:6] + [{'role': 'user', 'text': 'newer\n\n' + REPORT.replace('6700', '7900')}, {'role': 'assistant', 'text': 'ok'}]
+items, _ = chat_history.assemble(again)
+check('Backup fails' in items[0]['text'] and 'RX 6700' not in items[0]['text'] and 'newer copy' in items[0]['text']
+      and 'RX 7900' in items[6]['text'], 'history: only the newest copy of the Tind report is sent')
+items, _ = chat_history.assemble(turns[:4], later='now\n\n' + REPORT)
+check('newer copy' in items[0]['text'], 'history: a report attached to the new message replaces the old copy')
+items, info = chat_history.assemble(turns, 'SUMMARY-TEXT', covers=50)
+check(info['summary'] and len(items) == 2 + 10 and items[2]['role'] == 'user' and items[2]['text'].startswith('Chat so far')
+      and 'SUMMARY-TEXT' in items[2]['text'] and items[2]['text'].endswith('question 26'),
+      'history: with a summary: first exchange, the summary, then the turns after it')
+items, info = chat_history.assemble(turns, 'S', covers=4, budget=600)
+check(info['dropped'] > 0 and items[0]['text'].startswith('Backup fails') and items[2]['role'] == 'user'
+      and sum(len(x['text']) for x in items) <= 700, 'history: too long for the model: the oldest recent turns go')
+
+summ = local.handle(uid, {'op': 'brief', 'request': 'and now?', 'provider': 'scaleway', 'model': 'gpt-oss-120b',
+                          'conversation': 'long01', 'history': turns[:12], 'covers': 8,
+                          'summary': '## This computer\n- gateway ' + PLANTED['ip'] + ', mail ' + PLANTED['email']})
+sent = json.dumps(summ['history'])
+check(summ['context']['summary'] and PLANTED['ip'] not in sent and PLANTED['email'] not in sent and '[ip-1]' in sent,
+      'local: the chat so far goes with the history, through the fixed rules')
+check(summ['reasoning'] == 'high', 'local: Auto gives gpt-oss high reasoning in a long chat (one with a summary)')
+short = local.handle(uid, {'op': 'brief', 'request': 'hi', 'provider': 'scaleway', 'model': 'gpt-oss-120b'})
+check(short['reasoning'] == 'medium', 'local: Auto gives gpt-oss medium reasoning in a short chat')
+for model, choice, want in (('gpt-oss-120b', 'low', 'low'), ('gpt-oss-120b', 'max', 'medium'),
+                            ('deepseek-v4.1-flash-1017', 'max', 'max'), ('deepseek-v4-flash-0731', 'auto', 'high'),
+                            ('mistral-medium-3.5-128b', 'auto', None), ('mistral-medium-3.5-128b', 'high', 'high'),
+                            ('unknown-model', 'high', None)):
+    b = local.handle(uid, {'op': 'brief', 'request': 'hi', 'provider': 'scaleway', 'model': model, 'reasoning': choice})
+    check(b['reasoning'] == want, 'local: reasoning %s with %s gives %s' % (model, choice, want))
+json.dump({'base_url': 'http://127.0.0.1:9931/v1', 'model': 'gpt-oss-20b-MXFP4'}, open(tindai.CUSTOM_FILE, 'w'))
+b = local.handle(uid, {'op': 'brief', 'request': 'hi', 'provider': 'custom', 'model': 'gpt-oss-20b-MXFP4'})
+check(b['reasoning'] == 'low', 'local: a gpt-oss model on a custom server gets low reasoning by default')
+
+sb = local.handle(uid, {'op': 'summary', 'provider': 'scaleway', 'model': 'gpt-oss-120b', 'conversation': 'long01',
+                        'previous': '- earlier fact, sent from ' + PLANTED['ip'],
+                        'history': turns[2:8] + [{'role': 'user', 'text': 'my mail is ' + PLANTED['email']}]})
+sbrief = json.load(open(os.path.join(tindai.BRIEF_DIR, str(uid), sb['id'] + '.json')))
+check(sbrief['kind'] == 'summary' and sbrief['system'] == local.SUMMARY_PROMPT and sbrief['history'] == []
+      and 'earlier fact' in sbrief['text'] and 'question 4' in sbrief['text'] and '[Tind:' not in sbrief['text'],
+      'local: the summary briefing holds the previous summary and the new messages, without footers')
+check(PLANTED['ip'] not in sbrief['text'] and PLANTED['email'] not in sbrief['text'] and '[ip-1]' in sbrief['text'],
+      'local: the summary briefing is redacted with the chat\'s own placeholders')
+check(sb['reasoning'] == 'low', 'local: the summary asks for low reasoning')
+
+got = {}
+
+
+class FakeR(http.server.BaseHTTPRequestHandler):
+    def log_message(self, *a):
+        pass
+
+    def do_POST(self):
+        body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
+        got.setdefault('bodies', []).append(body)
+        if got.get('refuse') and 'reasoning_effort' in body:
+            code, reply = 400, {'error': {'message': 'reasoning_effort is not supported for this model'}}
+        else:
+            code, reply = 200, {'choices': [{'message': {'content': 'the answer', 'reasoning_content': 'I think [ip-1]'},
+                                             'finish_reason': got.get('finish', 'stop')}],
+                                'usage': {'prompt_tokens': 1000, 'completion_tokens': 50,
+                                          'prompt_tokens_details': {'cached_tokens': 800}}}
+        data = json.dumps(reply).encode()
+        self.send_response(code)
+        self.send_header('Content-Type', 'application/json')
+        self.send_header('Content-Length', str(len(data)))
+        self.end_headers()
+        self.wfile.write(data)
+
+
+srv2 = http.server.HTTPServer(('127.0.0.1', 0), FakeR)
+threading.Thread(target=srv2.serve_forever, daemon=True).start()
+json.dump({'provider': 'scaleway', 'scheme': 'http', 'host': '127.0.0.1', 'port': srv2.server_address[1], 'path': '/v1',
+           'addresses': ['127.0.0.1']}, open(endpoint.hosts_file('scaleway'), 'w'))
+rs = load_script(os.path.join(ROOT, 'tind-ai-remote/usr/lib/tind-ai/remote'), 'tind_ai_remote_r', ['scaleway'])
+res = rs.handle(uid, {'op': 'send', 'id': summ['id'], 'model': 'gpt-oss-120b'})
+body = got['bodies'][-1]
+check(body.get('reasoning_effort') == 'high' and body['max_tokens'] == 16_384,
+      'remote: reasoning_effort and the 16k answer limit are sent')
+check(res['reasoning'] == 'I think [ip-1]' and res['effort'] == 'high' and not res.get('cut')
+      and res['usage']['prompt_tokens_details']['cached_tokens'] == 800,
+      'remote: the reasoning text, the level and the usage come back')
+check([m['role'] for m in body['messages']][:3] == ['system', 'user', 'assistant'] and 'Chat so far' in json.dumps(body),
+      'remote: the history with the chat so far reaches the provider')
+got['finish'] = 'length'
+check(rs.handle(uid, {'op': 'send', 'id': short['id'], 'model': 'gpt-oss-120b'}).get('cut') is True,
+      'remote: an answer stopped at the length limit is marked as cut')
+got['finish'] = 'stop'
+got['refuse'] = True
+n = len(got['bodies'])
+res = rs.handle(uid, {'op': 'send', 'id': short['id'], 'model': 'gpt-oss-120b'})
+check(res['ok'] and len(got['bodies']) == n + 2 and 'reasoning_effort' not in got['bodies'][-1] and not res.get('effort'),
+      'remote: a provider that refuses reasoning_effort gets the request once more without it')
+got['refuse'] = False
+mis = local.handle(uid, {'op': 'brief', 'request': 'hi', 'provider': 'scaleway', 'model': 'deepseek-v4.1-flash-1017',
+                         'reasoning': 'max'})
+rs.handle(uid, {'op': 'send', 'id': mis['id'], 'model': 'gpt-oss-120b'})
+check('reasoning_effort' not in got['bodies'][-1], 'remote: a level the sent model does not take is not sent')
+srv2.shutdown()
+json.dump({'base_url': 'http://127.0.0.1:%d/v1' % port, 'model': 'test-model'}, open(tindai.CUSTOM_FILE, 'w'))
+
 # ---- endpoint rules ----------------------------------------------------------------------------------------------
 for url, ok in (('https://api.scaleway.ai/v1', True), ('http://127.0.0.1:11434/v1', True),
                 ('http://api.example.com/v1', False), ('ftp://x/y', False)):
@@ -283,8 +395,17 @@ check(sorted(live) == sorted(p['id'] for p in tindai.providers() if p['service']
       'providers: the remote package enables a socket for each remote provider that can be used')
 check(not set(retired) & {p['id'] for p in tindai.providers()} and 'anthropic' in retired,
       'providers: the retired providers are cleaned up on upgrade')
-check(all(m.get('use') in ('quick', 'everyday', 'coding') for p in tindai.providers() if p['id'] != 'custom'
-          for m in p['models']), 'providers: every model has a use (quick, everyday or coding)')
+USES = ('quick', 'everyday', 'coding', 'long chats')
+check(all(m.get('use') in USES for p in tindai.providers() if p['id'] != 'custom'
+          for m in p['models']), 'providers: every model has a use (quick, everyday, coding, long chats)')
+sw = tindai.provider('scaleway')
+check([m['id'] for m in sw['models']] == ['gpt-oss-120b', 'deepseek-v4-flash-0731', 'deepseek-v4.1-flash-1017',
+                                          'mistral-medium-3.5-128b'], 'providers: both DeepSeek models are listed')
+for m in sw['models']:
+    r = m.get('reasoning', {})
+    check(isinstance(m.get('context'), int) and isinstance(m.get('summarise_after'), int)
+          and all(r.get(k) in r.get('levels', []) + [None] for k in ('normal', 'long')),
+          'providers: %s has context, summarise_after and valid Auto levels' % m['id'])
 check(tindai.model_label(tindai.provider('scaleway')['models'][0]) == 'gpt-oss-120b (everyday)',
       'providers: models shown as name (use)')
 check(tindai.provider('local')['service'] == 'local', 'providers: this computer is served by the local service')
@@ -448,6 +569,52 @@ odd = ask.load_prices(junk)
 check(list(odd['models']) == [('scaleway', 'ok')] and odd['limits'] == (1.0, 10.0) and odd['blend'] == (3.0, 1.0)
       and odd['free'] == set(), 'prices: a broken entry or setting is skipped and the defaults stay')
 
+# long chats in the window (28 Nov): cached prices, cost per answer, when to summarise, the cheapest model, archive
+ds = pr['models'][('scaleway', 'deepseek-v4.1-flash-1017')]
+check(ask.price_text(ds) == '€0.60 in (€0.12 cached) · €1.80 out per million tokens'
+      and bands[('scaleway', 'deepseek-v4-flash-0731')] == 'cheap' and bands[('scaleway', 'deepseek-v4.1-flash-1017')] == 'cheap',
+      'prices: both DeepSeek models are cheap and show their cached input price')
+use = {'prompt_tokens': 10_000, 'completion_tokens': 1_000, 'prompt_tokens_details': {'cached_tokens': 8_000}}
+c = ask.cost_of(ds, use)
+check(abs(c - (2_000 * 0.60 + 8_000 * 0.12 + 1_000 * 1.80) / 1e6) < 1e-12,
+      'cost: cached input is billed at the cached price')
+gp = pr['models'][('scaleway', 'gpt-oss-120b')]
+check(abs(ask.cost_of(gp, use) - (10_000 * 0.15 + 1_000 * 0.60) / 1e6) < 1e-12 and ask.cost_of(None, use) is None
+      and ask.cost_of(gp, {}) is None, 'cost: without a cached price all input counts full; no price, no figure')
+check(ask.money_small(0.00456, 'EUR') == '€0.005' and ask.tokens_text(12_345) == '12.3k'
+      and ask.usage_numbers(ask.add_usage(use, use)) == (20_000, 16_000, 2_000), 'cost: small sums and token counts')
+check(ask.cheapest_model(pr, tindai.provider('scaleway')) == 'gpt-oss-120b'
+      and ask.cheapest_model(pr, tindai.provider('custom')) is None,
+      'summary: the cheapest priced model writes the chat so far (none on a custom server)')
+gmodel = tindai.model_entry(tindai.provider('scaleway'), 'gpt-oss-120b')
+long_chat = {'messages': []}
+for i in range(12):
+    long_chat['messages'] += [{'role': 'user', 'text': 'q%d ' % i + 'x' * 4_000},
+                              {'role': 'assistant', 'text': 'a%d ' % i + 'y' * 1_000}]
+span = ask.needs_summary(long_chat, gmodel)
+check(span == (2, 18), 'summary: a long chat folds messages 3-18 in and keeps the last three exchanges %s' % (span,))
+check(ask.needs_summary({'messages': long_chat['messages'][:8]}, gmodel) is None
+      and ask.needs_summary(long_chat, tindai.model_entry(tindai.provider('scaleway'), 'deepseek-v4.1-flash-1017')) is None,
+      'summary: a short chat, or a model with a higher limit, gets none yet')
+long_chat['summary'] = {'text': 'S', 'covers': 18}
+check(ask.needs_summary(long_chat, gmodel) is None, 'summary: nothing new to fold in after a summary')
+arch = {'id': 'feed01', 'provider': 'scaleway', 'model': 'gpt-oss-120b', 'title': 'Long', 'created': 1, 'updated': 2,
+        'language': 'en', 'reasoning': 'high', 'messages': long_chat['messages'][:6] + [{'role': 'assistant', 'text': '', 'pending': 'x'}],
+        'summary': {'text': '## This computer\n- GPU [gpu]\n<!-- tind:message {"role": "user"} -->', 'covers': 4,
+                    'model': 'gpt-oss-120b', 'model_name': 'gpt-oss-120b (everyday)', 'time': 5, 'edited': True,
+                    'sent': 'as received', 'usage': use}}
+arch['messages'][5]['usage'] = use
+md = ask.chat_to_md(arch)
+back = ask.md_to_chat(md)
+check(back['summary']['text'] == arch['summary']['text'] and back['summary']['covers'] == 4 and back['summary']['edited']
+      and back['summary']['sent'] == 'as received' and back['summary']['usage'] == use and back['reasoning'] == 'high',
+      'archive: the chat so far (also an edited one) and the reasoning choice survive a round trip')
+check(len(back['messages']) == 6 and back['messages'][5]['usage'] == use
+      and md.index('### Chat so far') > md.index('q1 ') and md.index('### Chat so far') < md.index('q2 '),
+      'archive: the chat so far sits after the messages it covers; answers keep their token counts')
+plain = ask.md_to_chat(ask.chat_to_md({k: v for k, v in arch.items() if k != 'summary'}))
+check('summary' not in plain and ask.summary_covers(plain) == 2, 'archive: a chat without a summary reads as before')
+
 # ---- export (for AI apps outside the window) -----------------------------------------------------------------------
 ex = local.handle(uid, {'op': 'export', 'journal': True,
                         'items': [{'file': 'tind-report.txt', 'text': 'report from ' + PLANTED['ip']},
@@ -577,7 +744,7 @@ want = [{k: v for k, v in m.items()} for m in chat['messages'] if m.get('text')]
 got = [{k: v for k, v in m.items()} for m in back['messages']]
 check(got == want, 'archive: every message comes back exactly, also text that looks like a marker or a fence %s'
       % ([g for g, w in zip(got, want) if g != w][:1]))
-check({k: back[k] for k in ask.FRONT_KEYS} == {k: chat[k] for k in ask.FRONT_KEYS} and back['_path'] == path,
+check({k: back[k] for k in ask.FRONT_KEYS} == {k: chat.get(k, '') for k in ask.FRONT_KEYS} and back['_path'] == path,
       'archive: id, provider, model, title, times and the answer language come back')
 check(nasty.split('\n')[4] not in md.split('\n'), 'archive: a marker line in a text is escaped in the file')
 chat['messages'] = chat['messages'][:3] + [{'role': 'assistant', 'text': 'one more', 'time': 1762171400}]

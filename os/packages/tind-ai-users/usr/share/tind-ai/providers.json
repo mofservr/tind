@@ -1,5 +1,5 @@
 {
- "_comment": "Tind AI box providers, shown by name with their icon (icon: an icon-theme name; Tind's own, tind-ai-*, are in the hicolor theme, shipped by tind-ai-ui). Models as 'name (use)', use one of quick, everyday, coding. 'default' is preselected for a new chat. 'service' says which system user talks to the model: 'remote' (tind-ai-remote, one host only) or 'local' (tind-ai-local, no network; for a model on this computer). 'unavailable' grays the entry with that text. Model ids can be changed per user in the window; these are the suggestions.",
+ "_comment": "Tind AI box providers, shown by name with their icon (icon: an icon-theme name; Tind's own, tind-ai-*, are in the hicolor theme, shipped by tind-ai-ui). Models as 'name (use)', use one of quick, everyday, coding. 'default' is preselected for a new chat. 'service' says which system user talks to the model: 'remote' (tind-ai-remote, one host only) or 'local' (tind-ai-local, no network; for a model on this computer). 'unavailable' grays the entry with that text. Model ids can be changed per user in the window; these are the suggestions. Long chats (28 Nov), all optional per model: 'context' (tokens the model takes; default 128000), 'summarise_after' (characters of turns after the first exchange before the window asks for a 'chat so far' summary; default 40000), 'reasoning' ({'levels': what the model takes, 'normal' and 'long': what Auto sends for a normal and a long chat, null for nothing}). A model without 'reasoning' gets no reasoning_effort.",
  "default": "scaleway",
  "providers": [
   {
@@ -24,12 +24,67 @@
     {
      "id": "gpt-oss-120b",
      "name": "gpt-oss-120b",
-     "use": "everyday"
+     "use": "everyday",
+     "context": 128000,
+     "summarise_after": 40000,
+     "reasoning": {
+      "levels": [
+       "low",
+       "medium",
+       "high"
+      ],
+      "normal": "medium",
+      "long": "high"
+     }
+    },
+    {
+     "id": "deepseek-v4-flash-0731",
+     "name": "DeepSeek V4 Flash",
+     "use": "long chats",
+     "context": 256000,
+     "summarise_after": 150000,
+     "reasoning": {
+      "levels": [
+       "none",
+       "low",
+       "high",
+       "max"
+      ],
+      "normal": "high",
+      "long": "high"
+     }
+    },
+    {
+     "id": "deepseek-v4.1-flash-1017",
+     "name": "DeepSeek V4.1 Flash",
+     "use": "long chats",
+     "context": 256000,
+     "summarise_after": 150000,
+     "reasoning": {
+      "levels": [
+       "none",
+       "low",
+       "high",
+       "max"
+      ],
+      "normal": "high",
+      "long": "high"
+     }
     },
     {
      "id": "mistral-medium-3.5-128b",
      "name": "Mistral Medium 3.5",
-     "use": "coding"
+     "use": "coding",
+     "context": 180000,
+     "summarise_after": 60000,
+     "reasoning": {
+      "levels": [
+       "none",
+       "high"
+      ],
+      "normal": null,
+      "long": null
+     }
     }
    ],
    "icon": "tind-ai-scaleway-symbolic"

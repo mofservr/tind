@@ -38,8 +38,42 @@ def providers():
         if p['id'] == 'custom' and custom.get('base_url'):
             p['base_url'] = custom['base_url']
             if custom.get('model'):
-                p['models'] = [{'id': custom['model'], 'name': custom['model'], 'use': 'everyday'}]
+                m = {'id': custom['model'], 'name': custom['model'], 'use': 'everyday'}
+                if 'gpt-oss' in custom['model'].lower():
+                    # serv'r measured top-level reasoning_effort working on llama.cpp; low is its suggestion (21 Nov)
+                    m['reasoning'] = {'levels': ['low', 'medium', 'high'], 'normal': 'low', 'long': 'medium'}
+                p['models'] = [m]
     return data['providers']
+
+
+# ---- per-model settings for long chats (28 Nov) ----------------------------------------------------------------------
+CONTEXT_DEFAULT = 128_000      # tokens, when a model does not say
+SUMMARISE_DEFAULT = 40_000     # characters of unsummarised turns before the "chat so far" is made
+CHARS_PER_TOKEN = 3.5
+
+
+def model_entry(p, model_id):
+    """The model's entry in the provider list, or a bare one for a model id the list does not know."""
+    return next((m for m in p.get('models', []) if m.get('id') == model_id), {'id': model_id, 'name': model_id})
+
+
+def reasoning_levels(m):
+    """The reasoning levels this model takes, in order; [] when Tind sends none for it."""
+    r = m.get('reasoning') if isinstance(m.get('reasoning'), dict) else {}
+    return [str(x) for x in r.get('levels', []) if isinstance(x, str)]
+
+
+def reasoning_for(m, choice, long_chat):
+    """The reasoning_effort to send: the human's choice when the model takes it, else Auto (the model's level for a
+    normal or a long chat). None means: send nothing (the provider's own default)."""
+    levels = reasoning_levels(m)
+    if not levels:
+        return None
+    if choice in levels:
+        return choice
+    r = m['reasoning']
+    level = r.get('long') if long_chat else r.get('normal')
+    return level if level in levels else None
 
 
 def provider_label(p):

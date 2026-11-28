@@ -9,7 +9,11 @@ Only the human who owns a briefing can ask for it to be sent (the user id comes 
 read from disk, exactly as the local service wrote it and the human saw it in the preview.
 
 Request:  {"op": "send", "id": "<briefing id>", "model": "<model id>"}
-Answer:   {"ok": true, "answer": "...", "provider": "...", "model": "...", "usage": {...}}
+Answer:   {"ok": true, "answer": "...", "provider": "...", "model": "...", "usage": {...},
+           "reasoning": "<the model's reasoning text, when it gives one>", "effort": "<reasoning_effort sent>",
+           "cut": true when the answer stopped at the length limit}
+The briefing's "reasoning" (a level the local service checked against the model) goes as reasoning_effort; a
+provider that refuses the field gets the request once more without it.
 The answer is also saved as /var/lib/tind-ai/outbox/<uid>/<id>.json (readable by that human only).
 """
 import http.client
@@ -29,7 +33,7 @@ PROVIDER = sys.argv[1] if len(sys.argv) > 1 else ''
 MODEL_RE = re.compile(r'^[A-Za-z0-9._:/@+-]{1,120}$')
 ID_RE = re.compile(r'^[0-9]{8}-[0-9]{6}-[0-9a-f]{8}$')
 TIMEOUT = 240
-MAX_TOKENS = 4096
+MAX_TOKENS = 16_384          # includes the reasoning; Scaleway's limit is 32k for these models (28 Nov)
 
 
 def api_key():
@@ -95,15 +99,29 @@ def post(path, headers, body):
     return data
 
 
-def openai_compatible(brief, model, key):
+def openai_compatible(brief, model, key, effort=None):
     msgs = [{'role': 'system', 'content': brief['system']}]
     msgs += [{'role': m['role'], 'content': m['text']} for m in brief.get('history', [])]
     msgs.append({'role': 'user', 'content': brief['text']})
     headers = {'Authorization': 'Bearer ' + key} if key else {}
-    data = post('/chat/completions', headers, {'model': model, 'messages': msgs, 'max_tokens': MAX_TOKENS})
+    body = {'model': model, 'messages': msgs, 'max_tokens': MAX_TOKENS}
+    if effort:
+        body['reasoning_effort'] = effort
+    try:
+        data = post('/chat/completions', headers, body)
+    except RuntimeError as e:
+        if not effort or 'reasoning' not in str(e).lower() or ' 4' not in str(e):
+            raise
+        body.pop('reasoning_effort')        # the provider does not take the field for this model: once without it
+        effort = None
+        data = post('/chat/completions', headers, body)
     choice = (data.get('choices') or [{}])[0]
-    text = (choice.get('message') or {}).get('content') or ''
-    return text, data.get('usage', {})
+    msg = choice.get('message') or {}
+    text = msg.get('content') or ''
+    thought = msg.get('reasoning_content') or msg.get('reasoning') or ''
+    extra = {'reasoning': thought if isinstance(thought, str) else '', 'effort': effort,
+             'cut': choice.get('finish_reason') == 'length'}
+    return text, data.get('usage', {}), extra
 
 
 ADAPTERS = {'openai': openai_compatible}
@@ -132,10 +150,15 @@ def handle(uid, req):
     key = api_key()
     if not key and PROVIDER != 'custom':
         raise RuntimeError('no API key is set for %s' % p['name'])
+    effort = brief.get('reasoning')
+    if effort and effort not in tindai.reasoning_levels(tindai.model_entry(p, model)):
+        effort = None                        # a level for another model: send nothing rather than guess
     t0 = time.time()
-    text, usage = ADAPTERS[p['adapter']](brief, model, key)
+    text, usage, extra = ADAPTERS[p['adapter']](brief, model, key, effort)
     out = {'ok': True, 'id': bid, 'answer': text, 'provider': PROVIDER, 'provider_name': p['name'],
-           'model': model, 'usage': usage, 'seconds': round(time.time() - t0, 1)}
+           'model': model, 'usage': usage if isinstance(usage, dict) else {}, 'seconds': round(time.time() - t0, 1),
+           'kind': brief.get('kind', 'message')}
+    out.update({k: v for k, v in extra.items() if v})
     folder = tindai.user_dir(tindai.OUTBOX_DIR, uid, readers=[uid])
     tindai.write_json(os.path.join(folder, bid + '.json'), dict(out, created=int(time.time())))
     tindai.prune(folder)
